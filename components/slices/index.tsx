@@ -1,6 +1,7 @@
 import type { SliceComponentProps } from "@prismicio/react";
 import type { ComponentType } from "react";
 import HeroSlideShow from "./landing/HeroSlideShow";
+import SliceContent from "./landing/SliceContent";
 
 function DefaultSlice({ slice }: SliceComponentProps) {
   return (
@@ -16,6 +17,7 @@ type SliceMapping = Record<string, ComponentType<SliceComponentProps>>;
 export const components: SliceMapping = new Proxy(
   {
     hero_slideshow: HeroSlideShow,
+    content: SliceContent,
   } as SliceMapping,
   {
     get(target, prop: string) {
