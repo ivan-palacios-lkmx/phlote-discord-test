@@ -2,6 +2,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import type { ComponentType } from "react";
 import HeroSlideShow from "./landing/HeroSlideShow";
 import SliceContent from "./landing/SliceContent";
+import StemsPlayer from "./landing/StemsPlayer";
 
 function DefaultSlice({ slice }: SliceComponentProps) {
   return (
@@ -18,6 +19,7 @@ export const components: SliceMapping = new Proxy(
   {
     hero_slideshow: HeroSlideShow,
     content: SliceContent,
+    stems_player: StemsPlayer,
   } as SliceMapping,
   {
     get(target, prop: string) {
