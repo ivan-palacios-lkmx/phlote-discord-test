@@ -5,6 +5,7 @@ import { createClient } from "../prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { repositoryName } from "../prismicio";
 import MarketingFooter from "@/components/slices/landing/MarketingFooter";
+import ProductHeader from "@/components/site/ProductHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,11 +54,9 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="container default grid min-h-screen grid-rows-[1fr_auto]">
-          {/* Header - TODO: Add site-product-header and site-marketing-header components */}
-          {/* <transition name="fade" mode="out-in">
-            <site-product-header v-if="routeIsProduct" ref="header" />
-            <site-marketing-header v-else ref="header" />
-          </transition> */}
+          {/* Header */}
+          {/* TODO: Add site-product-header and site-marketing-header conditionally */}
+          <ProductHeader settings={settings.data} />
 
           {/* Page Content */}
           <main className="min-w-0">
