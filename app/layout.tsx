@@ -4,6 +4,7 @@ import "./globals.css";
 import { createClient } from "../prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { repositoryName } from "../prismicio";
+import MarketingFooter from "@/components/slices/landing/MarketingFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,17 +38,55 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Get settings for footer
+  const client = createClient();
+  const settings = await client.getSingle("settings");
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="container default grid min-h-screen grid-rows-[1fr_auto]">
+          {/* Header - TODO: Add site-product-header and site-marketing-header components */}
+          {/* <transition name="fade" mode="out-in">
+            <site-product-header v-if="routeIsProduct" ref="header" />
+            <site-marketing-header v-else ref="header" />
+          </transition> */}
+
+          {/* Page Content */}
+          <main className="min-w-0">
+            {children}
+          </main>
+
+          {/* Footer */}
+          <MarketingFooter
+            slice={{
+              primary: settings.data,
+              slice_type: 'marketing_footer',
+              id: 'footer',
+              items: []
+            } as never}
+            index={0}
+            slices={[]}
+            context={{}}
+          />
+
+          {/* Mobile Menu - TODO: Add site-mobile-menu component */}
+          {/* <site-mobile-menu /> */}
+
+          {/* Overlay Sign In - TODO: Add overlay-signature component */}
+          {/* <overlay-signature /> */}
+
+          {/* Overlay User Profile - TODO: Add overlay-profile component */}
+          {/* <overlay-profile /> */}
+        </div>
+
         {/* Preview toolbar & auto-refresh during draft previews */}
         <PrismicPreview repositoryName={repositoryName} />
       </body>

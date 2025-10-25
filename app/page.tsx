@@ -6,9 +6,10 @@ export default async function Home() {
   const client = createClient();
   const settings = await client.getSingle("settings");
 
+
   return (
-    <main className="front-page pb-[150px]">
+    <div className="front-page pb-[150px]">
       <SliceZone slices={settings.data.body} components={components} />
-    </main>
+    </div>
   );
 }

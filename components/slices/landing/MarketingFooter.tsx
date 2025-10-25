@@ -80,12 +80,14 @@ export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Ele
         <ul className="social-menu flex items-center gap-10 py-15 md:gap-4 md:py-10">
           {socialMenu.map((item, index) => (
             <li key={index}>
-              <PrismicNextLink
-                field={item.link as never}
+              <a
+                href={item.link as string}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-sm font-medium leading-[90%] transition-colors hover:text-white/70 md:text-sm"
               >
                 {item.name || "Link"}
-              </PrismicNextLink>
+              </a>
             </li>
           ))}
         </ul>
@@ -99,12 +101,12 @@ export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Ele
           <ul className="flex items-center gap-6">
             {secondaryMenu.map((item, index) => (
               <li key={index}>
-                <PrismicNextLink
-                  field={item.link as never}
+                <a
+                  href={item.link as string}
                   className="text-sm transition-colors hover:text-white/70"
                 >
                   {item.name || "Link"}
-                </PrismicNextLink>
+                </a>
               </li>
             ))}
           </ul>
