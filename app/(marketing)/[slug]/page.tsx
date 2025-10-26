@@ -2,7 +2,7 @@ import { components } from "@/components/slices";
 import { SliceZone } from "@prismicio/react";
 import { notFound } from "next/navigation";
 
-import { createClient } from "../../prismicio";
+import { createClient } from "../../../prismicio";
 
 interface PageProps {
   params: {
@@ -19,9 +19,9 @@ export default async function DynamicPage({ params }: PageProps) {
     const slices = page.data.body || [];
 
     return (
-      <main className="page">
+      <div className="page">
         <SliceZone slices={slices} components={components} />
-      </main>
+      </div>
     );
   } catch (error) {
     notFound();

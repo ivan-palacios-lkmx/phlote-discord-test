@@ -1,7 +1,5 @@
 import LenisProvider from "@/components/LenisProvider";
 import PrivyProviderWrapper from "@/components/PrivyProviderWrapper";
-import Footer from "@/components/site/footer/Footer";
-import Header from "@/components/site/header/Header";
 import { PrismicPreview } from "@prismicio/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -47,20 +45,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const client = createClient();
-  const settings = await client.getSingle("settings");
-
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
           <LenisProvider>
             <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
-              <Header settings={settings.data} />
-
-              <main className="min-w-0 noise-background relative ">{children}</main>
-
-              <Footer settings={settings.data} />
+              {children}
             </div>
           </LenisProvider>
         </PrivyProviderWrapper>
