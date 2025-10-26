@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import type { ImageField, RichTextField } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicImage, PrismicRichText } from "@prismicio/react";
-import type { ImageField, RichTextField } from "@prismicio/client";
+import { useEffect, useRef, useState } from "react";
 
 // MIGRATED: TypeScript interface for Hero slice props
 interface HeroSliceProps {
@@ -28,7 +28,7 @@ export default function Hero({ slice }: SliceComponentProps) {
   const { background_image, background_video, headline_text, copy } = heroSlice.primary || {};
 
   // MIGRATED: Computed video URL (equivalent to Vue computed)
-  const videoURL = background_video?.url || '';
+  const videoURL = background_video?.url || "";
 
   // MIGRATED: Intersection observer for entrance animations
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Hero({ slice }: SliceComponentProps) {
       (entries) => {
         entries.forEach((entry) => setIntersected(entry.isIntersecting));
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
 
     obs.observe(containerRef.current);
@@ -48,8 +48,7 @@ export default function Hero({ slice }: SliceComponentProps) {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="slice-hero relative text-white overflow-hidden"
-    >
+      className="slice-hero relative text-white overflow-hidden">
       {/* MIGRATED: Background image/video section */}
       {background_image && (
         <div className="absolute inset-0">
@@ -57,9 +56,9 @@ export default function Hero({ slice }: SliceComponentProps) {
             field={background_image}
             className="w-full h-full object-cover"
             style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
             }}
           />
           {/* MIGRATED: Video overlay if video URL exists */}
@@ -69,8 +68,7 @@ export default function Hero({ slice }: SliceComponentProps) {
               autoPlay
               muted
               loop
-              playsInline
-            >
+              playsInline>
               <source src={videoURL} type="video/mp4" />
             </video>
           )}
@@ -85,22 +83,24 @@ export default function Hero({ slice }: SliceComponentProps) {
         className={[
           "content absolute inset-0 flex flex-col justify-center items-center text-center px-8 transition-transform duration-[3000ms]",
           // MIGRATED: Float up animation if first slice and not intersected
-          !intersected ? "transform translate-y-screen" : "transform translate-y-0"
-        ].join(" ")}
-      >
+          !intersected ? "transform translate-y-screen" : "transform translate-y-0",
+        ].join(" ")}>
         {/* MIGRATED: Headline */}
         {headline_text && (
           <h1
             className={[
               "mb-8 transition-transform duration-[3000ms] text-[150px] font-bold font-condensed",
               // MIGRATED: 3D rotation animation for headline
-              !intersected ? "transform-style-preserve-3d transform-perspective-[2000px] rotate-3d-[0.325,1,0.25,360deg]" : "transform-none"
+              !intersected
+                ? "transform-style-preserve-3d transform-perspective-[2000px] rotate-3d-[0.325,1,0.25,360deg]"
+                : "transform-none",
             ].join(" ")}
             style={{
-              transformStyle: !intersected ? 'preserve-3d' : undefined,
-              transform: !intersected ? 'perspective(2000px) rotate3d(0.325, 1, 0.25, 360deg)' : undefined
-            }}
-          >
+              transformStyle: !intersected ? "preserve-3d" : undefined,
+              transform: !intersected
+                ? "perspective(2000px) rotate3d(0.325, 1, 0.25, 360deg)"
+                : undefined,
+            }}>
             {headline_text}
           </h1>
         )}
@@ -111,9 +111,7 @@ export default function Hero({ slice }: SliceComponentProps) {
             <PrismicRichText
               field={copy}
               components={{
-                paragraph: ({ children }) => (
-                  <p className="mb-4 text-[12px]">{children}</p>
-                ),
+                paragraph: ({ children }) => <p className="mb-4 text-[12px]">{children}</p>,
                 heading1: ({ children }) => (
                   <h1 className="mb-4 text-4xl font-bold text-[150px]">{children}</h1>
                 ),
@@ -129,8 +127,7 @@ export default function Hero({ slice }: SliceComponentProps) {
                 hyperlink: ({ children, node }) => (
                   <a
                     href={node.data?.url as string}
-                    className="standard-button mt-8 inline-block rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40"
-                  >
+                    className="standard-button mt-8 inline-block rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40">
                     {children}
                   </a>
                 ),

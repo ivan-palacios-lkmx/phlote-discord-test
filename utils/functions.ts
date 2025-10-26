@@ -18,4 +18,4 @@ export function quickHash(str: string): string {
     hash |= 0;
   }
   return Math.abs(hash).toString(16);
-};
+}

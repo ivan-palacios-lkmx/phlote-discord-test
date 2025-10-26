@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { PrismicNextImage } from "@prismicio/next";
 import type { ImageField, LinkField } from "@prismicio/client";
+import { PrismicNextImage } from "@prismicio/next";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 // UNKNOWN: AvatarStack component TODO: Add it later
 // This is a placeholder component for displaying collaborator avatars
@@ -13,8 +13,7 @@ function AvatarStack({ addresses }: { addresses: string[] }) {
       {addresses.slice(0, 3).map((address, index) => (
         <div
           key={index}
-          className="avatar-img h-[45px] w-[45px] rounded-full border-2 border-white bg-gray-600 flex items-center justify-center text-white text-xs font-semibold"
-        >
+          className="avatar-img h-[45px] w-[45px] rounded-full border-2 border-white bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
           {address.slice(0, 2).toUpperCase()}
         </div>
       ))}
@@ -29,13 +28,15 @@ function AvatarStack({ addresses }: { addresses: string[] }) {
 
 // UNKNOWN: PublicTrackPreview component TODO: Add it later
 // This is a placeholder component for audio track visualization
-function PublicTrackPreview({ style }: { style: React.CSSProperties & { '--progress'?: string } }) {
+function PublicTrackPreview({ style }: { style: React.CSSProperties & { "--progress"?: string } }) {
   return (
-    <div className="public-track-preview h-[60px] bg-gray-800 rounded flex items-center px-4" style={style}>
+    <div
+      className="public-track-preview h-[60px] bg-gray-800 rounded flex items-center px-4"
+      style={style}>
       <div className="w-full h-2 bg-gray-600 rounded-full overflow-hidden">
         <div
           className="h-full bg-white transition-all duration-300"
-          style={{ width: `${(1 - (parseFloat(style['--progress'] || '0'))) * 100}%` }}
+          style={{ width: `${(1 - parseFloat(style["--progress"] || "0")) * 100}%` }}
         />
       </div>
     </div>
@@ -91,7 +92,7 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(containerRef.current);
@@ -120,12 +121,12 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleDurationChange = () => setDuration(audio.duration);
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('durationchange', handleDurationChange);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("durationchange", handleDurationChange);
 
     return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('durationchange', handleDurationChange);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("durationchange", handleDurationChange);
     };
   }, [audioUrl]);
 
@@ -142,17 +143,16 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
 
   const progress = duration > 0 ? currentTime / duration : 0;
   const playerStyles = {
-    '--progress': `${(1 - progress) * 100}%`,
-  } as React.CSSProperties & { '--progress': string };
+    "--progress": `${(1 - progress) * 100}%`,
+  } as React.CSSProperties & { "--progress": string };
 
   return (
     <div
       ref={containerRef}
       className={[
         "release-block transition-opacity duration-[400ms] ease-in-out transition-transform duration-[1.5s] ease-out",
-        isIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[100px]"
-      ].join(" ")}
-    >
+        isIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[100px]",
+      ].join(" ")}>
       {/* MIGRATED: Image section */}
       <div className="image-wrap relative">
         <PrismicNextImage
@@ -184,8 +184,7 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
                   <audio ref={audioRef} src={audioUrl} />
                   <button
                     onClick={togglePlayPause}
-                    className="play-pause border border-white w-[60px] h-[60px] bg-black/35 rounded-full text-white flex justify-center items-center hover:bg-black/50 transition-colors"
-                  >
+                    className="play-pause border border-white w-[60px] h-[60px] bg-black/35 rounded-full text-white flex justify-center items-center hover:bg-black/50 transition-colors">
                     {playing ? <SvgPause /> : <SvgPlay />}
                   </button>
                   <PublicTrackPreview style={playerStyles} />
@@ -197,22 +196,15 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
       </div>
 
       {/* MIGRATED: Content section */}
-      <h6 className="my-[15px] text-[12px] font-mono uppercase">
-        {release.title_eyebrow}
-      </h6>
-      <h3 className="my-[15px] font-condensed text-xl font-semibold">
-        {release.title}
-      </h3>
-      <p className="text-[12px] max-w-[400px] my-[15px] leading-relaxed">
-        {release.description}
-      </p>
+      <h6 className="my-[15px] text-[12px] font-mono uppercase">{release.title_eyebrow}</h6>
+      <h3 className="my-[15px] font-condensed text-xl font-semibold">{release.title}</h3>
+      <p className="text-[12px] max-w-[400px] my-[15px] leading-relaxed">{release.description}</p>
 
       {/* MIGRATED: CTA Link */}
       {release.cta_link && release.cta_text && (
         <Link
           href={(release.cta_link as { url?: string })?.url || "#"}
-          className="a-div standard-button inline-block cursor-pointer rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40 md:block md:w-full md:text-center md:p-2"
-        >
+          className="a-div standard-button inline-block cursor-pointer rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40 md:block md:w-full md:text-center md:p-2">
           {release.cta_text}
         </Link>
       )}

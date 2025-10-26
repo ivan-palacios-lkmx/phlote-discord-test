@@ -1,8 +1,9 @@
 "use client";
-import {useLogin} from "@privy-io/react-auth";
-import Link from "next/link";
+
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import Button from "@/components/ui/Button";
+import { useLogin } from "@privy-io/react-auth";
+import Link from "next/link";
 
 // MIGRATED: Placeholder components for unknown elements
 function SvgLogo() {
@@ -53,9 +54,7 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
       <nav className="desktop-only col-start-3 flex justify-end items-start gap-2.5 flex-nowrap md:col-auto pointer-events-auto">
         {mainMenu.map((item, index) => (
           <Link key={index} href={item.link || "#"} className="whitespace-nowrap">
-            <Button variant="outline">
-              {item.name || "Link"}
-            </Button>
+            <Button variant="outline">{item.name || "Link"}</Button>
           </Link>
         ))}
         <Button variant="outline" onClick={login}>
@@ -65,9 +64,7 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
 
       {/* MIGRATED: mobile-only navigation section */}
       <div className="mobile-only nav md:hidden flex items-center gap-2.5 pointer-events-auto">
-        <Button variant="outline">
-          Connect Wallet
-        </Button>
+        <Button variant="outline">Connect Wallet</Button>
         <HamburgerIcon />
       </div>
     </header>

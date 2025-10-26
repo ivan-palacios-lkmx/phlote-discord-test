@@ -1,7 +1,8 @@
-import { SliceZone } from "@prismicio/react";
-import { createClient } from "../../prismicio";
 import { components } from "@/components/slices";
+import { SliceZone } from "@prismicio/react";
 import { notFound } from "next/navigation";
+
+import { createClient } from "../../prismicio";
 
 interface PageProps {
   params: {

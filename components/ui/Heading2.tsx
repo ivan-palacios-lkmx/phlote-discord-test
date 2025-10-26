@@ -1,5 +1,5 @@
-import { tv } from "tailwind-variants";
 import { twMerge } from "tailwind-merge";
+import { tv } from "tailwind-variants";
 
 interface Heading2Props extends React.HTMLAttributes<HTMLHeadingElement> {
   children?: React.ReactNode;
@@ -7,7 +7,7 @@ interface Heading2Props extends React.HTMLAttributes<HTMLHeadingElement> {
 }
 
 const heading2Variants = tv({
-  base: '',
+  base: "",
 });
 
 export default function Heading2({ children, className, ...props }: Heading2Props) {

@@ -1,5 +1,5 @@
-import { tv } from "tailwind-variants";
 import { twMerge } from "tailwind-merge";
+import { tv } from "tailwind-variants";
 
 interface Heading4Props extends React.HTMLAttributes<HTMLHeadingElement> {
   children?: React.ReactNode;
@@ -7,7 +7,7 @@ interface Heading4Props extends React.HTMLAttributes<HTMLHeadingElement> {
 }
 
 const heading4Variants = tv({
-  base: 'm-0 text-base md:text-lg font-condensed font-semibold uppercase',
+  base: "m-0 text-base md:text-lg font-condensed font-semibold uppercase",
 });
 
 export default function Heading4({ children, className, ...props }: Heading4Props) {

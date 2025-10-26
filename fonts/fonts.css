@@ -14,36 +14,40 @@
 /* AUTHENTIC SANS */
 /* normal */
 @font-face {
-    font-family: 'Authentic';
-    font-style: normal;
-    font-weight: 400;
-    src: url('/fonts/authentic-sans-90.woff2') format('woff2'),
-        url('/fonts/authentic-sans-90.woff') format('woff');
+  font-family: "Authentic";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    url("/fonts/authentic-sans-90.woff2") format("woff2"),
+    url("/fonts/authentic-sans-90.woff") format("woff");
 }
 
 /* Medium */
 @font-face {
-    font-family: 'Authentic';
-    font-style: normal;
-    font-weight: 500;
-    src: url('/fonts/authentic-sans-130.woff2') format('woff2'),
-        url('/fonts/authentic-sans-130.woff') format('woff');
+  font-family: "Authentic";
+  font-style: normal;
+  font-weight: 500;
+  src:
+    url("/fonts/authentic-sans-130.woff2") format("woff2"),
+    url("/fonts/authentic-sans-130.woff") format("woff");
 }
 
 /* AUTHENTIC SANS CONDENSED */
 /* Medium */
 @font-face {
-    font-family: 'Authentic Condensed';
-    font-style: normal;
-    font-weight: 500;
-    src: url('/fonts/authentic-sans-condensed-90.woff2') format('woff2'),
-        url('/fonts/authentic-sans-condensed-90.woff') format('woff');
+  font-family: "Authentic Condensed";
+  font-style: normal;
+  font-weight: 500;
+  src:
+    url("/fonts/authentic-sans-condensed-90.woff2") format("woff2"),
+    url("/fonts/authentic-sans-condensed-90.woff") format("woff");
 }
 /* Semi Bold */
 @font-face {
-    font-family: 'Authentic Condensed';
-    font-style: normal;
-    font-weight: 600;
-    src: url('/fonts/authentic-sans-condensed-130.woff2') format('woff2'),
-        url('/fonts/authentic-sans-condensed-130.woff') format('woff');
+  font-family: "Authentic Condensed";
+  font-style: normal;
+  font-weight: 600;
+  src:
+    url("/fonts/authentic-sans-condensed-130.woff2") format("woff2"),
+    url("/fonts/authentic-sans-condensed-130.woff") format("woff");
 }

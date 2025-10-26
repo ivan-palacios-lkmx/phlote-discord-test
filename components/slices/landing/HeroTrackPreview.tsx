@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface HeroTrackPreviewProps {
   hash?: string;
@@ -69,34 +69,27 @@ export default function HeroTrackPreview({ hash, onSeek }: HeroTrackPreviewProps
       ref={buttonRef}
       className={[
         "track-preview relative block w-full h-5",
-        isHovered ? "hover:cursor-pointer" : ""
+        isHovered ? "hover:cursor-pointer" : "",
       ].join(" ")}
       onMouseMove={handleMouseMove}
       onClick={handleTrackClick}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+      onMouseLeave={() => setIsHovered(false)}>
       {/* MIGRATED: fill wave trace */}
       {waveTrace && (
-        <div
-          className="fill absolute inset-0"
-          dangerouslySetInnerHTML={{ __html: waveTrace }}
-        />
+        <div className="fill absolute inset-0" dangerouslySetInnerHTML={{ __html: waveTrace }} />
       )}
 
       {/* MIGRATED: outline wave trace */}
       {waveTrace && (
-        <div
-          className="outline absolute inset-0"
-          dangerouslySetInnerHTML={{ __html: waveTrace }}
-        />
+        <div className="outline absolute inset-0" dangerouslySetInnerHTML={{ __html: waveTrace }} />
       )}
 
       {/* MIGRATED: cursor */}
       <div
         className={[
           "cursor absolute top-0 w-px h-full bg-white pointer-events-none transition-opacity",
-          isHovered ? "opacity-100" : "opacity-0"
+          isHovered ? "opacity-100" : "opacity-0",
         ].join(" ")}
         style={cursorStyle}
       />

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import type { RichTextField } from "@prismicio/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
-import type { RichTextField } from "@prismicio/client";
+import { useEffect, useRef, useState } from "react";
+
 import ReleaseBlock from "./ReleaseBlock";
 
 export default function ReleaseCarousel({ slice }: SliceComponentProps) {
@@ -13,17 +14,22 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
   const containerRef = useRef<HTMLElement | null>(null);
 
   // Get copy and items from slice data
-  const copy = (slice as unknown as {
-    primary?: {
-      copy?: RichTextField;
-    };
-  }).primary?.copy;
+  const copy = (
+    slice as unknown as {
+      primary?: {
+        copy?: RichTextField;
+      };
+    }
+  ).primary?.copy;
 
-  const items = (slice as unknown as {
-    primary?: {
-      items?: unknown[];
-    };
-  }).primary?.items || [];
+  const items =
+    (
+      slice as unknown as {
+        primary?: {
+          items?: unknown[];
+        };
+      }
+    ).primary?.items || [];
 
   // Initialize carousel when component mounts
   useEffect(() => {
@@ -79,9 +85,7 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
   if (items.length === 0) {
     return (
       <section className="slice-release-carousel mt-[150px] mb-[150px] md:mt-[50px] md:mb-[50px] w-full">
-        <div className="text-center text-gray-500">
-          No releases available
-        </div>
+        <div className="text-center text-gray-500">No releases available</div>
       </section>
     );
   }
@@ -92,9 +96,8 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
       className={[
         "slice-release-carousel mt-[150px] mb-[150px] md:mt-[50px] md:mb-[50px] w-full",
         ready ? "opacity-100" : "opacity-0",
-        "transition-opacity duration-1000"
-      ].join(" ")}
-    >
+        "transition-opacity duration-1000",
+      ].join(" ")}>
       {/* MIGRATED: Prismic content entry section */}
       {copy && (
         <div className="entry max-w-[1000px] mx-auto text-center mb-[90px] md:mb-[40px]">
@@ -104,20 +107,13 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
               paragraph: ({ children }) => (
                 <p className="max-w-[750px] mx-auto font-semibold">{children}</p>
               ),
-              heading1: ({ children }) => (
-                <h1 className="mb-4 text-4xl font-bold">{children}</h1>
-              ),
-              heading2: ({ children }) => (
-                <h2 className="mb-4 text-3xl font-bold">{children}</h2>
-              ),
-              heading3: ({ children }) => (
-                <h3 className="mb-4 text-2xl font-bold">{children}</h3>
-              ),
+              heading1: ({ children }) => <h1 className="mb-4 text-4xl font-bold">{children}</h1>,
+              heading2: ({ children }) => <h2 className="mb-4 text-3xl font-bold">{children}</h2>,
+              heading3: ({ children }) => <h3 className="mb-4 text-2xl font-bold">{children}</h3>,
               hyperlink: ({ children, node }) => (
                 <a
                   href={node.data?.url as string}
-                  className="standard-button mt-[30px] inline-block rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40"
-                >
+                  className="standard-button mt-[30px] inline-block rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40">
                   {children}
                 </a>
               ),
@@ -132,8 +128,7 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
         className="carousel overflow-hidden cursor-grab focus:outline-none active:cursor-grabbing flex"
         style={{
           scrollSnapType: "x mandatory",
-        }}
-      >
+        }}>
         {items.map((release, index) => (
           <li key={index} className="flex-shrink-0">
             <ReleaseBlock release={release as any} />

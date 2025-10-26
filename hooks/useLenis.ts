@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext } from "react";
 import Lenis from "lenis";
+import { createContext, useContext } from "react";
 
 const LenisContext = createContext<React.RefObject<Lenis | null> | null>(null);
 

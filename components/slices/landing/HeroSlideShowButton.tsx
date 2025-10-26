@@ -2,6 +2,7 @@
 
 import { quickHash } from "@/utils/functions";
 import { PrismicNextImage } from "@prismicio/next";
+
 import HeroTrackPreview from "./HeroTrackPreview";
 
 // Placeholder components for missing dependencies
@@ -28,7 +29,13 @@ interface HeroSlideShowButtonProps {
   onSeek?: (seekTo: number) => void;
 }
 
-export default function HeroSlideShowButton({ slide, active, progress, onClick, onSeek }: HeroSlideShowButtonProps) {
+export default function HeroSlideShowButton({
+  slide,
+  active,
+  progress,
+  onClick,
+  onSeek,
+}: HeroSlideShowButtonProps) {
   // Generate hash from slide title for track preview
   const hash = slide.title ? quickHash(slide.title) : undefined;
 
@@ -39,9 +46,8 @@ export default function HeroSlideShowButton({ slide, active, progress, onClick, 
       className={[
         "slideshow-button grid gap-2.5 text-white bg-black/30 rounded-[10px] border border-white/20 p-2.5 uppercase transition-all duration-[2000ms] cursor-pointer",
         active ? "bg-black border-black" : "",
-        "grid-cols-[100px_150px_300px] md:grid-cols-[100px]"
-      ].join(" ")}
-    >
+        "grid-cols-[100px_150px_300px] md:grid-cols-[100px]",
+      ].join(" ")}>
       {/* MIGRATED: img-wrap section */}
       <div className="relative pb-[56%]">
         <div className="absolute inset-0 flex items-center justify-center">
@@ -63,12 +69,8 @@ export default function HeroSlideShowButton({ slide, active, progress, onClick, 
 
       {/* MIGRATED: desktop-only title section */}
       <div className="hidden md:block text-left">
-        {slide.title_eyebrow && (
-          <span className="text-[8px] font-mono">{slide.title_eyebrow}</span>
-        )}
-        {slide.title && (
-          <h6 className="text-[15px] font-condensed mt-1.5 mb-0">{slide.title}</h6>
-        )}
+        {slide.title_eyebrow && <span className="text-[8px] font-mono">{slide.title_eyebrow}</span>}
+        {slide.title && <h6 className="text-[15px] font-condensed mt-1.5 mb-0">{slide.title}</h6>}
       </div>
 
       {/* MIGRATED: desktop-only track preview */}

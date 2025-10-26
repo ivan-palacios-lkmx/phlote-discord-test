@@ -1,8 +1,8 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import ProductHeader from "@/components/site/header/ProductHeader";
 import MarketingHeader from "@/components/site/header/MarketingHeader";
+import ProductHeader from "@/components/site/header/ProductHeader";
+import { usePathname } from "next/navigation";
 
 interface HeaderProps {
   settings: {
@@ -19,8 +19,8 @@ export default function Header({ settings }: HeaderProps) {
   // In the original Vue app, this checked if route.name was NOT 'index' or 'slug'
   // In Next.js: Show MarketingHeader for home page ('/') and slug pages (dynamic routes)
   // Show ProductHeader for other specific routes (like /dashboard, /profile, etc.)
-  const isHomePage = pathname === '/';
-  const isSlugPage = pathname !== '/' && !pathname.startsWith('/api') && !pathname.includes('/_');
+  const isHomePage = pathname === "/";
+  const isSlugPage = pathname !== "/" && !pathname.startsWith("/api") && !pathname.includes("/_");
   const shouldRenderProductHeader = !isHomePage && !isSlugPage;
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
+import { useEffect, useRef, useState } from "react";
 
 // Simple carousel component for stems player
 function StemsPlayerSlide({ versionID }: { versionID: string }) {
@@ -25,11 +25,14 @@ export default function StemsPlayer({ slice }: SliceComponentProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   // Get version IDs from slice data
-  const versionIDs = (slice as unknown as {
-    primary?: {
-      stemsCarousel?: string[]
-    }
-  }).primary?.stemsCarousel || [];
+  const versionIDs =
+    (
+      slice as unknown as {
+        primary?: {
+          stemsCarousel?: string[];
+        };
+      }
+    ).primary?.stemsCarousel || [];
 
   // Initialize carousel when component mounts and data is available
   useEffect(() => {
@@ -83,9 +86,7 @@ export default function StemsPlayer({ slice }: SliceComponentProps) {
   if (versionIDs.length === 0) {
     return (
       <section className="overflow-hidden py-[100px] outline-none">
-        <div className="text-center text-gray-500">
-          No stems available
-        </div>
+        <div className="text-center text-gray-500">No stems available</div>
       </section>
     );
   }
@@ -93,15 +94,13 @@ export default function StemsPlayer({ slice }: SliceComponentProps) {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="overflow-hidden py-[100px] outline-none"
-    >
+      className="overflow-hidden py-[100px] outline-none">
       <div
         ref={scrollRef}
         className="flex overflow-x-auto scrollbar-hide"
         style={{
           scrollSnapType: "x mandatory",
-        }}
-      >
+        }}>
         {versionIDs.map((versionID) => (
           <StemsPlayerSlide key={versionID} versionID={versionID} />
         ))}

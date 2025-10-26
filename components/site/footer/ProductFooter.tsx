@@ -42,8 +42,7 @@ export default function ProductFooter({ settings }: ProductFooterProps) {
           <li key={index}>
             <a
               href={item.link || "#"}
-              className="text-lg font-condensed leading-[90%] hover:text-white/70 transition-colors"
-            >
+              className="text-lg font-condensed leading-[90%] hover:text-white/70 transition-colors">
               {item.name || "Social Link"}
             </a>
           </li>
@@ -51,9 +50,7 @@ export default function ProductFooter({ settings }: ProductFooterProps) {
       </ul>
 
       {/* MIGRATED: copyright section */}
-      <span className="copyright col-start-12 text-sm text-white/70">
-        ©PHLOTE {currentYear}
-      </span>
+      <span className="copyright col-start-12 text-sm text-white/70">©PHLOTE {currentYear}</span>
     </footer>
   );
 }

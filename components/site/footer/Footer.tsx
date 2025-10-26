@@ -1,8 +1,8 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import ProductFooter from "@/components/site/footer/ProductFooter";
 import MarketingFooter from "@/components/site/footer/MarketingFooter";
+import ProductFooter from "@/components/site/footer/ProductFooter";
+import { usePathname } from "next/navigation";
 
 interface FooterProps {
   settings: {
@@ -19,7 +19,8 @@ export default function Footer({ settings }: FooterProps) {
   // MIGRATED: routeIsProduct logic - determine if current route is a product page
   // In the original Vue app, this checked if route.name was NOT 'index' or 'slug'
   // In Next.js, we'll check if the pathname is NOT the home page or a slug page
-  const shouldRenderProductFooter = !pathname || (pathname !== '/' && !pathname.startsWith('/slug'));
+  const shouldRenderProductFooter =
+    !pathname || (pathname !== "/" && !pathname.startsWith("/slug"));
 
   return (
     <>
@@ -28,12 +29,14 @@ export default function Footer({ settings }: FooterProps) {
         <ProductFooter settings={settings} />
       ) : (
         <MarketingFooter
-          slice={{
-            primary: settings,
-            slice_type: 'marketing_footer',
-            id: 'footer',
-            items: []
-          } as never}
+          slice={
+            {
+              primary: settings,
+              slice_type: "marketing_footer",
+              id: "footer",
+              items: [],
+            } as never
+          }
           index={0}
           slices={[]}
           context={{}}

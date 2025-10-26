@@ -1,25 +1,28 @@
 "use client";
 
-import { useMemo } from "react";
+import SvgWordmark from "@/components/svg/woodmark.svg";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
-import SvgWordmark from "@/components/svg/woodmark.svg";
+import { useMemo } from "react";
+
 import NewsletterForm from "./NewsletterForm";
 
 // SVG Wordmark component (placeholder)
-
 
 export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Element {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   // Get settings data from slice
-  const settings = (slice as unknown as {
-    primary?: {
-      footer_copy?: unknown;
-      social_menu?: Array<{ name?: string; link?: unknown }>;
-      secondary_menu?: Array<{ name?: string; link?: unknown }>;
-    };
-  }).primary || {};
+  const settings =
+    (
+      slice as unknown as {
+        primary?: {
+          footer_copy?: unknown;
+          social_menu?: Array<{ name?: string; link?: unknown }>;
+          secondary_menu?: Array<{ name?: string; link?: unknown }>;
+        };
+      }
+    ).primary || {};
 
   const footerCopy = settings.footer_copy;
   const socialMenu = settings.social_menu || [];
@@ -36,9 +39,7 @@ export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Ele
           <PrismicRichText
             field={footerCopy as never}
             components={{
-              paragraph: ({ children }) => (
-                <p className="text-base leading-relaxed">{children}</p>
-              ),
+              paragraph: ({ children }) => <p className="text-base leading-relaxed">{children}</p>,
             }}
           />
         </div>
@@ -56,8 +57,7 @@ export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Ele
                 href={item.link as string}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium leading-[90%] transition-colors hover:text-white/70 md:text-sm"
-              >
+                className="text-sm font-medium leading-[90%] transition-colors hover:text-white/70 md:text-sm">
                 {item.name || "Link"}
               </a>
             </li>
@@ -75,8 +75,7 @@ export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Ele
               <li key={index}>
                 <a
                   href={item.link as string}
-                  className="text-sm transition-colors hover:text-white/70"
-                >
+                  className="text-sm transition-colors hover:text-white/70">
                   {item.name || "Link"}
                 </a>
               </li>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import Lenis from "lenis";
 import { LenisContext } from "@/hooks/useLenis";
+import Lenis from "lenis";
+import { useEffect, useRef } from "react";
 
 interface LenisProviderProps {
   children: React.ReactNode;
@@ -29,9 +29,5 @@ export default function LenisProvider({ children }: LenisProviderProps) {
     };
   }, []);
 
-  return (
-    <LenisContext.Provider value={lenisRef}>
-      {children}
-    </LenisContext.Provider>
-  );
+  return <LenisContext.Provider value={lenisRef}>{children}</LenisContext.Provider>;
 }
