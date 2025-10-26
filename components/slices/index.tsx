@@ -4,6 +4,8 @@ import HeroSlideShow from "./landing/HeroSlideShow";
 import SliceContent from "./landing/SliceContent";
 import StemsPlayer from "./landing/StemsPlayer";
 import MarketingFooter from "../site/footer/MarketingFooter";
+import Directory from "./landing/Directory";
+import Hero from "./landing/Hero";
 
 function DefaultSlice({ slice }: SliceComponentProps) {
   return (
@@ -18,10 +20,12 @@ type SliceMapping = Record<string, ComponentType<SliceComponentProps>>;
 
 export const components: SliceMapping = new Proxy(
   {
+    hero: Hero,
     hero_slideshow: HeroSlideShow,
     content: SliceContent,
     stems_player: StemsPlayer,
     marketing_footer: MarketingFooter,
+    directory: Directory,
   } as SliceMapping,
   {
     get(target, prop: string) {
