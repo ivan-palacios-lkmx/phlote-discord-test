@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
+import Button from "@/components/ui/Button";
 
 // MIGRATED: Placeholder components for unknown elements
 function SvgLogo() {
@@ -15,9 +16,9 @@ function SvgLogo() {
 
 function ConnectWallet() {
   return (
-    <button className="mono rounded-[60px] border border-white/20 bg-black/20 px-4 py-2 font-mono uppercase backdrop-blur-md transition-colors hover:bg-white hover:text-black">
+    <Button variant="outline">
       Connect Wallet
-    </button>
+    </Button>
   );
 }
 
@@ -59,12 +60,10 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
       {/* MIGRATED: desktop-only navbar section */}
       <nav className="desktop-only col-start-3 flex justify-end items-start gap-2.5 flex-nowrap md:col-auto">
         {mainMenu.map((item, index) => (
-          <Link
-            key={index}
-            href={item.link || "#"}
-            className="mono whitespace-nowrap rounded-[60px] border border-white/20 bg-black/20 px-4 py-2 font-mono uppercase backdrop-blur-md transition-colors hover:bg-white hover:text-black"
-          >
-            {item.name || "Link"}
+          <Link key={index} href={item.link || "#"} className="whitespace-nowrap">
+            <Button variant="outline">
+              {item.name || "Link"}
+            </Button>
           </Link>
         ))}
         <ConnectWallet />

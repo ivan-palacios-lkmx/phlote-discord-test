@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
+import HeroSlideShowButton from "./HeroSlideShowButton";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -194,27 +195,22 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
         </div>
       </div>
 
-      {/* Buttons/progress */}
+      {/* MIGRATED: Buttons/progress section - replaced with HeroSlideShowButton */}
       <div
         ref={buttonWrapRef}
         className="absolute bottom-0 left-0 right-0 flex gap-2 overflow-x-auto px-4 py-6 md:px-8"
       >
         {items.map((it, i) => (
-          <button
+          <HeroSlideShowButton
             key={i}
-            type="button"
+            slide={it as UnknownRecord}
+            active={i === activeIndex}
+            progress={progress[i]}
             onClick={() => setActiveIndex(i)}
-            className={[
-              "slideshow-button relative h-3 min-w-[120px] flex-1 rounded-full bg-white/20",
-              i === activeIndex ? "ring-1 ring-white/60" : "",
-            ].join(" ")}
-            style={{
-              backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.9) ${Math.max(
-                0,
-                Math.min(100, progress[i] ?? 0)
-              )}%, transparent 0)`
+            onSeek={(seekTo) => {
+              // TODO: Implement video seeking functionality
+              console.log(`Seek to ${seekTo} for slide ${i}`);
             }}
-            aria-label={`Go to slide ${i + 1}`}
           />
         ))}
       </div>
