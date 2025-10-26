@@ -6,6 +6,7 @@ import StemsPlayer from "./landing/StemsPlayer";
 import MarketingFooter from "../site/footer/MarketingFooter";
 import Directory from "./landing/Directory";
 import Hero from "./landing/Hero";
+import ReleaseCarousel from "./landing/ReleaseCarousel";
 
 function DefaultSlice({ slice }: SliceComponentProps) {
   return (
@@ -26,6 +27,7 @@ export const components: SliceMapping = new Proxy(
     stems_player: StemsPlayer,
     marketing_footer: MarketingFooter,
     directory: Directory,
+    release_carousel: ReleaseCarousel,
   } as SliceMapping,
   {
     get(target, prop: string) {
