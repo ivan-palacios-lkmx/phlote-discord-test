@@ -7,6 +7,7 @@ import { repositoryName } from "../prismicio";
 import Footer from "@/components/site/footer/Footer";
 import Header from "@/components/site/header/Header";
 import LenisProvider from "@/components/LenisProvider";
+import PrivyProviderWrapper from "@/components/PrivyProviderWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,6 +55,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
         <LenisProvider>
           <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
             {/* MIGRATED: Conditional header rendering - ProductHeader for product pages, MarketingHeader for marketing pages */}
@@ -77,6 +79,7 @@ export default async function RootLayout({
             {/* <overlay-profile /> */}
           </div>
         </LenisProvider>
+        </PrivyProviderWrapper>
 
         {/* Preview toolbar & auto-refresh during draft previews */}
         <PrismicPreview repositoryName={repositoryName} />
