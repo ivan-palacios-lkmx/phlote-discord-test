@@ -11,7 +11,7 @@ export default function HeroTrackPreview({ hash, onSeek }: HeroTrackPreviewProps
   const [waveTrace, setWaveTrace] = useState<string>("");
   const [cursorPosition, setCursorPosition] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   // Placeholder for Firebase integration
   // TODO: Implement Firebase audio document fetching when needed
@@ -45,17 +45,17 @@ export default function HeroTrackPreview({ hash, onSeek }: HeroTrackPreviewProps
     }
   }, [hash]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (trackRef.current) {
+      const rect = trackRef.current.getBoundingClientRect();
       const offsetX = e.clientX - rect.left;
       setCursorPosition(offsetX);
     }
   };
 
-  const handleTrackClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (buttonRef.current && onSeek) {
-      const seekTo = e.nativeEvent.offsetX / buttonRef.current.offsetWidth;
+  const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (trackRef.current && onSeek) {
+      const seekTo = e.nativeEvent.offsetX / trackRef.current.offsetWidth;
       onSeek(seekTo);
     }
   };
@@ -65,10 +65,10 @@ export default function HeroTrackPreview({ hash, onSeek }: HeroTrackPreviewProps
   };
 
   return (
-    <button
-      ref={buttonRef}
+    <div
+      ref={trackRef}
       className={[
-        "track-preview relative block w-full h-5",
+        "track-preview relative block w-full h-5 cursor-pointer",
         isHovered ? "hover:cursor-pointer" : "",
       ].join(" ")}
       onMouseMove={handleMouseMove}
@@ -93,6 +93,6 @@ export default function HeroTrackPreview({ hash, onSeek }: HeroTrackPreviewProps
         ].join(" ")}
         style={cursorStyle}
       />
-    </button>
+    </div>
   );
 }
