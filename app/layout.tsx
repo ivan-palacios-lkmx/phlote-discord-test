@@ -4,8 +4,8 @@ import "./globals.css";
 import { createClient } from "../prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { repositoryName } from "../prismicio";
-import MarketingFooter from "@/components/slices/landing/MarketingFooter";
-import Header from "@/components/site/Header";
+import MarketingFooter from "@/components/site/footer/MarketingFooter";
+import Header from "@/components/site/header/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

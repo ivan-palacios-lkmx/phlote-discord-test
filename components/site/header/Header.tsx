@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import ProductHeader from "@/components/site/ProductHeader";
-import MarketingHeader from "@/components/site/MarketingHeader";
+import ProductHeader from "@/components/site/header/ProductHeader";
+import MarketingHeader from "@/components/site/header/MarketingHeader";
 
 interface HeaderProps {
   settings: {

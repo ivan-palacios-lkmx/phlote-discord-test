@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import HeroSlideShow from "./landing/HeroSlideShow";
 import SliceContent from "./landing/SliceContent";
 import StemsPlayer from "./landing/StemsPlayer";
-import MarketingFooter from "./landing/MarketingFooter";
+import MarketingFooter from "../site/footer/MarketingFooter";
 
 function DefaultSlice({ slice }: SliceComponentProps) {
   return (
