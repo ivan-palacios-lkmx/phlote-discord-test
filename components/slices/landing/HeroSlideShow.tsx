@@ -3,7 +3,8 @@
 import Button from "@/components/ui/Button";
 import Heading1 from "@/components/ui/Heading1";
 import Heading4 from "@/components/ui/Heading4";
-import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
+import { ImageField } from "@prismicio/client";
+import { PrismicNextImage } from "@prismicio/next";
 import type { SliceComponentProps } from "@prismicio/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -125,8 +126,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
           />
         ) : (
           <PrismicNextImage
-            // Casting to never to avoid depending on generated types
-            field={activeItem.image as unknown as never}
+            field={activeItem.image as ImageField}
             className="absolute inset-0 h-full w-full object-cover"
             fallbackAlt=""
           />
