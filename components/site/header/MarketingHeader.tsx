@@ -27,10 +27,10 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
   const mainMenu = settings.main_menu || [];
   const { login } = useLogin();
   return (
-    <header className="site-marketing-header fixed right-0 left-0 top-0 z-10 p-9 px-4 grid grid-cols-[1fr_auto_1fr] gap-5 pointer-events-none md:flex md:justify-between md:p-4">
+    <header className="fixed right-0 left-0 top-0 z-10 p-9 grid gap-5 pointer-events-none md:flex md:justify-between md:p-4">
       <Link href="/" className="pointer-events-auto relative">
-        <Logo className="w-40 h-auto absolute -z-10 left-5 top-0 md:w-[60px] md:left-5" />
-        <WordmarkSvg className="text-white stroke-black w-[150px] h-auto ml-20 md:w-[60px] md:ml-9" />
+        <Logo className="h-auto absolute -z-10 left-5 top-0" />
+        <WordmarkSvg className="text-white stroke-black h-auto ml-20" />
       </Link>
 
       <p className="home-copy desktop-only max-w-[600px] text-center text-white m-0 hidden md:block">
