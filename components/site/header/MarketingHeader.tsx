@@ -43,7 +43,7 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
   const mainMenu = settings.main_menu || [];
 
   return (
-    <header className="site-marketing-header fixed right-0 left-0 top-0 p-9 px-4 grid grid-cols-[1fr_auto_1fr] gap-5 pointer-events-none md:flex md:justify-between md:p-4">
+    <header className="site-marketing-header fixed right-0 left-0 top-0 z-10 p-9 px-4 grid grid-cols-[1fr_auto_1fr] gap-5 pointer-events-none md:flex md:justify-between md:p-4">
       {/* MIGRATED: responsive design - grid layout for desktop, flex for mobile */}
       {/* MIGRATED: Home Link section with logo and wordmark */}
       <Link href="/" className="home-link pointer-events-auto">

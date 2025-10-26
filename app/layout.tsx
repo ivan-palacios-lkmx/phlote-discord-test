@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const client = createClient();
   try {
     const settings = await client.getSingle("settings");
-    const title = (settings.data?.meta_title as string | null | undefined) ?? "Site";
+    const title = (settings.data?.meta_title as string | null | undefined) ?? "Phlote.xyz";
     const description = (settings.data?.meta_description as string | null | undefined) ?? "";
     const ogImageUrl = settings.data?.og_image?.url as string | undefined;
     return {
@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   } catch {
     return {
-      title: "Site",
+      title: "Phlote.xyz",
       description: "",
     };
   }
