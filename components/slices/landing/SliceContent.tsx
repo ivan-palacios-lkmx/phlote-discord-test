@@ -1,6 +1,9 @@
 "use client";
 
 import Heading1 from "@/components/ui/Heading1";
+import Heading2 from "@/components/ui/Heading2";
+import Heading3 from "@/components/ui/Heading3";
+import Heading4 from "@/components/ui/Heading4";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { useEffect, useRef, useState } from "react";
@@ -28,7 +31,7 @@ export default function SliceContent({ slice }: SliceComponentProps) {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="mx-auto my-[100px] overflow-hidden px-4 text-center md:my-[50px]"
+      className="mx-auto my-[100px] overflow-hidden px-4 text-center md:my-[50px] max-w-[1600px]"
       style={{
         maskImage: "linear-gradient(black 0 95%, transparent)",
         paddingTop: "8px",
@@ -36,7 +39,7 @@ export default function SliceContent({ slice }: SliceComponentProps) {
       }}>
       <div
         className={[
-          "entry mx-auto max-w-[1000px]",
+          "entry mx-auto",
           intersected ? "translate-y-0 opacity-100" : "translate-y-full opacity-0",
           "transition-all duration-[3000ms]",
         ].join(" ")}>
@@ -47,16 +50,25 @@ export default function SliceContent({ slice }: SliceComponentProps) {
               paragraph: ({ children }) => (
                 <p className="mx-auto max-w-[750px] font-semibold">{children}</p>
               ),
-              heading1: ({ children }) => <Heading1 className="mb-4">{children}</Heading1>,
-              heading2: ({ children }) => (
-                <h2 className="mb-4 text-[2.25rem] font-bold transition-transform duration-[3000ms] font-condensed">
+              heading1: ({ children }) => (
+                <Heading1 className="mb-4" variant="hero">
                   {children}
-                </h2>
+                </Heading1>
+              ),
+              heading2: ({ children }) => (
+                <Heading2 className="mb-4" variant="title">
+                  {children}
+                </Heading2>
               ),
               heading3: ({ children }) => (
-                <h3 className="mb-4 text-[0.75rem] font-bold transition-transform duration-[3000ms] font-condensed">
+                <Heading3 className="mb-4" variant="title">
                   {children}
-                </h3>
+                </Heading3>
+              ),
+              heading4: ({ children }) => (
+                <Heading4 className="mb-4" variant="title">
+                  {children}
+                </Heading4>
               ),
               hyperlink: ({ children, node }) => (
                 <a

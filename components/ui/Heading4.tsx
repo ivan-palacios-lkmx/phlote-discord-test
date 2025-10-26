@@ -4,15 +4,27 @@ import { tv } from "tailwind-variants";
 interface Heading4Props extends React.HTMLAttributes<HTMLHeadingElement> {
   children?: React.ReactNode;
   className?: string;
+  variant?: "title" | "default";
 }
 
 const heading4Variants = tv({
-  base: "m-0 text-base md:text-lg font-condensed font-semibold uppercase",
+  base: "font-condensed uppercase",
+  variants: {
+    variant: {
+      title: "text-[2.25rem] font-bold transition-transform duration-[3000ms]",
+      default: "",
+    },
+  },
 });
 
-export default function Heading4({ children, className, ...props }: Heading4Props) {
+export default function Heading4({
+  children,
+  className,
+  variant = "default",
+  ...props
+}: Heading4Props) {
   return (
-    <h4 {...props} className={twMerge(heading4Variants(), className)}>
+    <h4 {...props} className={twMerge(heading4Variants({ variant }), className)}>
       {children}
     </h4>
   );
