@@ -1,0 +1,49 @@
+/*
+    Font Weights:
+        100 - Thin
+        200 - Extra Light (Ultra Light)
+        300 - Light
+        400 - Normal
+        500 - Medium
+        600 - Semi Bold (Demi Bold)
+        700 - Bold
+        800 - Extra Bold (Ultra Bold)
+        900 - Black (Heavy)
+*/
+
+/* AUTHENTIC SANS */
+/* normal */
+@font-face {
+    font-family: 'Authentic';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/authentic-sans-90.woff2') format('woff2'),
+        url('/fonts/authentic-sans-90.woff') format('woff');
+}
+
+/* Medium */
+@font-face {
+    font-family: 'Authentic';
+    font-style: normal;
+    font-weight: 500;
+    src: url('/fonts/authentic-sans-130.woff2') format('woff2'),
+        url('/fonts/authentic-sans-130.woff') format('woff');
+}
+
+/* AUTHENTIC SANS CONDENSED */
+/* Medium */
+@font-face {
+    font-family: 'Authentic Condensed';
+    font-style: normal;
+    font-weight: 500;
+    src: url('/fonts/authentic-sans-condensed-90.woff2') format('woff2'),
+        url('/fonts/authentic-sans-condensed-90.woff') format('woff');
+}
+/* Semi Bold */
+@font-face {
+    font-family: 'Authentic Condensed';
+    font-style: normal;
+    font-weight: 600;
+    src: url('/fonts/authentic-sans-condensed-130.woff2') format('woff2'),
+        url('/fonts/authentic-sans-condensed-130.woff') format('woff');
+}

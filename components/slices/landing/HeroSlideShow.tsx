@@ -159,10 +159,10 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
           ].join(" ")}
         >
           {titleEyebrow ? (
-            <h5 className="m-0 text-base md:text-lg">{titleEyebrow}</h5>
+            <h5 className="m-0 text-base md:text-lg font-condensed font-semibold uppercase">{titleEyebrow}</h5>
           ) : null}
           {title ? (
-            <h1 className="slideshow-title my-4 max-w-[1200px] text-[15vh] leading-none md:text-[120px]">
+            <h1 className="slideshow-title my-4 max-w-[1200px] text-[15vh] leading-none md:text-[120px] font-condensed font-semibold uppercase">
               {title}
             </h1>
           ) : null}
