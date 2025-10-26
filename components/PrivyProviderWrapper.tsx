@@ -9,9 +9,5 @@ interface PrivyProviderWrapperProps {
 }
 
 export default function PrivyProviderWrapper({ children, appId }: PrivyProviderWrapperProps) {
-  return (
-    <PrivyProvider appId={appId}>
-      {children}
-    </PrivyProvider>
-  );
+  return <PrivyProvider appId={appId}>{children}</PrivyProvider>;
 }

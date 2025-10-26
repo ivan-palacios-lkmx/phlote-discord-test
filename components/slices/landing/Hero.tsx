@@ -92,7 +92,7 @@ export default function Hero({ slice }: SliceComponentProps) {
         {headline_text && (
           <h1
             className={[
-              "headline mb-8 transition-transform duration-[3000ms]",
+              "mb-8 transition-transform duration-[3000ms] text-[150px] font-bold font-condensed",
               // MIGRATED: 3D rotation animation for headline
               !intersected ? "transform-style-preserve-3d transform-perspective-[2000px] rotate-3d-[0.325,1,0.25,360deg]" : "transform-none"
             ].join(" ")}
@@ -112,16 +112,19 @@ export default function Hero({ slice }: SliceComponentProps) {
               field={copy}
               components={{
                 paragraph: ({ children }) => (
-                  <p className="mb-4">{children}</p>
+                  <p className="mb-4 text-[12px]">{children}</p>
                 ),
                 heading1: ({ children }) => (
-                  <h1 className="mb-4 text-4xl font-bold">{children}</h1>
+                  <h1 className="mb-4 text-4xl font-bold text-[150px]">{children}</h1>
                 ),
                 heading2: ({ children }) => (
-                  <h2 className="mb-4 text-3xl font-bold">{children}</h2>
+                  <h2 className="mb-4 text-3xl font-bold text-[150px]">{children}</h2>
                 ),
                 heading3: ({ children }) => (
-                  <h3 className="mb-4 text-2xl font-bold">{children}</h3>
+                  <h3 className="mb-4 text-2xl font-bold text-[150px]">{children}</h3>
+                ),
+                heading4: ({ children }) => (
+                  <h4 className="mb-4 text-2xl font-bold text-[36px]">{children}</h4>
                 ),
                 hyperlink: ({ children, node }) => (
                   <a

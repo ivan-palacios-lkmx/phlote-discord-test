@@ -1,8 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { SliceComponentProps } from "@prismicio/react";
+import Heading1 from "@/components/ui/Heading1";
+import Heading4 from "@/components/ui/Heading4";
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
+import type { SliceComponentProps } from "@prismicio/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import HeroSlideShowButton from "./HeroSlideShowButton";
 
 type UnknownRecord = Record<string, unknown>;
@@ -42,7 +45,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
       (entries) => {
         entries.forEach((e) => setIntersected(e.isIntersecting));
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
     obs.observe(containerRef.current);
     return () => obs.disconnect();
@@ -51,7 +54,9 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
   // Auto-advance & per-frame progress updates similar to original
   useEffect(() => {
     const id = setInterval(async () => {
-      const videos = Array.from(containerRef.current?.querySelectorAll<HTMLVideoElement>("video") ?? []);
+      const videos = Array.from(
+        containerRef.current?.querySelectorAll<HTMLVideoElement>("video") ?? [],
+      );
       for (const video of videos) {
         // Ensure playback on iOS
         if (video.paused) {
@@ -81,34 +86,31 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
   }, [activeIndex, items.length]);
 
   // Smooth scroll buttons container to active
-  const scrollToActive = useCallback(
-    (idx: number) => {
-      const wrap = buttonWrapRef.current;
-      if (!wrap) return;
-      const child = wrap.querySelector<HTMLElement>(".slideshow-button");
-      const buttonWidth = child?.clientWidth ?? 0;
-      const targetX = buttonWidth * idx;
+  const scrollToActive = useCallback((idx: number) => {
+    const wrap = buttonWrapRef.current;
+    if (!wrap) return;
+    const child = wrap.querySelector<HTMLElement>(".slideshow-button");
+    const buttonWidth = child?.clientWidth ?? 0;
+    const targetX = buttonWidth * idx;
 
-      // cancel previous
-      if (scrollTweenStopRef.current) scrollTweenStopRef.current();
+    // cancel previous
+    if (scrollTweenStopRef.current) scrollTweenStopRef.current();
 
-      const start = wrap.scrollLeft;
-      const duration = 2000;
-      const startTime = performance.now();
-      let raf = 0;
-      const step = (now: number) => {
-        const t = Math.min(1, (now - startTime) / duration);
-        const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
-        wrap.scrollLeft = start + (targetX - start) * eased;
-        if (t < 1) {
-          raf = requestAnimationFrame(step);
-        }
-      };
-      raf = requestAnimationFrame(step);
-      scrollTweenStopRef.current = () => cancelAnimationFrame(raf);
-    },
-    []
-  );
+    const start = wrap.scrollLeft;
+    const duration = 2000;
+    const startTime = performance.now();
+    let raf = 0;
+    const step = (now: number) => {
+      const t = Math.min(1, (now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      wrap.scrollLeft = start + (targetX - start) * eased;
+      if (t < 1) {
+        raf = requestAnimationFrame(step);
+      }
+    };
+    raf = requestAnimationFrame(step);
+    scrollTweenStopRef.current = () => cancelAnimationFrame(raf);
+  }, []);
 
   useEffect(() => {
     scrollToActive(activeIndex);
@@ -126,8 +128,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="relative h-[95vh] min-h-[800px] overflow-hidden text-white"
-    >
+      className="relative h-[95vh] min-h-[800px] overflow-hidden text-white">
       <div className="relative h-full w-full">
         {/* Media */}
         {videoURL ? (
@@ -142,7 +143,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
         ) : (
           <PrismicNextImage
             // Casting to never to avoid depending on generated types
-            field={(activeItem.image as unknown) as never}
+            field={activeItem.image as unknown as never}
             className="absolute inset-0 h-full w-full object-cover"
             fallbackAlt=""
           />
@@ -157,18 +158,10 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
             "pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-6",
             intersected ? "translate-y-0 opacity-100" : "translate-y-full opacity-0",
             "transition-all duration-[3000ms]",
-          ].join(" ")}
-        >
-          {titleEyebrow ? (
-            <h5 className="m-0 text-base md:text-lg font-condensed font-semibold uppercase">{titleEyebrow}</h5>
-          ) : null}
-          {title ? (
-            <h1 className="slideshow-title my-4 max-w-[1200px] text-[15vh] leading-none md:text-[120px] font-condensed font-semibold uppercase">
-              {title}
-            </h1>
-          ) : null}
+          ].join(" ")}>
+          {titleEyebrow ? <Heading4>{titleEyebrow}</Heading4> : null}
+          {title ? <Heading1 variant="hero">{title}</Heading1> : null}
 
-          {/* Description: render as plain text if richtext not mapped yet */}
           {typeof descriptionField === "string" ? (
             <p className="entry mx-auto max-w-[600px] text-base md:text-lg">{descriptionField}</p>
           ) : null}
@@ -176,8 +169,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
           {ctaLinkField ? (
             <PrismicNextLink
               field={ctaLinkField as never}
-              className="pointer-events-auto mt-5 inline-flex items-center gap-2 rounded-[60px] border border-white/20 bg-black/20 px-4 py-2 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40"
-            >
+              className="pointer-events-auto mt-5 inline-flex items-center gap-2 rounded-[60px] border border-white/20 bg-black/20 px-4 py-2 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40">
               {ctaText || "Learn more"}
             </PrismicNextLink>
           ) : null}
@@ -188,8 +180,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
             className={[
               "pointer-events-auto mt-10 inline-flex items-center gap-2 rounded-[60px] border px-4 py-2 font-mono uppercase transition-colors",
               muted ? "bg-white text-black border-gray-400" : "bg-black text-white border-gray-500",
-            ].join(" ")}
-          >
+            ].join(" ")}>
             <span>{muted ? "Unmute" : "Mute"}</span>
           </button>
         </div>
@@ -198,8 +189,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
       {/* MIGRATED: Buttons/progress section - replaced with HeroSlideShowButton */}
       <div
         ref={buttonWrapRef}
-        className="absolute bottom-0 left-0 right-0 flex gap-2 overflow-x-auto px-4 py-6 md:px-8"
-      >
+        className="absolute bottom-0 left-0 right-0 flex gap-2 overflow-x-auto px-4 py-6 md:px-8">
         {items.map((it, i) => (
           <HeroSlideShowButton
             key={i}

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Heading1 from "@/components/ui/Heading1";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
+import { useEffect, useRef, useState } from "react";
 
 export default function SliceContent({ slice }: SliceComponentProps) {
   const [intersected, setIntersected] = useState(false);
@@ -18,7 +19,7 @@ export default function SliceContent({ slice }: SliceComponentProps) {
       (entries) => {
         entries.forEach((e) => setIntersected(e.isIntersecting));
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
     obs.observe(containerRef.current);
     return () => obs.disconnect();
@@ -32,15 +33,13 @@ export default function SliceContent({ slice }: SliceComponentProps) {
         maskImage: "linear-gradient(black 0 95%, transparent)",
         paddingTop: "8px",
         paddingBottom: "20px",
-      }}
-    >
+      }}>
       <div
         className={[
           "entry mx-auto max-w-[1000px]",
           intersected ? "translate-y-0 opacity-100" : "translate-y-full opacity-0",
           "transition-all duration-[3000ms]",
-        ].join(" ")}
-      >
+        ].join(" ")}>
         {content ? (
           <PrismicRichText
             field={content as never}
@@ -48,11 +47,7 @@ export default function SliceContent({ slice }: SliceComponentProps) {
               paragraph: ({ children }) => (
                 <p className="mx-auto max-w-[750px] font-semibold">{children}</p>
               ),
-              heading1: ({ children }) => (
-                <h1 className="mb-4 text-[9.375rem] font-bold transition-transform duration-[3000ms] font-condensed">
-                  {children}
-                </h1>
-              ),
+              heading1: ({ children }) => <Heading1 className="mb-4">{children}</Heading1>,
               heading2: ({ children }) => (
                 <h2 className="mb-4 text-[2.25rem] font-bold transition-transform duration-[3000ms] font-condensed">
                   {children}
@@ -66,17 +61,14 @@ export default function SliceContent({ slice }: SliceComponentProps) {
               hyperlink: ({ children, node }) => (
                 <a
                   href={node.data?.url as string}
-                  className="standard-button mt-8 inline-block rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40"
-                >
+                  className="standard-button mt-8 inline-block rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40">
                   {children}
                 </a>
               ),
             }}
           />
         ) : (
-          <p className="mx-auto max-w-[750px] font-semibold text-gray-500">
-            No content available
-          </p>
+          <p className="mx-auto max-w-[750px] font-semibold text-gray-500">No content available</p>
         )}
       </div>
     </section>
