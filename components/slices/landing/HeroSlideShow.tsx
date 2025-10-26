@@ -134,7 +134,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
 
         <div className="absolute inset-0 bg-black/40" />
 
-        <div className=" absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           {titleEyebrow ? <Heading4 variant="eyebrow">{titleEyebrow}</Heading4> : null}
           {title ? <Heading1 variant="hero">{title}</Heading1> : null}
 
