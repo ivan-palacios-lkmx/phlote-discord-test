@@ -1,5 +1,5 @@
 "use client";
-
+import {useLogin} from "@privy-io/react-auth";
 import Link from "next/link";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import Button from "@/components/ui/Button";
@@ -34,7 +34,7 @@ interface MarketingHeaderProps {
 
 export default function MarketingHeader({ settings }: MarketingHeaderProps) {
   const mainMenu = settings.main_menu || [];
-
+  const { login } = useLogin();
   return (
     <header className="site-marketing-header fixed right-0 left-0 top-0 z-10 p-9 px-4 grid grid-cols-[1fr_auto_1fr] gap-5 pointer-events-none md:flex md:justify-between md:p-4">
       {/* MIGRATED: responsive design - grid layout for desktop, flex for mobile */}
@@ -58,7 +58,7 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
             </Button>
           </Link>
         ))}
-        <Button variant="outline">
+        <Button variant="outline" onClick={login}>
           Connect Wallet
         </Button>
       </nav>
