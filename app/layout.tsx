@@ -1,3 +1,4 @@
+import AuthProvider from "@/components/AuthProvider";
 import LenisProvider from "@/components/LenisProvider";
 import PrivyProviderWrapper from "@/components/PrivyProviderWrapper";
 import { PrismicPreview } from "@prismicio/next";
@@ -49,11 +50,13 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
-          <LenisProvider>
-            <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
-              {children}
-            </div>
-          </LenisProvider>
+          <AuthProvider>
+            <LenisProvider>
+              <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
+                {children}
+              </div>
+            </LenisProvider>
+          </AuthProvider>
         </PrivyProviderWrapper>
 
         <PrismicPreview repositoryName={repositoryName} />
