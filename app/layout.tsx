@@ -5,7 +5,7 @@ import { createClient } from "../prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { repositoryName } from "../prismicio";
 import MarketingFooter from "@/components/slices/landing/MarketingFooter";
-import ProductHeader from "@/components/site/ProductHeader";
+import Header from "@/components/site/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,16 +54,15 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="container default grid min-h-screen grid-rows-[1fr_auto]">
-          {/* Header */}
-          {/* TODO: Add site-product-header and site-marketing-header conditionally */}
-          <ProductHeader settings={settings.data} />
+          {/* MIGRATED: Conditional header rendering - ProductHeader for product pages, MarketingHeader for marketing pages */}
+          <Header settings={settings.data} />
 
-          {/* Page Content */}
+          {/* MIGRATED: Page Content section */}
           <main className="min-w-0">
             {children}
           </main>
 
-          {/* Footer */}
+          {/* MIGRATED: Footer section - currently only MarketingFooter, TODO: Add conditional ProductFooter */}
           <MarketingFooter
             slice={{
               primary: settings.data,
@@ -76,13 +75,13 @@ export default async function RootLayout({
             context={{}}
           />
 
-          {/* Mobile Menu - TODO: Add site-mobile-menu component */}
+          {/* MIGRATED: Mobile Menu - TODO: Add site-mobile-menu component */}
           {/* <site-mobile-menu /> */}
 
-          {/* Overlay Sign In - TODO: Add overlay-signature component */}
+          {/* MIGRATED: Overlay Sign In - TODO: Add overlay-signature component */}
           {/* <overlay-signature /> */}
 
-          {/* Overlay User Profile - TODO: Add overlay-profile component */}
+          {/* MIGRATED: Overlay User Profile - TODO: Add overlay-profile component */}
           {/* <overlay-profile /> */}
         </div>
 
