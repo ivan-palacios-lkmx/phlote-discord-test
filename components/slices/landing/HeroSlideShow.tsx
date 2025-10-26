@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/ui/Button";
 import Heading1 from "@/components/ui/Heading1";
 import Heading4 from "@/components/ui/Heading4";
 import { PrismicNextImage, PrismicNextLink } from "@prismicio/next";
@@ -17,7 +18,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState<number[]>(() => items.map(() => 0));
-  const [intersected, setIntersected] = useState(false);
 
   const containerRef = useRef<HTMLElement | null>(null);
   const buttonWrapRef = useRef<HTMLDivElement | null>(null);
@@ -37,18 +37,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
     const url = (video?.url as string | undefined) ?? "";
     return url;
   }, [activeItem]);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => setIntersected(e.isIntersecting));
-      },
-      { threshold: 0.15 },
-    );
-    obs.observe(containerRef.current);
-    return () => obs.disconnect();
-  }, []);
 
   useEffect(() => {
     const id = setInterval(async () => {
@@ -146,36 +134,22 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
 
         <div className="absolute inset-0 bg-black/40" />
 
-        <div
-          className={[
-            "pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-6",
-            intersected ? "translate-y-0 opacity-100" : "translate-y-full opacity-0",
-            "transition-all duration-[3000ms]",
-          ].join(" ")}>
-          {titleEyebrow ? <Heading4>{titleEyebrow}</Heading4> : null}
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          {titleEyebrow ? <Heading4 variant="eyebrow">{titleEyebrow}</Heading4> : null}
           {title ? <Heading1 variant="hero">{title}</Heading1> : null}
 
           {typeof descriptionField === "string" ? (
             <p className="entry mx-auto max-w-[600px] text-base md:text-lg">{descriptionField}</p>
           ) : null}
 
-          {ctaLinkField ? (
-            <PrismicNextLink
-              field={ctaLinkField as never}
-              className="pointer-events-auto mt-5 inline-flex items-center gap-2 rounded-[60px] border border-white/20 bg-black/20 px-4 py-2 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40">
-              {ctaText || "Learn more"}
-            </PrismicNextLink>
-          ) : null}
+          {ctaLinkField ? <Button variant="blur">{ctaText || "Learn more"}</Button> : null}
 
-          <button
-            type="button"
+          <Button
             onClick={() => setMuted((m) => !m)}
-            className={[
-              "pointer-events-auto mt-10 inline-flex items-center gap-2 rounded-[60px] border px-4 py-2 font-mono uppercase transition-colors",
-              muted ? "bg-white text-black border-gray-400" : "bg-black text-white border-gray-500",
-            ].join(" ")}>
-            <span>{muted ? "Unmute" : "Mute"}</span>
-          </button>
+            variant={muted ? "primary" : "secondary"}
+            className="mt-5">
+            {muted ? "Unmute" : "Mute"}
+          </Button>
         </div>
       </div>
 

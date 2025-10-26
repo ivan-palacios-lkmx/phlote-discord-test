@@ -4,15 +4,21 @@ import { tv } from "tailwind-variants";
 interface Heading1Props extends React.HTMLAttributes<HTMLHeadingElement> {
   children?: React.ReactNode;
   className?: string;
-  variant?: "hero" | "default";
+  variant?: "hero" | "title" | "default";
+  fit?: "tight" | "tighter";
 }
 
 const heading1Variants = tv({
   base: "uppercase font-bold transition-transform duration-[3000ms] font-condensed",
   variants: {
     variant: {
-      hero: "text-[9.375rem] font-bold",
+      hero: "text-[9.375rem] font-bold my-[30px]",
+      title: "text-[9.375rem] font-bold",
       default: "",
+    },
+    fit: {
+      tight: "tracking-[-0.04em] leading-none",
+      tighter: "tracking-[-0.04em] leading-[0.9]",
     },
   },
 });
@@ -21,10 +27,11 @@ export default function Heading1({
   children,
   className,
   variant = "default",
+  fit = "tight",
   ...props
 }: Heading1Props) {
   return (
-    <h1 {...props} className={twMerge(heading1Variants({ variant }), className)}>
+    <h1 {...props} className={twMerge(heading1Variants({ variant, fit }), className)}>
       {children}
     </h1>
   );

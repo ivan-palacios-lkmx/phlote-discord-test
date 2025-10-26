@@ -4,7 +4,7 @@ import { tv } from "tailwind-variants";
 interface Heading4Props extends React.HTMLAttributes<HTMLHeadingElement> {
   children?: React.ReactNode;
   className?: string;
-  variant?: "title" | "default";
+  variant?: "title" | "eyebrow" | "default";
 }
 
 const heading4Variants = tv({
@@ -12,6 +12,7 @@ const heading4Variants = tv({
   variants: {
     variant: {
       title: "text-[2.25rem] font-bold transition-transform duration-[3000ms]",
+      eyebrow: "text-[1.75rem] font-bold transition-transform duration-[3000ms]",
       default: "",
     },
   },

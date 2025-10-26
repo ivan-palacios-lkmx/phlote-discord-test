@@ -31,18 +31,8 @@ export default function SliceContent({ slice }: SliceComponentProps) {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="mx-auto my-[100px] overflow-hidden px-4 text-center md:my-[50px] max-w-[1600px]"
-      style={{
-        maskImage: "linear-gradient(black 0 95%, transparent)",
-        paddingTop: "8px",
-        paddingBottom: "20px",
-      }}>
-      <div
-        className={[
-          "entry mx-auto",
-          intersected ? "translate-y-0 opacity-100" : "translate-y-full opacity-0",
-          "transition-all duration-[3000ms]",
-        ].join(" ")}>
+      className="mx-auto px-4 text-center max-w-[1600px] my-24">
+      <div className="mx-auto max-w-[1000px]">
         {content ? (
           <PrismicRichText
             field={content as never}
@@ -51,7 +41,7 @@ export default function SliceContent({ slice }: SliceComponentProps) {
                 <p className="mx-auto max-w-[750px] font-semibold">{children}</p>
               ),
               heading1: ({ children }) => (
-                <Heading1 className="mb-4" variant="hero">
+                <Heading1 className="mb-4" variant="hero" fit="tighter">
                   {children}
                 </Heading1>
               ),
