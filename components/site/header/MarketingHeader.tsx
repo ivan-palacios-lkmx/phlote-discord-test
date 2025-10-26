@@ -3,8 +3,11 @@
 import Logo from "@/components/svg/logo.svg";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import Button from "@/components/ui/Button";
+import { useLenis } from "@/hooks/useLenis";
 import { useLogin } from "@privy-io/react-auth";
 import Link from "next/link";
+import { animate, smooth } from "popmotion";
+import { useEffect, useRef, useState } from "react";
 
 function HamburgerIcon() {
   return (
@@ -26,11 +29,80 @@ interface MarketingHeaderProps {
 export default function MarketingHeader({ settings }: MarketingHeaderProps) {
   const mainMenu = settings.main_menu || [];
   const { login } = useLogin();
+  const lenisRef = useLenis();
+  const lenis = lenisRef?.current;
+
+  const [wordmarkTranslate, setWordmarkTranslate] = useState(0);
+  const [logoTranslate, setLogoTranslate] = useState(0);
+  const logoAnimation = useRef<{ stop: () => void } | null>(null);
+  const currentValueRef = useRef(-0.00001);
+
+  useEffect(() => {
+    if (!lenis) return;
+
+    const smoothTransform = smooth(50);
+    logoAnimation.current = animate({
+      from: 0,
+      to: 0,
+      type: "spring",
+      stiffness: 2,
+      damping: 1,
+      mass: 0.5,
+      restSpeed: 0.01,
+      restDelta: 0.01,
+      onUpdate: (v: number) => {
+        currentValueRef.current = v;
+        const smoothedValue = smoothTransform(v);
+        setLogoTranslate(smoothedValue * -5);
+      },
+    });
+
+    const scrollHandler = (e: { animatedScroll: number; velocity: number }) => {
+      setWordmarkTranslate(e.animatedScroll);
+      if (logoAnimation.current) {
+        logoAnimation.current.stop();
+        logoAnimation.current = animate({
+          from: currentValueRef.current,
+          to: 0,
+          type: "spring",
+          stiffness: 20,
+          damping: 0.95,
+          mass: 1,
+          restSpeed: 0.01,
+          restDelta: 0.01,
+          velocity: e.velocity * 1.5,
+          onUpdate: (v: number) => {
+            currentValueRef.current = v;
+            const smoothedValue = smoothTransform(v);
+            setLogoTranslate(smoothedValue * -5);
+          },
+        });
+      }
+    };
+
+    lenis.on("scroll", scrollHandler);
+
+    return () => {
+      lenis.off("scroll", scrollHandler);
+      if (logoAnimation.current) {
+        logoAnimation.current.stop();
+      }
+    };
+  }, [lenis]);
+
+  const wordmarkStyle = {
+    transform: `translateY(-${wordmarkTranslate}px)`,
+  };
+
+  const logoStyle = {
+    transform: `translateY(${logoTranslate}px)`,
+  };
+
   return (
     <header className="fixed right-0 left-0 top-0 z-10 p-9 grid gap-5 pointer-events-none md:flex md:justify-between md:p-4">
       <Link href="/" className="pointer-events-auto relative">
-        <Logo className="h-auto absolute -z-10 left-5 top-0" />
-        <WordmarkSvg className="text-white stroke-black h-auto ml-20" />
+        <Logo className="h-auto absolute -z-10 left-5 top-0" style={logoStyle} />
+        <WordmarkSvg className="text-white stroke-black h-auto ml-20" style={wordmarkStyle} />
       </Link>
 
       <p className="home-copy desktop-only max-w-[600px] text-center text-white m-0 hidden md:block">
