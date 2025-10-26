@@ -53,7 +53,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="container default grid min-h-screen grid-rows-[1fr_auto]">
+        <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
           {/* MIGRATED: Conditional header rendering - ProductHeader for product pages, MarketingHeader for marketing pages */}
           <Header settings={settings.data} />
 
