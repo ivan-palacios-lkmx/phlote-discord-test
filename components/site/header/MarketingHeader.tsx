@@ -14,14 +14,6 @@ function SvgLogo() {
   );
 }
 
-function ConnectWallet() {
-  return (
-    <Button variant="outline">
-      Connect Wallet
-    </Button>
-  );
-}
-
 function HamburgerIcon() {
   return (
     <button className="flex flex-col gap-1 p-2">
@@ -66,12 +58,16 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
             </Button>
           </Link>
         ))}
-        <ConnectWallet />
+        <Button variant="outline">
+          Connect Wallet
+        </Button>
       </nav>
 
       {/* MIGRATED: mobile-only navigation section */}
       <div className="mobile-only nav md:hidden flex items-center gap-2.5">
-        <ConnectWallet />
+        <Button variant="outline">
+          Connect Wallet
+        </Button>
         <HamburgerIcon />
       </div>
     </header>

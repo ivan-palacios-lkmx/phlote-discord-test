@@ -60,7 +60,7 @@ export default async function RootLayout({
             <Header settings={settings.data} />
 
             {/* MIGRATED: Page Content section */}
-            <main className="min-w-0">
+            <main className="min-w-0 noise-background relative z-10">
               {children}
             </main>
 

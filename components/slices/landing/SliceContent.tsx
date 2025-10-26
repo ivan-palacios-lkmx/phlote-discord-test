@@ -49,17 +49,17 @@ export default function SliceContent({ slice }: SliceComponentProps) {
                 <p className="mx-auto max-w-[750px] font-semibold">{children}</p>
               ),
               heading1: ({ children }) => (
-                <h1 className="mb-4 text-4xl font-bold transition-transform duration-[3000ms]">
+                <h1 className="mb-4 text-[9.375rem] font-bold transition-transform duration-[3000ms] font-condensed">
                   {children}
                 </h1>
               ),
               heading2: ({ children }) => (
-                <h2 className="mb-4 text-3xl font-bold transition-transform duration-[3000ms]">
+                <h2 className="mb-4 text-[2.25rem] font-bold transition-transform duration-[3000ms] font-condensed">
                   {children}
                 </h2>
               ),
               heading3: ({ children }) => (
-                <h3 className="mb-4 text-2xl font-bold transition-transform duration-[3000ms]">
+                <h3 className="mb-4 text-[0.75rem] font-bold transition-transform duration-[3000ms] font-condensed">
                   {children}
                 </h3>
               ),
