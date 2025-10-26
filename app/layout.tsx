@@ -6,6 +6,7 @@ import { PrismicPreview } from "@prismicio/next";
 import { repositoryName } from "../prismicio";
 import Footer from "@/components/site/footer/Footer";
 import Header from "@/components/site/header/Header";
+import LenisProvider from "@/components/LenisProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,27 +54,29 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
-          {/* MIGRATED: Conditional header rendering - ProductHeader for product pages, MarketingHeader for marketing pages */}
-          <Header settings={settings.data} />
+        <LenisProvider>
+          <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
+            {/* MIGRATED: Conditional header rendering - ProductHeader for product pages, MarketingHeader for marketing pages */}
+            <Header settings={settings.data} />
 
-          {/* MIGRATED: Page Content section */}
-          <main className="min-w-0">
-            {children}
-          </main>
+            {/* MIGRATED: Page Content section */}
+            <main className="min-w-0">
+              {children}
+            </main>
 
-          {/* MIGRATED: Footer section - Conditional rendering based on route type */}
-          <Footer settings={settings.data} />
+            {/* MIGRATED: Footer section - Conditional rendering based on route type */}
+            <Footer settings={settings.data} />
 
-          {/* MIGRATED: Mobile Menu - TODO: Add site-mobile-menu component */}
-          {/* <site-mobile-menu /> */}
+            {/* MIGRATED: Mobile Menu - TODO: Add site-mobile-menu component */}
+            {/* <site-mobile-menu /> */}
 
-          {/* MIGRATED: Overlay Sign In - TODO: Add overlay-signature component */}
-          {/* <overlay-signature /> */}
+            {/* MIGRATED: Overlay Sign In - TODO: Add overlay-signature component */}
+            {/* <overlay-signature /> */}
 
-          {/* MIGRATED: Overlay User Profile - TODO: Add overlay-profile component */}
-          {/* <overlay-profile /> */}
-        </div>
+            {/* MIGRATED: Overlay User Profile - TODO: Add overlay-profile component */}
+            {/* <overlay-profile /> */}
+          </div>
+        </LenisProvider>
 
         {/* Preview toolbar & auto-refresh during draft previews */}
         <PrismicPreview repositoryName={repositoryName} />
