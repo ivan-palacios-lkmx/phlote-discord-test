@@ -4,7 +4,7 @@ import "./globals.css";
 import { createClient } from "../prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import { repositoryName } from "../prismicio";
-import MarketingFooter from "@/components/site/footer/MarketingFooter";
+import Footer from "@/components/site/footer/Footer";
 import Header from "@/components/site/header/Header";
 
 const geistSans = Geist({
@@ -62,18 +62,8 @@ export default async function RootLayout({
             {children}
           </main>
 
-          {/* MIGRATED: Footer section - currently only MarketingFooter, TODO: Add conditional ProductFooter */}
-          <MarketingFooter
-            slice={{
-              primary: settings.data,
-              slice_type: 'marketing_footer',
-              id: 'footer',
-              items: []
-            } as never}
-            index={0}
-            slices={[]}
-            context={{}}
-          />
+          {/* MIGRATED: Footer section - Conditional rendering based on route type */}
+          <Footer settings={settings.data} />
 
           {/* MIGRATED: Mobile Menu - TODO: Add site-mobile-menu component */}
           {/* <site-mobile-menu /> */}
