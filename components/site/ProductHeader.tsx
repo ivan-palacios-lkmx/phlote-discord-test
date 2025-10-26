@@ -1,18 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
-
-// SVG Wordmark component (placeholder)
-function SvgWordmark() {
-  return (
-    <div className="h-auto w-[118px]">
-      <div className="flex h-8 w-full items-center justify-center rounded-lg bg-white/10 text-lg font-bold text-white">
-        PHLOTE
-      </div>
-    </div>
-  );
-}
+import WordmarkSvg from "@/components/svg/woodmark.svg";
 
 // Connect Wallet component (placeholder)
 function ConnectWallet() {
@@ -36,7 +25,7 @@ export default function ProductHeader({ settings }: ProductHeaderProps) {
     <header className="site-product-header pointer-events-none fixed left-0 right-0 top-0 grid grid-cols-[1fr_auto_1fr] gap-5 px-4 py-9 md:items-center md:px-4 md:py-4">
       {/* Home Link */}
       <Link href="/" className="home-link mr-auto pointer-events-auto">
-        <SvgWordmark />
+        <WordmarkSvg className="h-auto w-[118px] text-white" />
       </Link>
 
       {/* Navigation */}
