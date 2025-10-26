@@ -4,21 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import type { RichTextField } from "@prismicio/client";
-
-// UNKNOWN: ReleaseBlock component TODO: Add it later
-// This is a placeholder component for release items
-function ReleaseBlock({ release }: { release: unknown }) {
-  return (
-    <div className="release-block w-[30vw] mx-[var(--margin)] md:w-[80vw]">
-      <div className="flex h-full w-full items-center justify-center rounded-lg bg-gray-900 text-white">
-        <div className="text-center">
-          <h3 className="mb-4 text-xl font-bold">Release Block</h3>
-          <p className="text-sm opacity-70">Release data: {JSON.stringify(release, null, 2)}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+import ReleaseBlock from "./ReleaseBlock";
 
 export default function ReleaseCarousel({ slice }: SliceComponentProps) {
   const [ready, setReady] = useState(false);
@@ -150,7 +136,7 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
       >
         {items.map((release, index) => (
           <li key={index} className="flex-shrink-0">
-            <ReleaseBlock release={release} />
+            <ReleaseBlock release={release as any} />
           </li>
         ))}
       </ul>
