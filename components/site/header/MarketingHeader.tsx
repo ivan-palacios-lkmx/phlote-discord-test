@@ -50,7 +50,7 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
       </p>
 
       {/* MIGRATED: desktop-only navbar section */}
-      <nav className="desktop-only col-start-3 flex justify-end items-start gap-2.5 flex-nowrap md:col-auto">
+      <nav className="desktop-only col-start-3 flex justify-end items-start gap-2.5 flex-nowrap md:col-auto pointer-events-auto">
         {mainMenu.map((item, index) => (
           <Link key={index} href={item.link || "#"} className="whitespace-nowrap">
             <Button variant="outline">
@@ -64,7 +64,7 @@ export default function MarketingHeader({ settings }: MarketingHeaderProps) {
       </nav>
 
       {/* MIGRATED: mobile-only navigation section */}
-      <div className="mobile-only nav md:hidden flex items-center gap-2.5">
+      <div className="mobile-only nav md:hidden flex items-center gap-2.5 pointer-events-auto">
         <Button variant="outline">
           Connect Wallet
         </Button>
