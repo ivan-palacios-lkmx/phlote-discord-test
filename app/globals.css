@@ -7,14 +7,11 @@ body {
   font-family: "Authentic", var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* Debug: Ensure fonts are loading */
 .font-condensed {
   font-family: "Authentic Condensed", var(--font-geist-sans), system-ui, sans-serif !important;
 }
 
-/* Front page utility hook without Sass */
 .front-page {
-  /* Provide minimal non-Tailwind baseline to avoid empty ruleset */
   isolation: isolate;
 }
 
@@ -29,7 +26,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-/* MIGRATED: Noise background effect from Vue.js mixin */
 .noise-background {
   position: relative;
   min-height: 100vh;

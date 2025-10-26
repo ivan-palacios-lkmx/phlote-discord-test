@@ -13,19 +13,8 @@ export default function HeroTrackPreview({ hash, onSeek }: HeroTrackPreviewProps
   const [isHovered, setIsHovered] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  // Placeholder for Firebase integration
-  // TODO: Implement Firebase audio document fetching when needed
   useEffect(() => {
     if (hash) {
-      // Placeholder: In real implementation, fetch from Firebase
-      // const audioDocRef = doc(db, `audio/${hash}`);
-      // const audioDoc = await getDoc(audioDocRef);
-      // if (audioDoc.exists() && audioDoc.data()?.waveTrace) {
-      //   const res = await fetch(audioDoc.data().waveTrace);
-      //   setWaveTrace(await res.text());
-      // }
-
-      // For now, create a simple placeholder SVG
       setWaveTrace(`
         <svg viewBox="0 0 300 20" xmlns="http://www.w3.org/2000/svg">
           <g class="blobs">
@@ -75,17 +64,14 @@ export default function HeroTrackPreview({ hash, onSeek }: HeroTrackPreviewProps
       onClick={handleTrackClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}>
-      {/* MIGRATED: fill wave trace */}
       {waveTrace && (
         <div className="fill absolute inset-0" dangerouslySetInnerHTML={{ __html: waveTrace }} />
       )}
 
-      {/* MIGRATED: outline wave trace */}
       {waveTrace && (
         <div className="outline absolute inset-0" dangerouslySetInnerHTML={{ __html: waveTrace }} />
       )}
 
-      {/* MIGRATED: cursor */}
       <div
         className={[
           "cursor absolute top-0 w-px h-full bg-white pointer-events-none transition-opacity",

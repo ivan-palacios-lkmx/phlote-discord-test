@@ -4,7 +4,6 @@ import Button from "@/components/ui/Button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-// MIGRATED: Placeholder components - replace with actual implementations
 const FilterButton = ({
   children,
   active,
@@ -151,7 +150,6 @@ const DirectoryMember = ({
   style?: React.CSSProperties;
 }) => (
   <div className="bg-white/5 border border-white/10 p-4 rounded" style={style}>
-    {/* Placeholder for member card - replace with actual member component */}
     <div className="text-center">
       <div className="w-16 h-16 bg-white/20 rounded-full mx-auto mb-3"></div>
       <h3 className="font-semibold mb-1">{member.name || "Member Name"}</h3>
@@ -196,18 +194,14 @@ interface DirectoryProps {
 }
 
 export default function Directory({ slice }: DirectoryProps) {
-  // MIGRATED: slice parameter will be used when integrating with actual Prismic data
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const headerRef = useRef<HTMLDivElement>(null);
 
-  // MIGRATED: State management (equivalent to Vue refs)
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sortValue, setSortValue] = useState("all");
 
-  // MIGRATED: Mock data - replace with actual data fetching
   const [members] = useState([
     { id: 1, name: "John Doe", role: "Creator", location: "NYC", type: "creator" },
     { id: 2, name: "Jane Smith", role: "Admin", location: "LA", type: "admin" },
@@ -216,9 +210,8 @@ export default function Directory({ slice }: DirectoryProps) {
   ]);
 
   const totalResults = members.length;
-  const totalPages = Math.ceil(totalResults / 20); // Assuming 20 per page
+  const totalPages = Math.ceil(totalResults / 20);
 
-  // MIGRATED: Active filters computation (equivalent to Vue computed)
   const activeFilters = [
     ...(searchParams.get("types")?.split(",") || []).map((t) => ({
       slug: "types",
@@ -232,7 +225,6 @@ export default function Directory({ slice }: DirectoryProps) {
     })),
   ];
 
-  // MIGRATED: Filter removal (equivalent to Vue removeFilter)
   const removeFilter = (slug: string, value: string) => {
     const current = new URLSearchParams(searchParams.toString());
     const currentValues = current.get(slug)?.split(",") || [];
@@ -247,21 +239,18 @@ export default function Directory({ slice }: DirectoryProps) {
     router.push(`${pathname}?${current.toString()}`);
   };
 
-  // MIGRATED: Sort handling (equivalent to Vue watch)
   useEffect(() => {
     const current = new URLSearchParams(searchParams.toString());
     current.set("sort", sortValue);
     router.push(`${pathname}?${current.toString()}`);
   }, [sortValue, pathname, router, searchParams]);
 
-  // MIGRATED: Pagination handling (equivalent to Vue onPageClick)
   const onPageClick = (page: number) => {
     const current = new URLSearchParams(searchParams.toString());
     current.set("page", page.toString());
     router.push(`${pathname}?${current.toString()}`);
   };
 
-  // MIGRATED: Filter toggle (placeholder implementation)
   const toggleFilter = (slug: string, value: string) => {
     const current = new URLSearchParams(searchParams.toString());
     const currentValues = current.get(slug)?.split(",") || [];
@@ -281,7 +270,6 @@ export default function Directory({ slice }: DirectoryProps) {
     router.push(`${pathname}?${current.toString()}`);
   };
 
-  // MIGRATED: Mock member tags - replace with actual data
   const memberTags = [
     { name: "Skills", options: ["React", "Vue", "Node.js", "Python"] },
     { name: "Location", options: ["NYC", "LA", "Chicago", "SF"] },
@@ -289,7 +277,6 @@ export default function Directory({ slice }: DirectoryProps) {
 
   return (
     <section className="slice-directory px-8 pb-[150px]">
-      {/* MIGRATED: Header section */}
       <div
         className="header sticky top-0 z-10 bg-white border-b border-black/30 py-2 flex justify-between items-center"
         ref={headerRef}>
@@ -309,7 +296,6 @@ export default function Directory({ slice }: DirectoryProps) {
         </div>
 
         <div className="filter-sort flex items-center gap-2 relative">
-          {/* MIGRATED: Desktop-only sort label */}
           <span className="hidden md:block text-[11px] font-mono">Sort By</span>
 
           <SortMenu
@@ -318,7 +304,6 @@ export default function Directory({ slice }: DirectoryProps) {
             options={["all", "recent", "most active"]}
           />
 
-          {/* MIGRATED: Filter button */}
           <Button
             onClick={() => setFiltersOpen(!filtersOpen)}
             variant="outline"
@@ -328,12 +313,10 @@ export default function Directory({ slice }: DirectoryProps) {
         </div>
       </div>
 
-      {/* MIGRATED: Filter Menu */}
       <FilterMenu
         isOpen={filtersOpen}
         onClose={() => setFiltersOpen(false)}
         title="Filter Directory">
-        {/* MIGRATED: Type Filters */}
         <FilterCategoryGroup
           name="Type"
           slug="types"
@@ -342,7 +325,6 @@ export default function Directory({ slice }: DirectoryProps) {
           onToggle={toggleFilter}
         />
 
-        {/* MIGRATED: Location/Skill Filters */}
         {memberTags.map((cat, index) => (
           <FilterTagGroup
             key={index}
@@ -354,7 +336,6 @@ export default function Directory({ slice }: DirectoryProps) {
         ))}
       </FilterMenu>
 
-      {/* MIGRATED: Grid */}
       <ul className="member-grid grid grid-cols-5 gap-[120px_30px] mt-24 list-none">
         {members.map((member, i) => (
           <li key={member.id} className="min-w-0">
@@ -363,7 +344,6 @@ export default function Directory({ slice }: DirectoryProps) {
         ))}
       </ul>
 
-      {/* MIGRATED: Pagination */}
       <Pagination
         pageCount={totalPages}
         currentPage={parseInt(searchParams.get("page") || "0")}

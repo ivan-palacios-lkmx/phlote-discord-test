@@ -47,7 +47,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Get settings for footer
   const client = createClient();
   const settings = await client.getSingle("settings");
 
@@ -57,28 +56,15 @@ export default async function RootLayout({
         <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
           <LenisProvider>
             <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
-              {/* MIGRATED: Conditional header rendering - ProductHeader for product pages, MarketingHeader for marketing pages */}
               <Header settings={settings.data} />
 
-              {/* MIGRATED: Page Content section */}
               <main className="min-w-0 noise-background relative ">{children}</main>
 
-              {/* MIGRATED: Footer section - Conditional rendering based on route type */}
               <Footer settings={settings.data} />
-
-              {/* MIGRATED: Mobile Menu - TODO: Add site-mobile-menu component */}
-              {/* <site-mobile-menu /> */}
-
-              {/* MIGRATED: Overlay Sign In - TODO: Add overlay-signature component */}
-              {/* <overlay-signature /> */}
-
-              {/* MIGRATED: Overlay User Profile - TODO: Add overlay-profile component */}
-              {/* <overlay-profile /> */}
             </div>
           </LenisProvider>
         </PrivyProviderWrapper>
 
-        {/* Preview toolbar & auto-refresh during draft previews */}
         <PrismicPreview repositoryName={repositoryName} />
       </body>
     </html>

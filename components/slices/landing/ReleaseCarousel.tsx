@@ -13,7 +13,6 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
   const carouselRef = useRef<HTMLUListElement | null>(null);
   const containerRef = useRef<HTMLElement | null>(null);
 
-  // Get copy and items from slice data
   const copy = (
     slice as unknown as {
       primary?: {
@@ -31,23 +30,18 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
       }
     ).primary?.items || [];
 
-  // Initialize carousel when component mounts
   useEffect(() => {
     if (items.length === 0) return;
 
     const initCarousel = async () => {
-      // Wait for images to load (placeholder for now)
       await new Promise((res) => setTimeout(res, 500));
 
       if (carouselRef.current && containerRef.current) {
-        // Simple horizontal scroll carousel implementation
         const scrollContainer = carouselRef.current;
 
-        // Add scroll behavior
         scrollContainer.style.scrollBehavior = "smooth";
         scrollContainer.style.scrollSnapType = "x mandatory";
 
-        // Show element
         setReady(true);
       }
     };
@@ -55,7 +49,6 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
     initCarousel();
   }, [items.length]);
 
-  // Handle scroll to show current item
   const scrollToIndex = (index: number) => {
     if (!carouselRef.current) return;
     const slideWidth = carouselRef.current.children[0]?.clientWidth || 0;
@@ -64,18 +57,16 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
     setCurrentIndex(index);
   };
 
-  // Auto-scroll functionality for carousel with more than 3 items
   useEffect(() => {
     if (!ready || items.length <= 3) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % items.length);
-    }, 3000); // Change slide every 3 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [ready, items.length]);
 
-  // Scroll to current index when it changes
   useEffect(() => {
     if (items.length > 3) {
       scrollToIndex(currentIndex);
@@ -98,7 +89,6 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
         ready ? "opacity-100" : "opacity-0",
         "transition-opacity duration-1000",
       ].join(" ")}>
-      {/* MIGRATED: Prismic content entry section */}
       {copy && (
         <div className="entry max-w-[1000px] mx-auto text-center mb-[90px] md:mb-[40px]">
           <PrismicRichText
@@ -122,7 +112,6 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
         </div>
       )}
 
-      {/* MIGRATED: Carousel section */}
       <ul
         ref={carouselRef}
         className="carousel overflow-hidden cursor-grab focus:outline-none active:cursor-grabbing flex"
@@ -136,7 +125,6 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
         ))}
       </ul>
 
-      {/* MIGRATED: Navigation dots for carousel with more than 3 items */}
       {items.length > 3 && (
         <div className="mt-8 flex justify-center gap-2">
           {items.map((_, index) => (

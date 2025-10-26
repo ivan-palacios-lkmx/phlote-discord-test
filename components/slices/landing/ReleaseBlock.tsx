@@ -5,8 +5,6 @@ import { PrismicNextImage } from "@prismicio/next";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-// UNKNOWN: AvatarStack component TODO: Add it later
-// This is a placeholder component for displaying collaborator avatars
 function AvatarStack({ addresses }: { addresses: string[] }) {
   return (
     <div className="avatar-stack flex -space-x-2">
@@ -26,8 +24,6 @@ function AvatarStack({ addresses }: { addresses: string[] }) {
   );
 }
 
-// UNKNOWN: PublicTrackPreview component TODO: Add it later
-// This is a placeholder component for audio track visualization
 function PublicTrackPreview({ style }: { style: React.CSSProperties & { "--progress"?: string } }) {
   return (
     <div
@@ -43,7 +39,6 @@ function PublicTrackPreview({ style }: { style: React.CSSProperties & { "--progr
   );
 }
 
-// Placeholder SVG components
 const SvgPlay = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
     <path d="M8 5v14l11-7z" />
@@ -102,17 +97,13 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
   // Audio controls
   const audioUrl = release.audio?.url;
 
-  // Parse creators from Prismic rich text
   const creators = (() => {
     if (!release.creators) return [];
-    // TODO: Implement proper Prismic rich text parsing
-    // For now, return empty array as placeholder
     return [];
   })();
 
   const hasReleaseData = audioUrl || creators.length > 0;
 
-  // Audio player controls
   useEffect(() => {
     if (!audioRef.current || !audioUrl) return;
 
@@ -153,7 +144,6 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
         "release-block transition-opacity duration-[400ms] ease-in-out transition-transform duration-[1.5s] ease-out",
         isIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[100px]",
       ].join(" ")}>
-      {/* MIGRATED: Image section */}
       <div className="image-wrap relative">
         <PrismicNextImage
           field={release.image as never}
@@ -163,12 +153,9 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
 
         {hasReleaseData && (
           <>
-            {/* MIGRATED: Gradient overlay */}
             <div className="gradient-overlay absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
 
-            {/* MIGRATED: Release data overlay */}
             <div className="release-data absolute inset-0 flex flex-col justify-end text-white p-[40px] px-[var(--margin)]">
-              {/* MIGRATED: Avatar area */}
               {creators.length > 0 && (
                 <div className="avatar-area grid grid-cols-[auto_1fr] items-center gap-[10px]">
                   <AvatarStack addresses={creators} />
@@ -178,7 +165,6 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
                 </div>
               )}
 
-              {/* MIGRATED: Audio player */}
               {audioUrl && (
                 <div className="release-audio-player mt-5 grid grid-cols-[auto_1fr] gap-[10px]">
                   <audio ref={audioRef} src={audioUrl} />
@@ -195,12 +181,10 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
         )}
       </div>
 
-      {/* MIGRATED: Content section */}
       <h6 className="my-[15px] text-[12px] font-mono uppercase">{release.title_eyebrow}</h6>
       <h3 className="my-[15px] font-condensed text-xl font-semibold">{release.title}</h3>
       <p className="text-[12px] max-w-[400px] my-[15px] leading-relaxed">{release.description}</p>
 
-      {/* MIGRATED: CTA Link */}
       {release.cta_link && release.cta_text && (
         <Link
           href={(release.cta_link as { url?: string })?.url || "#"}

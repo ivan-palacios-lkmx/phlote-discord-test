@@ -5,7 +5,6 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicImage, PrismicRichText } from "@prismicio/react";
 import { useEffect, useRef, useState } from "react";
 
-// MIGRATED: TypeScript interface for Hero slice props
 interface HeroSliceProps {
   slice_type: "hero";
   primary: {
@@ -19,18 +18,13 @@ interface HeroSliceProps {
 }
 
 export default function Hero({ slice }: SliceComponentProps) {
-  // MIGRATED: State management (equivalent to Vue refs)
   const [intersected, setIntersected] = useState(false);
   const containerRef = useRef<HTMLElement | null>(null);
 
-  // MIGRATED: Extract slice data with proper typing
   const heroSlice = slice as unknown as HeroSliceProps;
   const { background_image, background_video, headline_text, copy } = heroSlice.primary || {};
 
-  // MIGRATED: Computed video URL (equivalent to Vue computed)
   const videoURL = background_video?.url || "";
-
-  // MIGRATED: Intersection observer for entrance animations
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -49,7 +43,6 @@ export default function Hero({ slice }: SliceComponentProps) {
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
       className="slice-hero relative text-white overflow-hidden">
-      {/* MIGRATED: Background image/video section */}
       {background_image && (
         <div className="absolute inset-0">
           <PrismicImage
@@ -61,7 +54,6 @@ export default function Hero({ slice }: SliceComponentProps) {
               objectFit: "cover",
             }}
           />
-          {/* MIGRATED: Video overlay if video URL exists */}
           {videoURL && (
             <video
               className="absolute inset-0 w-full h-full object-cover"
@@ -75,22 +67,17 @@ export default function Hero({ slice }: SliceComponentProps) {
         </div>
       )}
 
-      {/* MIGRATED: Overlay */}
       <div className="overlay absolute inset-0 bg-black/40" />
 
-      {/* MIGRATED: Content section */}
       <div
         className={[
           "content absolute inset-0 flex flex-col justify-center items-center text-center px-8 transition-transform duration-[3000ms]",
-          // MIGRATED: Float up animation if first slice and not intersected
           !intersected ? "transform translate-y-screen" : "transform translate-y-0",
         ].join(" ")}>
-        {/* MIGRATED: Headline */}
         {headline_text && (
           <h1
             className={[
               "mb-8 transition-transform duration-[3000ms] text-[150px] font-bold font-condensed",
-              // MIGRATED: 3D rotation animation for headline
               !intersected
                 ? "transform-style-preserve-3d transform-perspective-[2000px] rotate-3d-[0.325,1,0.25,360deg]"
                 : "transform-none",
@@ -105,7 +92,6 @@ export default function Hero({ slice }: SliceComponentProps) {
           </h1>
         )}
 
-        {/* MIGRATED: Rich text content */}
         {copy && (
           <div className="entry max-w-[750px]">
             <PrismicRichText
@@ -137,7 +123,6 @@ export default function Hero({ slice }: SliceComponentProps) {
         )}
       </div>
 
-      {/* MIGRATED: Mobile responsive styles */}
       <style jsx>{`
         @media (min-width: 768px) {
           .slice-hero {

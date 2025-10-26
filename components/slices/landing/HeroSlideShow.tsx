@@ -38,7 +38,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
     return url;
   }, [activeItem]);
 
-  // Intersection to trigger entrance animation
   useEffect(() => {
     if (!containerRef.current) return;
     const obs = new IntersectionObserver(
@@ -51,7 +50,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
     return () => obs.disconnect();
   }, []);
 
-  // Auto-advance & per-frame progress updates similar to original
   useEffect(() => {
     const id = setInterval(async () => {
       const videos = Array.from(
@@ -63,7 +61,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
           try {
             await video.play();
           } catch {
-            // keep muted true if autoplay fails
             setMuted(true);
             await video.play().catch(() => {});
           }
@@ -85,7 +82,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
     return () => clearInterval(id);
   }, [activeIndex, items.length]);
 
-  // Smooth scroll buttons container to active
   const scrollToActive = useCallback((idx: number) => {
     const wrap = buttonWrapRef.current;
     if (!wrap) return;
@@ -93,7 +89,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
     const buttonWidth = child?.clientWidth ?? 0;
     const targetX = buttonWidth * idx;
 
-    // cancel previous
     if (scrollTweenStopRef.current) scrollTweenStopRef.current();
 
     const start = wrap.scrollLeft;
@@ -102,7 +97,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
     let raf = 0;
     const step = (now: number) => {
       const t = Math.min(1, (now - startTime) / duration);
-      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const eased = 1 - Math.pow(1 - t, 3);
       wrap.scrollLeft = start + (targetX - start) * eased;
       if (t < 1) {
         raf = requestAnimationFrame(step);
@@ -149,10 +144,8 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
           />
         )}
 
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/40" />
 
-        {/* Content */}
         <div
           className={[
             "pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-6",
@@ -186,7 +179,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
         </div>
       </div>
 
-      {/* MIGRATED: Buttons/progress section - replaced with HeroSlideShowButton */}
       <div
         ref={buttonWrapRef}
         className="absolute bottom-0 left-0 right-0 flex gap-2 overflow-x-auto px-4 py-6 md:px-8">
@@ -198,7 +190,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
             progress={progress[i]}
             onClick={() => setActiveIndex(i)}
             onSeek={(seekTo) => {
-              // TODO: Implement video seeking functionality
               console.log(`Seek to ${seekTo} for slide ${i}`);
             }}
           />
