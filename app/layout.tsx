@@ -1,6 +1,7 @@
 import AuthProvider from "@/components/AuthProvider";
 import LenisProvider from "@/components/LenisProvider";
 import PrivyProviderWrapper from "@/components/PrivyProviderWrapper";
+import ReactQueryProvider from "@/components/ReactQueryProvider";
 import { PrismicPreview } from "@prismicio/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -49,15 +50,17 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
-          <AuthProvider>
-            <LenisProvider>
-              <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
-                {children}
-              </div>
-            </LenisProvider>
-          </AuthProvider>
-        </PrivyProviderWrapper>
+        <ReactQueryProvider>
+          <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
+            <AuthProvider>
+              <LenisProvider>
+                <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
+                  {children}
+                </div>
+              </LenisProvider>
+            </AuthProvider>
+          </PrivyProviderWrapper>
+        </ReactQueryProvider>
 
         <PrismicPreview repositoryName={repositoryName} />
       </body>
