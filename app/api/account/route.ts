@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     // TODO: Replace with actual database query
     const accountInfo = {
       address,
-      // Placeholder data - replace with database call
+      role: "admin", // TODO: Get from database - can be 'admin', 'creator', or 'user'
       username: null,
       bio: null,
       createdAt: new Date().toISOString(),
