@@ -1,5 +1,6 @@
 "use client";
 
+import PrivyUserDebug from "@/components/PrivyUserDebug";
 import Button from "@/components/ui/Button";
 import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
 import { useLogout, usePrivy } from "@privy-io/react-auth";
@@ -19,8 +20,12 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
+    <div className="flex flex-col items-center min-h-screen p-8">
       <h1 className="text-4xl font-bold mb-4">Hello World!</h1>
+
+      <div className="w-full max-w-4xl mb-8">
+        <PrivyUserDebug />
+      </div>
 
       {authenticated && (
         <>
