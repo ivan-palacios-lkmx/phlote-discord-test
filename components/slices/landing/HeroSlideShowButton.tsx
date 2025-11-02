@@ -1,5 +1,6 @@
 "use client";
 
+import { HeroSlideShowSlide } from "@/types/client";
 import { quickHash } from "@/utils/functions";
 import { PrismicNextImage } from "@prismicio/next";
 
@@ -11,17 +12,8 @@ const SvgPlay = () => (
   </svg>
 );
 
-interface SlideData {
-  image?: unknown;
-  title_eyebrow?: string;
-  title?: string;
-  video?: {
-    url?: string;
-  };
-}
-
 interface HeroSlideShowButtonProps {
-  slide: SlideData;
+  slide: HeroSlideShowSlide;
   active: boolean;
   progress?: number;
   onClick?: () => void;

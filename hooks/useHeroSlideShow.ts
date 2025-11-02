@@ -30,6 +30,14 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
     setIsMuted((m) => !m);
   };
 
+  const goToNextSlide = () => {
+    if (slides.length === 0) return;
+    setCurrentSlideIndex((prevIndex) => {
+      const nextSlideIndex = (prevIndex + 1) % slides.length;
+      return nextSlideIndex;
+    });
+  };
+
   return {
     slides,
     currentSlideIndex,
@@ -38,5 +46,6 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
     currentVideoUrl,
     isMuted,
     toggleMute,
+    goToNextSlide,
   };
 }
