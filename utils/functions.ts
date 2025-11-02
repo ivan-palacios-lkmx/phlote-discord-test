@@ -19,3 +19,20 @@ export function quickHash(str: string): string {
   }
   return Math.abs(hash).toString(16);
 }
+
+/**
+ * Normalizes and validates slide items from raw slice data.
+ * Filters out invalid items (non-objects, null values) and returns
+ * a normalized array of slide objects.
+ *
+ * @param {unknown[] | undefined} rawItems - Raw items array from slice data.
+ * @returns {T[]} Array of validated slide objects.
+ */
+export function normalizeSlideItems<T extends Record<string, unknown>>(
+  rawItems: unknown[] | undefined,
+): T[] {
+  if (!Array.isArray(rawItems)) return [];
+  return rawItems
+    .filter((item): item is T => item !== null && typeof item === "object")
+    .map((item) => item as T);
+}
