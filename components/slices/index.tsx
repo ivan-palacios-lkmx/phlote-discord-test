@@ -1,7 +1,7 @@
+import MarketingFooter from "@/components/site/footer/MarketingFooter";
 import type { SliceComponentProps } from "@prismicio/react";
 import type { ComponentType } from "react";
 
-import MarketingFooter from "../site/footer/MarketingFooter";
 import Directory from "./landing/Directory";
 import Hero from "./landing/Hero";
 import HeroSlideShow from "./landing/HeroSlideShow";

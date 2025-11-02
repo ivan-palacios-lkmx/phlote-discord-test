@@ -3,36 +3,26 @@
 import Button from "@/components/ui/Button";
 import Heading1 from "@/components/ui/Heading1";
 import Heading4 from "@/components/ui/Heading4";
-import type { UnknownSlice } from "@/types/client";
-import { normalizeSlideItems } from "@/utils/functions";
+import { useHeroSlideShow } from "@/hooks/useHeroSlideShow";
 import { ImageField } from "@prismicio/client";
 import { PrismicNextImage } from "@prismicio/next";
 import type { SliceComponentProps } from "@prismicio/react";
-import { useMemo, useRef, useState } from "react";
+import { useRef } from "react";
 
 import HeroSlideShowButton from "./HeroSlideShowButton";
 
-export default function HeroSlideShow({ slice }: SliceComponentProps) {
-  const rawSliceItems = (slice as unknown as { items?: unknown[] }).items;
-  const slides = useMemo<UnknownSlice[]>(
-    () => normalizeSlideItems<UnknownSlice>(rawSliceItems),
-    [rawSliceItems],
-  );
-
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
+export default function HeroSlideShow(sliceProps: SliceComponentProps) {
+  const {
+    slides,
+    currentSlideIndex,
+    setCurrentSlideIndex,
+    currentSlide,
+    currentVideoUrl,
+    isMuted,
+    toggleMute,
+  } = useHeroSlideShow(sliceProps);
 
   const slideButtonsRef = useRef<HTMLDivElement | null>(null);
-
-  const currentSlide = useMemo<UnknownSlice>(() => {
-    return slides[currentSlideIndex];
-  }, [slides, currentSlideIndex]);
-
-  const currentVideoUrl = useMemo(() => {
-    const video = currentSlide.video as UnknownSlice | undefined;
-    const videoUrl = (video?.url as string | undefined) ?? "";
-    return videoUrl;
-  }, [currentSlide]);
 
   return (
     <section className="relative h-[95vh] min-h-[800px] overflow-hidden text-white">
@@ -57,17 +47,14 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          {currentSlide.title_eyebrow ? (
+          {currentSlide?.title_eyebrow ? (
             <Heading4 variant="eyebrow">{currentSlide.title_eyebrow as string}</Heading4>
           ) : null}
-          {currentSlide.title ? (
+          {currentSlide?.title ? (
             <Heading1 variant="hero">{currentSlide.title as string}</Heading1>
           ) : null}
 
-          <Button
-            onClick={() => setIsMuted((m) => !m)}
-            variant={isMuted ? "primary" : "secondary"}
-            className="mt-5">
+          <Button onClick={toggleMute} variant={isMuted ? "primary" : "secondary"} className="mt-5">
             {isMuted ? "Unmute" : "Mute"}
           </Button>
         </div>
