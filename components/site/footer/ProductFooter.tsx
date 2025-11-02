@@ -1,7 +1,7 @@
 "use client";
 
-import WordmarkSvg from "@/components/svg/woodmark.svg";
 import { usePrismicio } from "@/components/PrismicioProvider";
+import WordmarkSvg from "@/components/svg/woodmark.svg";
 
 function NewsletterForm() {
   return (
@@ -31,14 +31,13 @@ export default function ProductFooter() {
         {socialMenu.map((item, index) => (
           <li key={index}>
             <a
-              href={item.link || "#"}
+              href={item.link}
               className="text-lg font-condensed leading-[90%] hover:text-white/70 transition-colors">
               {item.name || "Social Link"}
             </a>
           </li>
         ))}
       </ul>
-
       <span className="copyright col-start-12 text-sm text-white/70">©PHLOTE {currentYear}</span>
     </footer>
   );

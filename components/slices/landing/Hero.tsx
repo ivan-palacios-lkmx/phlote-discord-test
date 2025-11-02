@@ -77,7 +77,7 @@ export default function Hero({ slice }: SliceComponentProps) {
         {headline_text && (
           <h1
             className={[
-              "mb-8 transition-transform duration-[3000ms] text-[150px] font-bold font-condensed",
+              "mb-8 transition-transform text-[150px] font-bold font-condensed",
               !intersected
                 ? "transform-style-preserve-3d transform-perspective-[2000px] rotate-3d-[0.325,1,0.25,360deg]"
                 : "transform-none",

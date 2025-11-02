@@ -34,7 +34,7 @@ export default function MarketingFooter(): JSX.Element {
 
       <SocialMenu socialMenu={socialMenu} />
 
-      <div className="secondary-menu flex w-full items-center justify-between gap-8 pb-16">
+      <div className="flex w-full items-center justify-between gap-8">
         <span className="flex-1 text-sm">©PHLOTE {currentYear}</span>
 
         {secondaryMenu.length > 0 && (

@@ -31,7 +31,6 @@ interface HeroSlideShowButtonProps {
 export default function HeroSlideShowButton({
   slide,
   active,
-  progress,
   onClick,
   onSeek,
 }: HeroSlideShowButtonProps) {
@@ -42,7 +41,7 @@ export default function HeroSlideShowButton({
       type="button"
       onClick={onClick}
       className={[
-        "slideshow-button grid gap-2.5 text-white bg-black/30 rounded-[10px] border border-white/20 p-2.5 uppercase transition-all duration-[2000ms] cursor-pointer",
+        "slideshow-button grid gap-2.5 text-white bg-black/30 rounded-[10px] border border-white/20 p-2.5 uppercase transition-all cursor-pointer",
         active ? "bg-black border-black" : "",
         "grid-cols-[100px_150px_300px] md:grid-cols-[100px]",
       ].join(" ")}>
