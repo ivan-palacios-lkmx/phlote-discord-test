@@ -1,5 +1,9 @@
+import { useClientDoc } from "@/hooks/useClientDoc";
+import { db } from "@/lib/firebase";
 import type { HeroSlideShowSlide } from "@/types/client";
+import { quickHash } from "@/utils/functions";
 import type { SliceComponentProps } from "@prismicio/react";
+import { doc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 
 interface HeroSlideShowSlice {
@@ -26,6 +30,21 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
     return currentSlide.video.url ?? "";
   }, [currentSlide]);
 
+  const slideUrlHash = useMemo(() => {
+    const url = currentSlide?.video?.url;
+    if (!url) return "";
+    return quickHash(url);
+  }, [currentSlide?.video?.url]);
+
+  const audioDocRef = useMemo(() => {
+    if (!slideUrlHash) return null;
+    return doc(db, `public-audio/${slideUrlHash}`);
+  }, [slideUrlHash]);
+
+  const audioDoc = useClientDoc(audioDocRef);
+
+  const hash = (audioDoc?.hash as string | undefined) ?? null;
+
   const toggleMute = () => {
     setIsMuted((m) => !m);
   };
@@ -47,5 +66,6 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
     isMuted,
     toggleMute,
     goToNextSlide,
+    hash,
   };
 }

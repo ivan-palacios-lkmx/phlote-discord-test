@@ -19,6 +19,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
     currentVideoUrl,
     isMuted,
     toggleMute,
+    hash,
   } = useHeroSlideShow(sliceProps);
 
   const slideButtonsRef = useRef<HTMLDivElement | null>(null);
@@ -59,7 +60,6 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
           </Button>
         </div>
       </div>
-
       <div
         ref={slideButtonsRef}
         className="absolute bottom-0 left-0 right-0 flex gap-2 overflow-x-auto px-4 py-6 md:px-8">
@@ -69,6 +69,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
             slide={slide}
             active={slideIndex === currentSlideIndex}
             onClick={() => setCurrentSlideIndex(slideIndex)}
+            hash={hash}
           />
         ))}
       </div>

@@ -2,7 +2,6 @@
 
 import Button from "@/components/ui/Button";
 import { HeroSlideShowSlide } from "@/types/client";
-import { quickHash } from "@/utils/functions";
 import { PrismicNextImage } from "@prismicio/next";
 
 import HeroTrackPreview from "./HeroTrackPreview";
@@ -12,17 +11,15 @@ interface HeroSlideShowButtonProps {
   active: boolean;
   progress?: number;
   onClick?: () => void;
-  onSeek?: (seekTo: number) => void;
+  hash?: string | null;
 }
 
 export default function HeroSlideShowButton({
   slide,
   active,
   onClick,
-  onSeek,
+  hash,
 }: HeroSlideShowButtonProps) {
-  const hash = slide.title ? quickHash(slide.title) : undefined;
-
   return (
     <Button onClick={onClick} variant="player">
       {slide.image && (
@@ -51,7 +48,7 @@ export default function HeroSlideShowButton({
           </h6>
         )}
       </div>
-      <HeroTrackPreview hash={hash} onSeek={onSeek} />
+      {hash && <HeroTrackPreview hash={hash} />}
     </Button>
   );
 }
