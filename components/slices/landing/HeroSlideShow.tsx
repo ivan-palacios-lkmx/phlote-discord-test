@@ -20,6 +20,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
     isMuted,
     toggleMute,
     hash,
+    waveTrace,
   } = useHeroSlideShow(sliceProps);
 
   const slideButtonsRef = useRef<HTMLDivElement | null>(null);
@@ -70,6 +71,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
             active={slideIndex === currentSlideIndex}
             onClick={() => setCurrentSlideIndex(slideIndex)}
             hash={hash}
+            waveTrace={waveTrace}
           />
         ))}
       </div>

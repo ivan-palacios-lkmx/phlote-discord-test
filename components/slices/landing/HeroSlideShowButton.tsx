@@ -12,6 +12,7 @@ interface HeroSlideShowButtonProps {
   progress?: number;
   onClick?: () => void;
   hash?: string | null;
+  waveTrace?: string | null;
 }
 
 export default function HeroSlideShowButton({
@@ -19,6 +20,7 @@ export default function HeroSlideShowButton({
   active,
   onClick,
   hash,
+  waveTrace,
 }: HeroSlideShowButtonProps) {
   return (
     <Button onClick={onClick} variant="player">
@@ -48,7 +50,7 @@ export default function HeroSlideShowButton({
           </h6>
         )}
       </div>
-      {hash && <HeroTrackPreview hash={hash} />}
+      {hash && <HeroTrackPreview hash={hash} waveTrace={waveTrace} />}
     </Button>
   );
 }

@@ -1,3 +1,4 @@
+import { useGetWaveTrace } from "@/hooks/query/query-hooks/use-get-wave-trace";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { db } from "@/lib/firebase";
 import type { HeroSlideShowSlide } from "@/types/client";
@@ -45,6 +46,13 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
 
   const hash = (audioDoc?.hash as string | undefined) ?? null;
 
+  const waveTraceUrl = (audioDoc?.waveTrace as string | undefined) ?? null;
+  console.log("WaveTrace URL:", waveTraceUrl);
+  const { data: waveTrace } = useGetWaveTrace({
+    waveTraceUrl,
+    enabled: !!waveTraceUrl,
+  });
+
   const toggleMute = () => {
     setIsMuted((m) => !m);
   };
@@ -67,5 +75,6 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
     toggleMute,
     goToNextSlide,
     hash,
+    waveTrace,
   };
 }
