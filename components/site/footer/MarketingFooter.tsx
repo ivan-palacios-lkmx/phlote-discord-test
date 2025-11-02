@@ -8,7 +8,6 @@ import { usePrismicio } from "@/components/PrismicioProvider";
 import NewsletterForm from "./NewsletterForm";
 import SocialMenu from "./SocialMenu";
 
-// SVG Wordmark component (placeholder)
 
 export default function MarketingFooter(): JSX.Element {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
