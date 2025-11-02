@@ -53,7 +53,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
             <Heading4 variant="eyebrow">{currentSlide.title_eyebrow}</Heading4>
           )}
           {currentSlide?.title && <Heading1 variant="hero">{currentSlide.title}</Heading1>}
-
+          {currentSlide?.cta_text && <Button className="mt-5">{currentSlide.cta_text}</Button>}
           <Button onClick={toggleMute} variant={isMuted ? "primary" : "secondary"} className="mt-5">
             {isMuted ? "Unmute" : "Mute"}
           </Button>
