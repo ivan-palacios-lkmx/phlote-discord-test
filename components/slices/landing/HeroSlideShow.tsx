@@ -22,7 +22,6 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
 
-  const sectionRef = useRef<HTMLElement | null>(null);
   const slideButtonsRef = useRef<HTMLDivElement | null>(null);
 
   const currentSlide = useMemo<UnknownRecord>(() => {
@@ -31,15 +30,13 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
   }, [slides, currentSlideIndex]);
 
   const currentVideoUrl = useMemo(() => {
-    const videoField = currentSlide.video as UnknownRecord | undefined;
-    const videoUrl = (videoField?.url as string | undefined) ?? "";
+    const video = currentSlide.video as UnknownRecord | undefined;
+    const videoUrl = (video?.url as string | undefined) ?? "";
     return videoUrl;
   }, [currentSlide]);
 
   return (
-    <section
-      ref={sectionRef as React.RefObject<HTMLElement>}
-      className="relative h-[95vh] min-h-[800px] overflow-hidden text-white">
+    <section className="relative h-[95vh] min-h-[800px] overflow-hidden text-white">
       <div className="relative h-full w-full">
         {currentVideoUrl ? (
           <video
