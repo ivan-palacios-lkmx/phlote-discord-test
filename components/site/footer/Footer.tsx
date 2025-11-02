@@ -10,13 +10,5 @@ export default function Footer() {
   const shouldRenderProductFooter =
     !pathname || (pathname !== "/" && !pathname.startsWith("/slug"));
 
-  return (
-    <>
-      {shouldRenderProductFooter ? (
-        <ProductFooter />
-      ) : (
-        <MarketingFooter />
-      )}
-    </>
-  );
+  return <>{shouldRenderProductFooter ? <ProductFooter /> : <MarketingFooter />}</>;
 }

@@ -1,9 +1,9 @@
 "use client";
 
+import { usePrismicio } from "@/components/PrismicioProvider";
 import SvgWordmark from "@/components/svg/woodmark.svg";
 import { PrismicRichText } from "@prismicio/react";
 import { useMemo } from "react";
-import { usePrismicio } from "@/components/PrismicioProvider";
 
 import NewsletterForm from "./NewsletterForm";
 import SocialMenu from "./SocialMenu";
@@ -11,7 +11,6 @@ import SocialMenu from "./SocialMenu";
 export default function MarketingFooter(): JSX.Element {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const { settings } = usePrismicio();
-
   const footerCopy = settings.footer_copy;
   const socialMenu = settings.social_menu || [];
   const secondaryMenu = settings.secondary_menu || [];

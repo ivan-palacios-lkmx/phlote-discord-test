@@ -1,6 +1,6 @@
+import PrismicioProvider from "@/components/PrismicioProvider";
 import Footer from "@/components/site/footer/Footer";
 import ProductHeader from "@/components/site/header/ProductHeader";
-import PrismicioProvider from "@/components/PrismicioProvider";
 import { createClient } from "@/prismicio";
 
 export default async function ProductLayout({ children }: { children: React.ReactNode }) {
