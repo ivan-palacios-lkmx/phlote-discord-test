@@ -3,14 +3,13 @@
 import Button from "@/components/ui/Button";
 import Heading1 from "@/components/ui/Heading1";
 import Heading4 from "@/components/ui/Heading4";
+import type { UnknownSlice } from "@/types/client";
 import { ImageField } from "@prismicio/client";
 import { PrismicNextImage } from "@prismicio/next";
 import type { SliceComponentProps } from "@prismicio/react";
 import { useMemo, useRef, useState } from "react";
 
 import HeroSlideShowButton from "./HeroSlideShowButton";
-
-type UnknownRecord = Record<string, unknown>;
 
 export default function HeroSlideShow({ slice }: SliceComponentProps) {
   const rawSliceItems = (slice as unknown as { items?: unknown[] }).items;
@@ -24,13 +23,13 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
 
   const slideButtonsRef = useRef<HTMLDivElement | null>(null);
 
-  const currentSlide = useMemo<UnknownRecord>(() => {
+  const currentSlide = useMemo<UnknownSlice>(() => {
     const rawSlideItem = slides[currentSlideIndex];
-    return rawSlideItem && typeof rawSlideItem === "object" ? (rawSlideItem as UnknownRecord) : {};
+    return rawSlideItem && typeof rawSlideItem === "object" ? (rawSlideItem as UnknownSlice) : {};
   }, [slides, currentSlideIndex]);
 
   const currentVideoUrl = useMemo(() => {
-    const video = currentSlide.video as UnknownRecord | undefined;
+    const video = currentSlide.video as UnknownSlice | undefined;
     const videoUrl = (video?.url as string | undefined) ?? "";
     return videoUrl;
   }, [currentSlide]);
@@ -80,7 +79,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
         {slides.map((slide, slideIndex) => (
           <HeroSlideShowButton
             key={slideIndex}
-            slide={slide as UnknownRecord}
+            slide={slide as UnknownSlice}
             active={slideIndex === currentSlideIndex}
             onClick={() => setCurrentSlideIndex(slideIndex)}
           />
