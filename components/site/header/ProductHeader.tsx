@@ -2,6 +2,7 @@
 
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import Link from "next/link";
+import { usePrismicio } from "@/components/PrismicioProvider";
 
 // Connect Wallet component (placeholder)
 function ConnectWallet() {
@@ -12,13 +13,8 @@ function ConnectWallet() {
   );
 }
 
-interface ProductHeaderProps {
-  settings: {
-    app_menu?: Array<{ name?: string; link?: string }>;
-  };
-}
-
-export default function ProductHeader({ settings }: ProductHeaderProps) {
+export default function ProductHeader() {
+  const { settings } = usePrismicio();
   const appMenu = settings.app_menu || [];
 
   return (

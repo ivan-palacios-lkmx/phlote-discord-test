@@ -1,28 +1,18 @@
 "use client";
 
 import SvgWordmark from "@/components/svg/woodmark.svg";
-import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { useMemo } from "react";
+import { usePrismicio } from "@/components/PrismicioProvider";
 
 import NewsletterForm from "./NewsletterForm";
+import SocialMenu from "./SocialMenu";
 
 // SVG Wordmark component (placeholder)
 
-export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Element {
+export default function MarketingFooter(): JSX.Element {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
-
-  // Get settings data from slice
-  const settings =
-    (
-      slice as unknown as {
-        primary?: {
-          footer_copy?: unknown;
-          social_menu?: Array<{ name?: string; link?: unknown }>;
-          secondary_menu?: Array<{ name?: string; link?: unknown }>;
-        };
-      }
-    ).primary || {};
+  const { settings } = usePrismicio();
 
   const footerCopy = settings.footer_copy;
   const socialMenu = settings.social_menu || [];
@@ -49,21 +39,7 @@ export default function MarketingFooter({ slice }: SliceComponentProps): JSX.Ele
       <NewsletterForm />
 
       {/* Social menu */}
-      {socialMenu.length > 0 && (
-        <ul className="social-menu flex items-center gap-10 py-15 md:gap-4 md:py-10">
-          {socialMenu.map((item, index) => (
-            <li key={index}>
-              <a
-                href={item.link as string}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium leading-[90%] transition-colors hover:text-white/70 md:text-sm">
-                {item.name || "Link"}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
+      <SocialMenu socialMenu={socialMenu} />
 
       {/* Secondary menu */}
       <div className="secondary-menu flex w-full items-center justify-between gap-8 pb-16">

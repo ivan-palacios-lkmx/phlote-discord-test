@@ -8,6 +8,7 @@ import { useLogin } from "@privy-io/react-auth";
 import Link from "next/link";
 import { animate, smooth } from "popmotion";
 import { useEffect, useRef, useState } from "react";
+import { usePrismicio } from "@/components/PrismicioProvider";
 
 function HamburgerIcon() {
   return (
@@ -19,14 +20,8 @@ function HamburgerIcon() {
   );
 }
 
-interface MarketingHeaderProps {
-  settings: {
-    home_copy?: string;
-    main_menu?: Array<{ name?: string; link?: string }>;
-  };
-}
-
-export default function MarketingHeader({ settings }: MarketingHeaderProps) {
+export default function MarketingHeader() {
+  const { settings } = usePrismicio();
   const mainMenu = settings.main_menu || [];
   const { login } = useLogin();
   const lenisRef = useLenis();

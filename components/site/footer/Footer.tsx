@@ -4,16 +4,7 @@ import MarketingFooter from "@/components/site/footer/MarketingFooter";
 import ProductFooter from "@/components/site/footer/ProductFooter";
 import { usePathname } from "next/navigation";
 
-interface FooterProps {
-  settings: {
-    app_menu?: Array<{ name?: string; link?: string }>;
-    home_copy?: string;
-    main_menu?: Array<{ name?: string; link?: string }>;
-    social_menu?: Array<{ name?: string; link?: string }>;
-  };
-}
-
-export default function Footer({ settings }: FooterProps) {
+export default function Footer() {
   const pathname = usePathname();
 
   const shouldRenderProductFooter =
@@ -22,21 +13,9 @@ export default function Footer({ settings }: FooterProps) {
   return (
     <>
       {shouldRenderProductFooter ? (
-        <ProductFooter settings={settings} />
+        <ProductFooter />
       ) : (
-        <MarketingFooter
-          slice={
-            {
-              primary: settings,
-              slice_type: "marketing_footer",
-              id: "footer",
-              items: [],
-            } as never
-          }
-          index={0}
-          slices={[]}
-          context={{}}
-        />
+        <MarketingFooter />
       )}
     </>
   );

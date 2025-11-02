@@ -1,6 +1,7 @@
 "use client";
 
 import WordmarkSvg from "@/components/svg/woodmark.svg";
+import { usePrismicio } from "@/components/PrismicioProvider";
 
 function NewsletterForm() {
   return (
@@ -12,13 +13,8 @@ function NewsletterForm() {
   );
 }
 
-interface ProductFooterProps {
-  settings: {
-    social_menu?: Array<{ name?: string; link?: string }>;
-  };
-}
-
-export default function ProductFooter({ settings }: ProductFooterProps) {
+export default function ProductFooter() {
+  const { settings } = usePrismicio();
   const currentYear = new Date().getFullYear();
 
   const socialMenu = settings.social_menu || [];

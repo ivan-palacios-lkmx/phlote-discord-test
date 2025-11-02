@@ -1,5 +1,6 @@
 import Footer from "@/components/site/footer/Footer";
 import MarketingHeader from "@/components/site/header/MarketingHeader";
+import PrismicioProvider from "@/components/PrismicioProvider";
 import { createClient } from "@/prismicio";
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
@@ -7,10 +8,10 @@ export default async function MarketingLayout({ children }: { children: React.Re
   const settings = await client.getSingle("settings");
 
   return (
-    <>
-      <MarketingHeader settings={settings.data} />
+    <PrismicioProvider settings={settings.data}>
+      <MarketingHeader />
       <main className="min-w-0 noise-background relative">{children}</main>
-      <Footer settings={settings.data} />
-    </>
+      <Footer />
+    </PrismicioProvider>
   );
 }
