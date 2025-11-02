@@ -24,7 +24,7 @@ export default function HeroSlideShow({ slice }: SliceComponentProps) {
 
   const activeItem = useMemo<UnknownRecord>(() => {
     const raw = items[activeIndex];
-    return (raw && typeof raw === "object" ? (raw as UnknownRecord) : {}) as UnknownRecord;
+    return raw && typeof raw === "object" ? (raw as UnknownRecord) : {};
   }, [items, activeIndex]);
 
   const videoURL = useMemo(() => {
