@@ -1,29 +1,29 @@
-import type { UnknownSlice } from "@/types/client";
-import { normalizeSlideItems } from "@/utils/functions";
+import type { HeroSlideShowSlide } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { useMemo, useState } from "react";
 
+interface HeroSlideShowSlice {
+  items?: HeroSlideShowSlide[];
+}
+
 export function useHeroSlideShow(sliceProps: SliceComponentProps) {
   const { slice } = sliceProps;
-  const rawSliceItems = (slice as unknown as { items?: unknown[] }).items;
-  const slides = useMemo<UnknownSlice[]>(
-    () => normalizeSlideItems<UnknownSlice>(rawSliceItems),
-    [rawSliceItems],
-  );
+  const slideShowSlice = slice as unknown as HeroSlideShowSlice;
+
+  const slides = useMemo<HeroSlideShowSlide[]>(() => {
+    return slideShowSlice.items ?? [];
+  }, [slideShowSlice.items]);
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
 
-  const currentSlide = useMemo<UnknownSlice>(() => {
-    if (!slides[currentSlideIndex]) return {};
+  const currentSlide = useMemo<HeroSlideShowSlide | undefined>(() => {
     return slides[currentSlideIndex];
   }, [slides, currentSlideIndex]);
 
   const currentVideoUrl = useMemo(() => {
-    if (!currentSlide) return "";
-    const video = currentSlide.video as UnknownSlice | undefined;
-    const videoUrl = (video?.url as string | undefined) ?? "";
-    return videoUrl;
+    if (!currentSlide?.video) return "";
+    return currentSlide.video.url ?? "";
   }, [currentSlide]);
 
   const toggleMute = () => {

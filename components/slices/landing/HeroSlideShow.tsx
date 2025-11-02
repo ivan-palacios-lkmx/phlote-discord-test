@@ -4,7 +4,6 @@ import Button from "@/components/ui/Button";
 import Heading1 from "@/components/ui/Heading1";
 import Heading4 from "@/components/ui/Heading4";
 import { useHeroSlideShow } from "@/hooks/useHeroSlideShow";
-import { ImageField } from "@prismicio/client";
 import { PrismicNextImage } from "@prismicio/next";
 import type { SliceComponentProps } from "@prismicio/react";
 import { useRef } from "react";
@@ -37,22 +36,22 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
             playsInline
           />
         ) : (
-          <PrismicNextImage
-            field={currentSlide.image as ImageField}
-            className="absolute inset-0 h-full w-full object-cover"
-            fallbackAlt=""
-          />
+          currentSlide?.image && (
+            <PrismicNextImage
+              field={currentSlide.image}
+              className="absolute inset-0 h-full w-full object-cover"
+              fallbackAlt=""
+            />
+          )
         )}
 
         <div className="absolute inset-0 bg-black/40" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          {currentSlide?.title_eyebrow ? (
-            <Heading4 variant="eyebrow">{currentSlide.title_eyebrow as string}</Heading4>
-          ) : null}
-          {currentSlide?.title ? (
-            <Heading1 variant="hero">{currentSlide.title as string}</Heading1>
-          ) : null}
+          {currentSlide?.title_eyebrow && (
+            <Heading4 variant="eyebrow">{currentSlide.title_eyebrow}</Heading4>
+          )}
+          {currentSlide?.title && <Heading1 variant="hero">{currentSlide.title}</Heading1>}
 
           <Button onClick={toggleMute} variant={isMuted ? "primary" : "secondary"} className="mt-5">
             {isMuted ? "Unmute" : "Mute"}
