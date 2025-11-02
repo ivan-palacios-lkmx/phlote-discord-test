@@ -8,7 +8,6 @@ import { usePrismicio } from "@/components/PrismicioProvider";
 import NewsletterForm from "./NewsletterForm";
 import SocialMenu from "./SocialMenu";
 
-
 export default function MarketingFooter(): JSX.Element {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const { settings } = usePrismicio();
@@ -19,10 +18,8 @@ export default function MarketingFooter(): JSX.Element {
 
   return (
     <footer className="site-marketing-footer flex flex-col items-center bg-black px-4 pt-[100px] text-white">
-      {/* Logo */}
       <SvgWordmark />
 
-      {/* Footer copy */}
       {footerCopy ? (
         <div className="entry mt-10 max-w-[600px] text-center">
           <PrismicRichText
@@ -34,13 +31,10 @@ export default function MarketingFooter(): JSX.Element {
         </div>
       ) : null}
 
-      {/* Newsletter form */}
       <NewsletterForm />
 
-      {/* Social menu */}
       <SocialMenu socialMenu={socialMenu} />
 
-      {/* Secondary menu */}
       <div className="secondary-menu flex w-full items-center justify-between gap-8 pb-16">
         <span className="flex-1 text-sm">©PHLOTE {currentYear}</span>
 
