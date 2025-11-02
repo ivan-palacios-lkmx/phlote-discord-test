@@ -25,7 +25,7 @@ export default function Button({
         signature:
           "rounded-[60px] border border-white/20 bg-black/20 px-4 py-2 font-mono uppercase backdrop-blur-md transition-colors hover:bg-white hover:text-black",
         blur: "mt-5 text-xs font-mono font-normal uppercase text-white border border-white/20 bg-black/20 backdrop-blur-[5px] rounded-[7px] px-4 py-[0.2em] pb-[0.5em] cursor-pointer transition-colors duration-300 hover:bg-white hover:text-black",
-        player: "border-black rounded-md flex flex-row bg-black p-3 gap-2 w-full",
+        player: "border-black rounded-md flex flex-row bg-black py-3 gap-2 w-full",
       },
     },
   });

@@ -26,8 +26,12 @@ export default function HeroSlideShowButton({
   return (
     <Button onClick={onClick} variant="player">
       {slide.image && (
-        <div className="relative h-12 w-32 before:absolute before:inset-0 before:bg-black/30 before:z-10">
-          <PrismicNextImage field={slide.image} className="h-12 w-32 object-cover" fallbackAlt="" />
+        <div className="relative h-12 w-32 before:absolute before:inset-0 before:bg-black/10 before:z-10">
+          <PrismicNextImage
+            field={slide.image}
+            className="h-12 w-32 object-contain"
+            fallbackAlt=""
+          />
           {active && (
             <span className="absolute inset-0 flex items-center justify-center font-condensed font-semibold text-[11px] uppercase z-20">
               Playing
