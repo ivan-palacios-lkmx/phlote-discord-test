@@ -1,16 +1,11 @@
 "use client";
 
+import Button from "@/components/ui/Button";
 import { HeroSlideShowSlide } from "@/types/client";
 import { quickHash } from "@/utils/functions";
 import { PrismicNextImage } from "@prismicio/next";
 
 import HeroTrackPreview from "./HeroTrackPreview";
-
-const SvgPlay = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M8 5v14l11-7z" />
-  </svg>
-);
 
 interface HeroSlideShowButtonProps {
   slide: HeroSlideShowSlide;
@@ -29,38 +24,22 @@ export default function HeroSlideShowButton({
   const hash = slide.title ? quickHash(slide.title) : undefined;
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "slideshow-button grid gap-2.5 text-white bg-black/30 rounded-[10px] border border-white/20 p-2.5 uppercase transition-all cursor-pointer",
-        active ? "bg-black border-black" : "",
-        "grid-cols-[100px_150px_300px] md:grid-cols-[100px]",
-      ].join(" ")}>
-      <div className="relative pb-[56%]">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <PrismicNextImage
-            field={slide.image as never}
-            className="absolute inset-0 h-full w-full object-cover"
-            fallbackAlt=""
-          />
-
-          <span className="relative z-10">
-            {active ? (
-              <span className="font-condensed font-semibold text-[11px]">Playing</span>
-            ) : (
-              <SvgPlay />
-            )}
-          </span>
+    <Button onClick={onClick} variant="player">
+      {slide.image && (
+        <div className="relative h-12 w-32 before:absolute before:inset-0 before:bg-black/50 before:z-10">
+          <PrismicNextImage field={slide.image} className="h-12 w-32 object-cover" fallbackAlt="" />
+          {active && (
+            <span className="absolute inset-0 flex items-center justify-center font-condensed font-semibold text-[11px] uppercase z-20">
+              Playing
+            </span>
+          )}
         </div>
-      </div>
-
-      <div className="hidden md:block text-left">
+      )}
+      <div className="text-left uppercase">
         {slide.title_eyebrow && <span className="text-[8px] font-mono">{slide.title_eyebrow}</span>}
-        {slide.title && <h6 className="text-[15px] font-condensed mt-1.5 mb-0">{slide.title}</h6>}
+        {slide.title && <h6 className="text-[15px] font-condensed mt-1.5 mb-0 ">{slide.title}</h6>}
       </div>
-
       <HeroTrackPreview hash={hash} onSeek={onSeek} />
-    </button>
+    </Button>
   );
 }
