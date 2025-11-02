@@ -33,6 +33,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
             src={currentVideoUrl}
             muted={isMuted}
             autoPlay
+            loop
             playsInline
           />
         ) : (
