@@ -39,3 +39,11 @@ export interface HeroSlice {
   id: string;
   slice_label?: string | null;
 }
+
+export interface StemsPlayerSlice {
+  slice_type: "stems_player";
+  primary: Record<string, unknown>;
+  items: unknown[];
+  id: string;
+  slice_label: string | null;
+}
