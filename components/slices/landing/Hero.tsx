@@ -1,28 +1,15 @@
 "use client";
 
-import type { ImageField, RichTextField } from "@prismicio/client";
+import type { HeroSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicImage, PrismicRichText } from "@prismicio/react";
 import { useEffect, useRef, useState } from "react";
 
-interface HeroSliceProps {
-  slice_type: "hero";
-  primary: {
-    background_image?: ImageField;
-    background_video?: {
-      url?: string;
-    };
-    headline_text?: string;
-    copy?: RichTextField;
-  };
-}
-
-export default function Hero({ slice }: SliceComponentProps) {
+export default function Hero({ slice }: SliceComponentProps<HeroSlice>) {
   const [intersected, setIntersected] = useState(false);
   const containerRef = useRef<HTMLElement | null>(null);
 
-  const heroSlice = slice as unknown as HeroSliceProps;
-  const { background_image, background_video, headline_text, copy } = heroSlice.primary || {};
+  const { background_image, background_video, headline_text, copy } = slice.primary || {};
 
   const videoURL = background_video?.url || "";
   useEffect(() => {
@@ -42,18 +29,10 @@ export default function Hero({ slice }: SliceComponentProps) {
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
-      className="slice-hero relative text-white overflow-hidden">
+      className="slice-hero relative text-white overflow-hidden h-[90vh] min-h-[800px]">
       {background_image && (
         <div className="absolute inset-0">
-          <PrismicImage
-            field={background_image}
-            className="w-full h-full object-cover"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
+          <PrismicImage field={background_image} className="w-full h-full object-cover" />
           {videoURL && (
             <video
               className="absolute inset-0 w-full h-full object-cover"
@@ -71,7 +50,7 @@ export default function Hero({ slice }: SliceComponentProps) {
 
       <div
         className={[
-          "content absolute inset-0 flex flex-col justify-center items-center text-center px-8 transition-transform duration-[3000ms]",
+          "content absolute inset-0 flex flex-col justify-center items-center text-center px-8 transition-transform",
           !intersected ? "transform translate-y-screen" : "transform translate-y-0",
         ].join(" ")}>
         {headline_text && (
@@ -122,21 +101,6 @@ export default function Hero({ slice }: SliceComponentProps) {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        @media (min-width: 768px) {
-          .slice-hero {
-            height: 90vh;
-          }
-          .slice-hero .prismic-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-          }
-        }
-      `}</style>
     </section>
   );
 }

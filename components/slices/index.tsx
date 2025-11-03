@@ -24,17 +24,17 @@ type SliceMapping = Record<string, ComponentType<SliceComponentProps>>;
 
 export const components: SliceMapping = new Proxy(
   {
-    hero: Hero,
-    hero_slideshow: HeroSlideShow,
-    content: SliceContent,
-    stems_player: StemsPlayer,
-    marketing_footer: MarketingFooter,
-    directory: Directory,
-    release_carousel: ReleaseCarousel,
-  } as SliceMapping,
+    hero: Hero as ComponentType<SliceComponentProps>,
+    hero_slideshow: HeroSlideShow as ComponentType<SliceComponentProps>,
+    content: SliceContent as ComponentType<SliceComponentProps>,
+    stems_player: StemsPlayer as ComponentType<SliceComponentProps>,
+    marketing_footer: MarketingFooter as ComponentType<SliceComponentProps>,
+    directory: Directory as ComponentType<SliceComponentProps>,
+    release_carousel: ReleaseCarousel as ComponentType<SliceComponentProps>,
+  },
   {
     get(target, prop: string) {
-      return (target as SliceMapping)[prop] ?? (DefaultSlice as ComponentType<SliceComponentProps>);
+      return (target as SliceMapping)[prop] ?? DefaultSlice;
     },
   },
 );

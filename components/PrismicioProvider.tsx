@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { type ReactNode, createContext, useContext } from "react";
 
 export interface PrismicSettings {
   app_menu?: Array<{ name?: string; link?: string }>;

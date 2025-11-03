@@ -38,7 +38,9 @@ export default function SliceContent({ slice }: SliceComponentProps) {
             field={content as never}
             components={{
               paragraph: ({ children }) => (
-                <p className="mx-auto max-w-[750px] font-semibold">{children}</p>
+                <p className="mx-auto max-w-[750px] font-semibold uppercase text-[12px]">
+                  {children}
+                </p>
               ),
               heading1: ({ children }) => (
                 <Heading1 className="mb-4" variant="hero" fit="tighter">

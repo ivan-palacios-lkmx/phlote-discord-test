@@ -47,12 +47,20 @@ export function useClientDoc(docRef: DocumentReference | null | undefined): Docu
     }
 
     // Subscribe to document changes
-    const unsubscribe = onSnapshot(docRef, (snapshot: DocumentSnapshot) => {
-      setDoc({
-        id: snapshot.id,
-        ...snapshot.data(),
-      });
-    });
+    const unsubscribe = onSnapshot(
+      docRef,
+      (snapshot: DocumentSnapshot) => {
+        const documentData = {
+          id: snapshot.id,
+          ...snapshot.data(),
+        };
+
+        setDoc(documentData);
+      },
+      (error) => {
+        console.error("Firestore Error:", error);
+      },
+    );
 
     unsubscribeRef.current = unsubscribe;
 
