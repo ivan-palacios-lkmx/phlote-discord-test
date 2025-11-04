@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -298,10 +299,15 @@ export default function Directory({ slice }: DirectoryProps) {
         <div className="filter-sort flex items-center gap-2 relative">
           <span className="hidden md:block text-[11px] font-mono">Sort By</span>
 
-          <SortMenu
+          <Select
+            selectOptions={[
+              { value: "all", label: "all" },
+              { value: "recent", label: "recent" },
+              { value: "most active", label: "most active" },
+            ]}
             value={sortValue}
-            onChange={setSortValue}
-            options={["all", "recent", "most active"]}
+            onChange={(value) => setSortValue(value)}
+            variant="filter"
           />
 
           <Button onClick={() => setFiltersOpen(!filtersOpen)} variant="btn">
