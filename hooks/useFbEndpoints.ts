@@ -1,6 +1,5 @@
-import { useAppConfig } from "@/hooks/useAppConfig";
 import { useFbAuth } from "@/hooks/useFbAuth";
-import { db } from "@/lib/firebase";
+import { db, firebaseConfig } from "@/lib/firebase";
 import FakeProgress from "fake-progress";
 import { saveAs } from "file-saver";
 import { doc, getDoc } from "firebase/firestore";
@@ -13,7 +12,6 @@ import { useEffect, useRef, useState } from "react";
  * Provides functions to interact with Firebase Cloud Functions
  */
 export function useFbEndpoints() {
-  const { firebaseConfig } = useAppConfig();
   const { user } = useFbAuth();
   const [error, setError] = useState("");
   const [stemDlProgress, setStemDlProgress] = useState(0);
