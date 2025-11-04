@@ -13,8 +13,17 @@ export default function StemsPlayer({ slice }: SliceComponentProps<StemsPlayerSl
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTop += e.deltaY;
-      e.preventDefault();
+      const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+      const isScrollingDown = e.deltaY > 0;
+      const isScrollingUp = e.deltaY < 0;
+      const isAtTop = scrollTop <= 0;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+      if ((isScrollingDown && !isAtBottom) || (isScrollingUp && !isAtTop)) {
+        scrollContainerRef.current.scrollTop += e.deltaY;
+        e.preventDefault();
+        e.stopPropagation();
+      }
     }
   };
 
@@ -23,7 +32,7 @@ export default function StemsPlayer({ slice }: SliceComponentProps<StemsPlayerSl
       <div
         ref={scrollContainerRef}
         onWheel={handleWheel}
-        className="bg-black rounded-lg border border-black p-6 ml-auto mr-[7vw] shadow-2xl h-[35vw] w-[75vw] flex flex-col overflow-y-auto overflow-x-hidden"
+        className="bg-black rounded-lg border border-black p-6 ml-auto mr-[7vw] shadow-2xl h-[35vw] w-[75vw] flex flex-col overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
         tabIndex={0}>
         <div className="flex flex-row items-center justify-start gap-4 shrink-0">
