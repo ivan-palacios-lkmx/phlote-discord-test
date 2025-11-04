@@ -1,6 +1,7 @@
 "use client";
 
 import { useFbEndpoints } from "@/hooks/useFbEndpoints";
+import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -24,8 +25,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playhead, setPlayhead] = useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [tracks, setTracks] = useState<any[] | null>(null);
+  const [tracks, setTracks] = useState<Howl[] | null>(null);
   const framerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pathname = usePathname();
@@ -55,33 +55,33 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
       return;
     }
 
-    // TODO: Implement Howl integration
     // Fetch all tracks
     if (!tracks) {
       try {
-        await getVersionStems({
+        const { bounce, stems } = await getVersionStems({
           versionID: versionID,
         });
 
-        // TODO: Create Howl instances when howler is installed
-        // tracks.value = [
-        //   new Howl({ src: bounce, preload: true }),
-        //   ...stems.map((stem) => new Howl({ src: stem, preload: true })),
-        // ];
+        // Create Howl instances for each track
+        const howlTracks = [
+          new Howl({ src: bounce, preload: true }),
+          ...stems.map((stem) => new Howl({ src: stem, preload: true })),
+        ];
 
-        // For now, using placeholder
-        setTracks([]);
+        setTracks(howlTracks);
 
         // Set duration once on load
-        // const bounceHowl = tracks[0];
-        // bounceHowl.once('load', () => setDuration(bounceHowl.duration()));
+        const bounceHowl = howlTracks[0];
+        bounceHowl.once("load", () => setDuration(bounceHowl.duration()));
 
         if (framerRef.current) clearInterval(framerRef.current);
 
         framerRef.current = setInterval(() => {
-          if (!tracks) return;
-          // const activeTrack = tracks[currentTrack];
-          // setPlayhead(activeTrack.seek());
+          if (!howlTracks) return;
+          const activeTrack = howlTracks[currentTrack];
+          if (activeTrack && activeTrack.playing()) {
+            setPlayhead(activeTrack.seek() as number);
+          }
         }, 1000 / 10);
       } catch (error) {
         console.error("Error loading tracks:", error);
@@ -89,13 +89,13 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     }
 
     // Pause each track
-    // tracks.forEach((track) => track.pause());
+    tracks?.forEach((track) => track.pause());
 
     // Play Current
-    if (!playing) {
-      // const track = tracks[currentTrack];
-      // track.play();
-      // track.seek(playhead);
+    if (!playing && tracks) {
+      const track = tracks[currentTrack];
+      track.play();
+      track.seek(playhead);
     }
 
     setPlaying(!playing);
@@ -105,11 +105,11 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
   const switchToTrack = (newTrack: number) => {
     if (!playing || !tracks) return;
 
-    // TODO: Implement track switching with Howl
-    // tracks[prevTrack].pause();
-    // const toPlay = tracks[newTrack];
-    // toPlay.seek(playhead);
-    // toPlay.play();
+    const prevTrack = tracks[currentTrack];
+    prevTrack.pause();
+    const toPlay = tracks[newTrack];
+    toPlay.seek(playhead);
+    toPlay.play();
     setCurrentTrack(newTrack);
   };
 
@@ -118,10 +118,10 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
     // Seek current track
     if (index === currentTrack) {
-      // const track = tracks[index];
-      // const seekTo = percentage * duration;
-      // track.seek(seekTo);
-      setPlayhead(percentage * duration);
+      const track = tracks[index];
+      const seekTo = percentage * duration;
+      track.seek(seekTo);
+      setPlayhead(seekTo);
     } else {
       switchToTrack(index);
     }
@@ -130,10 +130,9 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
   // Teardown
   useEffect(() => {
     return () => {
-      // TODO: Pause tracks when Howl is implemented
-      // tracks?.forEach((track) => {
-      //   track?.pause();
-      // });
+      tracks?.forEach((track) => {
+        track.pause();
+      });
       if (framerRef.current) clearInterval(framerRef.current);
     };
   }, [tracks]);
@@ -141,10 +140,9 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
   useEffect(() => {
     // Teardown on route change
     return () => {
-      // TODO: Pause tracks when Howl is implemented
-      // tracks?.forEach((track) => {
-      //   track?.pause();
-      // });
+      tracks?.forEach((track) => {
+        track.pause();
+      });
       if (framerRef.current) clearInterval(framerRef.current);
     };
   }, [pathname, tracks]);
