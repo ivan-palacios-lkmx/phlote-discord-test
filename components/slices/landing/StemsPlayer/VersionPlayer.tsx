@@ -3,7 +3,7 @@
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
-import { useFbEndpoints } from "@/hooks/useFbEndpoints";
+// import { useFbEndpoints } from "@/hooks/useFbEndpoints";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -46,7 +46,8 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
   const isSoloed = useMemo(() => currentTrack > 0, [currentTrack]);
 
-  const { getVersionStems } = useFbEndpoints();
+  // TODO: Uncomment when useFbEndpoints is implemented
+  // const { getVersionStems } = useFbEndpoints();
 
   const onPlay = async () => {
     setLoading(true);
@@ -58,9 +59,14 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     // Fetch all tracks
     if (!tracks) {
       try {
-        const { bounce, stems } = await getVersionStems({
-          versionID: versionID,
-        });
+        // TODO: Uncomment when useFbEndpoints is implemented
+        // const { bounce, stems } = await getVersionStems({
+        //   versionID: versionID,
+        // });
+
+        // Placeholder values until useFbEndpoints is implemented
+        const bounce = "";
+        const stems: string[] = [];
 
         // Create Howl instances for each track
         const howlTracks = [
