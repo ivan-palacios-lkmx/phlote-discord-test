@@ -163,7 +163,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
         </button>
         {bounceHash && (
           <TrackPreview
-            hash={bounceHash}
+            svg={bounceHash}
             className={`bounce-track transition-opacity duration-300 ${currentTrack === 0 ? "active" : ""} ${currentTrack !== 0 ? "opacity-40" : ""}`}
             onSeek={(s) => onSeek(s, 0)}
           />
@@ -187,7 +187,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
             </div>
             <div className="track text-left pb-[10px]" onClick={(e) => e.stopPropagation()}>
               <h6 className="font-mono text-[11px] m-0 uppercase">{stem.name || ""}</h6>
-              {stem.id && <TrackPreview hash={stem.id} onSeek={(s) => onSeek(s, i + 1)} />}
+              {stem.id && <TrackPreview svg={stem.id} onSeek={(s) => onSeek(s, i + 1)} />}
             </div>
           </button>
         ))}
