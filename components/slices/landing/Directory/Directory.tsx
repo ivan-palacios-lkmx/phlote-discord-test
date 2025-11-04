@@ -4,8 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import HeaderDirectory from "./HeaderDirectory";
-
-// import Member from "./Member";
+import Member from "./Member";
 
 const FilterMenu = ({
   isOpen,
@@ -169,7 +168,130 @@ export default function Directory({ slice }: DirectoryProps) {
       isCreator: true,
       tags: ["web3", "music"],
     },
-    // Add more mock data as needed
+    {
+      objectID: "0xabcdef1234567890",
+      title: "Lead Developer",
+      isPublic: true,
+      isAdmin: true,
+      tags: ["tech", "blockchain"],
+    },
+    {
+      objectID: "0x9876543210fedcba",
+      title: "Music Producer",
+      isPublic: true,
+      isCreator: true,
+      tags: ["music", "production"],
+    },
+    {
+      objectID: "0xfedcba0987654321",
+      title: "Community Manager",
+      isPublic: true,
+      tags: ["community", "social"],
+    },
+    {
+      objectID: "0x1111111111111111",
+      title: "Designer",
+      isPublic: true,
+      isCreator: true,
+      tags: ["design", "ui"],
+    },
+    {
+      objectID: "0x2222222222222222",
+      title: "Artist",
+      isPublic: true,
+      tags: ["art", "nft"],
+    },
+    {
+      objectID: "0x3333333333333333",
+      title: "Developer",
+      isPublic: true,
+      tags: ["coding", "web3"],
+    },
+    {
+      objectID: "0x4444444444444444",
+      title: "Curator",
+      isPublic: true,
+      isCreator: true,
+      tags: ["curation", "music"],
+    },
+    {
+      objectID: "0x5555555555555555",
+      title: "Marketing Lead",
+      isPublic: true,
+      isAdmin: true,
+      tags: ["marketing", "growth"],
+    },
+    {
+      objectID: "0x6666666666666666",
+      title: "DJ",
+      isPublic: true,
+      isCreator: true,
+      tags: ["dj", "music"],
+    },
+    {
+      objectID: "0x7777777777777777",
+      title: "Collector",
+      isPublic: true,
+      tags: ["collector", "nft"],
+    },
+    {
+      objectID: "0x8888888888888888",
+      title: "Musician",
+      isPublic: true,
+      isCreator: true,
+      tags: ["music", "performance"],
+    },
+    {
+      objectID: "0x9999999999999999",
+      title: "Engineer",
+      isPublic: true,
+      tags: ["engineering", "tech"],
+    },
+    {
+      objectID: "0xaaaaaaaaaaaaaaaa",
+      title: "Composer",
+      isPublic: true,
+      isCreator: true,
+      tags: ["composition", "music"],
+    },
+    {
+      objectID: "0xbbbbbbbbbbbbbbbb",
+      title: "Moderator",
+      isPublic: true,
+      tags: ["moderation", "community"],
+    },
+    {
+      objectID: "0xcccccccccccccccc",
+      title: "Producer",
+      isPublic: true,
+      isCreator: true,
+      tags: ["production", "audio"],
+    },
+    {
+      objectID: "0xdddddddddddddddd",
+      title: "Writer",
+      isPublic: true,
+      tags: ["writing", "content"],
+    },
+    {
+      objectID: "0xeeeeeeeeeeeeeeee",
+      title: "Vocalist",
+      isPublic: true,
+      isCreator: true,
+      tags: ["vocals", "music"],
+    },
+    {
+      objectID: "0xffffffffffffffff",
+      title: "Sound Designer",
+      isPublic: true,
+      tags: ["sound", "design"],
+    },
+    {
+      objectID: "0x0000000000000000",
+      title: "Event Organizer",
+      isPublic: true,
+      tags: ["events", "community"],
+    },
   ]);
 
   const totalResults = 115;
@@ -275,7 +397,7 @@ export default function Directory({ slice }: DirectoryProps) {
       <ul className="member-grid grid grid-cols-5 gap-[120px_30px] mt-24 list-none">
         {members.map((member, i) => (
           <li key={member.objectID || i} className="min-w-0">
-            {/* <Member member={member} /> */}
+            <Member member={member} />
           </li>
         ))}
       </ul>
