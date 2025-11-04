@@ -7,7 +7,7 @@ import Hero from "./landing/Hero";
 import HeroSlideShow from "./landing/HeroSlideShow";
 import ReleaseCarousel from "./landing/ReleaseCarousel";
 import SliceContent from "./landing/SliceContent";
-import StemsPlayer from "./landing/StemsPlayer";
+import StemsPlayer from "./landing/StemsPlayer/Index";
 
 function DefaultSlice({ slice }: SliceComponentProps) {
   return (
