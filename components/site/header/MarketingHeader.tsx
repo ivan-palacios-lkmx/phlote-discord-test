@@ -1,5 +1,6 @@
 "use client";
 
+import { usePrismicio } from "@/components/PrismicioProvider";
 import Logo from "@/components/svg/logo.svg";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import Button from "@/components/ui/Button";
@@ -8,7 +9,6 @@ import { useLogin } from "@privy-io/react-auth";
 import Link from "next/link";
 import { animate, smooth } from "popmotion";
 import { useEffect, useRef, useState } from "react";
-import { usePrismicio } from "@/components/PrismicioProvider";
 
 function HamburgerIcon() {
   return (
