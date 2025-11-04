@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
 import { useFbEndpoints } from "@/hooks/useFbEndpoints";
@@ -7,7 +8,6 @@ import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import LoadingSpinner from "./LoadingSpinner";
 import TrackPreview from "./TrackPreview";
 
 interface VersionPlayerProps {
@@ -159,7 +159,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
         <button
           onClick={onPlay}
           className="play-pause w-[55px] h-[55px] bg-white rounded-full text-[var(--dark-grey)] flex justify-center items-center">
-          {loading ? <LoadingSpinner /> : playing ? <PauseIcon /> : <PlayIcon />}
+          {loading ? <LoadingSpinnerIcon /> : playing ? <PauseIcon /> : <PlayIcon />}
         </button>
         {bounceHash && (
           <TrackPreview
