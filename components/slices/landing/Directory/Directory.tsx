@@ -294,8 +294,15 @@ export default function Directory({ slice }: DirectoryProps) {
     },
   ]);
 
-  const totalResults = 115;
-  const totalPages = Math.ceil(totalResults / 20);
+  const itemsPerPage = 15;
+  const totalResults = members.length;
+  const currentPage = parseInt(searchParams.get("page") || "0");
+  const totalPages = Math.ceil(totalResults / itemsPerPage);
+
+  // Paginate members
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedMembers = members.slice(startIndex, endIndex);
 
   const activeFilters = [
     ...(searchParams.get("types")?.split(",") || []).map((t) => ({
@@ -395,18 +402,14 @@ export default function Directory({ slice }: DirectoryProps) {
       </FilterMenu>
 
       <ul className="member-grid grid grid-cols-5 gap-[120px_30px] mt-24 list-none">
-        {members.map((member, i) => (
+        {paginatedMembers.map((member, i) => (
           <li key={member.objectID || i} className="min-w-0">
             <Member member={member} />
           </li>
         ))}
       </ul>
 
-      <Pagination
-        pageCount={totalPages}
-        currentPage={parseInt(searchParams.get("page") || "0")}
-        onPageClick={onPageClick}
-      />
+      <Pagination pageCount={totalPages} currentPage={currentPage} onPageClick={onPageClick} />
     </section>
   );
 }
