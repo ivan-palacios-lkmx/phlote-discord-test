@@ -31,7 +31,7 @@ export default function HeaderDirectory({
 
   return (
     <div
-      className="header sticky top-0 z-10 bg-white border-b border-black/30 py-2 flex justify-between items-center"
+      className="header sticky top-0 z-10 border-b border-black/30 py-2 flex justify-between items-center"
       ref={headerRef}>
       <div className="active-filters flex items-center gap-2 overflow-hidden flex-1">
         <h6 className="font-condensed text-sm whitespace-nowrap m-0">({totalResults}) People</h6>
@@ -49,7 +49,7 @@ export default function HeaderDirectory({
       </div>
 
       <div className="filter-sort flex items-center gap-2 relative">
-        <span className="hidden md:block text-[11px] font-mono">Sort By</span>
+        <span className="hidden md:block text-[11px] font-mono whitespace-nowrap">SORT BY</span>
 
         <Select
           selectOptions={[
