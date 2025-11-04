@@ -34,7 +34,7 @@ export default function HeaderDirectory({
       className="header sticky top-0 z-10 border-b border-black/30 py-2 flex justify-between items-center"
       ref={headerRef}>
       <div className="active-filters flex items-center gap-2 overflow-hidden flex-1">
-        <h6 className="font-condensed text-sm whitespace-nowrap m-0">({totalResults}) People</h6>
+        <h6 className="font-condensed text-lg font-semibold whitespace-nowrap m-0">({totalResults}) PEOPLE</h6>
 
         <div className="flex items-center gap-2">
           {activeFilters.map((filter, index) => (

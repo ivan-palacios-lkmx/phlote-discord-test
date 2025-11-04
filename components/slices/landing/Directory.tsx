@@ -166,7 +166,7 @@ export default function Directory({ slice }: DirectoryProps) {
     // Add more mock data as needed
   ]);
 
-  const totalResults = members.length;
+  const totalResults = 115;
   const totalPages = Math.ceil(totalResults / 20);
 
   const activeFilters = [
