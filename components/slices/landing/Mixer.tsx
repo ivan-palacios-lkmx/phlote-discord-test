@@ -2,7 +2,7 @@ import PlayIcon from "@/components/svg/play.svg";
 
 export default function Mixer() {
   return (
-    <div className="border border-white rounded-lg mx-6 mt-10 p-6">
+    <div className="border-b border-white p-6">
       <div className="flex flex-row items-center gap-4">
         <button className="w-12 h-12 rounded-full border-2 border-white bg-white flex items-center justify-center hover:bg-white/90 transition-colors">
           <PlayIcon className="w-6 h-6" style={{ fill: "black" }} />

@@ -5,6 +5,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 
 import Badge from "./Badge";
 import Mixer from "./Mixer";
+import StemControls from "./StemControls";
 
 export default function StemsPlayer({ slice }: SliceComponentProps<StemsPlayerSlice>) {
   return (
@@ -28,7 +29,10 @@ export default function StemsPlayer({ slice }: SliceComponentProps<StemsPlayerSl
             </div>
           </div>
         </div>
-        <Mixer />
+        <div className="mx-6 mt-10 border border-white rounded-lg flex flex-col overflow-hidden">
+          <Mixer />
+          <StemControls />
+        </div>
       </div>
     </section>
   );
