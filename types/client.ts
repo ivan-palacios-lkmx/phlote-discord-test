@@ -47,3 +47,45 @@ export interface StemsPlayerSlice {
   id: string;
   slice_label: string | null;
 }
+
+export interface ReleaseCarouselItem {
+  image?: ImageField;
+  video?:
+    | {
+        link_type?: string;
+        key?: string;
+        kind?: string;
+        id?: string;
+        url?: string;
+        name?: string;
+        size?: string;
+      }
+    | { url?: string };
+  audio?:
+    | {
+        link_type?: string;
+        key?: string;
+        kind?: string;
+        id?: string;
+        url?: string;
+        name?: string;
+        size?: string;
+      }
+    | { url?: string };
+  title_eyebrow?: string | null;
+  title?: string | null;
+  description?: string | null;
+  cta_text?: string | null;
+  cta_link?: LinkField | null;
+  creators?: RichTextField | string[];
+}
+
+export interface ReleaseCarouselSlice {
+  slice_type: "release_carousel";
+  primary: {
+    copy?: RichTextField;
+  };
+  items?: ReleaseCarouselItem[];
+  id: string;
+  slice_label?: string | null;
+}

@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/ui/Button";
+import type { ReleaseCarouselItem } from "@/types/client";
 import type { ImageField, LinkField } from "@prismicio/client";
 import { PrismicNextImage } from "@prismicio/next";
 import Link from "next/link";
@@ -51,20 +53,8 @@ const SvgPause = () => (
   </svg>
 );
 
-interface ReleaseData {
-  image?: ImageField;
-  video?: { url?: string };
-  audio?: { url?: string };
-  creators?: unknown;
-  title_eyebrow?: string;
-  title?: string;
-  description?: string;
-  cta_link?: LinkField;
-  cta_text?: string;
-}
-
 interface ReleaseBlockProps {
-  release: ReleaseData;
+  release: ReleaseCarouselItem;
 }
 
 export default function ReleaseBlock({ release }: ReleaseBlockProps) {
@@ -76,7 +66,6 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Intersection observer for fade-in animation
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -95,7 +84,10 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
   }, []);
 
   // Audio controls
-  const audioUrl = release.audio?.url;
+  const audioUrl =
+    release.audio?.link_type === "Media" && "url" in release.audio
+      ? (release.audio as { url?: string }).url
+      : undefined;
 
   const creators = (() => {
     if (!release.creators) return [];
@@ -145,11 +137,13 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
         isIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[100px]",
       ].join(" ")}>
       <div className="image-wrap relative">
-        <PrismicNextImage
-          field={release.image as never}
-          className="prismic-image rounded-[10px] overflow-hidden"
-          fallbackAlt=""
-        />
+        {release.image && (
+          <PrismicNextImage
+            field={release.image}
+            className="prismic-image rounded-[10px] overflow-hidden"
+            fallbackAlt=""
+          />
+        )}
 
         {hasReleaseData && (
           <>
@@ -186,10 +180,8 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
       <p className="text-[12px] max-w-[400px] my-[15px] leading-relaxed">{release.description}</p>
 
       {release.cta_link && release.cta_text && (
-        <Link
-          href={(release.cta_link as { url?: string })?.url || "#"}
-          className="a-div standard-button inline-block cursor-pointer rounded-[60px] border border-white/20 bg-black/20 px-6 py-3 font-mono uppercase backdrop-blur-md transition-colors hover:bg-black/40 md:block md:w-full md:text-center md:p-2">
-          {release.cta_text}
+        <Link href={(release.cta_link as { url?: string })?.url || "#"}>
+          <Button variant="mono">{release.cta_text}</Button>
         </Link>
       )}
     </div>

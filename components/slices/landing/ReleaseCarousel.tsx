@@ -1,34 +1,23 @@
 "use client";
 
-import type { RichTextField } from "@prismicio/client";
+import type { ReleaseCarouselSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { useEffect, useRef, useState } from "react";
 
 import ReleaseBlock from "./ReleaseBlock";
 
-export default function ReleaseCarousel({ slice }: SliceComponentProps) {
+export default function ReleaseCarousel({ slice }: SliceComponentProps<ReleaseCarouselSlice>) {
   const [ready, setReady] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLUListElement | null>(null);
   const containerRef = useRef<HTMLElement | null>(null);
 
-  const copy = (
-    slice as unknown as {
-      primary?: {
-        copy?: RichTextField;
-      };
-    }
-  ).primary?.copy;
+  const copy = slice.primary?.copy;
 
-  const items =
-    (
-      slice as unknown as {
-        primary?: {
-          items?: unknown[];
-        };
-      }
-    ).primary?.items || [];
+  const sliceItems = slice.items || [];
+
+  const items = sliceItems;
 
   useEffect(() => {
     if (items.length === 0) return;
@@ -73,14 +62,6 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
     }
   }, [currentIndex, items.length]);
 
-  if (items.length === 0) {
-    return (
-      <section className="slice-release-carousel mt-[150px] mb-[150px] md:mt-[50px] md:mb-[50px] w-full">
-        <div className="text-center text-gray-500">No releases available</div>
-      </section>
-    );
-  }
-
   return (
     <section
       ref={containerRef as React.RefObject<HTMLElement>}
@@ -95,11 +76,25 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
             field={copy}
             components={{
               paragraph: ({ children }) => (
-                <p className="max-w-[750px] mx-auto font-semibold">{children}</p>
+                <p className="max-w-[750px] mx-auto font-semibold text-[120px] uppercase tracking-[-0.04em]">
+                  {children}
+                </p>
               ),
-              heading1: ({ children }) => <h1 className="mb-4 text-4xl font-bold">{children}</h1>,
-              heading2: ({ children }) => <h2 className="mb-4 text-3xl font-bold">{children}</h2>,
-              heading3: ({ children }) => <h3 className="mb-4 text-2xl font-bold">{children}</h3>,
+              heading1: ({ children }) => (
+                <h1 className="mb-4 text-[120px] font-bold uppercase tracking-[-0.04em]">
+                  {children}
+                </h1>
+              ),
+              heading2: ({ children }) => (
+                <h2 className="mb-4 text-[120px] font-bold uppercase tracking-[-0.04em]">
+                  {children}
+                </h2>
+              ),
+              heading3: ({ children }) => (
+                <h3 className="mb-4 text-[120px] font-bold uppercase tracking-[-0.04em]">
+                  {children}
+                </h3>
+              ),
               hyperlink: ({ children, node }) => (
                 <a
                   href={node.data?.url as string}
@@ -112,15 +107,10 @@ export default function ReleaseCarousel({ slice }: SliceComponentProps) {
         </div>
       )}
 
-      <ul
-        ref={carouselRef}
-        className="carousel overflow-hidden cursor-grab focus:outline-none active:cursor-grabbing flex"
-        style={{
-          scrollSnapType: "x mandatory",
-        }}>
+      <ul ref={carouselRef} className="mx-8" style={{ scrollSnapType: "x mandatory" }}>
         {items.map((release, index) => (
-          <li key={index} className="flex-shrink-0">
-            <ReleaseBlock release={release as any} />
+          <li key={index} className="shrink-0">
+            <ReleaseBlock release={release} />
           </li>
         ))}
       </ul>
