@@ -1,35 +1,32 @@
 "use client";
 
 import { useFbGlobals } from "@/hooks/useFbGlobals";
-import Flickity from "flickity";
 import "flickity/css/flickity.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import Slice from "./Slice";
 
 export default function StemsPlayer() {
-  const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
   const elRef = useRef<HTMLElement | null>(null);
-  const flickityRef = useRef<Flickity | null>(null);
+  const flickityRef = useRef<{ destroy: () => void; resize: () => void } | null>(null);
 
   const { settingsDoc } = useFbGlobals();
   const versionIDs = useMemo(() => (settingsDoc?.stemsCarousel as string[]) || [], [settingsDoc]);
 
-  const canMountCarousel = mounted && versionIDs.length > 0;
+  const canMountCarousel = versionIDs.length > 0;
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!canMountCarousel) return;
-
+    if (!canMountCarousel || typeof window === "undefined") return;
+    console.log("Mounting carousel");
     const initFlickity = async () => {
       // Init flickity
       await new Promise((res) => setTimeout(res, 100));
 
-      if (typeof Flickity !== "undefined" && !flickityRef.current && elRef.current) {
+      // Dynamically import Flickity only on client side
+      const Flickity = (await import("flickity")).default;
+
+      if (!flickityRef.current && elRef.current) {
         // Wait for images to load
         // await new Promise((res) => {
         //   return imagesLoaded(carousel.value, () => setTimeout(res, 500))
