@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 
 import HeaderDirectory from "./HeaderDirectory";
 
+// import Member from "./Member";
+
 const FilterMenu = ({
   isOpen,
   onClose,
@@ -160,9 +162,13 @@ export default function Directory({ slice }: DirectoryProps) {
   const [sortValue, setSortValue] = useState("all");
 
   const [members] = useState([
-    { id: 1, name: "John Doe", role: "Creator", location: "NYC", type: "creator" },
-    { id: 2, name: "Jane Smith", role: "Admin", location: "LA", type: "admin" },
-    { id: 3, name: "Bob Johnson", role: "Member", location: "Chicago", type: "member" },
+    {
+      objectID: "0x1234567890abcdef",
+      title: "Founder",
+      isPublic: true,
+      isCreator: true,
+      tags: ["web3", "music"],
+    },
     // Add more mock data as needed
   ]);
 
@@ -268,8 +274,8 @@ export default function Directory({ slice }: DirectoryProps) {
 
       <ul className="member-grid grid grid-cols-5 gap-[120px_30px] mt-24 list-none">
         {members.map((member, i) => (
-          <li key={member.id} className="min-w-0">
-            <DirectoryMember member={member} style={{ transitionDelay: `${(i % 4) * 200}ms` }} />
+          <li key={member.objectID || i} className="min-w-0">
+            {/* <Member member={member} /> */}
           </li>
         ))}
       </ul>
