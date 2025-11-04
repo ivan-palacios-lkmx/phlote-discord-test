@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import { useRef } from "react";
 
-import FilterButton from "./HeaderDirectoryFilterButton";
+import FilterButton from "./FilterButton";
 
 interface HeaderDirectoryProps {
   totalResults: number;
