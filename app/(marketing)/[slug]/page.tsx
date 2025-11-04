@@ -23,7 +23,7 @@ export default async function DynamicPage({ params }: PageProps) {
         <SliceZone slices={slices} components={components} />
       </div>
     );
-  } catch (error) {
+  } catch {
     notFound();
   }
 }

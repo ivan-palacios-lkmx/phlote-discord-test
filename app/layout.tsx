@@ -2,12 +2,12 @@ import AuthProvider from "@/components/AuthProvider";
 import LenisProvider from "@/components/LenisProvider";
 import PrivyProviderWrapper from "@/components/PrivyProviderWrapper";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
+import { createClient } from "@/prismicio";
+import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { createClient } from "../prismicio";
-import { repositoryName } from "../prismicio";
 import "./globals.css";
 
 const geistSans = Geist({

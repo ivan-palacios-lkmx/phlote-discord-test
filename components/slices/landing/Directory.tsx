@@ -304,10 +304,7 @@ export default function Directory({ slice }: DirectoryProps) {
             options={["all", "recent", "most active"]}
           />
 
-          <Button
-            onClick={() => setFiltersOpen(!filtersOpen)}
-            variant="outline"
-            className="text-[11px]">
+          <Button onClick={() => setFiltersOpen(!filtersOpen)} variant="btn">
             Filter Directory
           </Button>
         </div>

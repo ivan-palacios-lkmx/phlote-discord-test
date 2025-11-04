@@ -10,7 +10,11 @@ export default function ProductPage() {
   const { logout } = useLogout();
   const walletAddress = user?.wallet?.address || "";
 
-  const { data: accountInfo, isLoading, error } = useGetAccount({
+  const {
+    data: accountInfo,
+    isLoading,
+    error,
+  } = useGetAccount({
     address: walletAddress,
     enabled: authenticated && !!walletAddress,
   });
@@ -29,27 +33,16 @@ export default function ProductPage() {
 
       {authenticated && (
         <>
-          <p className="text-lg text-gray-600 mb-2">
-            Welcome, {user?.wallet?.address || "User"}
-          </p>
+          <p className="text-lg text-gray-600 mb-2">Welcome, {user?.wallet?.address || "User"}</p>
 
-          {isLoading && (
-            <p className="text-sm text-gray-500 mb-4">Loading account info...</p>
-          )}
+          {isLoading && <p className="text-sm text-gray-500 mb-4">Loading account info...</p>}
 
-          {error && (
-            <p className="text-sm text-red-500 mb-4">
-              Error loading account info
-            </p>
-          )}
+          {error && <p className="text-sm text-red-500 mb-4">Error loading account info</p>}
 
           {accountInfo && (
             <div className="text-sm text-gray-600 mb-4">
               <p>
-                Status:{" "}
-                <span className="font-bold">
-                  {accountInfo.data?.role || "User"}
-                </span>
+                Status: <span className="font-bold">{accountInfo.data?.role || "User"}</span>
               </p>
             </div>
           )}
