@@ -13,6 +13,7 @@ export interface PrismicSettings {
   meta_title?: string;
   meta_description?: string;
   og_image?: { url?: string };
+  default_user_image?: { url?: string };
 }
 
 interface PrismicioContextValue {

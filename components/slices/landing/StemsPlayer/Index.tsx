@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useFbGlobals } from "@/hooks/useFbGlobals";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import Slice from "./Slice";
 
@@ -11,10 +12,8 @@ export default function StemsPlayer() {
 
   // const flickityRef = useRef<any>(null); // TODO: Use when Flickity is implemented
 
-  // TODO: Implement useFbGlobals hook
-  // const { settingsDoc } = useFbGlobals();
-  // const versionIDs = computed(() => settingsDoc.value?.stemsCarousel || []);
-  const versionIDs: string[] = []; // TODO: Get from settingsDoc?.stemsCarousel when Firebase is enabled
+  const { settingsDoc } = useFbGlobals();
+  const versionIDs = useMemo(() => (settingsDoc?.stemsCarousel as string[]) || [], [settingsDoc]);
 
   const canMountCarousel = mounted && versionIDs.length > 0;
 

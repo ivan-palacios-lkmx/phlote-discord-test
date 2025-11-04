@@ -1,9 +1,9 @@
 "use client";
 
-// import { useClientDoc } from "@/hooks/useClientDoc";
-// import { db } from "@/lib/firebase";
-// import { doc } from "firebase/firestore";
-import { useState } from "react";
+import { useClientDoc } from "@/hooks/useClientDoc";
+import { db } from "@/lib/firebase";
+import { doc } from "firebase/firestore";
+import { useMemo, useState } from "react";
 
 import SessionDetailTitle from "./SessionDetailTitle";
 import VersionPlayer from "./VersionPlayer";
@@ -16,20 +16,17 @@ interface SliceProps {
 export default function Slice({ versionID }: SliceProps) {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
-  // Firebase document references - Commented out
-  // const versionDocRef = useMemo(() => doc(db, `session-versions/${versionID}`), [versionID]);
-  // const versionDoc = useClientDoc(versionDocRef);
+  // Firebase document references
+  const versionDocRef = useMemo(() => doc(db, `session-versions/${versionID}`), [versionID]);
+  const versionDoc = useClientDoc(versionDocRef);
 
-  // Placeholder values until Firebase is enabled
-  const versionDoc = null;
-  const creator = undefined; // versionDoc?.creator as string | undefined;
+  const creator = versionDoc?.creator as string | undefined;
 
-  // const sessionDocRef = useMemo(
-  //   () => (versionDoc?.sessionID ? doc(db, `sessions/${versionDoc.sessionID}`) : null),
-  //   [versionDoc?.sessionID],
-  // );
-  // const sessionDoc = useClientDoc(sessionDocRef);
-  const sessionDoc = null;
+  const sessionDocRef = useMemo(
+    () => (versionDoc?.sessionID ? doc(db, `sessions/${versionDoc.sessionID}`) : null),
+    [versionDoc?.sessionID],
+  );
+  const sessionDoc = useClientDoc(sessionDocRef);
 
   return (
     <div
