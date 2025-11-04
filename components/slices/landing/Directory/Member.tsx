@@ -1,9 +1,9 @@
 "use client";
 
-import { useClientDoc } from "@/hooks/useClientDoc";
-import { db } from "@/lib/firebase";
+// import { useClientDoc } from "@/hooks/useClientDoc";
+// import { db } from "@/lib/firebase";
 import { PrismicImage } from "@prismicio/react";
-import { doc } from "firebase/firestore";
+// import { doc } from "firebase/firestore";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -51,9 +51,10 @@ export default function Member({ member }: MemberProps) {
   }, []);
 
   // Gating - TODO: Implement useFbAuth hook
+  // Firebase Auth - Commented out
   // const { userDoc } = useFbAuth();
-  const userDoc = null as { isMember?: boolean } | null; // Placeholder
-  const isPublic = member?.isPublic || userDoc?.isMember;
+  // const userDoc = null as { isMember?: boolean } | null; // Placeholder
+  const isPublic = member?.isPublic || false; // TODO: Add userDoc?.isMember when Firebase is enabled
 
   // Tags - TODO: Implement useFbGlobals and useTags hooks
   // const { settingsDoc } = useFbGlobals();
@@ -63,18 +64,18 @@ export default function Member({ member }: MemberProps) {
   else if (member?.isCreator) tags.push("Creator");
   // TODO: Add tag decoding logic
 
-  // Contact info
-  const contactDocRef =
-    isPublic && member.objectID ? doc(db, `addresses/${member.objectID}/private/contact`) : null;
-  const contactDoc = useClientDoc(contactDocRef);
+  // Contact info - Firebase commented out
+  // const contactDocRef =
+  //   isPublic && member.objectID ? doc(db, `addresses/${member.objectID}/private/contact`) : null;
+  // const contactDoc = useClientDoc(contactDocRef);
 
-  const name = contactDoc?.name as string | undefined;
-  const discordHandle = contactDoc?.discordHandle as string | undefined;
-  const twitterHandle = contactDoc?.twitterHandle as string | undefined;
-  const twitterLink = twitterHandle
-    ? `https://x.com/${twitterHandle.replace(/^@/, "")}`
-    : undefined;
-  const email = contactDoc?.email as string | undefined;
+  // Placeholder values until Firebase is enabled
+  // const contactDoc = null;
+  const name = undefined; // contactDoc?.name as string | undefined;
+  const discordHandle = undefined; // contactDoc?.discordHandle as string | undefined;
+  // const twitterHandle = undefined; // contactDoc?.twitterHandle as string | undefined;
+  const twitterLink = undefined; // twitterHandle ? `https://x.com/${twitterHandle.replace(/^@/, "")}` : undefined;
+  const email = undefined; // contactDoc?.email as string | undefined;
 
   // Create member link
   const linkTo =
