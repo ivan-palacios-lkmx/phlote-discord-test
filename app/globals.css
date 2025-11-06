@@ -44,3 +44,28 @@ body::-webkit-scrollbar {
   opacity: 0.15;
   pointer-events: none;
 }
+
+/* Application Form Styles */
+.slice-application-form form.success .left,
+.slice-application-form form.success .right {
+  opacity: 0.4;
+}
+
+.slice-application-form form.success .right .multi-track-upload {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.slice-application-form form.success .button-row button {
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .slice-application-form form {
+    display: block;
+  }
+
+  .slice-application-form form .left {
+    margin-bottom: 30px;
+  }
+}
