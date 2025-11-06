@@ -83,13 +83,15 @@ export default function ApplicationForm({
   };
 
   return (
-    <section className="slice-application-form mt-[100px] mb-[100px]">
+    <section className="slice-application-form mt-[100px] mb-[100px] max-w-[1600px] mx-auto">
       <form onSubmit={onSubmit}>
         <div className={`grid grid-cols-2 gap-0 gap-x-[30px] ${success ? "success" : ""}`}>
           {/* Left Fields */}
           <div className="left grid grid-cols-2 gap-[30px] gap-y-[30px] gap-x-[15px]">
             <label>
-              <span className="block text-[18px] leading-none font-semibold">First Name*</span>
+              <span className="block text-[18px] leading-none font-semibold uppercase">
+                First Name*
+              </span>
               <input
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
@@ -103,7 +105,9 @@ export default function ApplicationForm({
             </label>
 
             <label>
-              <span className="block text-[18px] leading-none font-semibold">Last Name*</span>
+              <span className="block text-[18px] leading-none font-semibold uppercase">
+                Last Name*
+              </span>
               <input
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
@@ -117,7 +121,9 @@ export default function ApplicationForm({
             </label>
 
             <label>
-              <span className="block text-[18px] leading-none font-semibold">Email Address*</span>
+              <span className="block text-[18px] leading-none font-semibold uppercase">
+                Email Address*
+              </span>
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -131,7 +137,7 @@ export default function ApplicationForm({
             </label>
 
             <label>
-              <span className="block text-[18px] leading-none font-semibold">City*</span>
+              <span className="block text-[18px] leading-none font-semibold uppercase">City*</span>
               <input
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
@@ -145,7 +151,7 @@ export default function ApplicationForm({
             </label>
 
             <label className="info col-span-2">
-              <span className="block text-[18px] leading-none font-semibold">
+              <span className="block text-[18px] leading-none font-semibold uppercase">
                 Additional Information
               </span>
               <textarea
@@ -154,7 +160,7 @@ export default function ApplicationForm({
                 id="info"
                 maxLength={500}
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 h-[150px] font-body resize-none mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 h-[150px] font-body resize-none uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
               />
             </label>
           </div>
@@ -162,7 +168,7 @@ export default function ApplicationForm({
           {/* Right Fields */}
           <div className="right flex flex-col gap-[30px]">
             <label>
-              <span className="block text-[18px] leading-none font-semibold">
+              <span className="block text-[18px] leading-none font-semibold uppercase">
                 Link to Your Work
               </span>
               <input
@@ -177,7 +183,7 @@ export default function ApplicationForm({
             </label>
 
             <label>
-              <span className="block text-[18px] leading-none font-semibold">
+              <span className="block text-[18px] leading-none font-semibold uppercase">
                 Wallet Address / ENS*
               </span>
               <input
@@ -193,7 +199,7 @@ export default function ApplicationForm({
             </label>
 
             <div className="upload">
-              <label className="block text-[18px] leading-none font-semibold">
+              <label className="block text-[18px] leading-none font-semibold uppercase">
                 Upload Your Music*
               </label>
               <MultiTrackUpload value={tracks} onChange={setTracks}>
