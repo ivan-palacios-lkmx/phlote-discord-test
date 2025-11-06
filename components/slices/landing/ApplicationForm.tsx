@@ -2,8 +2,8 @@
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import Button from "@/components/ui/Button";
-import Field from "@/components/ui/Field";
-import TextArea from "@/components/ui/TextArea";
+import InputFormField from "@/components/ui/InputFormField";
+import TextAreaFormField from "@/components/ui/TextAreaFormField";
 import { db } from "@/lib/firebase";
 import type { ApplicationFormSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
@@ -90,7 +90,7 @@ export default function ApplicationForm({
         <div className={`grid grid-cols-2 gap-0 gap-x-[30px] ${success ? "success" : ""}`}>
           {/* Left Fields */}
           <div className="left grid grid-cols-2 gap-[30px] gap-y-[30px] gap-x-[15px]">
-            <Field
+            <InputFormField
               label="First Name*"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
@@ -101,7 +101,7 @@ export default function ApplicationForm({
               disabled={success}
             />
 
-            <Field
+            <InputFormField
               label="Last Name*"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
@@ -112,7 +112,7 @@ export default function ApplicationForm({
               disabled={success}
             />
 
-            <Field
+            <InputFormField
               label="Email Address*"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -123,7 +123,7 @@ export default function ApplicationForm({
               disabled={success}
             />
 
-            <Field
+            <InputFormField
               label="City*"
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -134,24 +134,20 @@ export default function ApplicationForm({
               disabled={success}
             />
 
-            <label className="info col-span-2">
-              <span className="block text-[18px] leading-none font-semibold uppercase">
-                Additional Information
-              </span>
-              <TextArea
-                variant="form"
-                value={info}
-                onChange={(e) => setInfo(e.target.value)}
-                id="info"
-                maxLength={500}
-                disabled={success}
-              />
-            </label>
+            <TextAreaFormField
+              label="Additional Information"
+              containerClassName="info col-span-2"
+              value={info}
+              onChange={(e) => setInfo(e.target.value)}
+              id="info"
+              maxLength={500}
+              disabled={success}
+            />
           </div>
 
           {/* Right Fields */}
           <div className="right flex flex-col gap-[30px]">
-            <Field
+            <InputFormField
               label="Link to Your Work"
               value={workLink}
               onChange={(e) => setWorkLink(e.target.value)}
@@ -161,7 +157,7 @@ export default function ApplicationForm({
               disabled={success}
             />
 
-            <Field
+            <InputFormField
               label="Wallet Address / ENS*"
               value={ethAddress}
               onChange={(e) => setEthAddress(e.target.value)}
