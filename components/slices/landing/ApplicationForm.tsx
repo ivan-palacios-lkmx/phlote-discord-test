@@ -2,7 +2,7 @@
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import Field from "@/components/ui/Field";
 import { db } from "@/lib/firebase";
 import type { ApplicationFormSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
@@ -89,71 +89,53 @@ export default function ApplicationForm({
         <div className={`grid grid-cols-2 gap-0 gap-x-[30px] ${success ? "success" : ""}`}>
           {/* Left Fields */}
           <div className="left grid grid-cols-2 gap-[30px] gap-y-[30px] gap-x-[15px]">
-            <label>
-              <span className="block text-[18px] leading-none font-semibold uppercase">
-                First Name*
-              </span>
-              <Input
-                variant="form"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="John"
-                type="text"
-                maxLength={100}
-                required
-                disabled={success}
-                style={{ backgroundColor: "#ffffff" }}
-              />
-            </label>
+            <Field
+              label="First Name*"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="John"
+              type="text"
+              maxLength={100}
+              required
+              disabled={success}
+              style={{ backgroundColor: "#ffffff" }}
+            />
 
-            <label>
-              <span className="block text-[18px] leading-none font-semibold uppercase">
-                Last Name*
-              </span>
-              <Input
-                variant="form"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Doe"
-                type="text"
-                maxLength={100}
-                required
-                disabled={success}
-                style={{ backgroundColor: "#ffffff" }}
-              />
-            </label>
+            <Field
+              label="Last Name*"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Doe"
+              type="text"
+              maxLength={100}
+              required
+              disabled={success}
+              style={{ backgroundColor: "#ffffff" }}
+            />
 
-            <label>
-              <span className="block text-[18px] leading-none font-semibold uppercase">
-                Email Address*
-              </span>
-              <Input
-                variant="form"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
-                type="email"
-                maxLength={100}
-                required
-                disabled={success}
-                style={{ backgroundColor: "#ffffff" }}
-              />
-            </label>
+            <Field
+              label="Email Address*"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@example.com"
+              type="email"
+              maxLength={100}
+              required
+              disabled={success}
+              style={{ backgroundColor: "#ffffff" }}
+            />
 
-            <label>
-              <span className="block text-[18px] leading-none font-semibold uppercase">City*</span>
-              <Input
-                variant="form"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Los Angeles"
-                type="text"
-                maxLength={100}
-                required
-                disabled={success}
-                style={{ backgroundColor: "#ffffff" }}
-              />
-            </label>
+            <Field
+              label="City*"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Los Angeles"
+              type="text"
+              maxLength={100}
+              required
+              disabled={success}
+              style={{ backgroundColor: "#ffffff" }}
+            />
 
             <label className="info col-span-2">
               <span className="block text-[18px] leading-none font-semibold uppercase">
@@ -173,38 +155,28 @@ export default function ApplicationForm({
 
           {/* Right Fields */}
           <div className="right flex flex-col gap-[30px]">
-            <label>
-              <span className="block text-[18px] leading-none font-semibold uppercase">
-                Link to Your Work
-              </span>
-              <Input
-                variant="form"
-                value={workLink}
-                onChange={(e) => setWorkLink(e.target.value)}
-                placeholder="https://my-portfolio.com"
-                type="url"
-                maxLength={100}
-                disabled={success}
-                style={{ backgroundColor: "#ffffff" }}
-              />
-            </label>
+            <Field
+              label="Link to Your Work"
+              value={workLink}
+              onChange={(e) => setWorkLink(e.target.value)}
+              placeholder="https://my-portfolio.com"
+              type="url"
+              maxLength={100}
+              disabled={success}
+              style={{ backgroundColor: "#ffffff" }}
+            />
 
-            <label>
-              <span className="block text-[18px] leading-none font-semibold uppercase">
-                Wallet Address / ENS*
-              </span>
-              <Input
-                variant="form"
-                value={ethAddress}
-                onChange={(e) => setEthAddress(e.target.value)}
-                placeholder="phlote.eth"
-                type="text"
-                maxLength={100}
-                required
-                disabled={success}
-                style={{ backgroundColor: "#ffffff" }}
-              />
-            </label>
+            <Field
+              label="Wallet Address / ENS*"
+              value={ethAddress}
+              onChange={(e) => setEthAddress(e.target.value)}
+              placeholder="phlote.eth"
+              type="text"
+              maxLength={100}
+              required
+              disabled={success}
+              style={{ backgroundColor: "#ffffff" }}
+            />
 
             <div className="upload">
               <label className="block text-[18px] leading-none font-semibold uppercase">
