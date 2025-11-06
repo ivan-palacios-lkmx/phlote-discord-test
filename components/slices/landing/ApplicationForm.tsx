@@ -98,7 +98,6 @@ export default function ApplicationForm({
               maxLength={100}
               required
               disabled={success}
-              style={{ backgroundColor: "#ffffff" }}
             />
 
             <Field
@@ -110,7 +109,6 @@ export default function ApplicationForm({
               maxLength={100}
               required
               disabled={success}
-              style={{ backgroundColor: "#ffffff" }}
             />
 
             <Field
@@ -122,7 +120,6 @@ export default function ApplicationForm({
               maxLength={100}
               required
               disabled={success}
-              style={{ backgroundColor: "#ffffff" }}
             />
 
             <Field
@@ -134,7 +131,6 @@ export default function ApplicationForm({
               maxLength={100}
               required
               disabled={success}
-              style={{ backgroundColor: "#ffffff" }}
             />
 
             <label className="info col-span-2">
@@ -147,8 +143,7 @@ export default function ApplicationForm({
                 id="info"
                 maxLength={500}
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 h-[150px] font-body resize-none uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-                style={{ backgroundColor: "#ffffff" }}
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 h-[150px] font-body resize-none uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50 bg-white"
               />
             </label>
           </div>
@@ -163,7 +158,6 @@ export default function ApplicationForm({
               type="url"
               maxLength={100}
               disabled={success}
-              style={{ backgroundColor: "#ffffff" }}
             />
 
             <Field
@@ -175,7 +169,6 @@ export default function ApplicationForm({
               maxLength={100}
               required
               disabled={success}
-              style={{ backgroundColor: "#ffffff" }}
             />
 
             <div className="upload">

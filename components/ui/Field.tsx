@@ -1,5 +1,6 @@
-import Input from "./Input";
 import type { InputHTMLAttributes } from "react";
+
+import Input from "./Input";
 
 interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "variant"> {
   label: string;
