@@ -204,8 +204,8 @@ export default function MultiTrackUpload({
         onDrop={handleDrop}
         className={`
           rounded-[7px] border-dashed h-[120px] text-center font-mono overflow-auto overscroll-contain
-          ${isOverDropZone ? "border-black/20 text-black/35" : "border-black/20 bg-black/20"}
-          ${tracks.length > 0 ? "border-solid border-black/20 cursor-default bg-white" : "cursor-pointer border-[0.5px] bg-white/50"}
+          ${isOverDropZone ? "border-black/20 text-black/35" : "border-black/20"}
+          ${tracks.length > 0 ? "border-solid border-black/20 cursor-default" : "cursor-pointer border-[0.5px] bg-white/5"}
           transition-colors
         `}>
         <input

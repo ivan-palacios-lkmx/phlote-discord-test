@@ -83,7 +83,7 @@ export default function ApplicationForm({
   };
 
   return (
-    <section className="slice-application-form mt-[100px] mb-[100px] max-w-[1600px] mx-auto">
+    <section className="slice-application-form mt-[100px] mb-[100px] max-w-[1600px] mx-auto relative z-10">
       <form onSubmit={onSubmit}>
         <div className={`grid grid-cols-2 gap-0 gap-x-[30px] ${success ? "success" : ""}`}>
           {/* Left Fields */}
@@ -100,7 +100,8 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                style={{ backgroundColor: "#ffffff" }}
               />
             </label>
 
@@ -116,7 +117,8 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                style={{ backgroundColor: "#ffffff" }}
               />
             </label>
 
@@ -132,7 +134,8 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                style={{ backgroundColor: "#ffffff" }}
               />
             </label>
 
@@ -146,7 +149,8 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                style={{ backgroundColor: "#ffffff" }}
               />
             </label>
 
@@ -160,7 +164,8 @@ export default function ApplicationForm({
                 id="info"
                 maxLength={500}
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 h-[150px] font-body resize-none uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 h-[150px] font-body resize-none uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                style={{ backgroundColor: "#ffffff" }}
               />
             </label>
           </div>
@@ -178,7 +183,8 @@ export default function ApplicationForm({
                 type="url"
                 maxLength={100}
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                style={{ backgroundColor: "#ffffff" }}
               />
             </label>
 
@@ -194,7 +200,8 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+                style={{ backgroundColor: "#ffffff" }}
               />
             </label>
 
