@@ -3,6 +3,7 @@
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import Button from "@/components/ui/Button";
 import Field from "@/components/ui/Field";
+import TextArea from "@/components/ui/TextArea";
 import { db } from "@/lib/firebase";
 import type { ApplicationFormSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
@@ -137,13 +138,13 @@ export default function ApplicationForm({
               <span className="block text-[18px] leading-none font-semibold uppercase">
                 Additional Information
               </span>
-              <textarea
+              <TextArea
+                variant="form"
                 value={info}
                 onChange={(e) => setInfo(e.target.value)}
                 id="info"
                 maxLength={500}
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 h-[150px] font-body resize-none uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50 bg-white"
               />
             </label>
           </div>
