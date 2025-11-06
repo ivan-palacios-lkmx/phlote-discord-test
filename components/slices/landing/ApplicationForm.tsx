@@ -84,127 +84,129 @@ export default function ApplicationForm({
 
   return (
     <section className="slice-application-form mt-[100px] mb-[100px]">
-      <form
-        className={`grid grid-cols-2 gap-0 gap-x-[30px] ${success ? "success" : ""}`}
-        onSubmit={onSubmit}>
-        {/* Left Fields */}
-        <div className="left grid grid-cols-2 gap-[30px] gap-y-[30px] gap-x-[15px]">
-          <label>
-            <span className="block text-[18px] leading-none font-semibold">First Name*</span>
-            <input
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="John"
-              type="text"
-              maxLength={100}
-              required
-              disabled={success}
-              className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-            />
-          </label>
-
-          <label>
-            <span className="block text-[18px] leading-none font-semibold">Last Name*</span>
-            <input
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Doe"
-              type="text"
-              maxLength={100}
-              required
-              disabled={success}
-              className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-            />
-          </label>
-
-          <label>
-            <span className="block text-[18px] leading-none font-semibold">Email Address*</span>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              type="email"
-              maxLength={100}
-              required
-              disabled={success}
-              className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-            />
-          </label>
-
-          <label>
-            <span className="block text-[18px] leading-none font-semibold">City*</span>
-            <input
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="Los Angeles"
-              type="text"
-              maxLength={100}
-              required
-              disabled={success}
-              className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-            />
-          </label>
-
-          <label className="info col-span-2">
-            <span className="block text-[18px] leading-none font-semibold">
-              Additional Information
-            </span>
-            <textarea
-              value={info}
-              onChange={(e) => setInfo(e.target.value)}
-              id="info"
-              maxLength={500}
-              disabled={success}
-              className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 h-[150px] font-body resize-none mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-            />
-          </label>
-        </div>
-
-        {/* Right Fields */}
-        <div className="right flex flex-col gap-[30px]">
-          <label>
-            <span className="block text-[18px] leading-none font-semibold">Link to Your Work</span>
-            <input
-              value={workLink}
-              onChange={(e) => setWorkLink(e.target.value)}
-              placeholder="https://my-portfolio.com"
-              type="url"
-              maxLength={100}
-              disabled={success}
-              className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-            />
-          </label>
-
-          <label>
-            <span className="block text-[18px] leading-none font-semibold">
-              Wallet Address / ENS*
-            </span>
-            <input
-              value={ethAddress}
-              onChange={(e) => setEthAddress(e.target.value)}
-              placeholder="phlote.eth"
-              type="text"
-              maxLength={100}
-              required
-              disabled={success}
-              className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
-            />
-          </label>
-
-          <div className="upload">
-            <label className="block text-[18px] leading-none font-semibold">
-              Upload Your Music*
+      <form onSubmit={onSubmit}>
+        <div className={`grid grid-cols-2 gap-0 gap-x-[30px] ${success ? "success" : ""}`}>
+          {/* Left Fields */}
+          <div className="left grid grid-cols-2 gap-[30px] gap-y-[30px] gap-x-[15px]">
+            <label>
+              <span className="block text-[18px] leading-none font-semibold">First Name*</span>
+              <input
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="John"
+                type="text"
+                maxLength={100}
+                required
+                disabled={success}
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+              />
             </label>
-            <MultiTrackUpload value={tracks} onChange={setTracks}>
-              <span>Drop Tracks (.wav or .mp3)</span>
-            </MultiTrackUpload>
+
+            <label>
+              <span className="block text-[18px] leading-none font-semibold">Last Name*</span>
+              <input
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Doe"
+                type="text"
+                maxLength={100}
+                required
+                disabled={success}
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+              />
+            </label>
+
+            <label>
+              <span className="block text-[18px] leading-none font-semibold">Email Address*</span>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                type="email"
+                maxLength={100}
+                required
+                disabled={success}
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+              />
+            </label>
+
+            <label>
+              <span className="block text-[18px] leading-none font-semibold">City*</span>
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Los Angeles"
+                type="text"
+                maxLength={100}
+                required
+                disabled={success}
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+              />
+            </label>
+
+            <label className="info col-span-2">
+              <span className="block text-[18px] leading-none font-semibold">
+                Additional Information
+              </span>
+              <textarea
+                value={info}
+                onChange={(e) => setInfo(e.target.value)}
+                id="info"
+                maxLength={500}
+                disabled={success}
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 h-[150px] font-body resize-none mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+              />
+            </label>
+          </div>
+
+          {/* Right Fields */}
+          <div className="right flex flex-col gap-[30px]">
+            <label>
+              <span className="block text-[18px] leading-none font-semibold">
+                Link to Your Work
+              </span>
+              <input
+                value={workLink}
+                onChange={(e) => setWorkLink(e.target.value)}
+                placeholder="https://my-portfolio.com"
+                type="url"
+                maxLength={100}
+                disabled={success}
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+              />
+            </label>
+
+            <label>
+              <span className="block text-[18px] leading-none font-semibold">
+                Wallet Address / ENS*
+              </span>
+              <input
+                value={ethAddress}
+                onChange={(e) => setEthAddress(e.target.value)}
+                placeholder="phlote.eth"
+                type="text"
+                maxLength={100}
+                required
+                disabled={success}
+                className="block w-full box-border border border-black/20 rounded-[10px] bg-white px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
+              />
+            </label>
+
+            <div className="upload">
+              <label className="block text-[18px] leading-none font-semibold">
+                Upload Your Music*
+              </label>
+              <MultiTrackUpload value={tracks} onChange={setTracks}>
+                <span>Drop Tracks (.wav or .mp3)</span>
+              </MultiTrackUpload>
+            </div>
           </div>
         </div>
 
-        <div className="button-row col-span-2 text-center mt-[150px] relative">
+        <div className="w-[270px] mx-auto mt-[150px] relative">
           <Button
             variant="btn"
-            className="px-[15px] w-[270px] box-border text-[26px]"
+            className="px-[15px] w-full box-border text-[26px]"
             type="submit"
             disabled={!canSubmit || loading}>
             {loading ? (
