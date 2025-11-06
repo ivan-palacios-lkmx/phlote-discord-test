@@ -2,6 +2,7 @@
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { db } from "@/lib/firebase";
 import type { ApplicationFormSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
@@ -92,7 +93,8 @@ export default function ApplicationForm({
               <span className="block text-[18px] leading-none font-semibold uppercase">
                 First Name*
               </span>
-              <input
+              <Input
+                variant="form"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="John"
@@ -100,7 +102,6 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
                 style={{ backgroundColor: "#ffffff" }}
               />
             </label>
@@ -109,7 +110,8 @@ export default function ApplicationForm({
               <span className="block text-[18px] leading-none font-semibold uppercase">
                 Last Name*
               </span>
-              <input
+              <Input
+                variant="form"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Doe"
@@ -117,7 +119,6 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
                 style={{ backgroundColor: "#ffffff" }}
               />
             </label>
@@ -126,7 +127,8 @@ export default function ApplicationForm({
               <span className="block text-[18px] leading-none font-semibold uppercase">
                 Email Address*
               </span>
-              <input
+              <Input
+                variant="form"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
@@ -134,14 +136,14 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
                 style={{ backgroundColor: "#ffffff" }}
               />
             </label>
 
             <label>
               <span className="block text-[18px] leading-none font-semibold uppercase">City*</span>
-              <input
+              <Input
+                variant="form"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Los Angeles"
@@ -149,7 +151,6 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
                 style={{ backgroundColor: "#ffffff" }}
               />
             </label>
@@ -176,14 +177,14 @@ export default function ApplicationForm({
               <span className="block text-[18px] leading-none font-semibold uppercase">
                 Link to Your Work
               </span>
-              <input
+              <Input
+                variant="form"
                 value={workLink}
                 onChange={(e) => setWorkLink(e.target.value)}
                 placeholder="https://my-portfolio.com"
                 type="url"
                 maxLength={100}
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
                 style={{ backgroundColor: "#ffffff" }}
               />
             </label>
@@ -192,7 +193,8 @@ export default function ApplicationForm({
               <span className="block text-[18px] leading-none font-semibold uppercase">
                 Wallet Address / ENS*
               </span>
-              <input
+              <Input
+                variant="form"
                 value={ethAddress}
                 onChange={(e) => setEthAddress(e.target.value)}
                 placeholder="phlote.eth"
@@ -200,7 +202,6 @@ export default function ApplicationForm({
                 maxLength={100}
                 required
                 disabled={success}
-                className="block w-full box-border border border-black/20 rounded-[10px] px-5 py-5 uppercase mt-[15px] transition-colors focus:border-black disabled:opacity-50"
                 style={{ backgroundColor: "#ffffff" }}
               />
             </label>
