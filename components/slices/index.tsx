@@ -2,6 +2,7 @@ import MarketingFooter from "@/components/site/footer/MarketingFooter";
 import type { SliceComponentProps } from "@prismicio/react";
 import type { ComponentType } from "react";
 
+import ApplicationForm from "./landing/ApplicationForm";
 import Directory from "./landing/Directory/Directory";
 import Hero from "./landing/Hero";
 import HeroSlideShow from "./landing/HeroSlideShow";
@@ -31,6 +32,7 @@ export const components: SliceMapping = new Proxy(
     marketing_footer: MarketingFooter as ComponentType<SliceComponentProps>,
     directory: Directory as ComponentType<SliceComponentProps>,
     release_carousel: ReleaseCarousel as ComponentType<SliceComponentProps>,
+    application_form: ApplicationForm as ComponentType<SliceComponentProps>,
   },
   {
     get(target, prop: string) {

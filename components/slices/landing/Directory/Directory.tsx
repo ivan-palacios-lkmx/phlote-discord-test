@@ -166,7 +166,7 @@ export default function Directory({ slice }: DirectoryProps) {
       title: "Founder",
       isPublic: true,
       isCreator: true,
-      tags: ["web3", "music"],
+      tags: ["web3", "music", "founder", "admin"],
     },
     {
       objectID: "0xabcdef1234567890",

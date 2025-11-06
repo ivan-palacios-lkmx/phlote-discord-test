@@ -56,7 +56,7 @@ export default function Hero({ slice }: SliceComponentProps<HeroSlice>) {
         {headline_text && (
           <h1
             className={[
-              "mb-8 transition-transform text-[150px] font-bold font-condensed",
+              "mb-8 transition-transform text-[150px] font-bold font-condensed uppercase leading-[-0.04em]",
               !intersected
                 ? "transform-style-preserve-3d transform-perspective-[2000px] rotate-3d-[0.325,1,0.25,360deg]"
                 : "transform-none",
@@ -76,7 +76,9 @@ export default function Hero({ slice }: SliceComponentProps<HeroSlice>) {
             <PrismicRichText
               field={copy}
               components={{
-                paragraph: ({ children }) => <p className="mb-4 text-[12px]">{children}</p>,
+                paragraph: ({ children }) => (
+                  <p className="mb-4 text-[12px] uppercase">{children}</p>
+                ),
                 heading1: ({ children }) => (
                   <h1 className="mb-4 text-4xl font-bold text-[150px]">{children}</h1>
                 ),

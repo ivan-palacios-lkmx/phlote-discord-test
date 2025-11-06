@@ -89,3 +89,11 @@ export interface ReleaseCarouselSlice {
   id: string;
   slice_label?: string | null;
 }
+
+export interface ApplicationFormSlice {
+  slice_type: "application_form";
+  primary: Record<string, unknown>;
+  items?: unknown[];
+  id: string;
+  slice_label?: string | null;
+}
