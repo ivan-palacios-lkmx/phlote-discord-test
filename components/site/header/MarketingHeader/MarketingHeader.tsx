@@ -10,6 +10,8 @@ import Link from "next/link";
 import { animate, smooth } from "popmotion";
 import { useEffect, useRef, useState } from "react";
 
+import "./MarketingHeader.scss";
+
 function HamburgerIcon() {
   return (
     <button className="flex flex-col gap-1 p-2">
@@ -94,30 +96,32 @@ export default function MarketingHeader() {
   };
 
   return (
-    <header className="fixed right-0 left-0 top-0 z-10 p-9 grid gap-5 md:flex md:justify-between md:p-4">
-      <Link href="/" className="relative">
-        <Logo className="h-auto absolute -z-10 left-5 top-0" style={logoStyle} />
-        <WordmarkSvg className="text-white stroke-black h-auto ml-20" style={wordmarkStyle} />
+    <header className="site-marketing-header">
+      <Link href="/" className="home-link">
+        <Logo className="svg-logo" style={logoStyle} />
+        <WordmarkSvg className="svg-wordmark" style={wordmarkStyle} />
       </Link>
-      <p className="home-copy desktop-only max-w-[600px] text-center text-white m-0 hidden md:block text-[12px]">
+      <p className="home-copy desktop-only">
         {settings.home_copy}
       </p>
 
-      <nav className="desktop-only col-start-3 flex justify-end items-start gap-2.5 flex-nowrap md:col-auto">
+      <nav className="desktop-only">
         {mainMenu.map((item, index) => (
           <Link
             key={index}
             href={item.link || "#"}
-            className="whitespace-nowrap pointer-events-auto">
+            className="a-div">
             <Button variant="outline">{item.name || "Link"}</Button>
           </Link>
         ))}
-        <Button variant="outline" onClick={login}>
-          Connect
-        </Button>
+        <div className="a-div">
+          <Button variant="outline" onClick={login}>
+            Connect
+          </Button>
+        </div>
       </nav>
 
-      <div className="mobile-only nav md:hidden flex items-center gap-2.5">
+      <div className="mobile-only nav">
         <Button variant="outline">Connect Wallet</Button>
         <HamburgerIcon />
       </div>

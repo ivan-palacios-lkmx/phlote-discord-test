@@ -1,6 +1,6 @@
 import PrismicioProvider from "@/components/PrismicioProvider";
 import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
-import MarketingHeader from "@/components/site/header/MarketingHeader";
+import MarketingHeader from "@/components/site/header/MarketingHeader/MarketingHeader";
 import { createClient } from "@/prismicio";
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
