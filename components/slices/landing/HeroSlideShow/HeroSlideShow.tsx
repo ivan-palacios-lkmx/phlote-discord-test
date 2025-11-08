@@ -1,5 +1,6 @@
 "use client";
 
+import HeroSlideShowButton from "@/components/slices/landing/HeroSlideShowButton";
 import Button from "@/components/ui/Button";
 import Heading1 from "@/components/ui/Heading1";
 import Heading4 from "@/components/ui/Heading4";
@@ -8,7 +9,7 @@ import { PrismicNextImage } from "@prismicio/next";
 import type { SliceComponentProps } from "@prismicio/react";
 import { useRef } from "react";
 
-import HeroSlideShowButton from "./HeroSlideShowButton";
+import "./HeroSlideShow.scss";
 
 export default function HeroSlideShow(sliceProps: SliceComponentProps) {
   const {
@@ -26,7 +27,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
   const slideButtonsRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <section className="relative h-[95vh] min-h-[800px] overflow-hidden text-white">
+    <section className="slice-hero-slideshow">
       <div className="relative h-full w-full">
         {currentVideoUrl ? (
           <video
@@ -42,7 +43,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
           currentSlide?.image && (
             <PrismicNextImage
               field={currentSlide.image}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover prismic-image"
               fallbackAlt=""
             />
           )
@@ -50,20 +51,26 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
 
         <div className="absolute inset-0 bg-black/40" />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+        <div className="content">
           {currentSlide?.title_eyebrow && (
             <Heading4 variant="eyebrow">{currentSlide.title_eyebrow}</Heading4>
           )}
-          {currentSlide?.title && <Heading1 variant="hero">{currentSlide.title}</Heading1>}
-          {currentSlide?.cta_text && <Button className="mt-5">{currentSlide.cta_text}</Button>}
-          <Button onClick={toggleMute} variant={isMuted ? "primary" : "secondary"} className="mt-5">
-            {isMuted ? "Unmute" : "Mute"}
-          </Button>
+          {currentSlide?.title && (
+            <Heading1 variant="hero" className="slideshow-title">
+              {currentSlide.title}
+            </Heading1>
+          )}
+          {currentSlide?.cta_text && (
+            <div className="a-div">
+              <Button>{currentSlide.cta_text}</Button>
+            </div>
+          )}
+          <button onClick={toggleMute} className={`mute-button ${isMuted ? "muted" : ""}`}>
+            <span>{isMuted ? "Unmute" : "Mute"}</span>
+          </button>
         </div>
       </div>
-      <div
-        ref={slideButtonsRef}
-        className="absolute bottom-0 left-0 right-0 flex gap-2 overflow-x-auto px-4 py-6 md:px-8">
+      <div ref={slideButtonsRef} className="button-wrap">
         {slides.map((slide, slideIndex) => (
           <HeroSlideShowButton
             key={slideIndex}

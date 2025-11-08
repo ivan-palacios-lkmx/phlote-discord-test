@@ -101,16 +101,11 @@ export default function MarketingHeader() {
         <Logo className="svg-logo" style={logoStyle} />
         <WordmarkSvg className="svg-wordmark" style={wordmarkStyle} />
       </Link>
-      <p className="home-copy desktop-only">
-        {settings.home_copy}
-      </p>
+      <p className="home-copy desktop-only">{settings.home_copy}</p>
 
       <nav className="desktop-only">
         {mainMenu.map((item, index) => (
-          <Link
-            key={index}
-            href={item.link || "#"}
-            className="a-div">
+          <Link key={index} href={item.link || "#"} className="a-div">
             <Button variant="outline">{item.name || "Link"}</Button>
           </Link>
         ))}

@@ -1,0 +1,149 @@
+@import '../../../../app/assets/scss/vars';
+
+.slice-hero-slideshow {
+    height: 95vh;
+    min-height: 800px;
+    position: relative;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+
+    .content {
+        @include fill;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 var(--margin);
+
+        h5 {
+            margin: 0;
+        }
+
+        .slideshow-title {
+            font-size: max(120px, 15vh);
+            margin: 30px 0 10px;
+            max-width: 1200px;
+        }
+
+        .entry {
+            max-width: 600px;
+        }
+
+        .a-div {
+            margin-top: 20px;
+            @include standard-button;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .mute-button {
+            background: var(--black);
+            border: 1px solid #808080;
+            padding: 0.4em 1em;
+            border-radius: 60px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 40px;
+            transition: background 300ms ease, color 300ms ease;
+
+            &.muted {
+                background: var(--white);
+                color: var(--black);
+            }
+
+            span {
+                position: relative;
+                bottom: -1px;
+            }
+        }
+    }
+
+    .content,
+    .content h1 {
+        transition: transform 3s;
+    }
+
+    &:not(.intersected) {
+        .content {
+            transform: translateY(100vh);
+
+            h1 {
+                transform-style: preserve-3d;
+                transform: perspective(2000px) rotate3d(0.325, 1, 0.25, 360deg);
+            }
+        }
+    }
+
+    .button-wrap {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: var(--margin);
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        overflow-x: auto;
+    }
+
+    @include bp(m) {
+        min-height: unset;
+        height: 90vh;
+
+        .content .slideshow-title {
+            font-size: 60px;
+            margin: 15px 0 10px;
+        }
+    }
+}
+
+.hero-enter-active,
+.hero-leave-active {
+    transition: all 3s;
+
+    .prismic-image {
+        opacity: 1;
+        transition: opacity 1s 1.5s;
+    }
+
+    .content,
+    h1 {
+        transition: transform 3s;
+    }
+}
+
+.hero-enter-from {
+    .prismic-image {
+        opacity: 0;
+    }
+
+    .content {
+        transform: translateY(100vh);
+
+        h1 {
+            transform-style: preserve-3d;
+            transform: perspective(2000px) rotate3d(0.325, 1, 0.25, 360deg);
+        }
+    }
+}
+
+.hero-leave-to {
+    .prismic-image {
+        opacity: 0;
+    }
+
+    .content {
+        transform: translateY(-100vh);
+
+        h1 {
+            transform-style: preserve-3d;
+            transform: perspective(2000px) rotate3d(0.325, 1, 0.45, -360deg);
+        }
+    }
+}
