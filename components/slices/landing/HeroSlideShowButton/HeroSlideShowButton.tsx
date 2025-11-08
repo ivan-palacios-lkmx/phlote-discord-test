@@ -1,10 +1,9 @@
 "use client";
 
+import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview";
 import Button from "@/components/ui/Button";
 import { HeroSlideShowSlide } from "@/types/client";
 import { PrismicNextImage } from "@prismicio/next";
-
-import HeroTrackPreview from "./HeroTrackPreview";
 
 interface HeroSlideShowButtonProps {
   slide: HeroSlideShowSlide;

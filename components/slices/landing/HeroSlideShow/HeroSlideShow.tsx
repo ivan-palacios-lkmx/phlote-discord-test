@@ -1,6 +1,6 @@
 "use client";
 
-import HeroSlideShowButton from "@/components/slices/landing/HeroSlideShowButton";
+import HeroSlideShowButton from "@/components/slices/landing/HeroSlideShowButton/HeroSlideShowButton";
 import Heading1 from "@/components/ui/Heading1";
 import Heading4 from "@/components/ui/Heading4";
 import { useHeroSlideShow } from "@/hooks/useHeroSlideShow";

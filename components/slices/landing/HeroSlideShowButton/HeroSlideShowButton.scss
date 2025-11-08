@@ -1,0 +1,67 @@
+@import '../../../../app/assets/scss/vars';
+
+.slideshow-button {
+  grid-template-columns: 100px 150px 300px;
+  display: grid;
+  gap: 10px;
+  color: var(--white);
+  background: rgba(#000, 0.3);
+  border-radius: 10px;
+  border: 1px solid rgba(#fff, 0.2);
+  padding: 10px;
+  text-transform: uppercase;
+  transition: background 2s, border-color 2s;
+  cursor: pointer;
+
+  &.active {
+    background: var(--black);
+    border-color: var(--black);
+  }
+
+  .img-wrap {
+    position: relative;
+    padding-bottom: 56%;
+
+    >* {
+      @include fill;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .svg-play {
+      width: 14px;
+      height: auto;
+    }
+
+    span {
+      font-family: var(--font-condensed);
+      font-weight: 600;
+      @include fontSize(11px);
+    }
+  }
+
+  .title {
+    text-align: left;
+
+    span {
+      @include fontSize(8px);
+      font-family: var(--font-mono);
+    }
+
+    h6 {
+      @include fontSize(15px);
+      font-family: var(--font-condensed);
+      margin: 5px 0 0;
+    }
+  }
+
+  .track-preview {
+    pointer-events: none;
+    height: 100%;
+  }
+
+  @include bp(m) {
+    grid-template-columns: 100px;
+  }
+}
