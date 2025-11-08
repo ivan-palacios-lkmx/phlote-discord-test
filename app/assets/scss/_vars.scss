@@ -68,7 +68,7 @@
     padding: 0;
 }
 @function figmaSize($size) {
-    @return calc(($size / 1920) * 1450);
+    @return calc((#{$size} / 1920) * 1450);
 }
 
 // Type Size
