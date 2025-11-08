@@ -1,5 +1,5 @@
 import PrismicioProvider from "@/components/PrismicioProvider";
-import MarketingFooter from "@/components/site/footer/MarketingFooter";
+import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
 import MarketingHeader from "@/components/site/header/MarketingHeader";
 import { createClient } from "@/prismicio";
 

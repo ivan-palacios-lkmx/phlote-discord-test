@@ -6,7 +6,7 @@ import { PrismicRichText } from "@prismicio/react";
 import { useMemo } from "react";
 
 import "./MarketingFooter.scss";
-import NewsletterForm from "./NewsletterForm";
+import NewsletterForm from "../NewsletterForm";
 
 export default function MarketingFooter(): JSX.Element {
   const currentYear = useMemo(() => new Date().getFullYear(), []);

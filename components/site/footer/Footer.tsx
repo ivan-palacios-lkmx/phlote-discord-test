@@ -1,6 +1,6 @@
 "use client";
 
-import MarketingFooter from "@/components/site/footer/MarketingFooter";
+import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
 import ProductFooter from "@/components/site/footer/ProductFooter";
 import { usePathname } from "next/navigation";
 

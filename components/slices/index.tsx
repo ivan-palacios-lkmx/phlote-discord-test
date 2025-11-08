@@ -1,4 +1,4 @@
-import MarketingFooter from "@/components/site/footer/MarketingFooter";
+import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
 import type { SliceComponentProps } from "@prismicio/react";
 import type { ComponentType } from "react";
 
