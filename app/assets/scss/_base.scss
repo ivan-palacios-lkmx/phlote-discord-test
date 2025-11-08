@@ -1,0 +1,305 @@
+@import 'vars';
+
+body {
+    --header-height: 100px;
+    --margin: #{figmaSize(30px)};
+
+    @include bp(m) {
+        --header-height: 40px;
+        --margin: 15px;
+    }
+
+    --black: #000000;
+    --white: #ffffff;
+    --light-red: #ff5f5f;
+    --red: #7e071b;
+
+    --dark-grey: #343434;
+
+    --font-body: 'Authentic', sans-serif;
+    --font-condensed: 'Authentic Condensed', sans-serif;
+    --font-mono: 'Courier', 'Courier New', monospace;
+
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--black);
+    text-transform: uppercase;
+    margin: 0;
+    @include fontSize(12px);
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+}
+
+// Mobile helpers
+@include bp(m) {
+    .desktop-only {
+        display: none !important;
+    }
+}
+@include bigger-than(840px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+#prismic-toolbar-v2 {
+    display: none;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+
+// Text selection
+::selection {
+    color: #fff;
+    background: #000;
+}
+::-moz-selection {
+    color: #fff;
+    background: #000;
+}
+
+h1,
+h2 {
+    font-family: var(--font-condensed);
+}
+
+h1,
+.h1 {
+    @include fontSize(150px);
+    line-height: 90%;
+    letter-spacing: -0.04em;
+
+    @include bp(m) {
+        font-size: 55px;
+    }
+}
+h2,
+.h2 {
+    @include fontSize(120px);
+    line-height: 90%;
+    letter-spacing: -0.04em;
+
+    @include bp(m) {
+        font-size: 48px;
+    }
+}
+h3,
+.h3 {
+    @include fontSize(40px);
+    line-height: 90%;
+}
+h4,
+.h4 {
+    @include fontSize(36px);
+    line-height: 90%;
+
+    @include bp(m) {
+        font-size: 26px;
+    }
+}
+h5,
+.h5 {
+    @include fontSize(28px);
+
+    @include bp(m) {
+        font-size: 22px;
+    }
+}
+h6,
+.h6 {
+    @include fontSize(18px);
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.contained {
+    padding-right: var(--margin);
+    padding-left: var(--margin);
+    max-width: 1600px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.design-grid {
+    grid-template-columns: repeat(12, 1fr);
+    gap: 15px;
+    padding-right: var(--margin);
+    padding-left: var(--margin);
+    display: grid;
+
+    @include bp(m) {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+.overlay {
+    @include fill;
+    background: rgba(#000, 0.3);
+}
+
+// resets
+button {
+    @include button-reset;
+}
+
+// this is opt-in because prismic-content ul's usually need default styling
+.ul-reset {
+    @include ul-reset;
+}
+input:not(.default-styling) {
+    @include input-reset;
+}
+.button.btn,
+button.btn {
+    @include standard-button;
+    display: inline-block;
+}
+
+// entry styling
+.entry {
+    ul {
+        padding-left: 1.35em;
+    }
+    ol {
+        padding-left: 1.35em;
+    }
+    li {
+        padding-bottom: 0.5em;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    & > * {
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+    & > *:first-child {
+        margin-top: 0;
+    }
+    & > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+// z layers
+.overlay-signature {
+    z-index: 80;
+}
+.overlay-profile {
+    z-index: 75;
+}
+.slice-directory .header,
+.site-mobile-menu,
+.filter-menu {
+    z-index: 70;
+}
+.site-marketing-header,
+.site-product-header {
+    z-index: 60;
+}
+
+// WIV
+.wiv-module.in-view {
+    transition: opacity 600ms, transform 800ms $easeOutQuad;
+    transition-delay: 150ms;
+}
+.wiv-module.below-view {
+    opacity: 0;
+}
+
+// V transition fades
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 200ms;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+.quick-fade-enter-active,
+.quick-fade-leave-active {
+    transition: opacity 100ms;
+}
+.quick-fade-enter-from,
+.quick-fade-leave-to {
+    opacity: 0;
+}
+
+// Page fade
+.page-enter-active {
+    animation: fade 400ms forwards;
+}
+.page-leave-active {
+    animation: fade 400ms reverse;
+}
+
+// list
+.list-move,
+.list-enter-active,
+.list-leave-active {
+    transition: opacity 400ms, transform 400ms;
+}
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateY(50%);
+}
+.list-leave-active {
+    position: absolute;
+}
+
+// bounce
+.float-enter-active {
+    transition: opacity 600ms ease-out, transform 600ms $easeOutCirc;
+}
+.float-leave-active {
+    transition: opacity 600ms ease-out, transform 600ms $easeInCirc;
+}
+.float-enter-from,
+.float-leave-to {
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+// Lenis
+.lenis.lenis-smooth {
+    scroll-behavior: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
+}
+
+// Generic animations
+@keyframes blink {
+    5% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 0;
+    }
+    60% {
+        opacity: 1;
+    }
+    95% {
+        opacity: 1;
+    }
+}
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
