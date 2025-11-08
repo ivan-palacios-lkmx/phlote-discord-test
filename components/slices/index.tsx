@@ -4,7 +4,7 @@ import type { ComponentType } from "react";
 
 import ApplicationForm from "./landing/ApplicationForm";
 import Directory from "./landing/Directory/Directory";
-import Hero from "./landing/Hero";
+import Hero from "./landing/Hero/Hero";
 import HeroSlideShow from "./landing/HeroSlideShow/HeroSlideShow";
 import ReleaseCarousel from "./landing/ReleaseCarousel";
 import SliceContent from "./landing/SliceContent";

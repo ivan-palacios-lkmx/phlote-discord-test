@@ -1,0 +1,57 @@
+@import '../../../../app/assets/scss/vars';
+
+.slice-hero {
+  position: relative;
+  color: var(--white);
+  overflow: hidden;
+
+  .overlay {
+    @include fill;
+    background-color: rgba(#000, 0.4);
+  }
+
+  .content {
+    @include fill;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 var(--margin);
+    transition: transform 3s;
+
+    .headline {
+      margin: 0 0 30px;
+      transition: transform 3s;
+    }
+
+    .entry {
+      max-width: 750px;
+    }
+
+    a {
+      @include standard-button;
+      display: inline-block;
+    }
+  }
+
+  // Float up animation if first slice
+  &:not(.intersected):first-child {
+    .content {
+      transform: translateY(100vh);
+
+      .headline {
+        transform-style: preserve-3d;
+        transform: perspective(2000px) rotate3d(0.325, 1, 0.25, 360deg);
+      }
+    }
+  }
+
+  @include bp(m) {
+    height: 90vh;
+
+    .prismic-image {
+      @include fill;
+    }
+  }
+}
