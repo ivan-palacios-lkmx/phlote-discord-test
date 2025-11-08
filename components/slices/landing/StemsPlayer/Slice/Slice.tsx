@@ -1,13 +1,14 @@
 "use client";
 
+import SessionDetailTitle from "@/components/slices/landing/StemsPlayer/SessionDetailTitle";
+import VersionPlayer from "@/components/slices/landing/StemsPlayer/VersionPlayer";
+import Web3Avatar from "@/components/slices/landing/StemsPlayer/Web3Avatar";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 
-import SessionDetailTitle from "./SessionDetailTitle";
-import VersionPlayer from "./VersionPlayer";
-import Web3Avatar from "./Web3Avatar";
+import "./Slice.scss";
 
 interface SliceProps {
   versionID: string;
@@ -30,27 +31,16 @@ export default function Slice({ versionID }: SliceProps) {
 
   return (
     <div
-      className={`slice-stems-player-slide bg-black shadow-[0px_14px_50px_0px_rgba(0,0,0,0.8)] border border-black/35 rounded-[20px] relative overflow-hidden overflow-y-auto text-white ${
-        isPointerDown ? "cursor-grabbing" : "cursor-grab"
-      } [data-lenis-prevent]`}
+      className={`slice-stems-player-slide ${isPointerDown ? "is-pointer-down" : ""}`}
+      data-lenis-prevent
       onMouseDown={() => setIsPointerDown(true)}
       onMouseUp={() => setIsPointerDown(false)}
       onMouseLeave={() => setIsPointerDown(false)}>
-      <div className="padder relative p-[var(--margin)]">
-        {creator && (
-          <Web3Avatar
-            address={creator}
-            className="background-image scale-[1.2] blur-[20px] absolute object-cover opacity-50 h-full w-full -z-10"
-          />
-        )}
+      <div className="padder">
+        {creator && <Web3Avatar address={creator} className="background-image" />}
 
-        <div className="session-info grid grid-cols-[190px_1fr] items-start mb-5 gap-5 md:block">
-          {creator && (
-            <Web3Avatar
-              address={creator}
-              className="artwork desktop-only relative after:content-[''] after:pb-[100%] after:block hidden md:block"
-            />
-          )}
+        <div className="session-info">
+          {creator && <Web3Avatar address={creator} className="artwork desktop-only" />}
 
           <SessionDetailTitle session={sessionDoc} version={versionDoc} />
         </div>

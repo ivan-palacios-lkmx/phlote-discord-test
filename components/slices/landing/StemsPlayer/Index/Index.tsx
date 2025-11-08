@@ -1,13 +1,13 @@
 "use client";
 
+import Slice from "@/components/slices/landing/StemsPlayer/Slice/Slice";
 import { useFbGlobals } from "@/hooks/useFbGlobals";
 import "flickity/css/flickity.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
-import Slice from "./Slice";
+import "./Index.scss";
 
 export default function StemsPlayer() {
-  const [ready, setReady] = useState(false);
   const elRef = useRef<HTMLElement | null>(null);
   const flickityRef = useRef<{ destroy: () => void; resize: () => void } | null>(null);
 
@@ -18,7 +18,6 @@ export default function StemsPlayer() {
 
   useEffect(() => {
     if (!canMountCarousel || typeof window === "undefined") return;
-    console.log("Mounting carousel");
     const initFlickity = async () => {
       // Init flickity
       await new Promise((res) => setTimeout(res, 100));
@@ -26,7 +25,7 @@ export default function StemsPlayer() {
       // Dynamically import Flickity only on client side
       const Flickity = (await import("flickity")).default;
 
-      if (!flickityRef.current && elRef.current) {
+      if (typeof Flickity !== "undefined" && !flickityRef.current && elRef.current) {
         // Wait for images to load
         // await new Promise((res) => {
         //   return imagesLoaded(carousel.value, () => setTimeout(res, 500))
@@ -40,9 +39,6 @@ export default function StemsPlayer() {
 
         await new Promise((res) => setTimeout(res, 500));
         flickityRef.current.resize();
-
-        // Show element
-        setReady(true);
       }
     };
 
@@ -58,15 +54,9 @@ export default function StemsPlayer() {
   }, [canMountCarousel]);
 
   return (
-    <section
-      ref={elRef as React.RefObject<HTMLElement>}
-      className={`slice-stems-player overflow-hidden py-[100px] outline-none transition-opacity duration-1000 ${ready ? "opacity-100" : "opacity-0"}`}>
+    <section ref={elRef as React.RefObject<HTMLElement>} className="slice-stems-player">
       {versionIDs.map((versionID, index) => (
-        <div
-          key={versionID || index}
-          className="slice-stems-player-slide mr-[7vw] w-[75vw] h-[35vw] md:w-[80vw] md:h-[40vh]">
-          <Slice versionID={versionID} />
-        </div>
+        <Slice key={versionID || index} versionID={versionID} />
       ))}
     </section>
   );

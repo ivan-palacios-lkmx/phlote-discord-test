@@ -1,0 +1,61 @@
+@import '../../../../../app/assets/scss/vars';
+
+.slice-stems-player-slide {
+  background-color: var(--black);
+  box-shadow: 0px 14px 50px 0px rgba(#000, 0.8);
+  border: 1px solid rgba(#000, 0.35);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  overflow-y: auto;
+  color: white;
+  cursor: grab;
+
+  &.is-pointer-down {
+    cursor: grabbing;
+  }
+
+  .background-image {
+    transform: scale(1.2);
+    filter: blur(20px);
+    position: absolute;
+    object-fit: cover;
+    opacity: 0.5;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+  }
+
+  .padder {
+    position: relative;
+    padding: var(--margin);
+  }
+
+  .artwork {
+    position: relative;
+
+    &::after {
+      content: '';
+      padding-bottom: 100%;
+      display: block;
+    }
+  }
+
+  .session-info {
+    grid-template-columns: 190px 1fr;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    grid-gap: 20px;
+    display: grid;
+  }
+
+  .session-detail-title {
+    border-bottom: none;
+  }
+
+  @include bp(m) {
+    .session-info {
+      display: block;
+    }
+  }
+}
