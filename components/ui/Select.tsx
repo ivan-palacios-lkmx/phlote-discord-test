@@ -1,6 +1,17 @@
 import { useState } from "react";
-import { twMerge } from "tailwind-merge";
-import { tv } from "tailwind-variants";
+
+// Simple utility functions to replace tailwind-merge and tailwind-variants
+function twMerge(...classes: (string | undefined | null | false)[]): string {
+  return classes.filter(Boolean).join(" ");
+}
+
+function tv(config: { base?: string; variants?: { variant?: Record<string, string> } }) {
+  return (options?: { variant?: string }) => {
+    const base = config.base || "";
+    const variantClass = options?.variant && config.variants?.variant?.[options.variant] || "";
+    return twMerge(base, variantClass);
+  };
+}
 
 interface SelectOption {
   value: string;
