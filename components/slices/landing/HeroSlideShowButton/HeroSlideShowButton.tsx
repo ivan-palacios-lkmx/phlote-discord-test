@@ -1,9 +1,11 @@
 "use client";
 
 import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview";
-import Button from "@/components/ui/Button";
+import PlayIcon from "@/components/svg/play.svg";
 import { HeroSlideShowSlide } from "@/types/client";
 import { PrismicNextImage } from "@prismicio/next";
+
+import "./HeroSlideShowButton.scss";
 
 interface HeroSlideShowButtonProps {
   slide: HeroSlideShowSlide;
@@ -22,34 +24,20 @@ export default function HeroSlideShowButton({
   waveTrace,
 }: HeroSlideShowButtonProps) {
   return (
-    <Button onClick={onClick} variant="player">
-      {slide.image && (
-        <div className="relative h-12 w-32 before:absolute before:inset-0 before:bg-black/10 before:z-10">
-          <PrismicNextImage
-            field={slide.image}
-            className="h-12 w-32 object-contain"
-            fallbackAlt=""
-          />
-          {active && (
-            <span className="absolute inset-0 flex items-center justify-center font-condensed font-semibold text-[11px] uppercase z-20">
-              Playing
-            </span>
-          )}
+    <div className={`slideshow-button ${active ? "active" : ""}`} onClick={onClick}>
+      <div className="img-wrap">
+        {slide.image && <PrismicNextImage field={slide.image} fallbackAlt="" />}
+        <span>{active ? <span>Playing</span> : <PlayIcon className="svg-play" />}</span>
+      </div>
+      <div className="title desktop-only">
+        {slide.title_eyebrow && <span>{slide.title_eyebrow}</span>}
+        {slide.title && <h6>{slide.title}</h6>}
+      </div>
+      {hash && (
+        <div className="track-preview desktop-only">
+          <HeroTrackPreview hash={hash} waveTrace={waveTrace} />
         </div>
       )}
-      <div className="text-left uppercase flex flex-col">
-        {slide.title_eyebrow && (
-          <span className="text-[8px] font-mono whitespace-nowrap overflow-hidden truncate">
-            {slide.title_eyebrow}
-          </span>
-        )}
-        {slide.title && (
-          <h6 className="text-[15px] font-condensed mb-0 whitespace-nowrap overflow-hidden truncate font-bold">
-            {slide.title}
-          </h6>
-        )}
-      </div>
-      {hash && <HeroTrackPreview hash={hash} waveTrace={waveTrace} />}
-    </Button>
+    </div>
   );
 }
