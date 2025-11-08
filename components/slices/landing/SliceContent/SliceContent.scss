@@ -1,0 +1,54 @@
+@import '../../../../app/assets/scss/vars';
+
+.slice-content {
+  margin-bottom: 100px;
+  margin-top: 100px;
+  text-align: center;
+  overflow: hidden;
+  padding-top: 8px;
+  padding-bottom: 20px;
+  mask-image: linear-gradient(var(--black) 0 95%, transparent);
+
+  .entry {
+    max-width: 1000px;
+    margin: auto;
+  }
+
+  .entry,
+  h1,
+  h2,
+  h3 {
+    transition: transform 3s;
+  }
+
+  p {
+    max-width: 750px;
+    margin: auto;
+    font-weight: 600;
+  }
+
+  a {
+    @include standard-button;
+    display: inline-block;
+    margin-top: 30px;
+  }
+
+  // Float up animation if first slice
+  &:not(.intersected):first-child {
+    .entry {
+      transform: translateY(100vh);
+
+      h1,
+      h2,
+      h3 {
+        transform-style: preserve-3d;
+        transform: perspective(2000px) rotate3d(0.325, 1, 0.25, 360deg);
+      }
+    }
+  }
+
+  @include bp(m) {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+}
