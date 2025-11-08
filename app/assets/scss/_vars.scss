@@ -3,203 +3,221 @@
 
 // mixins
 @mixin fill($position: absolute) {
-    position: #{$position};
-    bottom: 0;
-    right: 0;
-    left: 0;
-    top: 0;
+  position: #{$position};
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 0;
 }
-@mixin cover {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-}
-@mixin contain {
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-@mixin scale-type($size) {
-    font-size: #{$size}px;
-    font-size: #{$size / 1200 * 100}vw;
-}
-@mixin no-select {
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none;
-}
-@mixin button-reset {
-    @include no-select;
-    display: inline-block;
-    text-decoration: none;
-    line-height: 1;
-    appearance: none;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    outline: none;
-    font-family: inherit;
-    border-radius: 0;
-    font-weight: inherit;
-    font-size: inherit;
-    padding: 0;
-    color: inherit;
-}
-@mixin input-reset {
-    background-color: transparent;
-    appearance: none;
-    font-family: inherit;
-    border-radius: 0;
-    font-weight: 400;
-    line-height: 1;
-    border: none;
-    color: inherit;
 
-    &:focus {
-        outline: none;
-    }
+@mixin cover {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
+
+@mixin contain {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+@mixin scale-type($size) {
+  font-size: #{$size}px;
+  font-size: #{$size / 1200 * 100}vw;
+}
+
+@mixin no-select {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+}
+
+@mixin button-reset {
+  @include no-select;
+  display: inline-block;
+  text-decoration: none;
+  line-height: 1;
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  border-radius: 0;
+  font-weight: inherit;
+  font-size: inherit;
+  padding: 0;
+  color: inherit;
+}
+
+@mixin input-reset {
+  background-color: transparent;
+  appearance: none;
+  font-family: inherit;
+  border-radius: 0;
+  font-weight: 400;
+  line-height: 1;
+  border: none;
+  color: inherit;
+
+  &:focus {
+    outline: none;
+  }
+}
+
 @mixin ul-reset {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
+
 @function figmaSize($size) {
-    @return calc((#{$size} / 1920) * 1450);
+  @return calc((#{$size} / 1920) * 1450);
 }
 
 // Type Size
 // ---------------------------------------------
 @function calculateRem($size) {
-    $remSize: calc($size / 16px);
-    @return #{$remSize}rem;
+  $remSize: calc($size / 16px);
+  @return #{$remSize}rem;
 }
+
 @mixin fontSize($size) {
-    // $adjusted: figmaSize($size);
-    $adjusted: $size;
-    font-size: $adjusted; // Fallback in px
-    font-size: calculateRem($adjusted);
+  // $adjusted: figmaSize($size);
+  $adjusted: $size;
+  font-size: $adjusted; // Fallback in px
+  font-size: calculateRem($adjusted);
 }
 
 // Breakpoints
 // ---------------------------------------------
 $breakpoints: (
-    xl: (
-        min-width: 1100px,
-    ),
-    l: (
-        max-width: 992px,
-    ),
-    m: (
-        max-width: 840px,
-    ),
-    s: (
-        max-width: 700px,
-    ),
-    xs: (
-        max-width: 480px,
-    ),
+  xl: (min-width: 1100px,
+  ),
+  l: (max-width: 992px,
+  ),
+  m: (max-width: 840px,
+  ),
+  s: (max-width: 700px,
+  ),
+  xs: (max-width: 480px,
+  ),
 );
+
 @mixin bp($name: 's') {
-    $value: map-get($breakpoints, $name);
-    @if map-has-key($breakpoints, $name) {
-        @media #{inspect(map-get($breakpoints, $name))} {
-            @content;
-        }
-    } @else {
-        @media (max-width: #{$name}) {
-            @content;
-        }
+  $value: map-get($breakpoints, $name);
+
+  @if map-has-key($breakpoints, $name) {
+    @media #{inspect(map-get($breakpoints, $name))} {
+      @content;
     }
+  }
+
+  @else {
+    @media (max-width: #{$name}) {
+      @content;
+    }
+  }
 }
 
 @mixin hover {
-    &:hover,
-    &:focus {
-        @content;
-    }
+
+  &:hover,
+  &:focus {
+    @content;
+  }
 }
 
 @mixin smaller-than($size) {
-    @media (max-width: $size) {
-        @content;
-    }
+  @media (max-width: $size) {
+    @content;
+  }
 }
+
 @mixin bigger-than($size) {
-    @media (min-width: $size) {
-        @content;
-    }
+  @media (min-width: $size) {
+    @content;
+  }
 }
 
 @mixin fade-on-ready($class: 'ready', $duration: 400ms) {
-    opacity: 0;
-    transition: opacity $duration ease;
+  opacity: 0;
+  transition: opacity $duration ease;
 
-    &.#{$class} {
-        opacity: 1;
-    }
+  &.#{$class} {
+    opacity: 1;
+  }
 }
 
 @mixin standard-button {
-    @include fontSize(18px);
-    font-family: var(--font-condensed);
-    font-weight: 600;
-    background: var(--black);
-    border: 1px solid var(--white);
-    border-radius: 7px;
-    color: var(--white);
-    padding: 0.4em 1em 0.2em;
-    box-sizing: border-box;
-    line-height: 1;
-    text-transform: uppercase;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 300ms ease, color 300ms ease;
+  @include fontSize(18px);
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  background: var(--black);
+  border: 1px solid var(--white);
+  border-radius: 7px;
+  color: var(--white);
+  padding: 0.4em 1em 0.2em;
+  box-sizing: border-box;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 300ms ease, color 300ms ease;
 
-    &.mono {
-        @include fontSize(12px);
-        font-family: var(--font-mono);
-        font-weight: 400;
-        padding-bottom: 0.5em;
-    }
-    &.inverse {
-        background: var(--white);
-        color: var(--black);
-        border-color: var(--white);
-    }
+  &.mono {
+    @include fontSize(12px);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    padding-bottom: 0.5em;
+  }
+
+  &.inverse {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+  }
+
+  &.transparent {
+    background: transparent;
+    color: var(--black);
+  }
+
+  &:not(:disabled):hover {
+    background: var(--white);
+    color: var(--black);
+
+    &.inverse,
     &.transparent {
-        background: transparent;
-        color: var(--black);
+      background: var(--black);
+      color: var(--white);
     }
-    &:not(:disabled):hover {
-        background: var(--white);
-        color: var(--black);
+  }
 
-        &.inverse,
-        &.transparent {
-            background: var(--black);
-            color: var(--white);
-        }
-    }
-    &:disabled {
-        pointer-events: none;
-        opacity: 0.25;
-    }
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.25;
+  }
 }
 
 @mixin noise-background {
-    &:before {
-        content: '';
-        display: block;
-        @include fill;
-        background: url('/images/loopable-noise.gif') var(--white) 0% 0% / 100px
-            100px repeat;
-        background-size: 100px;
-        opacity: 0.15;
-        z-index: -1;
-        pointer-events: none;
-    }
+  &:before {
+    content: '';
+    display: block;
+    @include fill;
+    background: url('/images/loopable-noise.gif') var(--white) 0% 0% / 100px 100px repeat;
+    background-size: 100px;
+    opacity: 0.15;
+    z-index: -1;
+    pointer-events: none;
+  }
 }
