@@ -3,7 +3,6 @@
 import { usePrismicio } from "@/components/PrismicioProvider";
 import Logo from "@/components/svg/logo.svg";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
-import Button from "@/components/ui/Button";
 import { useLenis } from "@/hooks/useLenis";
 import { useLogin } from "@privy-io/react-auth";
 import Link from "next/link";
@@ -11,6 +10,15 @@ import { animate, smooth } from "popmotion";
 import { useEffect, useRef, useState } from "react";
 
 import "./MarketingHeader.scss";
+
+function ConnectWallet() {
+  const { login } = useLogin();
+  return (
+    <button onClick={login} className="a-div mono">
+      Connect Wallet
+    </button>
+  );
+}
 
 function HamburgerIcon() {
   return (
@@ -25,53 +33,61 @@ function HamburgerIcon() {
 export default function MarketingHeader() {
   const { settings } = usePrismicio();
   const mainMenu = settings.main_menu || [];
-  const { login } = useLogin();
   const lenisRef = useLenis();
   const lenis = lenisRef?.current;
 
   const [wordmarkTranslate, setWordmarkTranslate] = useState(0);
   const [logoTranslate, setLogoTranslate] = useState(0);
-  const logoAnimation = useRef<{ stop: () => void } | null>(null);
+  const logoAnimationRef = useRef<{ stop: () => void } | null>(null);
   const currentValueRef = useRef(-0.00001);
 
   useEffect(() => {
     if (!lenis) return;
 
-    const smoothTransform = smooth(50);
-    logoAnimation.current = animate({
-      from: 0,
-      to: 0,
-      type: "spring",
-      stiffness: 2,
-      damping: 1,
-      mass: 0.5,
-      restSpeed: 0.01,
-      restDelta: 0.01,
-      onUpdate: (v: number) => {
-        currentValueRef.current = v;
-        const smoothedValue = smoothTransform(v);
-        setLogoTranslate(smoothedValue * -5);
-      },
-    });
+    const headerTranslate = 0; // TODO: implement useHeaderTranslate if needed
+    const smoothTransform = smooth(100);
+
+    const startLogoAnimation = () => {
+      if (logoAnimationRef.current) {
+        logoAnimationRef.current.stop();
+      }
+
+      logoAnimationRef.current = animate({
+        from: currentValueRef.current,
+        to: 0,
+        type: "spring",
+        stiffness: 20,
+        damping: 0.2,
+        restSpeed: 0.01,
+        restDelta: 0.01,
+        onUpdate: (v: number) => {
+          currentValueRef.current = v;
+          const smoothedValue = headerTranslate === 0 ? smoothTransform(v) : 0;
+          setLogoTranslate(smoothedValue * -10);
+        },
+      });
+    };
+
+    startLogoAnimation();
 
     const scrollHandler = (e: { animatedScroll: number; velocity: number }) => {
       setWordmarkTranslate(e.animatedScroll);
-      if (logoAnimation.current) {
-        logoAnimation.current.stop();
-        logoAnimation.current = animate({
+      // Apply velocity as acceleration by restarting animation with new velocity
+      if (logoAnimationRef.current) {
+        logoAnimationRef.current.stop();
+        logoAnimationRef.current = animate({
           from: currentValueRef.current,
           to: 0,
           type: "spring",
           stiffness: 20,
-          damping: 0.95,
-          mass: 1,
+          damping: 0.2,
           restSpeed: 0.01,
           restDelta: 0.01,
-          velocity: e.velocity * 1.5,
+          velocity: e.velocity * 3,
           onUpdate: (v: number) => {
             currentValueRef.current = v;
-            const smoothedValue = smoothTransform(v);
-            setLogoTranslate(smoothedValue * -5);
+            const smoothedValue = headerTranslate === 0 ? smoothTransform(v) : 0;
+            setLogoTranslate(smoothedValue * -10);
           },
         });
       }
@@ -81,8 +97,8 @@ export default function MarketingHeader() {
 
     return () => {
       lenis.off("scroll", scrollHandler);
-      if (logoAnimation.current) {
-        logoAnimation.current.stop();
+      if (logoAnimationRef.current) {
+        logoAnimationRef.current.stop();
       }
     };
   }, [lenis]);
@@ -98,26 +114,23 @@ export default function MarketingHeader() {
   return (
     <header className="site-marketing-header">
       <Link href="/" className="home-link">
-        <Logo className="svg-logo" style={logoStyle} />
+        <Logo className="svg-logo" id="headerLogo" style={logoStyle} />
         <WordmarkSvg className="svg-wordmark" style={wordmarkStyle} />
       </Link>
+
       <p className="home-copy desktop-only">{settings.home_copy}</p>
 
       <nav className="desktop-only">
         {mainMenu.map((item, index) => (
-          <Link key={index} href={item.link || "#"} className="a-div">
-            <Button variant="outline">{item.name || "Link"}</Button>
-          </Link>
+          <a key={index} href={item.link as string} className="a-div mono">
+            {item.name || "Link"}
+          </a>
         ))}
-        <div className="a-div">
-          <Button variant="outline" onClick={login}>
-            Connect
-          </Button>
-        </div>
+        <ConnectWallet />
       </nav>
 
       <div className="mobile-only nav">
-        <Button variant="outline">Connect Wallet</Button>
+        <ConnectWallet />
         <HamburgerIcon />
       </div>
     </header>
