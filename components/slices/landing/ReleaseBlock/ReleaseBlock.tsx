@@ -2,7 +2,7 @@
 
 import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
-import Web3Avatar from "@/components/slices/landing/StemsPlayer/Web3Avatar/Web3Avatar";
+import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import type { ReleaseCarouselItem } from "@/types/client";
 import { asText } from "@prismicio/client";
 import { useEffect, useMemo, useRef, useState } from "react";

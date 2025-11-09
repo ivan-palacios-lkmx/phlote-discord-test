@@ -1,9 +1,9 @@
 "use client";
 
-import Web3Username from "@/components/slices/landing/Directory/Web3Username";
 import { useMemo } from "react";
 
-import Web3Avatar from "./Web3Avatar/Web3Avatar";
+import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
+import Web3Username from "@/components/web3/Web3Username/Web3Username";
 
 interface SessionDetailTitleProps {
   session: {

@@ -2,7 +2,7 @@
 
 import SessionDetailTitle from "@/components/slices/landing/StemsPlayer/SessionDetailTitle";
 import VersionPlayer from "@/components/slices/landing/StemsPlayer/VersionPlayer";
-import Web3Avatar from "@/components/slices/landing/StemsPlayer/Web3Avatar/Web3Avatar";
+import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";

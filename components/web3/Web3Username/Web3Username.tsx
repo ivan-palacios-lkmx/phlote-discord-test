@@ -2,8 +2,10 @@
 
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
 
+import "./Web3Username.scss";
+
 /**
- * TODO: Review and finalize Web3Username component implementation
+ * Web3Username component
  *
  * This component:
  * 1. Accepts an `address` prop (string)
@@ -30,3 +32,4 @@ export default function Web3Username({ address, className = "" }: Web3UsernamePr
     </div>
   );
 }
+

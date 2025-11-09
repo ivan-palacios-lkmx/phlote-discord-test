@@ -10,8 +10,8 @@ import { useEffect, useRef, useState } from "react";
 
 import ADiv from "./ADiv/ADiv";
 import CopyButton from "./CopyButton";
-import Web3Avatar from "@/components/slices/landing/StemsPlayer/Web3Avatar/Web3Avatar";
-import Web3Username from "./Web3Username";
+import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
+import Web3Username from "@/components/web3/Web3Username/Web3Username";
 
 interface MemberProps {
   member: {
