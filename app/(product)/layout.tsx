@@ -3,6 +3,8 @@ import Footer from "@/components/site/footer/Footer";
 import ProductHeader from "@/components/site/header/ProductHeader";
 import { createClient } from "@/prismicio";
 
+import "./layout.scss";
+
 export default async function ProductLayout({ children }: { children: React.ReactNode }) {
   const client = createClient();
   const settings = await client.getSingle("settings");
@@ -10,7 +12,7 @@ export default async function ProductLayout({ children }: { children: React.Reac
   return (
     <PrismicioProvider settings={settings.data}>
       <ProductHeader />
-      <main className="min-w-0 noise-background relative">{children}</main>
+      <main className="front-page">{children}</main>
       <Footer />
     </PrismicioProvider>
   );

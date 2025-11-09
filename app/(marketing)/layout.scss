@@ -1,0 +1,7 @@
+@import '../assets/scss/vars';
+
+main.front-page {
+    position: relative;
+    @include noise-background;
+    padding-bottom: 150px;
+}

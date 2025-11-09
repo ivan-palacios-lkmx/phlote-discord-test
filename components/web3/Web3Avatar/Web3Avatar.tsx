@@ -22,4 +22,3 @@ export default function Web3Avatar({ address, className = "" }: Web3AvatarProps)
     </div>
   );
 }
-

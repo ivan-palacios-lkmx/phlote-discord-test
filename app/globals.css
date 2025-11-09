@@ -25,24 +25,7 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-.noise-background {
-  position: relative;
-  min-height: 100vh;
-}
 
-.noise-background::before {
-  content: "";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url("/images/loopable-noise.gif") #ffffff 0% 0% / 100px 100px repeat;
-  background-size: 100px;
-  opacity: 0.15;
-  pointer-events: none;
-}
 
 /* Application Form Styles */
 .slice-application-form form.success .left,
