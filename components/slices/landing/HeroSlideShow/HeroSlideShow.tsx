@@ -3,6 +3,7 @@
 import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
 import HeroSlideShowButton from "@/components/slices/landing/HeroSlideShowButton/HeroSlideShowButton";
 import { useHeroSlideShow } from "@/hooks/useHeroSlideShow";
+import useIntersect from "@/hooks/useIntersect";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { useRef } from "react";
@@ -26,6 +27,12 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
   const containerRef = useRef<HTMLElement>(null);
 
   const videoURL = currentVideoUrl || "";
+
+  useIntersect(containerRef, (isIntersecting) => {
+    if (isIntersecting) {
+      containerRef.current?.classList.add("intersected");
+    }
+  });
 
   return (
     <section className="slice-hero-slideshow" ref={containerRef}>
