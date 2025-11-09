@@ -1,10 +1,10 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import ConnectWallet from "@/components/site/header/ConnectWallet/ConnectWallet";
 import Logo from "@/components/svg/logo.svg";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import { useLenis } from "@/hooks/useLenis";
-import ConnectWallet from "@/components/site/header/ConnectWallet/ConnectWallet";
 import Link from "next/link";
 import { animate, smooth } from "popmotion";
 import { useEffect, useRef, useState } from "react";
