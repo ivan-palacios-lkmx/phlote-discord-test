@@ -1,3 +1,10 @@
+@import '../../../../../../app/assets/scss/vars';
+
 .filter-category-group {
-  // TODO: Add styles
+  padding: 26px 20px;
+  border-bottom: 1px solid rgba(#fff, 0.3);
+
+  h6 {
+    padding-bottom: 26px;
+  }
 }

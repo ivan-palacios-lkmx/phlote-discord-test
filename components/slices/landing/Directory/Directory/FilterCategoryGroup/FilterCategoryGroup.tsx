@@ -1,5 +1,7 @@
 "use client";
 
+import FilterCategoryRow from "@/components/slices/landing/Directory/Directory/FilterCategoryRow/FilterCategoryRow";
+
 import "./FilterCategoryGroup.scss";
 
 interface FilterCategoryGroupProps {
@@ -20,18 +22,15 @@ export default function FilterCategoryGroup({
   return (
     <div className="filter-category-group">
       <h6>{name}</h6>
-      <div className="categories">
-        {/* TODO: Implement filter category buttons */}
-        {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            className={`filter-category-button ${selectedValues.includes(option) ? "active" : ""}`}
-            onClick={() => onToggle(slug, option)}>
-            {option}
-          </button>
-        ))}
-      </div>
+      {options.map((value) => (
+        <FilterCategoryRow
+          key={value}
+          slug={slug}
+          value={value}
+          isSelected={selectedValues.includes(value)}
+          onToggle={onToggle}
+        />
+      ))}
     </div>
   );
 }
