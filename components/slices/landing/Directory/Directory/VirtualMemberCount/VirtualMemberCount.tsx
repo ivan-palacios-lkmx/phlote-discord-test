@@ -4,8 +4,6 @@ import uniq from "lodash/uniq";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
-import "./VirtualMemberCount.scss";
-
 interface VirtualMemberCountProps {
   term: string;
   value: string;

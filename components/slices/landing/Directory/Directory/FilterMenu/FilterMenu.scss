@@ -1,3 +1,5 @@
+@import '../../../../../../app/assets/scss/vars';
+
 .filter-menu {
   @include fill(fixed);
   background: rgba(#000, 0.3);
