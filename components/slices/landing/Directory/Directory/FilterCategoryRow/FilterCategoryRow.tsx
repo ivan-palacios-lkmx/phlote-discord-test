@@ -1,5 +1,6 @@
 "use client";
 
+import VirtualSessionCount from "@/components/slices/landing/Directory/Directory/VirtualSessionCount/VirtualSessionCount";
 import CloseIcon from "@/components/svg/close.svg";
 import without from "lodash/without";
 import Link from "next/link";
@@ -56,15 +57,11 @@ export default function FilterCategoryRow({ slug, value, children }: FilterCateg
         <CloseIcon />
       </Link>
 
-      {/* Count - TODO: Implement VirtualSessionCount and VirtualMemberCount */}
+      {/* Count */}
       {isSessions ? (
-        <div className="virtual-session-count">
-          {/* <VirtualSessionCount term={slug} value={value} /> */}
-        </div>
+        <VirtualSessionCount term={slug} value={value} />
       ) : (
-        <div className="virtual-member-count">
-          {/* <VirtualMemberCount term={slug} value={value} /> */}
-        </div>
+        <div className="virtual-member-count">{/* TODO: Implement VirtualMemberCount */}</div>
       )}
     </div>
   );
