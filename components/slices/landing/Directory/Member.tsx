@@ -2,9 +2,9 @@
 
 // import { useClientDoc } from "@/hooks/useClientDoc";
 // import { db } from "@/lib/firebase";
+import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
-import { PrismicImage } from "@prismicio/react";
 // import { doc } from "firebase/firestore";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -158,7 +158,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
             <Web3Avatar address={member.objectID} />
           ) : defaultUserImage ? (
             <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
-              <PrismicImage field={defaultUserImage as never} className="w-full h-full" />
+              <PrismicImage field={defaultUserImage as never} />
             </div>
           ) : null}
 

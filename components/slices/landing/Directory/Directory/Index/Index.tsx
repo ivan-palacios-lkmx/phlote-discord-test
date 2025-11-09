@@ -35,7 +35,72 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
   ];
 
   // TODO: Replace with useMembers hook
-  const members: Array<{ objectID: string; [key: string]: unknown }> = [];
+  const members: Array<{ objectID: string; [key: string]: unknown }> = [
+    {
+      objectID: "0x1234567890123456789012345678901234567890",
+      title: "Alice Johnson",
+      isPublic: true,
+      isAdmin: true,
+      isCreator: false,
+      tags: ["React", "NYC"],
+    },
+    {
+      objectID: "0x2345678901234567890123456789012345678901",
+      title: "Bob Smith",
+      isPublic: true,
+      isAdmin: false,
+      isCreator: true,
+      tags: ["Vue", "LA"],
+    },
+    {
+      objectID: "0x3456789012345678901234567890123456789012",
+      title: "Charlie Brown",
+      isPublic: true,
+      isAdmin: false,
+      isCreator: false,
+      tags: ["Node.js", "Chicago"],
+    },
+    {
+      objectID: "0x4567890123456789012345678901234567890123",
+      title: "Diana Prince",
+      isPublic: true,
+      isAdmin: false,
+      isCreator: true,
+      tags: ["Python", "SF"],
+    },
+    {
+      objectID: "0x5678901234567890123456789012345678901234",
+      title: "Eve Wilson",
+      isPublic: true,
+      isAdmin: false,
+      isCreator: false,
+      tags: ["React", "NYC"],
+    },
+    {
+      objectID: "0x6789012345678901234567890123456789012345",
+      title: "Frank Miller",
+      isPublic: true,
+      isAdmin: true,
+      isCreator: true,
+      tags: ["Vue", "LA"],
+    },
+    {
+      objectID: "0x7890123456789012345678901234567890123456",
+      title: "Grace Lee",
+      isPublic: true,
+      isAdmin: false,
+      isCreator: false,
+      tags: ["Node.js", "SF"],
+    },
+    {
+      objectID: "0x8901234567890123456789012345678901234567",
+      title: "Henry Davis",
+      isPublic: true,
+      isAdmin: false,
+      isCreator: true,
+      tags: ["Python", "Chicago"],
+    },
+  ];
 
   // Get filter values from URL
   const types = useMemo(() => {
