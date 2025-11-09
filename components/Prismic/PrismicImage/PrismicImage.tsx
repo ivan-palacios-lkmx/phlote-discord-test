@@ -1,6 +1,7 @@
 "use client";
 
 import type { ImageField } from "@prismicio/client";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 import "./PrismicImage.scss";
@@ -153,9 +154,8 @@ export default function PrismicImage({
         .join(" ")}
       style={styles}>
       <InnerWrapper className="image-sizer" style={wrapperStyles}>
-        <img
+        <Image
           src={cmpUrl}
-          srcSet={cmpSrcset}
           width={cmpWidth > 0 ? cmpWidth : undefined}
           height={cmpHeight > 0 ? cmpHeight : undefined}
           alt={imageAlt}
