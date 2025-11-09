@@ -1,9 +1,9 @@
 "use client";
 
+import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
 import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview";
 import PlayIcon from "@/components/svg/play.svg";
 import { HeroSlideShowSlide } from "@/types/client";
-import { PrismicNextImage } from "@prismicio/next";
 
 import "./HeroSlideShowButton.scss";
 
@@ -26,7 +26,7 @@ export default function HeroSlideShowButton({
   return (
     <div className={`slideshow-button ${active ? "active" : ""}`} onClick={onClick}>
       <div className="img-wrap">
-        {slide.image && <PrismicNextImage field={slide.image} fallbackAlt="" />}
+        {slide.image && <PrismicImage field={slide.image} />}
         <span>{active ? <span>Playing</span> : <PlayIcon className="svg-play" />}</span>
       </div>
       <div className="title desktop-only">

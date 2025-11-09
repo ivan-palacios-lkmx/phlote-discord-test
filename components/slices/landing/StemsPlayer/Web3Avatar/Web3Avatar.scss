@@ -1,0 +1,15 @@
+@import '../../../../../app/assets/scss/vars';
+
+.web3-avatar {
+  overflow: hidden;
+  position: relative;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
+}

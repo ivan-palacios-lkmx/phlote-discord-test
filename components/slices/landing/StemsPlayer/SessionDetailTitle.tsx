@@ -3,7 +3,7 @@
 import Web3Username from "@/components/slices/landing/Directory/Web3Username";
 import { useMemo } from "react";
 
-import Web3Avatar from "./Web3Avatar";
+import Web3Avatar from "./Web3Avatar/Web3Avatar";
 
 interface SessionDetailTitleProps {
   session: {
