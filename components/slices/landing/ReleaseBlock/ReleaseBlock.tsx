@@ -1,7 +1,7 @@
 "use client";
 
 import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
-import ADiv from "@/components/slices/landing/Directory/ADiv";
+import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
 import Web3Avatar from "@/components/slices/landing/StemsPlayer/Web3Avatar/Web3Avatar";
 import type { ReleaseCarouselItem } from "@/types/client";
 import { asText } from "@prismicio/client";
@@ -102,15 +102,18 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
   const creators = useMemo(() => {
     if (!release.creators) return [];
     if (Array.isArray(release.creators)) {
-      return release.creators;
+      return release.creators as string[];
     }
     // If it's a RichTextField, extract text
     try {
-      const text = asText(release.creators);
-      return text
-        .split("\n")
-        .map((s) => s.trim())
-        .filter(Boolean);
+      const text = asText(release.creators as never) as string;
+      if (typeof text === "string") {
+        return text
+          .split("\n")
+          .map((s: string) => s.trim())
+          .filter(Boolean);
+      }
+      return [];
     } catch {
       return [];
     }

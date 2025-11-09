@@ -2,7 +2,7 @@ import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingF
 import type { SliceComponentProps } from "@prismicio/react";
 import type { ComponentType } from "react";
 
-import ApplicationForm from "./landing/ApplicationForm";
+import ApplicationForm from "./landing/ApplicationForm/ApplicationForm";
 import Directory from "./landing/Directory/Directory";
 import Hero from "./landing/Hero/Hero";
 import HeroSlideShow from "./landing/HeroSlideShow/HeroSlideShow";

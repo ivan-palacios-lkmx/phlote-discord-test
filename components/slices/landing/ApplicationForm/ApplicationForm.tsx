@@ -1,16 +1,14 @@
 "use client";
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import Button from "@/components/ui/Button";
-import InputFormField from "@/components/ui/InputFormField";
-import TextAreaFormField from "@/components/ui/TextAreaFormField";
+import MultiTrackUpload from "@/components/slices/landing/MultiTrackUpload";
 import { db } from "@/lib/firebase";
 import type { ApplicationFormSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
 import { addDoc, collection } from "firebase/firestore";
 import { useMemo, useState } from "react";
 
-import MultiTrackUpload from "./MultiTrackUpload";
+import "./ApplicationForm.scss";
 
 interface Track {
   id: string;
@@ -37,7 +35,14 @@ export default function ApplicationForm({
   const hasErrors = useMemo(() => tracks.some((t) => !!t.error), [tracks]);
 
   const canSubmit = useMemo(
-    () => firstName && lastName && email && city && ethAddress && tracks.length > 0 && !hasErrors,
+    () =>
+      firstName &&
+      lastName &&
+      email &&
+      city &&
+      ethAddress &&
+      tracks.length > 0 &&
+      !hasErrors,
     [firstName, lastName, email, city, ethAddress, tracks.length, hasErrors],
   );
 
@@ -85,13 +90,13 @@ export default function ApplicationForm({
   };
 
   return (
-    <section className="slice-application-form mt-[100px] mb-[100px] max-w-[1600px] mx-auto relative z-10">
-      <form onSubmit={onSubmit}>
-        <div className={`grid grid-cols-2 gap-0 gap-x-[30px] ${success ? "success" : ""}`}>
-          {/* Left Fields */}
-          <div className="left grid grid-cols-2 gap-[30px] gap-y-[30px] gap-x-[15px]">
-            <InputFormField
-              label="First Name*"
+    <section className="slice-application-form contained">
+      <form className={success ? "success" : ""} onSubmit={onSubmit}>
+        {/* Left Fields */}
+        <div className="left">
+          <label>
+            <span>First Name*</span>
+            <input
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="John"
@@ -100,9 +105,11 @@ export default function ApplicationForm({
               required
               disabled={success}
             />
+          </label>
 
-            <InputFormField
-              label="Last Name*"
+          <label>
+            <span>Last Name*</span>
+            <input
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Doe"
@@ -111,9 +118,11 @@ export default function ApplicationForm({
               required
               disabled={success}
             />
+          </label>
 
-            <InputFormField
-              label="Email Address*"
+          <label>
+            <span>Email Address*</span>
+            <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
@@ -122,9 +131,11 @@ export default function ApplicationForm({
               required
               disabled={success}
             />
+          </label>
 
-            <InputFormField
-              label="City*"
+          <label>
+            <span>City*</span>
+            <input
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Los Angeles"
@@ -133,22 +144,25 @@ export default function ApplicationForm({
               required
               disabled={success}
             />
+          </label>
 
-            <TextAreaFormField
-              label="Additional Information"
-              containerClassName="info col-span-2"
+          <label className="info">
+            <span>Additional Information</span>
+            <textarea
               value={info}
               onChange={(e) => setInfo(e.target.value)}
               id="info"
               maxLength={500}
               disabled={success}
             />
-          </div>
+          </label>
+        </div>
 
-          {/* Right Fields */}
-          <div className="right flex flex-col gap-[30px]">
-            <InputFormField
-              label="Link to Your Work"
+        {/* Right Fields */}
+        <div className="right">
+          <label>
+            <span>Link to Your Work</span>
+            <input
               value={workLink}
               onChange={(e) => setWorkLink(e.target.value)}
               placeholder="https://my-portfolio.com"
@@ -156,9 +170,11 @@ export default function ApplicationForm({
               maxLength={100}
               disabled={success}
             />
+          </label>
 
-            <InputFormField
-              label="Wallet Address / ENS*"
+          <label>
+            <span>Wallet Address / ENS*</span>
+            <input
               value={ethAddress}
               onChange={(e) => setEthAddress(e.target.value)}
               placeholder="phlote.eth"
@@ -167,37 +183,27 @@ export default function ApplicationForm({
               required
               disabled={success}
             />
+          </label>
 
-            <div className="upload">
-              <label className="block text-[18px] leading-none font-semibold uppercase">
-                Upload Your Music*
-              </label>
-              <MultiTrackUpload value={tracks} onChange={setTracks}>
-                <span>Drop Tracks (.wav or .mp3)</span>
-              </MultiTrackUpload>
-            </div>
+          <div className="upload">
+            <label>Upload Your Music*</label>
+            <MultiTrackUpload value={tracks} onChange={setTracks}>
+              <span>Drop Tracks (.wav or .mp3)</span>
+            </MultiTrackUpload>
           </div>
         </div>
 
-        <div className="w-[270px] mx-auto mt-[150px] relative">
-          <Button
-            variant="btn"
-            className="px-[15px] w-full box-border text-[26px]"
-            type="submit"
-            disabled={!canSubmit || loading}>
+        <div className="button-row">
+          <button className="btn" type="submit" disabled={!canSubmit}>
             {loading ? (
-              <LoadingSpinnerIcon className="h-[1em] w-[1em] mx-auto" />
+              <LoadingSpinnerIcon className="loading-spinner" />
             ) : success ? (
               <span>Thank You</span>
             ) : (
               <span>Submit</span>
             )}
-          </Button>
-          {error && (
-            <p className="error text-red-600 absolute left-1/2 top-0 transform -translate-x-1/2 -translate-y-full mt-0">
-              {error}
-            </p>
-          )}
+          </button>
+          {error && <p className="error">{error}</p>}
         </div>
       </form>
     </section>

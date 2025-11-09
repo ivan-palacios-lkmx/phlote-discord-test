@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import ADiv from "./ADiv";
+import ADiv from "./ADiv/ADiv";
 import CopyButton from "./CopyButton";
 import Web3Avatar from "./Web3Avatar";
 import Web3Username from "./Web3Username";
