@@ -1,0 +1,85 @@
+.filter-menu {
+  @include fill(fixed);
+  background: rgba(#000, 0.3);
+
+  .filters {
+    position: fixed;
+    background: var(--black);
+    color: var(--white);
+    top: var(--margin);
+    right: var(--margin);
+    border-radius: 7px;
+    max-height: calc(100vh - (2 * var(--margin)));
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    --border-color: rgba(255, 255, 255, 0.3);
+
+    h6 {
+      font-weight: 500;
+      margin: 0;
+      font-family: var(--font-condensed);
+    }
+
+    .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: figmaSize(90px);
+      padding: 26px 20px;
+      border-bottom: 1px solid var(--border-color);
+
+      button {
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        transition: background 300ms ease, color 300ms ease;
+
+        &:hover {
+          background: var(--white);
+          color: var(--black);
+        }
+      }
+
+      .svg-close {
+        width: 10px;
+        height: 10px;
+        display: block;
+      }
+    }
+  }
+
+  &.inverse .filters {
+    background: var(--white);
+    color: var(--black);
+    --border-color: rgba(0, 0, 0, 0.3);
+
+    .title button:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .filter-tag-group {
+      border-color: rgba(0, 0, 0, 0.3);
+
+      button,
+      .filter-tag-button {
+        background: var(--white);
+        color: var(--black);
+        border-color: var(--black);
+
+        &:hover,
+        &.active {
+          background: var(--black);
+          color: var(--white);
+        }
+      }
+    }
+  }
+
+  @include bp(m) {
+    .filters {
+      top: var(--margin);
+      left: var(--margin);
+    }
+  }
+}
