@@ -4,7 +4,7 @@ import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { useMemo } from "react";
 
 import "./ConnectWallet.scss";
-import Web3Avatar from "../Web3Avatar/Web3Avatar";
+import Web3Avatar from "@/components/slices/landing/StemsPlayer/Web3Avatar/Web3Avatar";
 import Web3Username from "../Web3Username/Web3Username";
 
 // TODO: Create SVG Profile icon component
