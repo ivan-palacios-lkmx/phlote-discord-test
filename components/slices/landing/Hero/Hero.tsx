@@ -1,7 +1,8 @@
 "use client";
 
+import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
+import useIntersect from "@/hooks/useIntersect";
 import type { HeroSlice } from "@/types/client";
-import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -27,24 +28,16 @@ export default function Hero({ slice }: SliceComponentProps<HeroSlice>) {
     obs.observe(containerRef.current);
     return () => obs.disconnect();
   }, []);
-
+  useIntersect(containerRef, (isIntersecting) => {
+    if (isIntersecting) {
+      containerRef.current?.classList.add("intersected");
+    }
+  });
   return (
-    <section
-      ref={containerRef as React.RefObject<HTMLElement>}
-      className={`slice-hero ${intersected ? "intersected" : ""}`}>
+    <section ref={containerRef as React.RefObject<HTMLElement>} className="slice-hero">
       {background_image && (
         <>
-          <PrismicNextImage field={background_image} className="prismic-image" fallbackAlt="" />
-          {videoURL && (
-            <video
-              className="absolute inset-0 w-full h-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline>
-              <source src={videoURL} type="video/mp4" />
-            </video>
-          )}
+          <PrismicImage field={background_image} videoSrc={videoURL} />
         </>
       )}
 
