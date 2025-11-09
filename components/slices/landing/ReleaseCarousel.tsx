@@ -5,7 +5,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { PrismicRichText } from "@prismicio/react";
 import { useEffect, useRef, useState } from "react";
 
-import ReleaseBlock from "./ReleaseBlock";
+import ReleaseBlock from "./ReleaseBlock/ReleaseBlock";
 
 export default function ReleaseCarousel({ slice }: SliceComponentProps<ReleaseCarouselSlice>) {
   const [ready, setReady] = useState(false);

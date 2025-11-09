@@ -1,0 +1,161 @@
+@import '../../../../app/assets/scss/vars';
+@import '../../../../app/assets/scss/easings';
+
+.release-block {
+  transition: opacity 400ms ease, transform 1.5s $easeOutCirc;
+
+  // Intersect animation
+  &:not(.visible) {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+
+  .image-wrap {
+    position: relative;
+
+    .prismic-image {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .gradient-overlay {
+      @include fill;
+      background-image: linear-gradient(rgba(#000, 0), rgba(#000, 0.65));
+    }
+
+    .release-data {
+      @include fill;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: var(--white);
+      padding: 40px var(--margin);
+    }
+
+    .avatar-area {
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      grid-gap: 10px;
+      display: grid;
+
+      > * {
+        min-width: 0;
+      }
+    }
+
+    .avatar-stack {
+      display: flex;
+
+      .avatar-img {
+        height: figmaSize(45px);
+        width: figmaSize(45px);
+        border-radius: 50%;
+        border: 2px solid var(--white);
+        overflow: hidden;
+        margin-left: -10px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        &.avatar-count {
+          background: rgba(#000, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--white);
+          @include fontSize(12px);
+          font-weight: 600;
+        }
+      }
+    }
+
+    .release-audio-player {
+      margin-top: 20px;
+      grid-template-columns: auto 1fr;
+      grid-gap: 10px;
+      display: grid;
+
+      .play-pause {
+        border: 1px solid var(--white);
+        width: figmaSize(60px);
+        height: figmaSize(60px);
+        background: rgba(#000, 0.35);
+        border-radius: 100%;
+        color: var(--white);
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        @include button-reset;
+        cursor: pointer;
+
+        .svg-play {
+          width: 15px;
+          height: auto;
+        }
+
+        .svg-pause {
+          width: 10px;
+          height: auto;
+        }
+      }
+
+      .public-track-preview {
+        height: figmaSize(60px);
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+
+        .track-preview-bar {
+          width: 100%;
+          height: 2px;
+          background: rgba(255, 255, 255, 0.3);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .track-preview-progress {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          background: var(--white);
+          transition: width 100ms linear;
+        }
+      }
+    }
+  }
+
+  h6 {
+    margin: 15px 0;
+    @include fontSize(12px);
+  }
+
+  h3 {
+    margin: 15px 0;
+    font-family: var(--font-condensed);
+  }
+
+  p {
+    @include fontSize(12px);
+    text-transform: none;
+    max-width: 400px;
+    margin: 15px 0;
+  }
+
+  .a-div {
+    @include standard-button;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  @include bp(m) {
+    .a-div {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.5em 1em;
+    }
+  }
+}
