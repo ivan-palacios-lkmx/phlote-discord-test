@@ -1,0 +1,51 @@
+@import '../../../app/assets/scss/vars';
+
+.prismic-image {
+  position: relative;
+  width: 100%;
+
+  .image-sizer {
+    overflow: hidden;
+    padding-bottom: var(--aspect);
+
+    & > * {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+    }
+  }
+
+  // fill space
+  &.fill-space {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+
+    .image-sizer {
+      padding-bottom: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  // fits
+  &.fit-cover .image-sizer > * {
+    object-fit: cover;
+  }
+
+  &.fit-contain .image-sizer > * {
+    object-fit: contain;
+  }
+
+  /* Hide background image on video load */
+  &.video-loaded img {
+    opacity: 0;
+  }
+}
