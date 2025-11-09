@@ -1,3 +1,99 @@
+@import '../../../../../../app/assets/scss/vars';
+
 .sort-menu {
-  // TODO: Add styles
+  position: relative;
+  min-width: 150px;
+
+  .option-wrap {
+    position: absolute;
+    top: calc(100% - 7px);
+    background: var(--white);
+    border: solid var(--black);
+    border-width: 0 1px 1px;
+    border-radius: 0 0 7px 7px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: background 500ms ease, color 500ms ease, max-height 200ms ease, opacity 200ms ease;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+
+    &.open {
+      max-height: 500px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  button,
+  label {
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  button {
+    @include fontSize(18px);
+    font-family: var(--font-condensed);
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0.4em 0.75em;
+    background: var(--white);
+    border: 1px solid var(--black);
+    border-radius: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 500ms ease, color 500ms ease;
+
+    span {
+      position: relative;
+      bottom: -1px;
+    }
+
+    .svg-chevron {
+      width: 9px;
+      height: auto;
+      transition: transform 300ms;
+    }
+  }
+
+  label {
+    display: block;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    padding: 0 1em;
+    margin-bottom: 9px;
+
+    .svg-check {
+      margin-right: 2px;
+    }
+
+    &:not(.active) .svg-check {
+      display: none;
+    }
+  }
+
+  li:first-child label {
+    margin-top: 17px;
+  }
+
+  input {
+    position: absolute;
+  }
+
+  &.open {
+
+    button,
+    .option-wrap {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .svg-chevron {
+      transform: rotate(180deg);
+    }
+  }
 }
