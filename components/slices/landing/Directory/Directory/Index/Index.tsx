@@ -1,6 +1,7 @@
 "use client";
 
 import ActiveFilterContainer from "@/components/containers/ActiveFilterContainer/ActiveFilterContainer";
+import FilterMenu from "@/components/slices/landing/Directory/Directory/FilterMenu/FilterMenu";
 import Member from "@/components/slices/landing/Directory/Member";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
