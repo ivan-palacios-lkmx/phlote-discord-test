@@ -13,7 +13,22 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       "*.svg": {
-        loaders: ["@svgr/webpack"],
+        loaders: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgoConfig: {
+                plugins: [
+                  {
+                    name: "removeViewBox",
+                    active: false,
+                  },
+                ],
+              },
+              dimensions: false,
+            },
+          },
+        ],
         as: "*.js",
       },
     },
@@ -23,7 +38,22 @@ const nextConfig: NextConfig = {
     config.module.rules.push({
       test: /\.svg$/i,
       issuer: /\.[jt]sx?$/,
-      use: ["@svgr/webpack"],
+      use: [
+        {
+          loader: "@svgr/webpack",
+          options: {
+            svgoConfig: {
+              plugins: [
+                {
+                  name: "removeViewBox",
+                  active: false,
+                },
+              ],
+            },
+            dimensions: false,
+          },
+        },
+      ],
     });
     return config;
   },
