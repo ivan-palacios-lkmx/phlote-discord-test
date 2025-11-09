@@ -16,9 +16,16 @@ interface TrackUploadProps {
   onProcessed: (hash: string) => void;
   onError: (error: string) => void;
   children?: React.ReactNode;
+  className?: string;
 }
 
-export default function TrackUpload({ track, onProcessed, onError, children }: TrackUploadProps) {
+export default function TrackUpload({
+  track,
+  onProcessed,
+  onError,
+  children,
+  className = "",
+}: TrackUploadProps) {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
@@ -43,7 +50,7 @@ export default function TrackUpload({ track, onProcessed, onError, children }: T
   }, [track.id]);
 
   return (
-    <div className="flex-1 flex justify-center items-center">
+    <div className={`progress ${className}`.trim()}>
       {children}
       {processing && <span className="ml-2 text-xs opacity-70">Processing...</span>}
     </div>

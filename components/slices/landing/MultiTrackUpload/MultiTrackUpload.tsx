@@ -1,12 +1,11 @@
 "use client";
 
+import Tooltip from "@/components/slices/landing/Tooltip";
+import TrackUpload from "@/components/slices/landing/TrackUpload";
 import CloseIcon from "@/components/svg/close.svg";
 import DragIcon from "@/components/svg/drag.svg";
 import { kebabCase, startCase } from "lodash";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-
-import Tooltip from "./Tooltip";
-import TrackUpload from "./TrackUpload";
 
 interface Track {
   id: string;
@@ -16,9 +15,15 @@ interface Track {
   hash?: string;
 }
 
+interface FormattedTrack {
+  id: string;
+  name: string;
+  error?: string;
+}
+
 interface MultiTrackUploadProps {
   value: Track[];
-  onChange: (tracks: Track[]) => void;
+  onChange: (tracks: FormattedTrack[]) => void;
   children: ReactNode;
   errors?: Array<{ title?: string; message?: string }>;
 }
@@ -51,17 +56,15 @@ export default function MultiTrackUpload({
   }, []);
 
   // Emit formatted tracks to parent when tracks change
-  useEffect(() => {
-    const formattedTracks = tracks.map((t) => ({
-      id: t.hash || t.id,
-      name: t.name,
-      file: t.file,
-      error: t.error,
-    }));
+  const formattedTracks = useMemo<FormattedTrack[]>(
+    () => tracks.map((t) => ({ name: t.name, id: t.hash || t.id, error: t.error })),
+    [tracks],
+  );
 
+  useEffect(() => {
     onChange(formattedTracks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracks]);
+  }, [formattedTracks]);
 
   const hasError = (index: number) => {
     return !!(errors[index] || tracks[index]?.error);
@@ -195,87 +198,63 @@ export default function MultiTrackUpload({
   };
 
   return (
-    <div className="mt-[15px]">
-      <div
-        ref={areaRef}
-        onClick={handleClick}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={`
-          multi-track-upload
-          rounded-[7px] border-dashed h-[120px] text-center font-mono overflow-auto overscroll-contain
-          ${isOverDropZone ? "hovered border-black/20 text-black/35" : "border-black/20"}
-          ${tracks.length > 0 ? "has-files border-solid border-black/20 cursor-default" : "cursor-pointer border-[0.5px] bg-white/5"}
-          transition-colors
-        `}>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="audio/wav,audio/mp3,audio/mpeg"
-          multiple
-          onChange={handleFileInputChange}
-          className="hidden"
-        />
+    <div
+      className={`multi-track-upload ${isOverDropZone ? "hovered" : ""} ${tracks.length > 0 ? "has-files" : ""}`}
+      ref={areaRef}
+      onClick={handleClick}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      data-lenis-prevent>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="audio/wav,audio/mp3,audio/mpeg"
+        multiple
+        onChange={handleFileInputChange}
+        className="hidden"
+      />
 
-        {tracks.length === 0 ? (
-          <div className="flex items-center justify-center h-full">{children}</div>
-        ) : (
-          <div className="flex flex-col p-2">
-            {tracks.map((track, i) => (
-              <div
-                key={`${track.name}-${i}`}
-                draggable
-                onDragStart={() => handleTrackDragStart(i)}
-                onDragOver={(e) => handleTrackDragOver(e, i)}
-                onDragLeave={handleTrackDragLeave}
-                onDrop={(e) => handleTrackDrop(e, i)}
-                className={`
-                  flex items-center justify-between gap-[10px] mb-[3px] pb-[3px] px-[10px]
-                  border-b border-black/10
-                  ${hasError(i) ? "text-red-600" : ""}
-                  ${draggedIndex === i ? "opacity-50" : ""}
-                  ${dragOverIndex === i ? "border-black/30" : ""}
-                  ${i === tracks.length - 1 ? "border-none" : ""}
-                `}>
-                <button
-                  type="button"
-                  className="relative top-[-0.1em] cursor-grab active:cursor-grabbing"
-                  onClick={(e) => e.stopPropagation()}>
-                  <DragIcon className="h-4 w-4" />
-                </button>
+      {!tracks.length ? (
+        <div className="centered">{children || <span>Drop Stems (.wav or .mp3)</span>}</div>
+      ) : (
+        <div className="draggable">
+          {tracks.map((track, i) => (
+            <div
+              key={`${track.name}-${i}`}
+              className={`uploaded-track ${hasError(i) ? "has-error" : ""}`}
+              draggable
+              onDragStart={() => handleTrackDragStart(i)}
+              onDragOver={(e) => handleTrackDragOver(e, i)}
+              onDragLeave={handleTrackDragLeave}
+              onDrop={(e) => handleTrackDrop(e, i)}
+              onClick={(e) => e.stopPropagation()}>
+              <button type="button" className="drag">
+                <DragIcon />
+              </button>
 
-                <div className="flex-1 relative group">
-                  <TrackUpload
-                    track={track}
-                    onProcessed={(hash) => handleTrackProcessed(i, hash)}
-                    onError={(error) => handleTrackError(i, error)}>
-                    <span>{track.name}</span>
-                  </TrackUpload>
-                  {hasError(i) && (
-                    <Tooltip>
-                      <p className="font-semibold mb-1">{errors[i]?.title || "Error"}</p>
-                      <p>{errors[i]?.message || track.error || "Unknown error"}</p>
-                    </Tooltip>
-                  )}
-                </div>
-
-                {(track.hash || track.error) && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemoveTrack(i);
-                    }}
-                    className="close">
-                    <CloseIcon className="h-[0.7em] w-[0.7em]" />
-                  </button>
+              <TrackUpload
+                className="progress"
+                track={track}
+                onProcessed={(hash) => handleTrackProcessed(i, hash)}
+                onError={(error) => handleTrackError(i, error)}>
+                {hasError(i) && (
+                  <Tooltip className="error">
+                    <p className="title">{errors[i]?.title}</p>
+                    <p>{errors[i]?.message}</p>
+                  </Tooltip>
                 )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+              </TrackUpload>
+
+              {(track.hash || track.error) && (
+                <button type="button" className="close" onClick={() => onRemoveTrack(i)}>
+                  <CloseIcon />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

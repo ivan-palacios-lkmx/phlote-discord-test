@@ -1,7 +1,7 @@
 "use client";
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import MultiTrackUpload from "@/components/slices/landing/MultiTrackUpload";
+import MultiTrackUpload from "@/components/slices/landing/MultiTrackUpload/MultiTrackUpload";
 import { db } from "@/lib/firebase";
 import type { ApplicationFormSlice } from "@/types/client";
 import type { SliceComponentProps } from "@prismicio/react";
@@ -13,7 +13,6 @@ import "./ApplicationForm.scss";
 interface Track {
   id: string;
   name: string;
-  file: File;
   error?: string;
 }
 
