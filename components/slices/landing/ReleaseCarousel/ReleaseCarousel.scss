@@ -1,0 +1,58 @@
+@import '../../../../app/assets/scss/vars';
+
+.slice-release-carousel {
+  margin-top: 150px;
+  margin-bottom: 150px;
+  @include fade-on-ready;
+  width: 100vw;
+
+  .entry {
+    max-width: 1000px;
+    margin: auto;
+    text-align: center;
+    margin-bottom: 90px;
+
+    p {
+      max-width: 750px;
+      margin: auto;
+      font-weight: 600;
+    }
+
+    a {
+      @include standard-button;
+      display: inline-block;
+      margin-top: 30px;
+    }
+  }
+
+  .carousel {
+    overflow: hidden;
+    cursor: grab;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    .release-block {
+      width: 30vw;
+      margin: var(--margin);
+    }
+  }
+
+  @include bp(m) {
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+    .entry {
+      margin-bottom: 40px;
+    }
+
+    .carousel .release-block {
+      width: 80vw;
+    }
+  }
+}
