@@ -48,26 +48,24 @@ interface AddressDoc {
 export function useWeb3Identity(address: string | null | undefined) {
   const [addressDoc, setAddressDoc] = useState<AddressDoc | null>(null);
 
-  // Resolve FB identity doc, clean address
   const cleanAddress = useMemo(() => {
     const addy = address || "";
     return checkAddress(addy);
   }, [address]);
 
-  const addressDocRef = useMemo(() => {
+  const addressDocumentReference = useMemo(() => {
     return cleanAddress ? doc(db, "addresses", cleanAddress) : null;
   }, [cleanAddress]);
 
-  // Create if needed, and listen to snapshot
   useEffect(() => {
-    if (!addressDocRef) {
+    if (!addressDocumentReference) {
       setAddressDoc(null);
       return;
     }
 
-    const unsubscribe = onSnapshot(addressDocRef, async (snap) => {
+    const unsubscribe = onSnapshot(addressDocumentReference, async (snap) => {
       if (!snap.exists()) {
-        await setDoc(addressDocRef, {
+        await setDoc(addressDocumentReference, {
           created: new Date(),
           shouldUpdate: true,
         });
@@ -77,41 +75,39 @@ export function useWeb3Identity(address: string | null | undefined) {
     });
 
     return () => unsubscribe();
-  }, [addressDocRef]);
+  }, [addressDocumentReference]);
 
   const shortAddress = useMemo(() => {
     if (!cleanAddress) return "";
     return cleanAddress.substring(0, 6) + "..." + cleanAddress.substring(cleanAddress.length - 4);
   }, [cleanAddress]);
 
-  // Resolve username
   const username = useMemo(() => {
-    const ens = addressDoc?.ens?.name;
-    let zora = addressDoc?.zora?.zoraUsername;
-    let os = addressDoc?.openSea?.osUsername;
+    const ensUsername = addressDoc?.ens?.name;
+    let zoraUsername = addressDoc?.zora?.zoraUsername;
+    let openSeaUsername = addressDoc?.openSea?.osUsername;
 
-    zora = zora ? `${zora}` : "";
-    os = os ? `${os}` : "";
+    zoraUsername = zoraUsername ? `${zoraUsername}` : "";
+    openSeaUsername = openSeaUsername ? `${openSeaUsername}` : "";
 
-    const un = ens || os || zora || shortAddress;
-    return un;
+    const username = ensUsername || openSeaUsername || zoraUsername || shortAddress;
+    return username;
   }, [addressDoc, shortAddress]);
 
-  const { settings: prisSettings } = usePrismicio();
+  const { settings: prismicioSettings } = usePrismicio();
 
-  // Resolve avatar image URL
   const avatar = useMemo(() => {
     return (
       addressDoc?.ens?.avatar ||
       addressDoc?.zora?.profileImageURL ||
       addressDoc?.openSea?.profileImageURL ||
-      prisSettings?.default_user_image?.url ||
+      prismicioSettings?.default_user_image?.url ||
       "/images/phlote-poster.jpg"
     );
-  }, [addressDoc, prisSettings]);
+  }, [addressDoc, prismicioSettings]);
 
   return {
-    addressDocRef,
+    addressDocRef: addressDocumentReference,
     shortAddress,
     addressDoc,
     username,
