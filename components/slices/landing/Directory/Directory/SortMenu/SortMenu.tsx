@@ -57,7 +57,8 @@ export default function SortMenu({ value, onChange, options }: SortMenuProps) {
                 onChange={() => handleInput(option)}
               />
               <label htmlFor={`sortOption${i}`} className={value === option ? "active" : ""}>
-                <CheckIcon className="svg-check" />
+                {/* TODO: Add check icon, when we solve the width and height issues with the icon */}
+                {/* <CheckIcon className="svg-check" /> */}
                 <span>{option}</span>
               </label>
             </li>
