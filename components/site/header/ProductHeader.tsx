@@ -1,8 +1,8 @@
 "use client";
 
+import { usePrismicio } from "@/components/PrismicioProvider";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import Link from "next/link";
-import { usePrismicio } from "@/components/PrismicioProvider";
 
 function ConnectWallet() {
   return (

@@ -1,0 +1,72 @@
+@import '../../../../app/assets/scss/vars';
+
+.connect-wallet {
+    @include standard-button;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    padding: 0 1em 0 0;
+    border: none;
+    border-radius: 100px;
+    position: relative;
+
+    &.mono {
+        padding-bottom: 0;
+    }
+
+    .border {
+        border: 1px solid rgba(#fff, 0.3);
+        @include fill;
+        pointer-events: none;
+        border-radius: 100px;
+        box-sizing: border-box;
+    }
+
+    .img-wrap {
+        height: 23px;
+        width: 23px;
+        border: 1px solid var(--white);
+        border-radius: 50%;
+        background: var(--black);
+        position: relative;
+        overflow: hidden;
+
+        .web3-avatar,
+        img {
+            @include fill;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.4;
+            width: 50%;
+            height: 50%;
+            color: var(--white);
+        }
+    }
+
+    @include bp(m) {
+        padding: 0;
+        width: 30px;
+        height: 30px;
+
+        .img-wrap {
+            @include fill;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .web3-username,
+        span {
+            display: none;
+        }
+    }
+}

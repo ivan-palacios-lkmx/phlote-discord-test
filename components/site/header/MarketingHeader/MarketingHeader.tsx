@@ -4,21 +4,12 @@ import { usePrismicio } from "@/components/PrismicioProvider";
 import Logo from "@/components/svg/logo.svg";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import { useLenis } from "@/hooks/useLenis";
-import { useLogin } from "@privy-io/react-auth";
+import ConnectWallet from "@/components/site/header/ConnectWallet/ConnectWallet";
 import Link from "next/link";
 import { animate, smooth } from "popmotion";
 import { useEffect, useRef, useState } from "react";
 
 import "./MarketingHeader.scss";
-
-function ConnectWallet() {
-  const { login } = useLogin();
-  return (
-    <button onClick={login} className="a-div mono">
-      Connect Wallet
-    </button>
-  );
-}
 
 function HamburgerIcon() {
   return (
