@@ -23,9 +23,17 @@ interface MemberProps {
     tags?: string[];
     [key: string]: unknown;
   };
+  activeFilters?: ActiveFilter[];
+  style?: React.CSSProperties;
 }
 
-export default function Member({ member }: MemberProps) {
+interface ActiveFilter {
+  slug: string;
+  value: string;
+  name: string;
+}
+
+export default function Member({ member, activeFilters: activeFilters, style }: MemberProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isIntersected, setIsIntersected] = useState(false);
   const pathname = usePathname();
