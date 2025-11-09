@@ -368,7 +368,7 @@ export default function Directory({ slice }: DirectoryProps) {
   ];
 
   return (
-    <section className="slice-directory px-8 pb-[150px]">
+    <section className="slice-directory">
       <HeaderDirectory
         totalResults={totalResults}
         activeFilters={activeFilters}

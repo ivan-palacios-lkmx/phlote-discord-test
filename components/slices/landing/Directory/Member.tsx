@@ -2,6 +2,8 @@
 
 // import { useClientDoc } from "@/hooks/useClientDoc";
 // import { db } from "@/lib/firebase";
+import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
+import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { PrismicImage } from "@prismicio/react";
 // import { doc } from "firebase/firestore";
 import Link from "next/link";
@@ -10,8 +12,6 @@ import { useEffect, useRef, useState } from "react";
 
 import ADiv from "./ADiv/ADiv";
 import CopyButton from "./CopyButton";
-import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
-import Web3Username from "@/components/web3/Web3Username/Web3Username";
 
 interface MemberProps {
   member: {
