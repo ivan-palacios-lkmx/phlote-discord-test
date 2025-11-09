@@ -3,7 +3,7 @@ import type { SliceComponentProps } from "@prismicio/react";
 import type { ComponentType } from "react";
 
 import ApplicationForm from "./landing/ApplicationForm/ApplicationForm";
-import Directory from "./landing/Directory/Directory";
+import Directory from "./landing/Directory/Directory/Index/Index";
 import Hero from "./landing/Hero/Hero";
 import HeroSlideShow from "./landing/HeroSlideShow/HeroSlideShow";
 import ReleaseCarousel from "./landing/ReleaseCarousel/ReleaseCarousel";

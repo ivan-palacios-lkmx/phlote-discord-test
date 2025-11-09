@@ -1,10 +1,11 @@
 "use client";
 
+import HeaderDirectory from "@/components/slices/landing/Directory/HeaderDirectory";
+import Member from "@/components/slices/landing/Directory/Member";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import HeaderDirectory from "./HeaderDirectory";
-import Member from "./Member";
+import "./Index.scss";
 
 const FilterMenu = ({
   isOpen,
