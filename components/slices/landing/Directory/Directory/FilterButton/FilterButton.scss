@@ -1,3 +1,53 @@
+@import '../../../../../../app/assets/scss/vars';
+
 .filter-button {
-  // TODO: Add styles
+  @include fontSize(11px);
+  @include standard-button;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.4em 0.75em;
+  white-space: nowrap;
+  border-color: rgba(#fff, 0.5);
+
+  &.collaborator {
+    padding: 0;
+
+    svg {
+      padding-right: 0.75em;
+    }
+  }
+
+  .web3-avatar {
+    width: figmaSize(19px);
+    height: figmaSize(18px);
+    border-radius: 6px;
+  }
+
+  .web3-username {
+    padding: 0.4em 0;
+    position: relative;
+    top: -0.05em;
+  }
+
+  span {
+    position: relative;
+    bottom: -1.25px;
+    @include fontSize(10px);
+  }
+
+  svg {
+    display: none;
+    width: 0.75em;
+    height: 0.75em;
+  }
+
+  &.active {
+    background: var(--white);
+    color: var(--black);
+
+    svg {
+      display: block;
+    }
+  }
 }
