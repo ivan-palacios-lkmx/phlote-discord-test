@@ -186,7 +186,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
       </ul>
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {/* {totalPages > 1 && (
         <Paginate
           pageCount={totalPages}
           clickHandler={onPageClick}
@@ -194,7 +194,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
           next-class="next"
           prev-class="prev"
         />
-      )}
+      )} */}
     </section>
   );
 }
