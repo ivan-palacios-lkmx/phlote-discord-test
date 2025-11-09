@@ -1,12 +1,12 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import NewsletterForm from "@/components/site/footer/NewsletterForm/NewsletterForm";
 import SvgWordmark from "@/components/svg/woodmark.svg";
 import { PrismicRichText } from "@prismicio/react";
 import { useMemo } from "react";
 
 import "./MarketingFooter.scss";
-import NewsletterForm from "../NewsletterForm";
 
 export default function MarketingFooter(): JSX.Element {
   const currentYear = useMemo(() => new Date().getFullYear(), []);

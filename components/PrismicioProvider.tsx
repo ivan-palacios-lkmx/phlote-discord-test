@@ -14,6 +14,8 @@ export interface PrismicSettings {
   meta_description?: string;
   og_image?: { url?: string };
   default_user_image?: { url?: string };
+  newsletter_placeholder_text?: string;
+  newsletter_submit_text?: string;
 }
 
 interface PrismicioContextValue {
