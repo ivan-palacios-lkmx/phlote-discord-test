@@ -46,7 +46,7 @@ interface AddressDoc {
  * ```
  */
 export function useWeb3Identity(address: string | null | undefined) {
-  const [addressDoc, setAddressDoc] = useState<AddressDoc | null>(null);
+  const [addressDocument, setAddressDocument] = useState<AddressDoc | null>(null);
 
   const cleanAddress = useMemo(() => {
     const addy = address || "";
@@ -59,7 +59,7 @@ export function useWeb3Identity(address: string | null | undefined) {
 
   useEffect(() => {
     if (!addressDocumentReference) {
-      setAddressDoc(null);
+      setAddressDocument(null);
       return;
     }
 
@@ -70,7 +70,7 @@ export function useWeb3Identity(address: string | null | undefined) {
           shouldUpdate: true,
         });
       } else {
-        setAddressDoc(snap.data() as AddressDoc);
+        setAddressDocument(snap.data() as AddressDoc);
       }
     });
 
@@ -83,33 +83,33 @@ export function useWeb3Identity(address: string | null | undefined) {
   }, [cleanAddress]);
 
   const username = useMemo(() => {
-    const ensUsername = addressDoc?.ens?.name;
-    let zoraUsername = addressDoc?.zora?.zoraUsername;
-    let openSeaUsername = addressDoc?.openSea?.osUsername;
+    const ensUsername = addressDocument?.ens?.name;
+    let zoraUsername = addressDocument?.zora?.zoraUsername;
+    let openSeaUsername = addressDocument?.openSea?.osUsername;
 
     zoraUsername = zoraUsername ? `${zoraUsername}` : "";
     openSeaUsername = openSeaUsername ? `${openSeaUsername}` : "";
 
     const username = ensUsername || openSeaUsername || zoraUsername || shortAddress;
     return username;
-  }, [addressDoc, shortAddress]);
+  }, [addressDocument, shortAddress]);
 
   const { settings: prismicioSettings } = usePrismicio();
 
   const avatar = useMemo(() => {
     return (
-      addressDoc?.ens?.avatar ||
-      addressDoc?.zora?.profileImageURL ||
-      addressDoc?.openSea?.profileImageURL ||
+      addressDocument?.ens?.avatar ||
+      addressDocument?.zora?.profileImageURL ||
+      addressDocument?.openSea?.profileImageURL ||
       prismicioSettings?.default_user_image?.url ||
       "/images/phlote-poster.jpg"
     );
-  }, [addressDoc, prismicioSettings]);
+  }, [addressDocument, prismicioSettings]);
 
   return {
     addressDocRef: addressDocumentReference,
     shortAddress,
-    addressDoc,
+    addressDoc: addressDocument,
     username,
     avatar,
   };

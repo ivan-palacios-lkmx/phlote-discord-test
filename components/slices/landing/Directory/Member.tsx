@@ -116,7 +116,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
             <Web3Avatar address={member.objectID} />
           ) : defaultUserImage ? (
             <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
-              <PrismicImage field={defaultUserImage as never} className="w-full h-full" />
+              <PrismicImage field={defaultUserImage as never} />
             </div>
           ) : null}
 

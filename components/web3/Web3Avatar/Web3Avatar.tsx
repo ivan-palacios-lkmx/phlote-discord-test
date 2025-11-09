@@ -1,6 +1,7 @@
 "use client";
 
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
+import Image from "next/image";
 
 import "./Web3Avatar.scss";
 
@@ -16,7 +17,7 @@ export default function Web3Avatar({ address, className = "" }: Web3AvatarProps)
     <div className={`web3-avatar ${className}`.trim()}>
       {avatar && (
         <div className="fade-enter-active fade-leave-active">
-          <img src={avatar} alt="Avatar" />
+          <Image src={avatar} alt="Avatar" fill />
         </div>
       )}
     </div>
