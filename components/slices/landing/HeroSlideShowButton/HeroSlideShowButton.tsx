@@ -1,7 +1,7 @@
 "use client";
 
 import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
-import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview";
+import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview/HeroTrackPreview";
 import PlayIcon from "@/components/svg/play.svg";
 import { HeroSlideShowSlide } from "@/types/client";
 

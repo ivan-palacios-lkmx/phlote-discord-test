@@ -1,5 +1,7 @@
 "use client";
 
+import "./HeroTrackPreview.scss";
+
 interface HeroTrackPreviewProps {
   hash?: string | null;
   waveTrace?: string | null;
@@ -15,3 +17,4 @@ export default function HeroTrackPreview({ waveTrace }: HeroTrackPreviewProps) {
     </>
   );
 }
+
