@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "emulators:start": "firebase emulators:start",
+    "emulators:exec": "firebase emulators:exec"
   },
   "dependencies": {
     "@prismicio/client": "^7.20.3",
