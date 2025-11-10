@@ -1,0 +1,275 @@
+@import '../../../app/assets/scss/vars';
+
+.session-preview-block {
+  --progress: 85%;
+  border: 1px solid rgba(#fff, 0.05);
+  background-color: rgba(#fff, 0.1);
+  border-radius: 5px;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  display: grid;
+  position: relative;
+  transition: background 500ms, color 500ms;
+  cursor: pointer;
+  @include fade-on-ready;
+
+  .image-area,
+  .metadata-area {
+    position: relative;
+    z-index: 5;
+  }
+
+  .image-area {
+    position: relative;
+    align-self: stretch;
+    background-color: #f1f1f1;
+    max-width: figmaSize(320px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    .image {
+      @include fill;
+      z-index: -1;
+      transition: transform 500ms;
+      @include cover;
+    }
+
+    button {
+      width: figmaSize(150px);
+      height: figmaSize(150px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(#fff, 0.4);
+      border-radius: 50%;
+      transition: background 300ms;
+
+      .svg-play {
+        width: figmaSize(40px);
+        height: auto;
+      }
+
+      .svg-pause {
+        width: figmaSize(22px);
+        height: auto;
+      }
+    }
+  }
+
+  .metadata-area {
+    padding: figmaSize(50px) figmaSize(30px);
+  }
+
+  .preview-title {
+    grid-template-columns: auto 1fr;
+    align-items: flex-start;
+    grid-gap: 10px;
+    display: grid;
+
+    .session-name {
+      text-overflow: ellipsis;
+      line-height: 98%;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .session-version {
+      margin: 0;
+      font-weight: 400;
+    }
+  }
+
+  &.long-name {
+    .session-name {
+      @include fontSize(26px);
+    }
+
+    .session-version {
+      @include fontSize(12px);
+    }
+  }
+
+  .preview-tags {
+    display: flex;
+    gap: 5px;
+    margin: figmaSize(20px) 0;
+
+    li {
+      font-family: var(--font-mono);
+      @include fontSize(11px);
+      padding: 5px;
+      border: 1px solid rgba(#fff, 0.4);
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+  }
+
+  .preview-attributes {
+    margin: figmaSize(20px) 0;
+
+    .attribute-wrap {
+      grid-template-columns: 1fr 1fr 1fr;
+      display: grid;
+      gap: 3px 10px;
+      font-weight: 600;
+
+      >span {
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+
+        svg {
+          height: 1em;
+          width: auto;
+          color: #808080;
+        }
+
+        span {
+          line-height: 1;
+          position: relative;
+          bottom: -0.1em;
+        }
+      }
+
+      .collaborators {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+      }
+    }
+  }
+
+  .preview-waveform {
+    margin: figmaSize(20px) 0;
+    height: figmaSize(35px);
+    cursor: default;
+  }
+
+  .preview-needs-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    margin-top: figmaSize(20px);
+
+    li {
+      background: var(--white);
+      color: var(--black);
+      padding: 4px 15px;
+      border-radius: 20px;
+      @include fontSize(11px);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      height: 20px;
+      box-sizing: border-box;
+    }
+  }
+
+  .join-area {
+    position: absolute;
+    bottom: 0;
+    padding-top: 10px;
+    transition: opacity 500ms;
+    transform: translateY(100%);
+    z-index: 6;
+    opacity: 0;
+
+    .join {
+      @include standard-button;
+      background: var(--white);
+      border-color: var(--white);
+      display: block;
+    }
+  }
+
+  &.playing {
+    background: var(--white);
+    color: var(--black);
+
+    .preview-tags li {
+      border-color: rgba(#000, 0.4);
+    }
+
+    .image-area {
+      .image {
+        transform: scale(1.15);
+      }
+
+      button {
+        background: rgba(#000, 0.4);
+        color: var(--white);
+      }
+    }
+
+    .preview-attributes .attribute-wrap>span svg {
+      color: var(--black);
+    }
+
+    .preview-waveform {
+      cursor: pointer;
+
+      .outline svg .blobs {
+        stroke: rgba(#000, 0.5);
+      }
+
+      .cursor {
+        mix-blend-mode: difference;
+      }
+    }
+
+    .preview-needs-tags li {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .join-area {
+      // transform: translateY(100%);
+      opacity: 1;
+    }
+  }
+
+  &:hover .image-area .image {
+    transform: scale(1.15);
+  }
+
+  @include bp(m) {
+    grid-template-columns: 1fr;
+
+    .image-area {
+      width: 100% !important;
+      max-width: unset;
+      padding-bottom: 100%;
+      height: 0;
+      position: relative;
+      border-radius: 5px 5px 0 0;
+
+      button {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .avatar-stack {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+
+    .preview-title {
+      h3 {
+        font-size: 30px;
+      }
+
+      h6 {
+        font-size: 14px;
+      }
+    }
+
+    .preview-tags {
+      flex-wrap: wrap;
+    }
+  }
+}
