@@ -2,9 +2,13 @@
 
 import { usePrismicio } from "@/components/PrismicioProvider";
 import TrackPreview from "@/components/slices/landing/StemsPlayer/TrackPreview";
+import SvgIconCreator from "@/components/svg/creator.svg";
+import SvgIconDownload from "@/components/svg/download.svg";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
+import SvgIconStem from "@/components/svg/stem.svg";
+import SvgIconVersion from "@/components/svg/version.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
@@ -29,31 +33,6 @@ function AvatarStack({ addresses, className = "" }: { addresses: string[]; class
     </div>
   );
 }
-
-// SVG Icons
-const SvgIconDownload = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-  </svg>
-);
-
-const SvgIconCreator = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-  </svg>
-);
-
-const SvgIconStem = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z" />
-  </svg>
-);
-
-const SvgIconVersion = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-  </svg>
-);
 
 // MatchIcon Component (placeholder)
 function MatchIcon({ text }: { text: string }) {

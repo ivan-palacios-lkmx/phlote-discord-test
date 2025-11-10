@@ -1,0 +1,14 @@
+    <svg
+        class="svg-icon-stem"
+        width="10"
+        height="10"
+        viewBox="0 0 10 10"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            d="M9.5 5L0.5 5M7.92871 7.5L2.07157 7.5M7.92871 2.5L2.07157 2.5"
+            stroke="currentColor"
+            stroke-width="1.2"
+        />
+    </svg>
