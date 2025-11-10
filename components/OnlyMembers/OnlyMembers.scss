@@ -1,0 +1,31 @@
+@import '../../../app/assets/scss/vars';
+
+main.only-members {
+  display: flex;
+
+  .only-members-loading {
+    margin: auto;
+  }
+
+  .only-members-locked {
+    text-align: center;
+    margin: auto;
+
+    .centered {
+      display: inline-block;
+      max-width: 500px;
+    }
+
+    h4 {
+      margin: 10px 0;
+    }
+
+    .btn {
+      filter: invert(1);
+    }
+  }
+
+  .only-members-revealed {
+    flex: 1;
+  }
+}
