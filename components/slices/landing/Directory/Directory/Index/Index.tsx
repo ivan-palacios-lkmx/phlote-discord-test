@@ -1,6 +1,7 @@
 "use client";
 
 import ActiveFilterContainer from "@/components/containers/ActiveFilterContainer/ActiveFilterContainer";
+import Paginate from "@/components/paginate/Paginate";
 import FilterButton from "@/components/slices/landing/Directory/Directory/FilterButton/FilterButton";
 import FilterCategoryGroup from "@/components/slices/landing/Directory/Directory/FilterCategoryGroup/FilterCategoryGroup";
 import FilterMenu from "@/components/slices/landing/Directory/Directory/FilterMenu/FilterMenu";
@@ -24,9 +25,16 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const currentPage = parseInt(searchParams.get("page") || "0");
   const headerRef = useRef<HTMLDivElement>(null);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  function onPageClick(page: number) {
+    const current = new URLSearchParams(searchParams.toString());
+    current.set("page", page.toString());
+    router.push(`${pathname}?${current.toString()}`);
+  }
 
   // TODO: Implement useTags hook for dynamic tags
   const memberTags = [
@@ -40,7 +48,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
   }, [searchParams]);
 
   // Use useMembers hook to fetch members from Algolia
-  const { members, loadingMembers, totalResults } = useMembers();
+  const { members, loadingMembers, totalResults, totalPages } = useMembers();
 
   // Get filter values from URL
   const types = useMemo(() => {
@@ -201,7 +209,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
       )}
 
       {/* Pagination */}
-      {/* {totalPages > 1 && (
+      {totalResults > 15 && (
         <Paginate
           pageCount={totalPages}
           clickHandler={onPageClick}
@@ -209,7 +217,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
           next-class="next"
           prev-class="prev"
         />
-      )} */}
+      )}
     </section>
   );
 }
