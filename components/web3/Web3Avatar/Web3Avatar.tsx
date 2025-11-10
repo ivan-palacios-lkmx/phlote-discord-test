@@ -17,7 +17,7 @@ export default function Web3Avatar({ address, className = "" }: Web3AvatarProps)
     <div className={`web3-avatar ${className}`.trim()}>
       {avatar && (
         <div className="fade-enter-active fade-leave-active">
-          <Image src={avatar} alt="Avatar" fill />
+          <img src={avatar} alt="Avatar" />
         </div>
       )}
     </div>

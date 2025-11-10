@@ -1,15 +1,17 @@
-// @ts-expect-error - algoliasearch not installed. Run: npm i algoliasearch
 import algoliasearch from "algoliasearch";
 
-let client: ReturnType<typeof algoliasearch> | null = null;
-let sessionIndex: ReturnType<typeof algoliasearch.initIndex> | null = null;
-let sessionsDownloadsDesc: ReturnType<typeof algoliasearch.initIndex> | null = null;
-let sessionsPlaysDesc: ReturnType<typeof algoliasearch.initIndex> | null = null;
-let sessionsUpdatedDesc: ReturnType<typeof algoliasearch.initIndex> | null = null;
-let sessionsVersionsDesc: ReturnType<typeof algoliasearch.initIndex> | null = null;
-let addressIndex: ReturnType<typeof algoliasearch.initIndex> | null = null;
-let addressesRecentDesc: ReturnType<typeof algoliasearch.initIndex> | null = null;
-let addressesActiveDesc: ReturnType<typeof algoliasearch.initIndex> | null = null;
+type SearchClient = ReturnType<typeof algoliasearch>;
+type SearchIndex = ReturnType<SearchClient["initIndex"]>;
+
+let client: SearchClient | null = null;
+let sessionIndex: SearchIndex | null = null;
+let sessionsDownloadsDesc: SearchIndex | null = null;
+let sessionsPlaysDesc: SearchIndex | null = null;
+let sessionsUpdatedDesc: SearchIndex | null = null;
+let sessionsVersionsDesc: SearchIndex | null = null;
+let addressIndex: SearchIndex | null = null;
+let addressesRecentDesc: SearchIndex | null = null;
+let addressesActiveDesc: SearchIndex | null = null;
 
 /**
  * Hook to initialize Algolia client and get search indexes

@@ -17,7 +17,7 @@
     "@prismicio/react": "^3.2.2",
     "@privy-io/react-auth": "^3.4.2-beta-20251024222344",
     "@tanstack/react-query": "^5.90.5",
-    "algoliasearch": "^5.43.0",
+    "algoliasearch": "^4.25.3",
     "axios": "^1.12.2",
     "ethers": "^6.15.0",
     "fake-progress": "^1.0.4",

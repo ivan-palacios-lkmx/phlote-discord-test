@@ -7,6 +7,7 @@ import FilterMenu from "@/components/slices/landing/Directory/Directory/FilterMe
 import FilterTagGroup from "@/components/slices/landing/Directory/Directory/FilterTagGroup/FilterTagGroup";
 import SortMenu from "@/components/slices/landing/Directory/Directory/SortMenu/SortMenu";
 import Member from "@/components/slices/landing/Directory/Member";
+import useMembers from "@/hooks/useMembers";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
@@ -26,81 +27,20 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
   const headerRef = useRef<HTMLDivElement>(null);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [sortValue, setSortValue] = useState("all");
 
-  // TODO: Implement useMemberFilters, useTags, useMembers hooks
+  // TODO: Implement useTags hook for dynamic tags
   const memberTags = [
     { name: "Skills", options: ["React", "Vue", "Node.js", "Python"] },
     { name: "Location", options: ["NYC", "LA", "Chicago", "SF"] },
   ];
 
-  // TODO: Replace with useMembers hook
-  const members: Array<{ objectID: string; [key: string]: unknown }> = [
-    {
-      objectID: "0x1234567890123456789012345678901234567890",
-      title: "Alice Johnson",
-      isPublic: true,
-      isAdmin: true,
-      isCreator: false,
-      tags: ["React", "NYC"],
-    },
-    {
-      objectID: "0x2345678901234567890123456789012345678901",
-      title: "Bob Smith",
-      isPublic: true,
-      isAdmin: false,
-      isCreator: true,
-      tags: ["Vue", "LA"],
-    },
-    {
-      objectID: "0x3456789012345678901234567890123456789012",
-      title: "Charlie Brown",
-      isPublic: true,
-      isAdmin: false,
-      isCreator: false,
-      tags: ["Node.js", "Chicago"],
-    },
-    {
-      objectID: "0x4567890123456789012345678901234567890123",
-      title: "Diana Prince",
-      isPublic: true,
-      isAdmin: false,
-      isCreator: true,
-      tags: ["Python", "SF"],
-    },
-    {
-      objectID: "0x5678901234567890123456789012345678901234",
-      title: "Eve Wilson",
-      isPublic: true,
-      isAdmin: false,
-      isCreator: false,
-      tags: ["React", "NYC"],
-    },
-    {
-      objectID: "0x6789012345678901234567890123456789012345",
-      title: "Frank Miller",
-      isPublic: true,
-      isAdmin: true,
-      isCreator: true,
-      tags: ["Vue", "LA"],
-    },
-    {
-      objectID: "0x7890123456789012345678901234567890123456",
-      title: "Grace Lee",
-      isPublic: true,
-      isAdmin: false,
-      isCreator: false,
-      tags: ["Node.js", "SF"],
-    },
-    {
-      objectID: "0x8901234567890123456789012345678901234567",
-      title: "Henry Davis",
-      isPublic: true,
-      isAdmin: false,
-      isCreator: true,
-      tags: ["Python", "Chicago"],
-    },
-  ];
+  // Get sort value from URL or default to "all"
+  const sortValue = useMemo(() => {
+    return searchParams.get("sort") || "all";
+  }, [searchParams]);
+
+  // Use useMembers hook to fetch members from Algolia
+  const { members, loadingMembers, totalResults } = useMembers();
 
   // Get filter values from URL
   const types = useMemo(() => {
@@ -163,18 +103,24 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
     router.push(`${pathname}?${current.toString()}`);
   };
 
-  // TODO: Implement useMembers hook
-  const totalResults = members.length;
-  const itemsPerPage = 20;
-  const currentPage = parseInt(searchParams.get("page") || "0");
-  const totalPages = Math.ceil(totalResults / itemsPerPage);
-
-  // Pagination handler
-  const onPageClick = (page: number) => {
+  // Handle sort change
+  const handleSortChange = (newSort: string) => {
     const current = new URLSearchParams(searchParams.toString());
-    current.set("page", page.toString());
+    if (newSort === "all") {
+      current.delete("sort");
+    } else {
+      current.set("sort", newSort);
+    }
     router.push(`${pathname}?${current.toString()}`);
   };
+
+  // Pagination handler (for future use)
+  // const currentPage = parseInt(searchParams.get("page") || "0");
+  // const onPageClick = (page: number) => {
+  //   const current = new URLSearchParams(searchParams.toString());
+  //   current.set("page", page.toString());
+  //   router.push(`${pathname}?${current.toString()}`);
+  // };
 
   return (
     <section className="slice-directory">
@@ -200,8 +146,8 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
           <span className="desktop-only">Sort By</span>
           <SortMenu
             value={sortValue}
-            onChange={setSortValue}
-            options={["all", "recent", "most active"]}
+            onChange={handleSortChange}
+            options={["all", "recent", "active"]}
           />
 
           {/* Filter */}
@@ -238,17 +184,21 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
       </FilterMenu>
 
       {/* Grid */}
-      <ul className="member-grid ul-reset">
-        {members.map((member, i) => (
-          <li key={member.objectID || i}>
-            <Member
-              member={member}
-              activeFilters={activeFilters}
-              style={{ transitionDelay: `${(i % 4) * 200}ms` }}
-            />
-          </li>
-        ))}
-      </ul>
+      {loadingMembers ? (
+        <div className="loading-members">Loading members...</div>
+      ) : (
+        <ul className="member-grid ul-reset">
+          {members.map((member, i) => (
+            <li key={member.objectID || i}>
+              <Member
+                member={member}
+                activeFilters={activeFilters}
+                style={{ transitionDelay: `${(i % 4) * 200}ms` }}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
 
       {/* Pagination */}
       {/* {totalPages > 1 && (
