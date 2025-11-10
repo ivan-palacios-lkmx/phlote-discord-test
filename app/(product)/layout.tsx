@@ -1,6 +1,6 @@
 import PrismicioProvider from "@/components/PrismicioProvider";
 import Footer from "@/components/site/footer/Footer";
-import ProductHeader from "@/components/site/header/ProductHeader";
+import ProductHeader from "@/components/site/header/ProductHeader/ProductHeader";
 import { createClient } from "@/prismicio";
 
 import "./layout.scss";

@@ -1,0 +1,37 @@
+@import '../../../../app/assets/scss/vars';
+
+.site-product-footer {
+  background: var(--black);
+  color: var(--white);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  align-items: center;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.35);
+  position: relative;
+  z-index: 5;
+
+  .svg-wordmark {
+    width: figmaSize(84px);
+    height: auto;
+  }
+
+  .newsletter-form {
+    grid-column: 3 / span 3;
+  }
+
+  .social-menu {
+    grid-column: 7 / span 5;
+    display: flex;
+    gap: 30px;
+
+    .a-div {
+      @include fontSize(18px);
+      font-family: var(--font-condensed);
+      line-height: 90%;
+    }
+  }
+
+  .copyright {
+    grid-column: 12;
+  }
+}

@@ -1,0 +1,51 @@
+@import '../../../../app/assets/scss/vars';
+
+.site-product-header {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  padding: 35px var(--margin);
+  grid-template-columns: 1fr auto 1fr;
+  display: grid;
+  gap: 20px;
+  pointer-events: none;
+
+  >* {
+    pointer-events: all;
+  }
+
+  .home-link {
+    margin-right: auto;
+  }
+
+  .home-link svg {
+    width: figmaSize(118px);
+    height: auto;
+    color: var(--white);
+  }
+
+  nav {
+    grid-column: 3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: nowrap;
+
+    .a-div {
+      @include standard-button;
+      white-space: nowrap;
+
+      &.router-link-exact-active {
+        background: var(--white);
+        color: var(--black);
+      }
+    }
+  }
+
+  @include bp(m) {
+    align-items: center;
+    padding: var(--margin);
+  }
+}
