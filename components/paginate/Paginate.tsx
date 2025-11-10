@@ -1,3 +1,5 @@
+import PaginationItem from "./PaginationItem";
+
 interface PaginateProps {
   pageCount: number;
   clickHandler: (page: number) => void;
@@ -27,14 +29,12 @@ export default function Paginate({ pageCount, clickHandler, currentPage }: Pagin
       </li>
 
       {pages.map((page) => (
-        <li
+        <PaginationItem
           key={page}
-          className={currentPage === page ? "active" : ""}
-          onClick={() => clickHandler(page)}>
-          <a href="#" onClick={(e) => handleClick(e, page)}>
-            {page + 1}
-          </a>
-        </li>
+          page={page}
+          currentPage={currentPage}
+          clickHandler={clickHandler}
+        />
       ))}
 
       <li className={`next ${currentPage >= pageCount - 1 ? "disabled" : ""}`}>
