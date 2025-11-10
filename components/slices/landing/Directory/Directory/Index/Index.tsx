@@ -6,8 +6,8 @@ import FilterButton from "@/components/slices/landing/Directory/Directory/Filter
 import FilterCategoryGroup from "@/components/slices/landing/Directory/Directory/FilterCategoryGroup/FilterCategoryGroup";
 import FilterMenu from "@/components/slices/landing/Directory/Directory/FilterMenu/FilterMenu";
 import FilterTagGroup from "@/components/slices/landing/Directory/Directory/FilterTagGroup/FilterTagGroup";
+import Member from "@/components/slices/landing/Directory/Directory/Member/Member";
 import SortMenu from "@/components/slices/landing/Directory/Directory/SortMenu/SortMenu";
-import Member from "@/components/slices/landing/Directory/Member";
 import useMembers from "@/hooks/useMembers";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";

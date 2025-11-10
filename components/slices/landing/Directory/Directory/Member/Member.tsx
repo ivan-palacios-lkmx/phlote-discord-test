@@ -3,6 +3,9 @@
 // import { useClientDoc } from "@/hooks/useClientDoc";
 // import { db } from "@/lib/firebase";
 import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
+import { usePrismicio } from "@/components/PrismicioProvider";
+import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
+import CopyButton from "@/components/slices/landing/Directory/CopyButton";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 // import { doc } from "firebase/firestore";
@@ -10,8 +13,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import ADiv from "./ADiv/ADiv";
-import CopyButton from "./CopyButton";
+import "./Member.scss";
 
 interface MemberProps {
   member: {
@@ -98,8 +100,8 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
       : null;
 
   // TODO: Get settings for default_user_image
-  // const settings = usePrisSettings();
-  const defaultUserImage = null; // Placeholder
+  const { settings } = usePrismicio();
+  const defaultUserImage = settings.default_user_image;
 
   return (
     <div
@@ -116,7 +118,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
             <Web3Avatar address={member.objectID} />
           ) : defaultUserImage ? (
             <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
-              <PrismicImage field={defaultUserImage as never} />
+              <PrismicImage field={defaultUserImage} />
             </div>
           ) : null}
 
