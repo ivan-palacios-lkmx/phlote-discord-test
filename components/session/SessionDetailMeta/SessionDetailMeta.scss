@@ -1,0 +1,43 @@
+@import '../../../app/assets/scss/vars';
+
+.session-detail-meta {
+  grid-template-columns: repeat(4, 1fr);
+  display: grid;
+  @include fontSize(11px);
+
+  .btn {
+    text-align: center;
+  }
+
+  .stats-title,
+  .stems-title,
+  .collaborators-title,
+  .discord-title {
+    margin-bottom: 10px;
+  }
+
+  .btn.download-stems {
+    position: relative;
+    overflow: hidden;
+
+    .download-progress {
+      background-color: var(--black);
+      display: flex;
+      @include fill;
+    }
+
+    .prog-bar {
+      background-color: rgba(#fff, 0.25);
+      position: relative;
+      margin: auto;
+      height: 2px;
+      width: 70%;
+    }
+
+    .p {
+      transition: width 500ms linear;
+      background-color: var(--white);
+      @include fill;
+    }
+  }
+}

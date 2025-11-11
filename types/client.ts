@@ -97,3 +97,40 @@ export interface ApplicationFormSlice {
   id: string;
   slice_label?: string | null;
 }
+
+export interface FirebaseTimestamp {
+  toDate?: () => Date;
+  seconds?: number;
+  nanoseconds?: number;
+  [key: string]: unknown;
+}
+
+export interface Session {
+  id: string;
+  name?: string;
+  versionCount?: number;
+  discordMessageCount?: number;
+  discordChannel?: string;
+  created?: FirebaseTimestamp;
+  [key: string]: unknown;
+}
+
+export interface Version {
+  id: string;
+  sessionID?: string;
+  versionIndex?: number;
+  creator?: string;
+  tags?: string[];
+  bpm?: number;
+  playCount?: number;
+  downloadCount?: number;
+  stems?: Array<{
+    name?: string;
+    id?: string;
+    [key: string]: unknown;
+  }>;
+  collaborators?: string[];
+  bounce?: string;
+  created?: FirebaseTimestamp;
+  [key: string]: unknown;
+}
