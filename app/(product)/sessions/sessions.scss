@@ -1,6 +1,8 @@
 @import '../../assets/scss/vars';
 
-main.sessions {
+// TODO: ADD MAIN
+
+.sessions {
   background-color: var(--black);
   color: var(--white);
   padding-bottom: 50px;
@@ -18,7 +20,6 @@ main.sessions {
       }
     }
   }
-
   .contained {
     max-width: 1920px;
   }

@@ -46,7 +46,8 @@ export default function SessionPreviewBlock({
 }: SessionPreviewBlockProps) {
   const elRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
-  const [ready, setReady] = useState(false);
+  // TODO: Remove this once we have a real ready state
+  const [ready, setReady] = useState(true);
 
   // Prismicio settings
   const { settings } = usePrismicio();

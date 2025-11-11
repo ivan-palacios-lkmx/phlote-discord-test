@@ -2,6 +2,8 @@ import OnlyMembers from "@/components/OnlyMembers/OnlyMembers";
 import SessionsPageClient from "@/components/session/SessionsPageClient/SessionsPageClient";
 import { createClient } from "@/prismicio";
 
+import "./sessions.scss";
+
 export default async function SessionsPage() {
   const client = createClient();
   let prismicPage = null;
@@ -12,9 +14,5 @@ export default async function SessionsPage() {
     console.error("Error fetching sessions page from Prismic:", error);
   }
 
-  return (
-    <OnlyMembers>
-      <SessionsPageClient prismicPage={prismicPage} />
-    </OnlyMembers>
-  );
+  return <SessionsPageClient prismicPage={prismicPage} />;
 }
