@@ -1,14 +1,15 @@
 "use client";
 
+import TrackPreview from "@/components/TrackPreview/TrackPreview";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
-// import { useFbEndpoints } from "@/hooks/useFbEndpoints";
+import { useFbEndpoints } from "@/hooks/useFbEndpoints";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import TrackPreview from "../../../TrackPreview/TrackPreview";
+import "./VersionPlayer.scss";
 
 interface VersionPlayerProps {
   versionData: {
@@ -46,8 +47,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
   const isSoloed = useMemo(() => currentTrack > 0, [currentTrack]);
 
-  // TODO: Uncomment when useFbEndpoints is implemented
-  // const { getVersionStems } = useFbEndpoints();
+  const { getVersionStems } = useFbEndpoints();
 
   const onPlay = async () => {
     setLoading(true);
@@ -59,19 +59,14 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     // Fetch all tracks
     if (!tracks) {
       try {
-        // TODO: Uncomment when useFbEndpoints is implemented
-        // const { bounce, stems } = await getVersionStems({
-        //   versionID: versionID,
-        // });
-
-        // Placeholder values until useFbEndpoints is implemented
-        const bounce = "";
-        const stems: string[] = [];
+        const { bounce, stems } = await getVersionStems({
+          versionID: versionID,
+        });
 
         // Create Howl instances for each track
         const howlTracks = [
           new Howl({ src: bounce, preload: true }),
-          ...stems.map((stem) => new Howl({ src: stem, preload: true })),
+          ...stems.map((stem: string) => new Howl({ src: stem, preload: true })),
         ];
 
         setTracks(howlTracks);
@@ -85,12 +80,14 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
         framerRef.current = setInterval(() => {
           if (!howlTracks) return;
           const activeTrack = howlTracks[currentTrack];
-          if (activeTrack && activeTrack.playing()) {
+          if (activeTrack) {
             setPlayhead(activeTrack.seek() as number);
           }
         }, 1000 / 10);
       } catch (error) {
         console.error("Error loading tracks:", error);
+        setLoading(false);
+        return;
       }
     }
 
@@ -98,8 +95,8 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     tracks?.forEach((track) => track.pause());
 
     // Play Current
-    if (!playing && tracks) {
-      const track = tracks[currentTrack];
+    if (!playing) {
+      const track = tracks![currentTrack];
       track.play();
       track.seek(playhead);
     }
@@ -108,11 +105,10 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     setLoading(false);
   };
 
-  const switchToTrack = (newTrack: number) => {
+  const switchToTrack = (newTrack: number, prevTrack: number) => {
     if (!playing || !tracks) return;
 
-    const prevTrack = tracks[currentTrack];
-    prevTrack.pause();
+    tracks[prevTrack].pause();
     const toPlay = tracks[newTrack];
     toPlay.seek(playhead);
     toPlay.play();
@@ -127,17 +123,37 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
       const track = tracks[index];
       const seekTo = percentage * duration;
       track.seek(seekTo);
-      setPlayhead(seekTo);
     } else {
-      switchToTrack(index);
+      switchToTrack(index, currentTrack);
     }
   };
+
+  // Update interval when currentTrack changes
+  useEffect(() => {
+    if (!tracks || !framerRef.current) return;
+
+    // Clear existing interval
+    if (framerRef.current) clearInterval(framerRef.current);
+
+    // Create new interval with updated currentTrack
+    framerRef.current = setInterval(() => {
+      if (!tracks) return;
+      const activeTrack = tracks[currentTrack];
+      if (activeTrack) {
+        setPlayhead(activeTrack.seek() as number);
+      }
+    }, 1000 / 10);
+
+    return () => {
+      if (framerRef.current) clearInterval(framerRef.current);
+    };
+  }, [currentTrack, tracks]);
 
   // Teardown
   useEffect(() => {
     return () => {
       tracks?.forEach((track) => {
-        track.pause();
+        track?.pause();
       });
       if (framerRef.current) clearInterval(framerRef.current);
     };
@@ -147,53 +163,48 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     // Teardown on route change
     return () => {
       tracks?.forEach((track) => {
-        track.pause();
+        track?.pause();
       });
       if (framerRef.current) clearInterval(framerRef.current);
     };
   }, [pathname, tracks]);
 
+  // Get hashes of stems and bounce
   const bounceHash = useMemo(() => versionData?.bounce, [versionData?.bounce]);
   const stems = useMemo(() => versionData?.stems || [], [versionData?.stems]);
 
   return (
-    <div
-      className={`version-player rounded-[7px] border border-white/20 bg-white/5 text-white ${isSoloed ? "solo" : ""}`}
-      style={playerStyle}>
+    <div className={`version-player ${isSoloed ? "solo" : ""}`} style={playerStyle}>
       {/* Bounce */}
-      <div className="bounce py-[35px] px-[25px] border-b border-white/20 grid grid-cols-[auto_1fr] gap-5 items-center">
-        <button
-          onClick={onPlay}
-          className="play-pause w-[55px] h-[55px] bg-white rounded-full text-[var(--dark-grey)] flex justify-center items-center">
+      <div className="bounce">
+        <button className="play-pause" onClick={onPlay}>
           {loading ? <LoadingSpinnerIcon /> : playing ? <PauseIcon /> : <PlayIcon />}
         </button>
+
         {bounceHash && (
           <TrackPreview
-            svg={bounceHash}
-            className={`bounce-track transition-opacity duration-300 ${currentTrack === 0 ? "active" : ""} ${currentTrack !== 0 ? "opacity-40" : ""}`}
+            hash={bounceHash}
+            className={`bounce-track ${currentTrack === 0 ? "active" : ""}`}
             onSeek={(s) => onSeek(s, 0)}
           />
         )}
       </div>
 
       {/* Stems */}
-      <div className="stems desktop-only my-[30px] hidden md:block">
+      <div className="stems desktop-only">
         {stems.map((stem, i) => (
           <button
             key={i}
-            onClick={() => switchToTrack(i + 1)}
-            className={`stem grid grid-cols-[auto_1fr] gap-[50px] w-full px-[30px] transition-opacity duration-300 cursor-pointer ${currentTrack === i + 1 ? "active" : ""} ${isSoloed && currentTrack !== i + 1 ? "opacity-40" : ""}`}>
-            <div className="solo grid grid-rows-[auto_1fr] pl-5 h-full">
-              <div
-                className={`circle w-[10px] h-[10px] border border-white rounded-full transition-colors duration-300 ${currentTrack === i + 1 ? "bg-white" : ""}`}
-              />
-              {i < stems.length - 1 && (
-                <div className="line w-px h-full bg-white opacity-30 mx-auto" />
-              )}
+            onClick={() => switchToTrack(i + 1, currentTrack)}
+            className={`stem ${currentTrack === i + 1 ? "active" : ""}`}>
+            <div className="solo">
+              <div className="circle" />
+              <div className="line" />
             </div>
-            <div className="track text-left pb-[10px]" onClick={(e) => e.stopPropagation()}>
-              <h6 className="font-mono text-[11px] m-0 uppercase">{stem.name || ""}</h6>
-              {stem.id && <TrackPreview svg={stem.id} onSeek={(s) => onSeek(s, i + 1)} />}
+
+            <div className="track" onClick={(e) => e.stopPropagation()}>
+              <h6>{stem.name || ""}</h6>
+              {stem.id && <TrackPreview hash={stem.id} onSeek={(s) => onSeek(s, i + 1)} />}
             </div>
           </button>
         ))}

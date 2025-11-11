@@ -5,8 +5,8 @@ import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 
+import VersionPlayer from "../../../VersionPlayer/VersionPlayer";
 import SessionDetailTitle from "./SessionDetailTitle";
-import VersionPlayer from "./VersionPlayer";
 import Web3Avatar from "./Web3Avatar";
 
 interface SliceProps {
