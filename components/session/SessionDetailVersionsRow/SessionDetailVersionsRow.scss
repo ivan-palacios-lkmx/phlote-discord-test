@@ -1,0 +1,135 @@
+@import '../../../app/assets/scss/vars';
+
+.session-detail-versions-row {
+  padding-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+
+  .arrow {
+    transition: transform 300ms ease;
+    transform: translateX(-100%);
+    width: 20px;
+    height: auto;
+    position: absolute;
+    left: -7px;
+    top: calc(50% - 4px);
+  }
+
+  .headless-arrow {
+    transition: width 300ms $authenticMotion;
+    background: var(--white);
+    right: calc(100% - 10px);
+    position: absolute;
+    height: 1px;
+    width: 0;
+    top: 50%;
+  }
+
+  &::before,
+  &::after {
+    background-color: var(--white);
+    transition: top 300ms $authenticMotion, bottom 300ms $authenticMotion;
+    position: absolute;
+    display: block;
+    content: '';
+    width: 1px;
+    left: 0;
+  }
+
+  &::before {
+    top: 50%;
+    bottom: 50%;
+  }
+
+  &::after {
+    top: 50%;
+    bottom: 50%;
+  }
+
+  &.within-range {
+    &::before {
+      top: 0;
+    }
+
+    &::after {
+      bottom: 0;
+    }
+  }
+
+  &.active::before {
+    top: 50%;
+  }
+
+  &.included:not(:last-child)::before {
+    bottom: 65%;
+  }
+
+  &.included .arrow {
+    transform: none;
+  }
+
+  &:last-child .headless-arrow {
+    width: 10px;
+  }
+
+  &:last-child.active .headless-arrow {
+    width: 0;
+  }
+
+  &:last-child::after {
+    display: none;
+  }
+
+  &:last-child .arrow {
+    display: none;
+  }
+
+  .version-block {
+    transition: border 200ms, width 300ms $authenticMotion;
+    grid-template-columns: 1fr figmaSize(50px);
+    display: grid;
+    background-color: rgba(#fff, 0.1);
+    border: 1px solid rgba(#fff, 0.1);
+    width: calc(100% - 50px);
+    box-sizing: border-box;
+    border-radius: 7px;
+    margin-left: auto;
+    text-align: left;
+    padding: 20px;
+
+    &:hover,
+    &:focus {
+      border-color: var(--white);
+    }
+  }
+
+  &.active .version-block {
+    border-color: var(--white);
+  }
+
+  &.included .version-block {
+    width: calc(100% - 15px);
+  }
+
+  .creator-avatar {
+    position: relative;
+    overflow: hidden;
+    border-radius: 100%;
+
+    &::after {
+      padding-bottom: 100%;
+      display: block;
+      content: '';
+    }
+  }
+
+  .block-title {
+    @include fontSize(18px);
+    margin-bottom: 5px;
+  }
+
+  .block-info-row {
+    font-family: var(--font-mono);
+    @include fontSize(10px);
+  }
+}
