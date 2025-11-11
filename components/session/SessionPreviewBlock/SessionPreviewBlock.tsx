@@ -12,7 +12,7 @@ import PlayIcon from "@/components/svg/play.svg";
 import SvgIconStem from "@/components/svg/stem.svg";
 import SvgIconVersion from "@/components/svg/version.svg";
 import { useClientDoc } from "@/hooks/useClientDoc";
-import { useFirstVersion } from "@/hooks/useFirstVersion";
+import { useFirstVersion } from "@/hooks/sessions/useFirstVersion";
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
 import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";

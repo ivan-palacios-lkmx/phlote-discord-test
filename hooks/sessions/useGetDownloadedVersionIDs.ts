@@ -1,4 +1,4 @@
-import { useClientCollection } from "@/hooks/useClientCollection";
+import { useClientCollection } from "@/hooks/sessions/useClientCollection";
 import { db } from "@/lib/firebase";
 import { collection, query, where } from "firebase/firestore";
 import { map, uniqBy } from "lodash";

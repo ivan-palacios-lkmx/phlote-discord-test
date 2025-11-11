@@ -1,24 +1,24 @@
-import { useClientCollection } from "@/hooks/useClientCollection";
+import { useClientCollection } from "@/hooks/sessions/useClientCollection";
 import { db } from "@/lib/firebase";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
 import { useMemo } from "react";
 
 /**
- * Hook to get the first version of a session
+ * Hook to get the latest version of a session
  *
  * @param sessionID - Session ID (can be string, null, or undefined)
  * @param creator - Optional creator address to filter by
- * @returns First version document data or null
+ * @returns Latest version document data or null
  *
  * @example
  * ```tsx
- * const firstVersion = useFirstVersion("session123", "0x123...");
- * if (firstVersion) {
- *   console.log(firstVersion.bounce);
+ * const latestVersion = useLatestVersion("session123", "0x123...");
+ * if (latestVersion) {
+ *   console.log(latestVersion.bounce);
  * }
  * ```
  */
-export function useFirstVersion(sessionID: string | null | undefined, creator: string = "") {
+export function useLatestVersion(sessionID: string | null | undefined, creator: string = "") {
   const sessID = useMemo(() => sessionID || "", [sessionID]);
 
   const versionQ = useMemo(() => {
@@ -33,7 +33,7 @@ export function useFirstVersion(sessionID: string | null | undefined, creator: s
     return query(
       collection(db, "session-versions"),
       ...constraints,
-      orderBy("created", "asc"),
+      orderBy("created", "desc"),
       limit(1),
     );
   }, [sessID, creator]);
