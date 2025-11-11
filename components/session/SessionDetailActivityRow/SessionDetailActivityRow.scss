@@ -1,0 +1,40 @@
+@import '../../../app/assets/scss/vars';
+
+.session-detail-activity-row {
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  grid-gap: 5px;
+  display: grid;
+
+  .action {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    text-align: right;
+    grid-gap: 5px;
+    min-width: 0;
+  }
+
+  .initiator {
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 4px 0;
+    margin-left: auto;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .version-index {
+    border: 1px solid rgba(#fff, 0.15);
+    border-radius: 5px;
+    padding: 0.1em 0.5em;
+  }
+
+  .web3-username {
+    display: inline;
+  }
+}

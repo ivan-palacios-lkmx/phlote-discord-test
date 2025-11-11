@@ -23,6 +23,7 @@
     "axios": "^1.12.2",
     "ethers": "^6.15.0",
     "fake-progress": "^1.0.4",
+    "fecha": "^4.2.3",
     "file-saver": "^2.0.5",
     "firebase": "^12.5.0",
     "flickity": "^3.0.0",
