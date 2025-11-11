@@ -1,0 +1,77 @@
+@import '../../../assets/scss/vars';
+
+.session-detail {
+  background-color: var(--black);
+  color: var(--white);
+  padding-top: figmaSize(110px);
+  padding-bottom: 50px;
+
+  .contained {
+    max-width: initial;
+    position: relative;
+    z-index: 5;
+  }
+
+  .processing-versions,
+  .loading-versions {
+    @include fill;
+    display: flex;
+
+    .label {
+      margin: 20px 0;
+    }
+
+    .centered {
+      margin: auto;
+    }
+  }
+
+  .bg-area {
+    @include fill(fixed);
+    opacity: 0.5;
+  }
+
+  .background {
+    filter: blur(75px);
+    @include fill();
+  }
+
+  .default-background {
+    background-image: url('/images/phlote-poster-blur.jpg');
+    @include fill();
+    @include cover;
+  }
+
+  .btn {
+    filter: invert(1);
+  }
+
+  .session-detail-layout {
+    grid-template-columns: auto 1fr figmaSize(400px);
+    grid-gap: var(--margin);
+    display: grid;
+    margin-top: figmaSize(40px);
+
+    >* {
+      min-width: 0;
+    }
+  }
+
+  .session-artwork {
+    grid-row: span 2;
+  }
+
+  .session-artwork-image {
+    border: 1px solid rgba(#fff, 0.25);
+    max-width: figmaSize(450px);
+    position: relative;
+    border-radius: 7px;
+    overflow: hidden;
+
+    &::after {
+      padding-bottom: 100%;
+      display: block;
+      content: '';
+    }
+  }
+}
