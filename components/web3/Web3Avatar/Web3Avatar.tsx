@@ -1,7 +1,6 @@
 "use client";
 
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
-import Image from "next/image";
 
 import "./Web3Avatar.scss";
 
