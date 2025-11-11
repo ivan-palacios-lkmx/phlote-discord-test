@@ -12,59 +12,15 @@ import PlayIcon from "@/components/svg/play.svg";
 import SvgIconStem from "@/components/svg/stem.svg";
 import SvgIconVersion from "@/components/svg/version.svg";
 import { useClientDoc } from "@/hooks/useClientDoc";
+import { useFirstVersion } from "@/hooks/useFirstVersion";
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
 import { db } from "@/lib/firebase";
-import { collection, doc, getDocs, limit, orderBy, query, where } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { startCase } from "lodash";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import "./SessionPreviewBlock.scss";
-
-// Hook to get first version
-function useFirstVersion(sessionID: string | null | undefined) {
-  const [firstVersion, setFirstVersion] = useState<{
-    id: string;
-    bounce?: string;
-    stems?: unknown[];
-    tags?: string[];
-    bpm?: number;
-    [key: string]: unknown;
-  } | null>(null);
-
-  useEffect(() => {
-    if (!sessionID) {
-      setFirstVersion(null);
-      return;
-    }
-
-    const fetchFirstVersion = async () => {
-      try {
-        const versionsRef = collection(db, "session-versions");
-        const q = query(
-          versionsRef,
-          where("sessionID", "==", sessionID),
-          orderBy("versionIndex", "asc"),
-          limit(1),
-        );
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          const doc = querySnapshot.docs[0];
-          setFirstVersion({ id: doc.id, ...doc.data() });
-        } else {
-          setFirstVersion(null);
-        }
-      } catch (error) {
-        console.error("Error fetching first version:", error);
-        setFirstVersion(null);
-      }
-    };
-
-    fetchFirstVersion();
-  }, [sessionID]);
-
-  return firstVersion;
-}
 
 // Hook for audio playback
 function useAudio(versionID: string | null | undefined) {
