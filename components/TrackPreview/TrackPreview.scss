@@ -1,0 +1,56 @@
+@import '../../app/assets/scss/vars';
+
+.track-preview {
+  height: 20px;
+  position: relative;
+  display: block;
+  width: 100%;
+
+  svg {
+    width: 100%;
+    height: auto;
+    @include fill;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .silence {
+    height: 8px;
+  }
+
+  .fill .silence {
+    transform: translateY(-5px);
+    height: 16px;
+  }
+
+  .fill svg {
+    clip-path: inset(0 var(--progress) 0 0);
+  }
+
+  .outline svg {
+    .blobs {
+      stroke-width: 4px;
+      stroke: var(--white);
+      fill: none;
+    }
+  }
+
+  .cursor {
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background: var(--white);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .bounce-track.active &,
+  .stem.active &,
+  &.active {
+    &:hover .cursor {
+      opacity: 1;
+    }
+  }
+}

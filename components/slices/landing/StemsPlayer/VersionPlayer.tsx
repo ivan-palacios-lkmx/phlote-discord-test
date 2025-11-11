@@ -8,7 +8,7 @@ import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import TrackPreview from "./TrackPreview";
+import TrackPreview from "../../../TrackPreview/TrackPreview";
 
 interface VersionPlayerProps {
   versionData: {

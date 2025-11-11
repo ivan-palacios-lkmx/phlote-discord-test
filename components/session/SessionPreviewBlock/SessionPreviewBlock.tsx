@@ -2,8 +2,8 @@
 
 import AvatarStack from "@/components/AvatarStack/AvatarStack";
 import { usePrismicio } from "@/components/PrismicioProvider";
+import TrackPreview from "@/components/TrackPreview/TrackPreview";
 import MatchIcon from "@/components/match-icon/MatchIcon";
-import TrackPreview from "@/components/slices/landing/StemsPlayer/TrackPreview";
 import SvgIconCreator from "@/components/svg/creator.svg";
 import SvgIconDownload from "@/components/svg/download.svg";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
