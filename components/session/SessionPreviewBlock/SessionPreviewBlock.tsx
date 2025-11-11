@@ -11,84 +11,24 @@ import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
 import SvgIconStem from "@/components/svg/stem.svg";
 import SvgIconVersion from "@/components/svg/version.svg";
-import { useClientDoc } from "@/hooks/useClientDoc";
+import { useGetWaveTrace } from "@/hooks/query/query-hooks/use-get-wave-trace";
 import { useFirstVersion } from "@/hooks/sessions/useFirstVersion";
+import useAudio from "@/hooks/useAudio";
+import { useClientDoc } from "@/hooks/useClientDoc";
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
 import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
 import { startCase } from "lodash";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import smartTruncate from "smart-truncate";
 
 import "./SessionPreviewBlock.scss";
-
-// Hook for audio playback
-function useAudio(versionID: string | null | undefined) {
-  const [loading, setLoading] = useState(false);
-  const [playing, setPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    if (!versionID || !audioRef.current) return;
-
-    const audio = audioRef.current;
-
-    const handleTimeUpdate = () => {
-      if (audio.duration) {
-        setProgress(audio.currentTime / audio.duration);
-      }
-    };
-
-    const handlePlay = () => setPlaying(true);
-    const handlePause = () => setPlaying(false);
-    const handleLoadStart = () => setLoading(true);
-    const handleCanPlay = () => setLoading(false);
-
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("play", handlePlay);
-    audio.addEventListener("pause", handlePause);
-    audio.addEventListener("loadstart", handleLoadStart);
-    audio.addEventListener("canplay", handleCanPlay);
-
-    return () => {
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("play", handlePlay);
-      audio.removeEventListener("pause", handlePause);
-      audio.removeEventListener("loadstart", handleLoadStart);
-      audio.removeEventListener("canplay", handleCanPlay);
-    };
-  }, [versionID]);
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (playing) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-  };
-
-  const seek = (percentage: number) => {
-    if (!audioRef.current || !audioRef.current.duration) return;
-    audioRef.current.currentTime = percentage * audioRef.current.duration;
-  };
-
-  return { loading, playing, progress, togglePlay, seek, audioRef };
-}
-
-// Smart truncate function
-function smartTruncate(str: string, maxLength: number, options?: { position?: number }): string {
-  if (str.length <= maxLength) return str;
-  const position = options?.position || Math.floor(maxLength / 2);
-  return (
-    str.substring(0, position) + "..." + str.substring(str.length - (maxLength - position - 3))
-  );
-}
 
 interface SessionPreviewBlockProps {
   name: string;
   objectID: string;
+  tags?: string[];
   creator: string;
   collaborators?: string[];
   versionCount?: number;
@@ -98,6 +38,7 @@ interface SessionPreviewBlockProps {
 export default function SessionPreviewBlock({
   name,
   objectID,
+  tags = [],
   creator,
   collaborators = [],
   versionCount = 0,
@@ -107,22 +48,47 @@ export default function SessionPreviewBlock({
   const [height, setHeight] = useState(0);
   const [ready, setReady] = useState(false);
 
+  // Prismicio settings
   const { settings } = usePrismicio();
-  const { avatar } = useWeb3Identity(creator);
-  const firstVersion = useFirstVersion(objectID);
-  const { loading, playing, progress, togglePlay, seek, audioRef } = useAudio(firstVersion?.id);
 
-  const sessionImage = avatar || settings?.default_user_image?.url || "";
-  const bounceHash = firstVersion?.bounce as string | undefined;
-  const stemCount = firstVersion?.stems?.length || 0;
+  // Web3 identity for creator avatar
+  const { avatar } = useWeb3Identity(creator);
+  const sessionImage = useMemo(
+    () => avatar || settings?.default_user_image?.url || "",
+    [avatar, settings?.default_user_image?.url],
+  );
+
+  // Get first version data
+  const firstVersion = useFirstVersion(objectID);
+  const versionID = useMemo(() => firstVersion?.id, [firstVersion?.id]);
+  const bounceHash = useMemo(
+    () => firstVersion?.bounce as string | undefined,
+    [firstVersion?.bounce],
+  );
+  const stemCount = useMemo(
+    () => (firstVersion?.stems as string[])?.length || 0,
+    [firstVersion?.stems],
+  );
+
+  // Audio hook
+  const { loading, playing, progress, togglePlay, seek } = useAudio(versionID);
 
   // Get audio document from bounce hash
   const audioDocRef = useMemo(() => {
     return bounceHash ? doc(db, `audio/${bounceHash}`) : null;
   }, [bounceHash]);
+
   const audioDoc = useClientDoc(audioDocRef);
-  const audioUrl = (audioDoc?.url as string | undefined) || "";
-  const waveTraceSvg = (audioDoc?.waveTrace as string | undefined) || bounceHash || "";
+  const waveTraceUrl = useMemo(
+    () => (audioDoc?.waveTrace as string | undefined) || null,
+    [audioDoc?.waveTrace],
+  );
+
+  // Fetch waveTrace SVG
+  const { data: waveTraceSvg } = useGetWaveTrace({
+    waveTraceUrl,
+    enabled: !!waveTraceUrl,
+  });
 
   // Get element height
   useEffect(() => {
@@ -145,11 +111,14 @@ export default function SessionPreviewBlock({
     }
   }, [bounceHash]);
 
+  // Trimmed name
   const trimmedName = useMemo(() => smartTruncate(name, 45, { position: 20 }), [name]);
   const hasLongName = useMemo(() => trimmedName.length > 30, [trimmedName]);
 
+  // Tags processing
   const otherTags = useMemo(() => {
-    const versionTags = (firstVersion?.tags || [])
+    const tagsArray = Array.isArray(firstVersion?.tags) ? firstVersion.tags : [];
+    const versionTags = tagsArray
       .filter((t: string) => !t.includes("needs:"))
       .map((t: string) => String(t).split(":")[1]);
     const bpm = firstVersion?.bpm ? `${firstVersion.bpm}BPM` : "";
@@ -157,7 +126,8 @@ export default function SessionPreviewBlock({
   }, [firstVersion]);
 
   const needsTags = useMemo(() => {
-    return (firstVersion?.tags || [])
+    const tagsArray = Array.isArray(firstVersion?.tags) ? firstVersion.tags : [];
+    return tagsArray
       .filter((t: string) => t.includes("needs:"))
       .map((t: string) => {
         const parts = String(t).split(":");
@@ -165,6 +135,7 @@ export default function SessionPreviewBlock({
       });
   }, [firstVersion]);
 
+  // Classes
   const classes = useMemo(() => {
     return [
       "session-preview-block",
@@ -176,6 +147,7 @@ export default function SessionPreviewBlock({
       .join(" ");
   }, [hasLongName, playing, ready]);
 
+  // Styles
   const elStyle = useMemo(() => {
     return {
       "--progress": `${(1 - progress) * 100}%`,
@@ -267,11 +239,6 @@ export default function SessionPreviewBlock({
           Join Session
         </Link>
       </div>
-
-      {/* Hidden audio element */}
-      {audioUrl && (
-        <audio ref={audioRef} src={audioUrl} preload="none" style={{ display: "none" }} />
-      )}
     </div>
   );
 }
