@@ -1,0 +1,10 @@
+@import '../../../app/assets/scss/vars';
+
+.session-detail-player {
+  grid-column: span 2;
+
+  .version-player {
+    margin-bottom: 50px;
+    margin-top: var(--margin);
+  }
+}

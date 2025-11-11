@@ -5,6 +5,7 @@ import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
 import { useFbEndpoints } from "@/hooks/useFbEndpoints";
+import { Version } from "@/types/client";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -12,12 +13,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./VersionPlayer.scss";
 
 interface VersionPlayerProps {
-  versionData: {
-    id?: string;
-    bounce?: string;
-    stems?: Array<{ name?: string; id?: string }>;
-    [key: string]: unknown;
-  } | null;
+  versionData: Version;
 }
 
 export default function VersionPlayer({ versionData }: VersionPlayerProps) {
