@@ -1,0 +1,14 @@
+@import '../../../app/assets/scss/vars';
+
+.session-detail-new-version {
+  .new-version-title {
+    margin-bottom: 10px;
+  }
+
+  .btn.new-version {
+    @include standard-button;
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+}
