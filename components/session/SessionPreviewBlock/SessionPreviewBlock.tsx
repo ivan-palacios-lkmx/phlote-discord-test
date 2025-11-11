@@ -74,23 +74,7 @@ export default function SessionPreviewBlock({
   // Audio hook
   const { loading, playing, progress, togglePlay, seek } = useAudio(versionID);
 
-  // Get audio document from bounce hash
-  const audioDocRef = useMemo(() => {
-    return bounceHash ? doc(db, `audio/${bounceHash}`) : null;
-  }, [bounceHash]);
-
-  const audioDoc = useClientDoc(audioDocRef);
-  const waveTraceUrl = useMemo(
-    () => (audioDoc?.waveTrace as string | undefined) || null,
-    [audioDoc?.waveTrace],
-  );
-
   // Fetch waveTrace SVG
-  const { data: waveTraceSvg } = useGetWaveTrace({
-    waveTraceUrl,
-    enabled: !!waveTraceUrl,
-  });
-
   // Get element height
   useEffect(() => {
     if (!elRef.current) return;
@@ -215,10 +199,10 @@ export default function SessionPreviewBlock({
           </div>
         </div>
 
-        {waveTraceSvg && (
+        {bounceHash && (
           <div onClick={(e) => e.stopPropagation()}>
             <TrackPreview
-              svg={waveTraceSvg}
+              hash={bounceHash}
               className={`preview-waveform ${playing ? "active" : ""}`}
               onSeek={seek}
             />
