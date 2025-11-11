@@ -1,6 +1,5 @@
+import Api from "@/hooks/query/api";
 import { useQuery } from "@tanstack/react-query";
-
-import Api from "../api";
 
 interface UseGetAccountOptions {
   address: string;
