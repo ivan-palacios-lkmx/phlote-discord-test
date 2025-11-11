@@ -1,0 +1,45 @@
+.avatar-stack {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+
+  &.is-link:hover .avatar-link {
+    .avatar-img {
+      opacity: 0.5;
+    }
+
+    &:hover {
+      z-index: 5;
+    }
+
+    &:hover .avatar-img {
+      opacity: 1;
+    }
+  }
+
+  .avatar-link {
+    background-color: var(--black);
+    border: 1px solid var(--white);
+    margin-left: figmaSize(-20px);
+    display: inline-block;
+    border-radius: 100%;
+    position: relative;
+    overflow: hidden;
+
+    &:last-child {
+      margin-left: 0;
+    }
+  }
+
+  .avatar-img {
+    transition: opacity 150ms;
+    width: figmaSize(35px);
+    position: relative;
+
+    &::after {
+      padding-bottom: 100%;
+      display: block;
+      content: '';
+    }
+  }
+}

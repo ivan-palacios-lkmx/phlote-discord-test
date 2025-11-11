@@ -1,5 +1,6 @@
 "use client";
 
+import AvatarStack from "@/components/AvatarStack/AvatarStack";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import MatchIcon from "@/components/match-icon/MatchIcon";
 import TrackPreview from "@/components/slices/landing/StemsPlayer/TrackPreview";
@@ -10,7 +11,6 @@ import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
 import SvgIconStem from "@/components/svg/stem.svg";
 import SvgIconVersion from "@/components/svg/version.svg";
-import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
 import { db } from "@/lib/firebase";
@@ -20,21 +20,6 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import "./SessionPreviewBlock.scss";
-
-// AvatarStack Component
-function AvatarStack({ addresses, className = "" }: { addresses: string[]; className?: string }) {
-  return (
-    <div className={`avatar-stack ${className}`}>
-      {addresses.slice(0, 3).map((address, index) => (
-        <Web3Avatar key={index} address={address} className="avatar-img" />
-      ))}
-      {addresses.length > 3 && (
-        <div className="avatar-img avatar-count">+{addresses.length - 3}</div>
-      )}
-    </div>
-  );
-}
-
 
 // Hook to get first version
 function useFirstVersion(sessionID: string | null | undefined) {
@@ -255,7 +240,9 @@ export default function SessionPreviewBlock({
 
         <button>{loading ? <LoadingSpinnerIcon /> : playing ? <PauseIcon /> : <PlayIcon />}</button>
 
-        <AvatarStack addresses={collaborators} className="mobile-only" />
+        <div className="mobile-only">
+          <AvatarStack addresses={collaborators} />
+        </div>
       </div>
 
       {/* Metadata */}
@@ -293,8 +280,8 @@ export default function SessionPreviewBlock({
               <span>Versions</span>
             </span>
 
-            <div className="collaborators">
-              <AvatarStack addresses={collaborators} className="desktop-only" />
+            <div className="collaborators desktop-only">
+              <AvatarStack addresses={collaborators} />
             </div>
           </div>
         </div>
