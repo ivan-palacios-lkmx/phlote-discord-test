@@ -1,0 +1,31 @@
+@import '../../../app/assets/scss/vars';
+
+.sessions-results-filters {
+  grid-template-columns: auto auto 1fr;
+  grid-gap: 15px;
+  display: grid;
+  align-items: center;
+
+  .session-count {
+    @include fontSize(18px);
+    font-family: var(--font-condensed);
+  }
+
+  .filters {
+    display: flex;
+    gap: 5px;
+  }
+
+  .clear-all {
+    margin-right: auto;
+    font-family: var(--font-mono);
+    @include fontSize(11px);
+    text-transform: uppercase;
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  @include bp(m) {
+    grid-template-columns: auto 1fr;
+  }
+}
