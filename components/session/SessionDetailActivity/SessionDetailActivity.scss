@@ -1,0 +1,42 @@
+@import '../../../app/assets/scss/vars';
+
+.session-detail-activity {
+  border-bottom: 1px solid rgba(#fff, 0.3);
+  position: relative;
+  display: flex;
+
+  &::before {
+    background-image: linear-gradient(rgba(#000, 0.3), rgba(#000, 0) 15px);
+    pointer-events: none;
+    z-index: 5;
+    content: '';
+    display: block;
+    @include fill;
+    border-radius: 7px;
+    right: 1px;
+    left: 1px;
+    top: 1px;
+  }
+
+  .activity-box {
+    @include fill;
+    border: 1px solid rgba(#fff, 0.2);
+    background-color: rgba(#fff, 0.05);
+    padding: figmaSize(20px);
+    bottom: figmaSize(50px);
+    box-sizing: border-box;
+    border-radius: 7px;
+    width: 100%;
+    overscroll-behavior: contain;
+    overflow: auto;
+  }
+
+  .activity-title {
+    margin-bottom: figmaSize(20px);
+  }
+
+  .activity-feed {
+    font-family: var(--font-mono);
+    @include fontSize(10px);
+  }
+}
