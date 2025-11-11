@@ -13,14 +13,14 @@ interface MatchIconProps {
 }
 
 export default function MatchIcon({ text }: MatchIconProps) {
-  const t = useMemo(() => text.toLowerCase(), [text]);
+  const lowerText = useMemo(() => text.toLowerCase(), [text]);
 
   return (
     <span className="match-icon">
-      {t.includes("mix") && <MixIcon />}
-      {t.includes("master") && <MasterIcon />}
-      {t.includes("vocals") && <VocalsIcon />}
-      {t.includes("production") && <ProductionIcon />}
+      {lowerText.includes("mix") && <MixIcon />}
+      {lowerText.includes("master") && <MasterIcon />}
+      {lowerText.includes("vocals") && <VocalsIcon />}
+      {lowerText.includes("production") && <ProductionIcon />}
       <span>{text}</span>
     </span>
   );
