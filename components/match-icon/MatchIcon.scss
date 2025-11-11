@@ -1,0 +1,14 @@
+@import '../../app/assets/scss/vars';
+
+.match-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 1em;
+  overflow: hidden;
+
+  svg {
+    height: 1em;
+    width: auto;
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import MatchIcon from "@/components/match-icon/MatchIcon";
 import TrackPreview from "@/components/slices/landing/StemsPlayer/TrackPreview";
 import SvgIconCreator from "@/components/svg/creator.svg";
 import SvgIconDownload from "@/components/svg/download.svg";
@@ -34,10 +35,6 @@ function AvatarStack({ addresses, className = "" }: { addresses: string[]; class
   );
 }
 
-// MatchIcon Component (placeholder)
-function MatchIcon({ text }: { text: string }) {
-  return <span>{text}</span>;
-}
 
 // Hook to get first version
 function useFirstVersion(sessionID: string | null | undefined) {
