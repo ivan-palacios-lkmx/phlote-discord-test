@@ -45,7 +45,7 @@ export default function TrackPreview({ hash, className = "", onSeek }: TrackPrev
   }, [audioDoc?.waveTrace]);
 
   // Handle mouse move
-  const onMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     setCursorPosition(e.nativeEvent.offsetX);
   };
 
@@ -57,7 +57,7 @@ export default function TrackPreview({ hash, className = "", onSeek }: TrackPrev
   }, [cursorPosition]);
 
   // Handle track click
-  const onTrackClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
     const seekTo = e.nativeEvent.offsetX / target.offsetWidth;
     if (onSeek) {
@@ -65,14 +65,29 @@ export default function TrackPreview({ hash, className = "", onSeek }: TrackPrev
     }
   };
 
+  // Handle keyboard events for accessibility
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      const target = e.currentTarget;
+      const seekTo = target.offsetWidth / 2 / target.offsetWidth; // Seek to middle
+      if (onSeek) {
+        onSeek(seekTo);
+      }
+    }
+  };
+
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       className={`track-preview ${className}`}
       onMouseMove={onMouseMove}
-      onClick={onTrackClick}>
+      onClick={onTrackClick}
+      onKeyDown={onKeyDown}>
       {waveTrace && <div className="fill" dangerouslySetInnerHTML={{ __html: waveTrace }} />}
       {waveTrace && <div className="outline" dangerouslySetInnerHTML={{ __html: waveTrace }} />}
       <div className="cursor" style={cursorStyle} />
-    </button>
+    </div>
   );
 }

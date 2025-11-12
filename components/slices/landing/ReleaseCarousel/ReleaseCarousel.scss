@@ -25,7 +25,7 @@
     }
   }
 
-  .carousel {
+  .embla {
     overflow: hidden;
     cursor: grab;
 
@@ -36,10 +36,28 @@
     &:active {
       cursor: grabbing;
     }
+  }
 
+  .embla__container {
+    display: flex;
+  }
+
+  .embla__slide {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  .carousel {
     .release-block {
       width: 30vw;
       margin: var(--margin);
+    }
+
+    .embla__slide {
+      .release-block {
+        width: 30vw;
+        margin: var(--margin);
+      }
     }
   }
 

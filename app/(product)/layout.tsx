@@ -12,7 +12,7 @@ export default async function ProductLayout({ children }: { children: React.Reac
   return (
     <PrismicioProvider settings={settings.data}>
       <ProductHeader />
-      <main className="front-page">{children}</main>
+      <main className="page">{children}</main>
       <Footer />
     </PrismicioProvider>
   );
