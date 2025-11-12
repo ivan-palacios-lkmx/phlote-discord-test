@@ -1,26 +1,9 @@
 import { usePrismicio } from "@/components/PrismicioProvider";
 import { db } from "@/lib/firebase";
+import type { AddressDoc } from "@/types/client";
 import checkAddress from "@/utils/checkAddress";
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
-
-interface AddressDoc {
-  ens?: {
-    name?: string;
-    avatar?: string;
-  };
-  zora?: {
-    zoraUsername?: string;
-    profileImageURL?: string;
-  };
-  openSea?: {
-    osUsername?: string;
-    profileImageURL?: string;
-  };
-  created?: Date;
-  shouldUpdate?: boolean;
-  [key: string]: unknown;
-}
 
 /**
  * React hook for getting Web3 identity information (avatar, username, etc.)
