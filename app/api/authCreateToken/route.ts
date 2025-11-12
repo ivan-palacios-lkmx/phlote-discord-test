@@ -3,25 +3,6 @@ import { checkAddress } from "@/utils/auth-helpers";
 import { ethers } from "ethers";
 import { NextRequest, NextResponse } from "next/server";
 
-/**
- * Cloud Function to create a Firebase authentication token after verifying a wallet signature.
- *
- * This endpoint verifies that a user owns a wallet address by validating a cryptographic signature
- * against a previously generated nonce message. Upon successful verification, it creates a
- * Firebase custom authentication token that can be used to authenticate the user.
- *
- * @param request - Next.js request object
- * @param request.nextUrl.searchParams - Query parameters
- * @param request.nextUrl.searchParams.message - The nonce message that was signed
- * @param request.nextUrl.searchParams.signature - The cryptographic signature of the message
- * @param request.nextUrl.searchParams.address - The Ethereum wallet address
- * @returns Response object with success status and token if successful
- * @returns {boolean} success - Whether the token creation was successful
- * @returns {string} [token] - Firebase custom authentication token (only if success is true)
- *
- * @example
- * GET /api/authCreateToken?message=0x123...&signature=0xabc...&address=0x456...
- */
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
