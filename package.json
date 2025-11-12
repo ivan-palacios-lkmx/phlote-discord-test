@@ -27,6 +27,7 @@
     "fecha": "^4.2.3",
     "file-saver": "^2.0.5",
     "firebase": "^12.5.0",
+    "firebase-admin": "^13.6.0",
     "flickity": "^3.0.0",
     "howler": "^2.2.4",
     "jszip": "^3.10.1",

@@ -43,3 +43,7 @@ rules/
 
 # firebase
 firebase/service-account.json
+firebase/**/node_modules
+
+# functions
+firebase/functions/node_modules
