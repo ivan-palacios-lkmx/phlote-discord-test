@@ -5,6 +5,12 @@ const authCreateNonce = require("./handlers/authCreateNonce");
 const resolveAddress = require("./handlers/resolveAddress");
 const functions = require("firebase-functions");
 
+/*
+ * ==================
+ *  HTTP Endpoints
+ * ==================
+ */
+
 /**
  * Cloud Function to create a Firebase authentication token after verifying a wallet signature.
  *
@@ -47,6 +53,12 @@ exports.authCreateToken = functions
  * GET /authCreateNonce?address=0x11Da1aCa951D649B6a2ff382Ac808aa2a776c2AA
  */
 exports.authCreateNonce = functions.runWith({ minInstances: 1 }).https.onRequest(authCreateNonce);
+
+/*
+ * ==================
+ *  Firestore Triggers
+ * ==================
+ */
 
 /**
  * Cloud Function trigger that resolves wallet address metadata when an address document is updated.
