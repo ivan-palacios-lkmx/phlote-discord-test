@@ -1,4 +1,5 @@
 import type { ImageField, LinkField, RichTextField } from "@prismicio/client";
+import { Timestamp } from "firebase/firestore";
 
 export type UnknownSlice = Record<string, unknown>;
 
@@ -98,20 +99,13 @@ export interface ApplicationFormSlice {
   slice_label?: string | null;
 }
 
-export interface FirebaseTimestamp {
-  toDate?: () => Date;
-  seconds?: number;
-  nanoseconds?: number;
-  [key: string]: unknown;
-}
-
 export interface Session {
   id: string;
   name?: string;
   versionCount?: number;
   discordMessageCount?: number;
   discordChannel?: string;
-  created?: FirebaseTimestamp;
+  created?: Timestamp;
   [key: string]: unknown;
 }
 
@@ -131,6 +125,31 @@ export interface Version {
   }>;
   collaborators?: string[];
   bounce?: string;
-  created?: FirebaseTimestamp;
+  created?: Timestamp;
   [key: string]: unknown;
+}
+
+export interface AddressDoc {
+  created?: Timestamp;
+  updated?: Timestamp;
+  shouldUpdate?: boolean;
+  errorCount?: number;
+  error?: string | boolean;
+  isAdmin?: boolean;
+  isCreator?: boolean;
+  isMember?: boolean;
+  memberSince?: Timestamp;
+  ens?: {
+    name: string | false;
+    avatar: string | false;
+  };
+  openSea?: {
+    osUsername: string;
+    profileImageURL?: string;
+  };
+  zora?: {
+    zoraUsername?: string;
+    profileImageURL?: string;
+  };
+  sessionsContributed?: number;
 }
