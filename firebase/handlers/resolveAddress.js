@@ -22,12 +22,14 @@ const isAdmin = async (address) => {
   const admins = rolesDoc?.admins || [];
   return admins.map((a) => String(a).toLowerCase()).includes(String(address).toLowerCase());
 };
+
 const isCreator = async (address) => {
   const rolesDoc = await getRolesDoc();
   const creators = rolesDoc?.creators || [];
   return creators.map((a) => String(a).toLowerCase()).includes(String(address).toLowerCase());
 };
 const provider = new InfuraProvider("mainnet", process.env.INFURA_ID);
+
 const isMember = async (address) => {
   const db = firebase.firestore();
   const settingsDoc = await db.doc("globals/settings").get();
