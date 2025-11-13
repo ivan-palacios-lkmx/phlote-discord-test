@@ -1,8 +1,10 @@
+import type { AddressDoc } from "./client";
+
 export interface SyncUserRequest {
   address: string;
 }
 
-export interface SyncUserResponse {
+export interface SyncUserResponse extends AddressDoc {
   success: boolean;
 }
 

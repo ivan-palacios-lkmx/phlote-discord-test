@@ -1,5 +1,6 @@
 import Api from "@/hooks/query/api";
 import { SyncUserResponse } from "@/types/api";
+import type { AddressDoc } from "@/types/client";
 import { usePrivy } from "@privy-io/react-auth";
 import { useQuery } from "@tanstack/react-query";
 
@@ -9,7 +10,7 @@ export function useSyncUser() {
   const { user } = usePrivy();
   const walletAddress = user?.wallet?.address || "";
 
-  return useQuery<SyncUserResponse, Error>({
+  const query = useQuery<SyncUserResponse, Error>({
     queryKey: ["syncUser", walletAddress],
     queryFn: () => Api.syncUser({ address: walletAddress }),
     enabled: !!user?.wallet?.address,
@@ -17,4 +18,9 @@ export function useSyncUser() {
     refetchInterval: FIVE_MINUTES_IN_MS,
     refetchOnWindowFocus: false,
   });
+
+  return {
+    ...query,
+    addressDoc: query.data || null,
+  };
 }

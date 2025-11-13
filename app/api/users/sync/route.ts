@@ -233,8 +233,14 @@ export async function POST(request: NextRequest) {
     // Update document
     await addressDocRef.set(updates, { merge: true });
 
+    // Get the updated document to return
+    const updatedDoc = await addressDocRef.get();
+    const updatedData = updatedDoc.exists ? updatedDoc.data() : null;
+
+    // Return data at the top level, not nested
     return NextResponse.json({
       success: true,
+      ...updatedData,
     });
   } catch (error) {
     console.error("[POST /api/users/sync] ERROR caught in catch block:", error);

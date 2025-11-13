@@ -1,7 +1,8 @@
 import { usePrismicio } from "@/components/PrismicioProvider";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { db } from "@/lib/firebase";
 import type { AddressDoc } from "@/types/client";
-import checkAddress from "@/utils/checkAddress";
+import { usePrivy } from "@privy-io/react-auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 
@@ -29,18 +30,27 @@ import { useEffect, useMemo, useState } from "react";
  * ```
  */
 export function useWeb3Identity(address: string | null | undefined) {
+  const { user } = usePrivy();
+  const { addressDoc: syncedAddressDoc } = useSyncUser();
   const [addressDocument, setAddressDocument] = useState<AddressDoc | null>(null);
 
-  const cleanAddress = useMemo(() => {
-    const addy = address || "";
-    return checkAddress(addy);
+  const addressDocumentReference = useMemo(() => {
+    return address ? doc(db, "addresses", address) : null;
   }, [address]);
 
-  const addressDocumentReference = useMemo(() => {
-    return cleanAddress ? doc(db, "addresses", cleanAddress) : null;
-  }, [cleanAddress]);
+  // Check if this is the authenticated user's wallet
+  const isAuthenticatedUser = useMemo(() => {
+    return address && user?.wallet?.address?.toLowerCase() === address.toLowerCase();
+  }, [address, user?.wallet?.address]);
 
   useEffect(() => {
+    // If this is the authenticated user's wallet, use synced data
+    if (isAuthenticatedUser && syncedAddressDoc) {
+      setAddressDocument(syncedAddressDoc);
+      return;
+    }
+
+    // Otherwise, read from Firestore
     if (!addressDocumentReference) {
       setAddressDocument(null);
       return;
@@ -53,12 +63,12 @@ export function useWeb3Identity(address: string | null | undefined) {
     });
 
     return () => unsubscribe();
-  }, [addressDocumentReference]);
+  }, [addressDocumentReference, isAuthenticatedUser, syncedAddressDoc]);
 
   const shortAddress = useMemo(() => {
-    if (!cleanAddress) return "";
-    return cleanAddress.substring(0, 6) + "..." + cleanAddress.substring(cleanAddress.length - 4);
-  }, [cleanAddress]);
+    if (!address) return "";
+    return address.substring(0, 6) + "..." + address.substring(address.length - 4);
+  }, [address]);
 
   const username = useMemo(() => {
     const ensUsername = addressDocument?.ens?.name;
