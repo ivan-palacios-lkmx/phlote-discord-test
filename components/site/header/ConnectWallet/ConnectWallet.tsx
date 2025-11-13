@@ -3,7 +3,7 @@
 import ProfileIcon from "@/components/svg/profile.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
-import { useSyncUser } from "@/hooks/query/mutations/use-sync-user";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { User, useLogin, usePrivy } from "@privy-io/react-auth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
@@ -11,17 +11,19 @@ import { useMemo } from "react";
 import "./ConnectWallet.scss";
 
 export default function ConnectWallet() {
-  const { mutate: syncUser } = useSyncUser();
-  const { login } = useLogin({
-    onComplete: async () => {
-      // if the user logged in via email, we do nothing at the moment TODO: add email database sync
-      const address = findWallet(user!)?.address;
-      if (!address) return;
-      // Sync user address - this will create or update the document with all data
-      syncUser({ address });
-    },
-  });
   const { user, authenticated } = usePrivy();
+  const connectedAddress = useMemo(() => {
+    if (!user || !authenticated) return null;
+    const wallet = findWallet(user);
+    return wallet && "address" in wallet ? (wallet.address as string) : null;
+  }, [user, authenticated]);
+
+  // Sync user address automatically - this will create or update the document with all data
+  useSyncUser({
+    address: connectedAddress || "",
+    enabled: !!connectedAddress,
+  });
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,11 +31,12 @@ export default function ConnectWallet() {
   function findWallet(user: User) {
     return user.linkedAccounts?.find((acc) => acc.type === "wallet");
   }
-  const connectedAddress = useMemo(() => {
-    if (!user || !authenticated) return null;
-    const wallet = findWallet(user);
-    return wallet && "address" in wallet ? (wallet.address as string) : null;
-  }, [user, authenticated]);
+
+  const { login } = useLogin({
+    onComplete: async () => {
+      // Sync will happen automatically via the useSyncUser hook
+    },
+  });
 
   function showProfileOverlay() {
     const current = new URLSearchParams(searchParams.toString());

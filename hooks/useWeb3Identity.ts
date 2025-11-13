@@ -1,8 +1,9 @@
 import { usePrismicio } from "@/components/PrismicioProvider";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { db } from "@/lib/firebase";
 import type { AddressDoc } from "@/types/client";
 import checkAddress from "@/utils/checkAddress";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 
 /**
@@ -40,19 +41,20 @@ export function useWeb3Identity(address: string | null | undefined) {
     return cleanAddress ? doc(db, "addresses", cleanAddress) : null;
   }, [cleanAddress]);
 
+  // Sync user address automatically - this will create or update the document with all data
+  useSyncUser({
+    address: cleanAddress || "",
+    enabled: !!cleanAddress,
+  });
+
   useEffect(() => {
     if (!addressDocumentReference) {
       setAddressDocument(null);
       return;
     }
 
-    const unsubscribe = onSnapshot(addressDocumentReference, async (snap) => {
-      if (!snap.exists()) {
-        await setDoc(addressDocumentReference, {
-          created: new Date(),
-          shouldUpdate: true,
-        });
-      } else {
+    const unsubscribe = onSnapshot(addressDocumentReference, (snap) => {
+      if (snap.exists()) {
         setAddressDocument(snap.data() as AddressDoc);
       }
     });

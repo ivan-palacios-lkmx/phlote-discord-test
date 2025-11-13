@@ -1,8 +1,8 @@
 "use client";
 
-import { useSyncUser } from "@/hooks/query/mutations/use-sync-user";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { useConnectWallet, usePrivy } from "@privy-io/react-auth";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 /**
  * Debug component to show what Privy user object contains
@@ -10,40 +10,31 @@ import { useEffect, useState } from "react";
 export default function PrivyUserDebug() {
   const { user, ready, authenticated } = usePrivy();
   const { connectWallet } = useConnectWallet();
-  const { mutate: syncUser, isPending: isSyncing } = useSyncUser();
   const [isConnecting, setIsConnecting] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<string>("");
 
-  useEffect(() => {
-    if (!user || !authenticated) return;
+  // Get first wallet address for syncing
+  const walletAddress = useMemo(() => {
+    if (!user || !authenticated) return null;
+    const wallet = user.linkedAccounts?.find((acc: any) => acc.type === "wallet");
+    return wallet && "address" in wallet ? (wallet.address as string) : null;
+  }, [user, authenticated]);
 
-    const emailAccount = user.linkedAccounts?.find(
-      (acc: any) => acc.type === "email"
-    );
-    const email = emailAccount && "address" in emailAccount ? emailAccount.address : undefined;
+  // Sync user address automatically
+  const {
+    isPending: isSyncing,
+    isSuccess,
+    isError,
+  } = useSyncUser({
+    address: walletAddress || "",
+    enabled: !!walletAddress,
+  });
 
-    const walletAddresses = user.linkedAccounts
-      ?.filter((acc: any) => acc.type === "wallet")
-      .map((acc: any) => "address" in acc ? acc.address : undefined)
-      .filter(Boolean);
-
-    syncUser(
-      {
-        privyId: user.id,
-        email,
-        walletAddresses,
-      },
-      {
-        onSuccess: () => {
-          setSyncStatus("Synced ✓");
-          setTimeout(() => setSyncStatus(""), 2000);
-        },
-        onError: () => {
-          setSyncStatus("Sync failed ✗");
-        },
-      }
-    );
-  }, [user, authenticated, syncUser]);
+  const syncStatus = useMemo(() => {
+    if (isSyncing) return "Syncing...";
+    if (isSuccess) return "Synced ✓";
+    if (isError) return "Sync failed ✗";
+    return "";
+  }, [isSyncing, isSuccess, isError]);
 
   const handleConnectWallet = async () => {
     setIsConnecting(true);
@@ -69,13 +60,14 @@ export default function PrivyUserDebug() {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Privy User Object Debug</h2>
         {(syncStatus || isSyncing) && (
-          <span className={`text-sm px-3 py-1 rounded ${
-            isSyncing || syncStatus.includes("Syncing")
-              ? "bg-blue-100 text-blue-700"
-              : syncStatus.includes("✓")
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}>
+          <span
+            className={`text-sm px-3 py-1 rounded ${
+              isSyncing || syncStatus.includes("Syncing")
+                ? "bg-blue-100 text-blue-700"
+                : syncStatus.includes("✓")
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+            }`}>
             {isSyncing ? "Syncing..." : syncStatus}
           </span>
         )}
@@ -135,23 +127,20 @@ export default function PrivyUserDebug() {
 
       {/* Link Wallet Button */}
       {user.linkedAccounts &&
-       user.linkedAccounts.filter((acc: any) => acc.type === "wallet").length === 0 && (
-        <div className="mb-4 p-3 bg-yellow-50 rounded border border-yellow-200">
-          <p className="font-bold text-yellow-900 mb-2">
-            No wallet linked yet
-          </p>
-          <p className="text-sm text-yellow-700 mb-3">
-            Link a wallet to this account to enable wallet-based features.
-          </p>
-          <button
-            onClick={handleConnectWallet}
-            disabled={isConnecting}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {isConnecting ? "Connecting..." : "Link Wallet"}
-          </button>
-        </div>
-      )}
+        user.linkedAccounts.filter((acc: any) => acc.type === "wallet").length === 0 && (
+          <div className="mb-4 p-3 bg-yellow-50 rounded border border-yellow-200">
+            <p className="font-bold text-yellow-900 mb-2">No wallet linked yet</p>
+            <p className="text-sm text-yellow-700 mb-3">
+              Link a wallet to this account to enable wallet-based features.
+            </p>
+            <button
+              onClick={handleConnectWallet}
+              disabled={isConnecting}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed">
+              {isConnecting ? "Connecting..." : "Link Wallet"}
+            </button>
+          </div>
+        )}
 
       {/* Raw User Object */}
       <details className="mt-4">
