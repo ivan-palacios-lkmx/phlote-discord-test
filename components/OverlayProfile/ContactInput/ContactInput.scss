@@ -1,0 +1,65 @@
+@import "../../../app/assets/scss/vars";
+
+.overlay-profile-contact-input {
+  grid-template-columns: 1fr auto;
+  display: grid;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+
+  label {
+    grid-template-columns: 1em auto;
+    display: grid;
+    align-items: center;
+    gap: 5px;
+    @include fontSize(11px);
+
+    svg {
+      height: 0.8em;
+      width: auto;
+      display: block;
+      margin: auto;
+    }
+
+    .svg-social-mail {
+      height: 0.7em;
+    }
+
+    input {
+      font-family: var(--font-mono);
+      @include fontSize(11px);
+      width: 100%;
+      padding: 0;
+      text-transform: uppercase;
+      position: relative;
+      border-bottom: 1px solid var(--white);
+      transition: border-color 300ms;
+
+      &:not(:disabled) {
+        border-color: var(--black);
+      }
+    }
+  }
+
+  button {
+    font-family: var(--font-mono);
+    @include fontSize(11px);
+    text-transform: uppercase;
+    text-decoration: underline;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover button,
+  button.save {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  @include bp(m) {
+    button {
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+}
