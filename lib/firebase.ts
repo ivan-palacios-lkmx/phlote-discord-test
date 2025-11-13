@@ -16,11 +16,11 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-const shouldUseEmulator = false;
-// TODO: Enable this when we have a proper emulator setup
-// process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === "true" ||
-// (process.env.NODE_ENV === "development" && typeof window !== "undefined");
+// const shouldUseEmulator =
+//   process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === "true" ||
+//   (process.env.NODE_ENV === "development" && typeof window !== "undefined");
 
+const shouldUseEmulator = false;
 if (shouldUseEmulator) {
   try {
     connectFirestoreEmulator(db, "localhost", 8081);

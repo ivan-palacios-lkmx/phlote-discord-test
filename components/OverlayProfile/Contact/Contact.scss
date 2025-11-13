@@ -1,0 +1,29 @@
+@import "../../../app/assets/scss/vars";
+
+.overlay-profile-contact {
+  font-family: var(--font-mono);
+  padding: var(--margin);
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(#000, 0.15);
+  display: grid;
+
+  .discord-btn {
+    text-transform: uppercase;
+  }
+
+  .svg-social-discord,
+  .svg-social-twitter,
+  .svg-social-mail {
+    width: 15px;
+    height: auto;
+  }
+
+  .social-link {
+    text-align: left;
+    grid-gap: 7px;
+    padding: 0.5em 1em;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    display: grid;
+  }
+}

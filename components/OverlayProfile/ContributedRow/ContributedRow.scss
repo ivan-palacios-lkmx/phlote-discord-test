@@ -1,0 +1,16 @@
+@import "../../../app/assets/scss/vars";
+.overlay-profile-contributed-row {
+  grid-template-columns: auto 1fr auto;
+  display: grid;
+  grid-gap: 5px;
+  font-family: var(--font-mono);
+  align-items: center;
+  padding-bottom: 5px;
+
+  .version {
+    border: 1px solid rgba(#000, 0.4);
+    padding: 0.2em 0.4em;
+    border-radius: 2px;
+    line-height: 90%;
+  }
+}
