@@ -1,8 +1,5 @@
 export interface SyncUserRequest {
-  privyId: string;
-  email?: string;
-  walletAddresses?: string[];
-  displayName?: string;
+  address: string;
 }
 
 export interface SyncUserResponse {

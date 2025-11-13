@@ -3,17 +3,24 @@
 import ProfileIcon from "@/components/svg/profile.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
-import { useWeb3Identity } from "@/hooks/useWeb3Identity";
-import { UPDATE_THRESHOLD_IN_MS } from "@/utils/constants";
+import { useSyncUser } from "@/hooks/query/mutations/use-sync-user";
 import { User, useLogin, usePrivy } from "@privy-io/react-auth";
-import { setDoc } from "firebase/firestore";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 import "./ConnectWallet.scss";
 
 export default function ConnectWallet() {
-  const { login } = useLogin();
+  const { mutate: syncUser } = useSyncUser();
+  const { login } = useLogin({
+    onComplete: async () => {
+      // if the user logged in via email, we do nothing at the moment TODO: add email database sync
+      const address = findWallet(user!)?.address;
+      if (!address) return;
+      // Sync user address - this will create or update the document with all data
+      syncUser({ address });
+    },
+  });
   const { user, authenticated } = usePrivy();
   const router = useRouter();
   const pathname = usePathname();
@@ -28,48 +35,24 @@ export default function ConnectWallet() {
     return wallet && "address" in wallet ? (wallet.address as string) : null;
   }, [user, authenticated]);
 
-  const { addressDoc, addressDocRef } = useWeb3Identity(connectedAddress);
+  function showProfileOverlay() {
+    const current = new URLSearchParams(searchParams.toString());
+    current.set("profile", connectedAddress!);
+    const newUrl = `${pathname}${current.toString() ? `?${current.toString()}` : ""}`;
+    router.push(newUrl);
+  }
 
-  // TODO: Check if addressDocRef is really necessary
-  const canUpdate = useMemo(() => {
-    if (addressDoc == null || addressDocRef == null) return false;
-    const addressLastUpdate = addressDoc.updated?.toDate();
-    if (!addressLastUpdate) return false;
-    const now = new Date();
-    const timeSinceLastUpdate = now.getTime() - addressLastUpdate.getTime();
-    return timeSinceLastUpdate > UPDATE_THRESHOLD_IN_MS;
-  }, [addressDoc, addressDocRef]);
-
-  useEffect(() => {
-    async function updateAddressDoc() {
-      if (canUpdate && addressDocRef) {
-        await setDoc(
-          addressDocRef,
-          {
-            shouldUpdate: true,
-          },
-          { merge: true },
-        );
-      }
-    }
-    updateAddressDoc();
-  }, [canUpdate, addressDocRef]);
-
-  const openModal = () => {
+  function handleClick() {
     if (connectedAddress) {
-      const current = new URLSearchParams(searchParams.toString());
-      current.set("profile", connectedAddress);
-      const newUrl = `${pathname}${current.toString() ? `?${current.toString()}` : ""}`;
-      console.log("Opening profile modal for:", connectedAddress, "URL:", newUrl);
-      router.push(newUrl);
+      showProfileOverlay();
     } else {
       login();
     }
-  };
+  }
 
   return (
     <button
-      onClick={openModal}
+      onClick={handleClick}
       className="connect-wallet mono"
       key={connectedAddress || "not-connected"}>
       <div className="border" />

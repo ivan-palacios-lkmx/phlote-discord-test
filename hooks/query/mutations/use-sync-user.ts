@@ -1,7 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import Api from "../api";
+import Api from "@/hooks/query/api";
 import { SyncUserRequest, SyncUserResponse } from "@/types/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useSyncUser() {
   const queryClient = useQueryClient();
