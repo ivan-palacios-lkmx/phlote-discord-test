@@ -1,0 +1,30 @@
+@import "../../../app/assets/scss/vars";
+
+.overlay-profile-contributed {
+  border-bottom: 1px solid rgba(#000, 0.15);
+  padding: var(--margin);
+  text-align: left;
+
+  .sessions-contributed-title {
+    margin: 0;
+  }
+
+  .contributed-session-list {
+    margin-top: var(--margin);
+
+    // Reverse hover
+    .overlay-profile-contributed-row {
+      transition: opacity 150ms ease;
+    }
+
+    &:hover {
+      .overlay-profile-contributed-row {
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
