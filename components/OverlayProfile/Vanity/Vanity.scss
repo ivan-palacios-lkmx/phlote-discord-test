@@ -1,0 +1,28 @@
+@import "../../../app/assets/scss/vars";
+
+.overlay-profile-vanity {
+  padding: var(--margin);
+  border-bottom: 1px solid rgba(#000, 0.15);
+
+  .web3-avatar {
+    max-width: figmaSize(200px);
+    border-radius: 100%;
+    overflow: hidden;
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+
+    &::after {
+      content: '';
+      padding-bottom: 100%;
+      display: block;
+    }
+  }
+
+  .profile-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin: 0;
+    margin-top: var(--margin);
+  }
+}
