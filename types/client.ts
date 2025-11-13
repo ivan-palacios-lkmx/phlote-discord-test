@@ -130,6 +130,7 @@ export interface Version {
 }
 
 export interface AddressDoc {
+  username?: string | null;
   created?: Timestamp;
   updated?: Timestamp;
   shouldUpdate?: boolean;

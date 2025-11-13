@@ -19,6 +19,15 @@ class AuthenticationService {
     );
   }
 
+  static async getUsername(account: AddressDoc, shortAddress: string): Promise<string> {
+    try {
+      return account.username || shortAddress;
+    } catch (error) {
+      console.error("Error getting user:", error);
+      throw error;
+    }
+  }
+
   static async syncUser(userData: SyncUserRequest): Promise<SyncUserResponse> {
     try {
       const response = await apiClient.post(ENDPOINTS.SYNC_USER, userData);
@@ -27,11 +36,13 @@ class AuthenticationService {
       // Add shortAddress and avatar to the response
       const shortAddress = this.getShortAddress(userData.address);
       const avatar = this.getAvatar(data);
+      const username = this.getUsername(data, shortAddress);
 
       return {
         ...data,
         shortAddress,
         avatar,
+        username,
       };
     } catch (error) {
       console.error("Error syncing user:", error);
