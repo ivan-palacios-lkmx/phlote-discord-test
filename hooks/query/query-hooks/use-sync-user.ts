@@ -1,19 +1,18 @@
 import Api from "@/hooks/query/api";
 import { SyncUserResponse } from "@/types/api";
+import { usePrivy } from "@privy-io/react-auth";
 import { useQuery } from "@tanstack/react-query";
-
-interface UseSyncUserOptions {
-  address: string;
-  enabled?: boolean;
-}
 
 const FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
 
-export function useSyncUser({ address, enabled = true }: UseSyncUserOptions) {
+export function useSyncUser() {
+  const { user } = usePrivy();
+  const walletAddress = user?.wallet?.address || "";
+
   return useQuery<SyncUserResponse, Error>({
-    queryKey: ["syncUser", address],
-    queryFn: () => Api.syncUser({ address }),
-    enabled: enabled && !!address,
+    queryKey: ["syncUser", walletAddress],
+    queryFn: () => Api.syncUser({ address: walletAddress }),
+    enabled: !!user?.wallet?.address,
     staleTime: FIVE_MINUTES_IN_MS,
     refetchInterval: FIVE_MINUTES_IN_MS,
     refetchOnWindowFocus: false,

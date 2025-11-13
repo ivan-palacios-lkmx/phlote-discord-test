@@ -12,22 +12,8 @@ export default function PrivyUserDebug() {
   const { connectWallet } = useConnectWallet();
   const [isConnecting, setIsConnecting] = useState(false);
 
-  // Get first wallet address for syncing
-  const walletAddress = useMemo(() => {
-    if (!user || !authenticated) return null;
-    const wallet = user.linkedAccounts?.find((acc: any) => acc.type === "wallet");
-    return wallet && "address" in wallet ? (wallet.address as string) : null;
-  }, [user, authenticated]);
-
   // Sync user address automatically
-  const {
-    isPending: isSyncing,
-    isSuccess,
-    isError,
-  } = useSyncUser({
-    address: walletAddress || "",
-    enabled: !!walletAddress,
-  });
+  const { isPending: isSyncing, isSuccess, isError } = useSyncUser();
 
   const syncStatus = useMemo(() => {
     if (isSyncing) return "Syncing...";
