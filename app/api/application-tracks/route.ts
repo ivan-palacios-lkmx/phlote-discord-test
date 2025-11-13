@@ -8,25 +8,12 @@ import { NextRequest, NextResponse } from "next/server";
  * Fetches application tracks for a given application ID
  * Requires authentication: User must be a creator
  */
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const searchParams = request.nextUrl.searchParams;
     const applicationID = searchParams.get("applicationID");
 
-    // Get user ID from authorization header
-    const authHeader = request.headers.get("authorization");
-    let userID: string | null = null;
-
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      try {
-        const token = authHeader.substring(7);
-        const decodedToken = await adminAuth.verifyIdToken(token);
-        userID = decodedToken.uid;
-      } catch (error) {
-        // Invalid token, userID will remain null
-        console.error("Error verifying token:", error);
-      }
-    }
+    const userID: string | null = null;
 
     // Validate user is a creator
     if (!userID) {
