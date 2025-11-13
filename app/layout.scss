@@ -1,0 +1,18 @@
+@import './assets/scss/vars';
+
+.container.default {
+  transition: min-height 150ms linear, opacity 600ms;
+  --winHeight: 100vh;
+  min-height: var(--winHeight);
+  position: relative;
+  grid-template-rows: 1fr auto;
+  display: grid;
+
+  &:not(.fonts-loaded) {
+    opacity: 0;
+  }
+
+  &>* {
+    min-width: 0;
+  }
+}

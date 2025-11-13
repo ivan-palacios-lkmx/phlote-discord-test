@@ -1,9 +1,9 @@
 "use client";
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
-import { useMemo } from "react";
+import { useEffect } from "react";
 
 import "./OnlyMembers.scss";
 
@@ -13,33 +13,22 @@ interface OnlyMembersProps {
 
 export default function OnlyMembers({ children }: OnlyMembersProps) {
   const { login } = useLogin();
-  const { user, authenticated, ready } = usePrivy();
+  const { addressDoc, isPending, isError } = useSyncUser();
+  const { authenticated, logout, ready } = usePrivy();
 
-  const walletAddress = useMemo(() => {
-    if (!user || !authenticated) return "";
-    const walletAccount = user.linkedAccounts?.find((acc) => acc.type === "wallet");
-    return walletAccount && "address" in walletAccount ? (walletAccount.address as string) : "";
-  }, [user, authenticated]);
-
-  const { data: accountInfo, isLoading: loadingAccount } = useGetAccount({
-    address: walletAddress,
-    enabled: authenticated && !!walletAddress,
-  });
-
-  const loadingUser = !ready || (authenticated && !!walletAddress && loadingAccount);
-  const isMember = useMemo(() => {
-    if (!authenticated || !accountInfo?.data) return false;
-    const role = accountInfo.data.role;
-    return role === "admin" || role === "creator" || role === "member";
-  }, [authenticated, accountInfo]);
+  const isMember =
+    authenticated && (addressDoc?.isAdmin || addressDoc?.isCreator || addressDoc?.isMember);
 
   const onConnect = () => {
+    if (authenticated) {
+      logout();
+    }
     login();
   };
 
   return (
     <main className="only-members">
-      {loadingUser ? (
+      {isPending || !ready ? (
         <div className="only-members-loading">
           <LoadingSpinnerIcon />
         </div>
@@ -53,6 +42,15 @@ export default function OnlyMembers({ children }: OnlyMembersProps) {
               <button onClick={onConnect} className="btn">
                 Connect Wallet
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isError && (
+        <div className="only-members-error">
+          <div className="contained">
+            <div className="centered">
+              <h4>Error loading user data.</h4>
             </div>
           </div>
         </div>

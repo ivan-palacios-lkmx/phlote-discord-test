@@ -1,3 +1,4 @@
+import OnlyMembers from "@/components/OnlyMembers/OnlyMembers";
 import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
 import PrismicioProvider from "@/components/PrismicioProvider";
 import Footer from "@/components/site/footer/Footer";
@@ -13,8 +14,12 @@ export default async function ProductLayout({ children }: { children: React.Reac
   return (
     <PrismicioProvider settings={settings.data}>
       <ProductHeader />
-      <main className="page">{children}</main>
+      <main className="page">
+        <OnlyMembers>{children}</OnlyMembers>
+      </main>
+
       <Footer />
+
       <OverlayProfileWrapper />
     </PrismicioProvider>
   );

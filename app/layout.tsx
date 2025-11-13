@@ -2,6 +2,7 @@ import AuthProvider from "@/components/AuthProvider";
 import LenisProvider from "@/components/LenisProvider";
 import PrivyProviderWrapper from "@/components/PrivyProviderWrapper";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
+import DefaultLayout from "@/components/layout/DefaultLayout";
 import { createClient } from "@/prismicio";
 import { repositoryName } from "@/prismicio";
 import { PrismicPreview } from "@prismicio/next";
@@ -48,6 +49,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const client = createClient();
+  const settings = await client.getSingle("settings");
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
@@ -55,9 +59,7 @@ export default async function RootLayout({
           <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
             <AuthProvider>
               <LenisProvider>
-                <div className="container default grid min-h-screen w-full max-w-none grid-rows-[1fr_auto]">
-                  {children}
-                </div>
+                <DefaultLayout settings={settings.data}>{children}</DefaultLayout>
               </LenisProvider>
             </AuthProvider>
           </PrivyProviderWrapper>
