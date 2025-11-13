@@ -29,46 +29,31 @@ import { useEffect, useMemo, useState } from "react";
  * }
  * ```
  */
-export function useWeb3Identity(address: string | null | undefined) {
-  const { user } = usePrivy();
+export function useWeb3Identity() {
+  const { user, authenticated } = usePrivy();
   const { addressDoc: syncedAddressDoc } = useSyncUser();
   const [addressDocument, setAddressDocument] = useState<AddressDoc | null>(null);
 
-  const addressDocumentReference = useMemo(() => {
-    return address ? doc(db, "addresses", address) : null;
-  }, [address]);
-
   // Check if this is the authenticated user's wallet
-  const isAuthenticatedUser = useMemo(() => {
-    return address && user?.wallet?.address?.toLowerCase() === address.toLowerCase();
-  }, [address, user?.wallet?.address]);
 
   useEffect(() => {
     // If this is the authenticated user's wallet, use synced data
-    if (isAuthenticatedUser && syncedAddressDoc) {
+    if (authenticated && syncedAddressDoc) {
       setAddressDocument(syncedAddressDoc);
       return;
     }
 
     // Otherwise, read from Firestore
-    if (!addressDocumentReference) {
-      setAddressDocument(null);
-      return;
-    }
-
-    const unsubscribe = onSnapshot(addressDocumentReference, (snap) => {
-      if (snap.exists()) {
-        setAddressDocument(snap.data() as AddressDoc);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [addressDocumentReference, isAuthenticatedUser, syncedAddressDoc]);
+  }, [authenticated, syncedAddressDoc]);
 
   const shortAddress = useMemo(() => {
-    if (!address) return "";
-    return address.substring(0, 6) + "..." + address.substring(address.length - 4);
-  }, [address]);
+    if (!user?.wallet?.address) return "";
+    return (
+      user.wallet.address.substring(0, 6) +
+      "..." +
+      user.wallet.address.substring(user.wallet.address.length - 4)
+    );
+  }, [user?.wallet?.address]);
 
   const username = useMemo(() => {
     const ensUsername = addressDocument?.ens?.name;
@@ -95,7 +80,6 @@ export function useWeb3Identity(address: string | null | undefined) {
   }, [addressDocument, prismicioSettings]);
 
   return {
-    addressDocRef: addressDocumentReference,
     shortAddress,
     addressDoc: addressDocument,
     username,
