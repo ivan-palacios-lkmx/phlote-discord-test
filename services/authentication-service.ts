@@ -15,7 +15,7 @@ class AuthenticationService {
       addressDoc.ens?.avatar ||
       addressDoc.zora?.profileImageURL ||
       addressDoc.openSea?.profileImageURL ||
-      null
+      "/images/phlote-poster.jpg"
     );
   }
 
