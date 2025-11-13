@@ -1,21 +1,16 @@
+import serviceAccount from "@/firebase/service-account.json";
 import admin from "firebase-admin";
 
-// Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
-  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-    : null;
-
   if (serviceAccount) {
     const projectID = serviceAccount.project_id;
+    console.log("[firebase-admin] Project ID:", projectID);
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
       databaseURL: `https://${projectID}.firebaseio.com`,
       storageBucket: `${projectID}.appspot.com`,
     });
-  } else {
-    // Try to initialize with default credentials (for production environments like Vercel)
-    admin.initializeApp();
+    console.log("[firebase-admin] Firebase Admin initialized with service account");
   }
 }
 
