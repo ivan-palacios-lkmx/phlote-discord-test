@@ -1,6 +1,5 @@
-import Api from "@/hooks/query/api";
+import AuthenticationService from "@/services/authentication-service";
 import { SyncUserResponse } from "@/types/api";
-import type { AddressDoc } from "@/types/client";
 import { usePrivy } from "@privy-io/react-auth";
 import { useQuery } from "@tanstack/react-query";
 
@@ -12,7 +11,7 @@ export function useSyncUser() {
 
   const query = useQuery<SyncUserResponse, Error>({
     queryKey: ["syncUser", walletAddress],
-    queryFn: () => Api.syncUser({ address: walletAddress }),
+    queryFn: () => AuthenticationService.syncUser({ address: walletAddress }),
     enabled: !!user?.wallet?.address,
     staleTime: FIVE_MINUTES_IN_MS,
     refetchInterval: FIVE_MINUTES_IN_MS,
