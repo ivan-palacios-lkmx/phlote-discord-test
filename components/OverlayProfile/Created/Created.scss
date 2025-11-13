@@ -1,0 +1,15 @@
+@import "../../../app/assets/scss/vars";
+
+.overlay-profile-created {
+  border-bottom: 1px solid rgba(#000, 0.15);
+  padding: var(--margin);
+  text-align: left;
+
+  .sessions-created-title {
+    margin: 0;
+  }
+
+  .created-session-list {
+    margin-top: var(--margin);
+  }
+}
