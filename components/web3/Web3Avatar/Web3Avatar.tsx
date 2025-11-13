@@ -1,6 +1,6 @@
 "use client";
 
-import { useWeb3Identity } from "@/hooks/useWeb3Identity";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 
 import "./Web3Avatar.scss";
 
@@ -10,7 +10,8 @@ interface Web3AvatarProps {
 }
 
 export default function Web3Avatar({ address, className = "" }: Web3AvatarProps) {
-  const { avatar } = useWeb3Identity(address);
+  const { addressDoc } = useSyncUser();
+  const avatar = addressDoc?.avatar;
 
   return (
     <div className={`web3-avatar ${className}`.trim()}>

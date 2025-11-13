@@ -1,6 +1,6 @@
 "use client";
 
-import { useWeb3Identity } from "@/hooks/useWeb3Identity";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 
 import "./Web3Username.scss";
 
@@ -10,7 +10,8 @@ interface Web3UsernameProps {
 }
 
 export default function Web3Username({ address, className = "" }: Web3UsernameProps) {
-  const { username } = useWeb3Identity(address);
+  const { addressDoc } = useSyncUser();
+  const username = addressDoc?.username || address;
 
   return (
     <div className={`web3-username ${className}`.trim()}>

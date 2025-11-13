@@ -2,7 +2,7 @@
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useClientDoc } from "@/hooks/useClientDoc";
-import { useWeb3Identity } from "@/hooks/useWeb3Identity";
+import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { db } from "@/lib/firebase";
 import type { AddressDoc } from "@/types/client";
 import { doc } from "firebase/firestore";
@@ -35,7 +35,8 @@ export default function Vanity({ address, name }: VanityProps) {
     return "Member";
   }, [profileDoc]);
 
-  const { username } = useWeb3Identity(address);
+  const { addressDoc } = useSyncUser();
+  const username = addressDoc?.username;
 
   const profileName = useMemo(() => name || username, [name, username]);
 
