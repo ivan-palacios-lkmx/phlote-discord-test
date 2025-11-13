@@ -1,0 +1,60 @@
+@import "../../app/assets/scss/vars";
+
+.overlay-profile {
+  @include fill;
+  position: fixed;
+  background-color: rgba(#000, 0.75);
+  text-align: center;
+  display: flex;
+  color: var(--black);
+
+  .profile-modal {
+    background-color: var(--white);
+    border-radius: 7px;
+    position: relative;
+    max-width: figmaSize(450px);
+    max-height: 95vh;
+    margin: auto;
+    width: 100%;
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+  }
+
+  .close-modal {
+    padding: figmaSize(30px);
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    .svg-close {
+      height: 13px;
+      width: 13px;
+    }
+  }
+
+  &.current {
+    .profile-modal {
+      position: fixed;
+      top: var(--margin);
+      right: var(--margin);
+      max-width: 300px;
+      padding: 30px;
+      box-sizing: border-box;
+    }
+  }
+
+  @include bp(m) {
+    .profile-modal {
+      width: calc(100vw - (2 * var(--margin)));
+    }
+
+    &.current {
+      .profile-modal {
+        position: fixed;
+        top: var(--margin);
+        right: var(--margin);
+        left: var(--margin);
+      }
+    }
+  }
+}
