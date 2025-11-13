@@ -2,12 +2,11 @@
 
 import "@/app/layout.scss";
 import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
-import PrismicioProvider from "@/components/PrismicioProvider";
-import OverlaySignature from "@/components/overlay/OverlaySignature/OverlaySignature";
-import Footer from "@/components/site/footer/Footer";
+import PrismicioProvider, { type PrismicSettings } from "@/components/PrismicioProvider";
+import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
+import ProductFooter from "@/components/site/footer/ProductFooter/ProductFooter";
 import MarketingHeader from "@/components/site/header/MarketingHeader/MarketingHeader";
 import ProductHeader from "@/components/site/header/ProductHeader/ProductHeader";
-import MobileMenu from "@/components/site/mobile-menu/MobileMenu";
 import { useLenis } from "@/hooks/useLenis";
 import kebabCase from "lodash/kebabCase";
 import { usePathname } from "next/navigation";
@@ -15,7 +14,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
-  settings: any;
+  settings: PrismicSettings;
 }
 
 export default function DefaultLayout({ children, settings }: DefaultLayoutProps) {
@@ -27,9 +26,16 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   const [headerHeight, setHeaderHeight] = useState(0);
   const [windowHeight, setWindowHeight] = useState(0);
 
-  // Check if route is product
-  const routeIsProduct = useMemo(() => {
-    return pathname && pathname !== "/" && !pathname.startsWith("/slug");
+  // Check if route is marketing (not product)
+  // Marketing routes: routes in app/(marketing) - "/" and dynamic routes
+  // Product routes: routes in app/(product) - "/sessions", "/product", etc.
+  const routeIsMarketing = useMemo(() => {
+    if (!pathname) return false;
+    // Product routes (known routes in app/(product))
+    const productRoutes = ["/sessions", "/product"];
+    const isProductRoute = productRoutes.some((route) => pathname.startsWith(route));
+    // If it's not a product route, it's a marketing route
+    return !isProductRoute;
   }, [pathname]);
 
   // Get route name for class
@@ -87,7 +93,7 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     resizeObserver.observe(headerRef.current);
 
     return () => resizeObserver.disconnect();
-  }, [routeIsProduct]);
+  }, [routeIsMarketing]);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -97,7 +103,7 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
       lenis.current?.scrollTo("top", {
         offset: 0,
         duration: 0,
-        easing: () => {},
+        easing: (t: number) => t,
         immediate: true,
       });
     };
@@ -131,14 +137,14 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
       <div className={classes} style={styles}>
         {/* Header */}
         <div ref={headerRef as React.RefObject<HTMLDivElement>}>
-          {routeIsProduct ? <ProductHeader /> : <MarketingHeader />}
+          {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
         </div>
 
         {/* Page */}
         <main>{children}</main>
 
         {/* Footer */}
-        <Footer />
+        {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
 
         {/* Overlay User Profile */}
         <OverlayProfileWrapper />
