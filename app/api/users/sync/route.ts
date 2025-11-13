@@ -243,11 +243,19 @@ export async function POST(request: NextRequest) {
     const openSeaUsername = updatedData?.openSea?.osUsername;
     const username = ensUsername || openSeaUsername || zoraUsername || null;
 
+    // Calculate avatar
+    const avatar =
+      updatedData?.ens?.avatar ||
+      updatedData?.zora?.profileImageURL ||
+      updatedData?.openSea?.profileImageURL ||
+      null;
+
     // Return data at the top level, not nested
     return NextResponse.json({
       success: true,
       ...updatedData,
       username,
+      avatar,
     });
   } catch (error) {
     console.error("[POST /api/users/sync] ERROR caught in catch block:", error);

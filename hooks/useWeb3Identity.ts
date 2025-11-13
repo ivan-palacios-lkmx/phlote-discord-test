@@ -60,10 +60,11 @@ export function useWeb3Identity() {
 
   const { settings: prismicioSettings } = usePrismicio();
 
-  // Calculate avatar on client
+  // Get avatar from synced data (calculated in backend), with fallbacks
   const avatar = useMemo(() => {
     const addressDoc = syncedAddressDoc || addressDocument;
     return (
+      syncedAddressDoc?.avatar ||
       addressDoc?.ens?.avatar ||
       addressDoc?.zora?.profileImageURL ||
       addressDoc?.openSea?.profileImageURL ||
