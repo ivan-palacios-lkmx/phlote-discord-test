@@ -7,15 +7,5 @@ import { createClient } from "@/prismicio";
 import "./layout.scss";
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
-  const client = createClient();
-  const settings = await client.getSingle("settings");
-
-  return (
-    <PrismicioProvider settings={settings.data}>
-      <MarketingHeader />
-      <main className="front-page">{children}</main>
-      <MarketingFooter />
-      <OverlayProfileWrapper />
-    </PrismicioProvider>
-  );
+  return <main className="front-page">{children}</main>;
 }
