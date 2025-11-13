@@ -10,7 +10,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import "./ConnectWallet.scss";
 
 export default function ConnectWallet() {
-  const { user } = usePrivy();
+  const { user, ready } = usePrivy();
   const walletAddress = user?.wallet?.address;
 
   // Sync user address automatically - this will create or update the document with all data
@@ -45,9 +45,15 @@ export default function ConnectWallet() {
       key={walletAddress || "not-connected"}>
       <div className="border" />
       <div className="img-wrap">
-        {walletAddress ? <Web3Avatar address={walletAddress} /> : <ProfileIcon />}
+        {walletAddress && ready ? <Web3Avatar address={walletAddress} /> : <ProfileIcon />}
       </div>
-      {walletAddress ? <Web3Username address={walletAddress} /> : <span>Connect</span>}
+      {walletAddress ? (
+        <Web3Username address={walletAddress} />
+      ) : ready ? (
+        <span>Connect</span>
+      ) : (
+        <span>Loading</span>
+      )}
     </button>
   );
 }
