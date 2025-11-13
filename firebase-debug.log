@@ -1,0 +1,112 @@
+[debug] [2025-11-13T00:16:12.006Z] ----------------------------------------------------------------------
+[debug] [2025-11-13T00:16:12.007Z] Command:       /usr/local/bin/node /usr/local/bin/firebase emulators:start --only functions
+[debug] [2025-11-13T00:16:12.007Z] CLI Version:   14.15.2
+[debug] [2025-11-13T00:16:12.007Z] Platform:      darwin
+[debug] [2025-11-13T00:16:12.007Z] Node Version:  v22.14.0
+[debug] [2025-11-13T00:16:12.008Z] Time:          Wed Nov 12 2025 18:16:12 GMT-0600 (Central Standard Time)
+[debug] [2025-11-13T00:16:12.008Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-11-13T00:16:12.079Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-13T00:16:12.079Z] > authorizing via signed-in user (ivan.palacios@lkmx.io)
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[debug] [2025-11-13T00:16:12.404Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-11-13T00:16:12.405Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2025-11-13T00:16:12.406Z] [hub] writing locator at /var/folders/47/tf738skx0ssf5r6p26pmqk7r0000gn/T/hub-phlote-staging.json
+[debug] [2025-11-13T00:16:12.733Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-11-13T00:16:12.733Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-11-13T00:16:12.733Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-11-13T00:16:12.733Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2025-11-13T00:16:12.753Z] defaultcredentials: writing to file /Users/ivanpalacios/.config/firebase/ivan_palacios_lkmx.io_application_default_credentials.json
+[debug] [2025-11-13T00:16:12.754Z] Setting GAC to /Users/ivanpalacios/.config/firebase/ivan_palacios_lkmx.io_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/ivanpalacios/.config/firebase/ivan_palacios_lkmx.io_application_default_credentials.json"}}
+[debug] [2025-11-13T00:16:12.754Z] Checked if tokens are valid: false, expires at: 1762805467013
+[debug] [2025-11-13T00:16:12.754Z] Checked if tokens are valid: false, expires at: 1762805467013
+[debug] [2025-11-13T00:16:12.754Z] > refreshing access token with scopes: []
+[debug] [2025-11-13T00:16:12.755Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-11-13T00:16:12.755Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-11-13T00:16:13.019Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-11-13T00:16:13.019Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-11-13T00:16:13.029Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/phlote-staging/adminSdkConfig [none]
+[debug] [2025-11-13T00:16:13.604Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/phlote-staging/adminSdkConfig 200
+[debug] [2025-11-13T00:16:13.605Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/phlote-staging/adminSdkConfig {"projectId":"phlote-staging","storageBucket":"phlote-staging.appspot.com","locationId":"us-central"}
+[info] i  functions: Watching "/Users/ivanpalacios/phlote-next/firebase" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/ivanpalacios/phlote-next/firebase\" for Cloud Functions..."}}
+[debug] [2025-11-13T00:16:13.622Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2025-11-13T00:16:14.079Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "16"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "archiver": "^5.3.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "cross-fetch": "^4.0.0",
+    "discord-interactions": "^3.4.0",
+    "dotenv": "^16.1.4",
+    "ethers": "^6.5.1",
+    "express": "^4.18.2",
+    "ffmpeg-static": "^5.1.0",
+    "firebase-admin": "^11.5.0",
+    "firebase-functions": "^4.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^11.1.1",
+    "ipfs-only-hash": "^4.0.0",
+    "lodash": "^4.17.21",
+    "lru-cache": "^10.0.0",
+    "potrace": "^2.1.8",
+    "prismic.io": "^3.6.1",
+    "progress-stream": "^2.0.0",
+    "puppeteer": "^16.2.0",
+    "qs": "^6.11.2",
+    "sharp": "^0.32.1",
+    "short-unique-id": "^4.4.4",
+    "twitter-api-v2": "^1.15.0",
+    "unique-names-generator": "^4.7.1",
+    "unzip-stream": "^0.3.1",
+    "uuid": "^9.0.0",
+    "wavefile": "^11.0.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.0.0"
+  },
+  "private": true
+}
+[debug] [2025-11-13T00:16:14.079Z] Building nodejs source
+[debug] [2025-11-13T00:16:14.079Z] Failed to find version of module node: reached end of search path /Users/ivanpalacios/phlote-next/firebase/node_modules
+[warn] ⚠  functions: Your requested "node" version "16" doesn't match your global version "22". Using node@22 from host. 
+[info] i  functions: Loaded environment variables from .env. 
+[info] i  functions: You are using a version of firebase-functions SDK (4.9.0) that does not have support for the newest Firebase Extensions features. Please update firebase-functions SDK to >=5.1.0 to use them correctly 
+[debug] [2025-11-13T00:16:14.081Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-11-13T00:16:14.085Z] Found firebase-functions binary at '/Users/ivanpalacios/phlote-next/firebase/node_modules/.bin/firebase-functions'
+[info] Serving at port 8429
+
+[debug] [2025-11-13T00:16:14.824Z] Got response from /__/functions.yaml {"endpoints":{},"specVersion":"v1alpha1","requiredAPIs":[]}
+[info] ✔  functions: Loaded functions definitions from source: . {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: ."}}
+[debug] [2025-11-13T00:16:18.844Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬────────────────┬─────────────────────────────────┐
+│ Emulator  │ Host:Port      │ View in Emulator UI             │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Functions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+└───────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
