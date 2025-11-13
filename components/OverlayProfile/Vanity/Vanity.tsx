@@ -1,8 +1,8 @@
 "use client";
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
-import { useClientDoc } from "@/hooks/useClientDoc";
 import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
+import { useClientDoc } from "@/hooks/useClientDoc";
 import { db } from "@/lib/firebase";
 import type { AddressDoc } from "@/types/client";
 import { doc } from "firebase/firestore";
