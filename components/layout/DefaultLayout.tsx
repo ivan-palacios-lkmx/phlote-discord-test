@@ -140,12 +140,6 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
         {/* Footer */}
         <Footer />
 
-        {/* Mobile Menu */}
-        <MobileMenu />
-
-        {/* Overlay Sign In */}
-        <OverlaySignature />
-
         {/* Overlay User Profile */}
         <OverlayProfileWrapper />
       </div>
