@@ -1,22 +1,13 @@
-import { adminAuth, adminDb } from "@/lib/firebase-admin";
+import { adminAuth } from "@/lib/firebase-admin";
 import { checkAddress } from "@/utils/auth-helpers";
-import { ethers } from "ethers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const message = searchParams.get("message");
-    const signature = searchParams.get("signature");
     const address = searchParams.get("address");
 
     // Validate
-    if (!message) {
-      return NextResponse.json({ success: false }, { status: 400 });
-    }
-    if (!signature) {
-      return NextResponse.json({ success: false }, { status: 400 });
-    }
     if (!address) {
       return NextResponse.json({ success: false }, { status: 400 });
     }
@@ -26,43 +17,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: false }, { status: 400 });
     }
 
-    // Check nonce with DB to validate.
-    const db = adminDb;
-    const nonceDocQ = await db
-      .collection("nonces")
-      .where("message", "==", message)
-      .where("address", "==", cleanAddress)
-      .get();
+    // TODO: Implement nonce validation with message signing
+    // Currently disabled because we don't have a way to show the nonce message to the user
+    // for them to sign. Once we implement a UI flow to display and sign the nonce message,
+    // we should:
+    // 1. Request a nonce from /api/authCreateNonce
+    // 2. Show the message to the user and have them sign it
+    // 3. Verify the signature and nonce before issuing the token
+    // 4. This will provide better security by proving wallet ownership
 
-    const docSnap = nonceDocQ.docs[0];
-    if (!docSnap) {
-      return NextResponse.json({ success: false }, { status: 400 });
-    }
-
-    const docData = docSnap.data();
-    const expires = docData.expires?.toDate();
-
-    // Validate doc data
-    if (docData.address !== cleanAddress) {
-      return NextResponse.json({ success: false }, { status: 400 });
-    }
-    if (docData.message !== message) {
-      return NextResponse.json({ success: false }, { status: 400 });
-    }
-    if (expires && expires < new Date()) {
-      return NextResponse.json({ success: false }, { status: 400 });
-    }
-
-    // Get address of signer
-    const signerAddress = ethers.verifyMessage(docData.message, signature);
-
-    // Verify that signer is provided address.
-    if (signerAddress !== cleanAddress) {
-      return NextResponse.json({ success: false }, { status: 400 });
-    }
-
-    // Delete nonce
-    await docSnap.ref.delete();
+    // For now, we trust that the user is authenticated via Privy and issue the token
+    // based solely on the wallet address
 
     // Issue auth token for frontend and return
     const token = await adminAuth.createCustomToken(cleanAddress);

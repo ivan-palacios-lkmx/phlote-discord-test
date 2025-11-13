@@ -3,6 +3,7 @@
 import ProfileIcon from "@/components/svg/profile.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
+import { useFirebaseAuthWithPrivy } from "@/hooks/useFirebaseAuthWithPrivy";
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
 import { UPDATE_THRESHOLD_IN_MS } from "@/utils/constants";
 import { User, useLogin, usePrivy } from "@privy-io/react-auth";
@@ -14,6 +15,7 @@ import "./ConnectWallet.scss";
 export default function ConnectWallet() {
   const { login } = useLogin();
   const { user, authenticated } = usePrivy();
+  const { isAuthenticating, error: authError } = useFirebaseAuthWithPrivy();
 
   function findWallet(user: User) {
     return user.linkedAccounts?.find((acc) => acc.type === "wallet");
