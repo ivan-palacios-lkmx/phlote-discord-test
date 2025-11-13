@@ -4,10 +4,16 @@ import PrivyUserDebug from "@/components/PrivyUserDebug";
 import Button from "@/components/ui/Button";
 import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
 import { useLogout, usePrivy } from "@privy-io/react-auth";
+import { useRouter } from "next/navigation";
 
 export default function ProductPage() {
   const { authenticated, user } = usePrivy();
-  const { logout } = useLogout();
+  const router = useRouter();
+  const { logout } = useLogout({
+    onSuccess: () => {
+      router.push("/");
+    },
+  });
   const walletAddress = user?.wallet?.address || "";
 
   const {

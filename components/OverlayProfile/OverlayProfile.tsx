@@ -41,8 +41,12 @@ export default function OverlayProfile() {
 
   // Get profileID from query params
   useEffect(() => {
-    const routeProfile = searchParams.get("profile") || "";
-    setProfileID(routeProfile || null);
+    const routeProfile = searchParams.get("profile");
+    if (routeProfile) {
+      setProfileID(routeProfile);
+    } else {
+      setProfileID(null);
+    }
   }, [searchParams]);
 
   // Member document reference
@@ -129,11 +133,15 @@ export default function OverlayProfile() {
     };
   }, [profileID, onClose]);
 
-  // Close if route changes (pathname changes)
+  // Close if route changes (pathname changes) - but preserve query params
+  // We use a ref to track the previous pathname to avoid closing on initial mount
+  const prevPathnameRef = useRef<string | null>(null);
   useEffect(() => {
-    if (profileID) {
+    if (prevPathnameRef.current !== null && prevPathnameRef.current !== pathname && profileID) {
+      // Pathname changed, close the modal
       setProfileID(null);
     }
+    prevPathnameRef.current = pathname;
   }, [pathname, profileID]);
 
   if (!profileID) return null;

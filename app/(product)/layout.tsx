@@ -1,3 +1,4 @@
+import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
 import PrismicioProvider from "@/components/PrismicioProvider";
 import Footer from "@/components/site/footer/Footer";
 import ProductHeader from "@/components/site/header/ProductHeader/ProductHeader";
@@ -14,6 +15,7 @@ export default async function ProductLayout({ children }: { children: React.Reac
       <ProductHeader />
       <main className="page">{children}</main>
       <Footer />
+      <OverlayProfileWrapper />
     </PrismicioProvider>
   );
 }
