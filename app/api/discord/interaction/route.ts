@@ -1,32 +1,52 @@
+import { handleInteraction } from "@/utils/functions";
+import { verifyKey } from "discord-interactions";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
  * POST /api/discord/interaction
  *
- * Handles Discord interaction requests
- *
- * TODO: Connect to Discord API/backend service
+ * Handles Discord interaction requests (slash commands, buttons, etc.)
+ * Verifies request signature and processes interactions
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Get signature and timestamp from headers
+    const signature = request.headers.get("x-signature-ed25519");
+    const timestamp = request.headers.get("x-signature-timestamp");
 
-    if (!body) {
-      return NextResponse.json({ error: "Request body is required" }, { status: 400 });
+    if (!signature || !timestamp) {
+      return NextResponse.json({ error: "Missing signature headers" }, { status: 401 });
     }
 
-    // TODO: Replace with actual Discord API/backend service call
-    // TODO: Process Discord interaction (e.g., slash commands, buttons, etc.)
-    // TODO: Validate Discord signature if needed
-    // TODO: Handle different interaction types (PING, APPLICATION_COMMAND, etc.)
+    // Get raw body for signature verification
+    const rawBody = await request.text();
+    const publicKey = process.env.DISCORD_PUBLIC_KEY;
 
-    console.log("Handling Discord interaction:", body);
+    if (!publicKey) {
+      console.error("DISCORD_PUBLIC_KEY is not set");
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
 
-    return NextResponse.json({
-      success: true,
-    });
+    // Verify signature using discord-interactions
+    const isValid = verifyKey(rawBody, signature, timestamp, publicKey);
+    if (!isValid) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+    }
+
+    // Parse body
+    const body = JSON.parse(rawBody) as {
+      type: number;
+      data?: { name?: string };
+      member?: { user?: { id: string; username: string } };
+    };
+
+    // Handle interaction
+    const response = await handleInteraction(body);
+
+    return NextResponse.json(response);
   } catch (error) {
-    console.error("Error handling Discord interaction:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Error handling discord interaction:", error);
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+    return NextResponse.json({ errorMessage }, { status: 500 });
   }
 }
