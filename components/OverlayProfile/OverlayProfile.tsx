@@ -8,7 +8,6 @@ import SessionsLink from "@/components/OverlayProfile/SessionsLink/SessionsLink"
 import Vanity from "@/components/OverlayProfile/Vanity/Vanity";
 import CloseIcon from "@/components/svg/close.svg";
 import { useClientDoc } from "@/hooks/useClientDoc";
-import { useFbAuth } from "@/hooks/useFbAuth";
 import { db } from "@/lib/firebase";
 import type { AddressDoc } from "@/types/client";
 import { usePrivy } from "@privy-io/react-auth";
@@ -32,12 +31,6 @@ export default function OverlayProfile() {
     const wallet = user.linkedAccounts?.find((acc) => acc.type === "wallet");
     return wallet && "address" in wallet ? (wallet.address as string) : null;
   }, [user, authenticated]);
-
-  // Get Firebase Auth user
-  const { user: fbUser } = useFbAuth();
-  const firebaseUID = useMemo(() => {
-    return fbUser?.value?.uid || null;
-  }, [fbUser]);
 
   // Get profileID from query params
   useEffect(() => {
@@ -74,12 +67,8 @@ export default function OverlayProfile() {
 
   // Check if address is current user
   const isCurrent = useMemo(() => {
-    return (
-      profileID &&
-      (profileID.toLowerCase() === connectedAddress?.toLowerCase() ||
-        profileID.toLowerCase() === firebaseUID?.toLowerCase())
-    );
-  }, [profileID, connectedAddress, firebaseUID]);
+    return profileID && profileID.toLowerCase() === connectedAddress?.toLowerCase();
+  }, [profileID, connectedAddress]);
 
   // Set contact handler
   const setContact = async (contact: {

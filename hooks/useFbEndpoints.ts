@@ -1,5 +1,5 @@
-import { useFbAuth } from "@/hooks/useFbAuth";
 import { db, firebaseConfig } from "@/lib/firebase";
+import { usePrivy } from "@privy-io/react-auth";
 import FakeProgress from "fake-progress";
 import { saveAs } from "file-saver";
 import { doc, getDoc } from "firebase/firestore";
@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
  * Provides functions to interact with Firebase Cloud Functions
  */
 export function useFbEndpoints() {
-  const { user } = useFbAuth();
+  const { getAccessToken } = usePrivy();
   const [error, setError] = useState("");
   const [stemDlProgress, setStemDlProgress] = useState(0);
   const progTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -22,12 +22,10 @@ export function useFbEndpoints() {
 
   const makeHeaders = async () => {
     const headers: Record<string, string> = {};
+    const accessToken = await getAccessToken();
 
-    if (user?.value?.uid) {
-      const jwtToken = await user.value.getIdToken?.();
-      if (jwtToken) {
-        headers.authorization = `Bearer ${jwtToken}`;
-      }
+    if (accessToken) {
+      headers.authorization = `Bearer ${accessToken}`;
     }
 
     return headers;

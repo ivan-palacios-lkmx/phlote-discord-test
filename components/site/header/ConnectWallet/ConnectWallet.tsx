@@ -3,8 +3,6 @@
 import ProfileIcon from "@/components/svg/profile.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
-import { useFbAuth } from "@/hooks/useFbAuth";
-import { useFirebaseAuthWithPrivy } from "@/hooks/useFirebaseAuthWithPrivy";
 import { useWeb3Identity } from "@/hooks/useWeb3Identity";
 import { UPDATE_THRESHOLD_IN_MS } from "@/utils/constants";
 import { User, useLogin, usePrivy } from "@privy-io/react-auth";
@@ -17,26 +15,18 @@ import "./ConnectWallet.scss";
 export default function ConnectWallet() {
   const { login } = useLogin();
   const { user, authenticated } = usePrivy();
-  useFirebaseAuthWithPrivy(); // Handles Firebase auth after Privy login
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { user: fbUser } = useFbAuth();
 
   function findWallet(user: User) {
     return user.linkedAccounts?.find((acc) => acc.type === "wallet");
   }
   const connectedAddress = useMemo(() => {
-    const walletAddress =
-      user && authenticated
-        ? (() => {
-            const wallet = findWallet(user);
-            return wallet && "address" in wallet ? (wallet.address as string) : null;
-          })()
-        : null;
-    const firebaseUID = fbUser?.value?.uid || null;
-    return walletAddress || firebaseUID;
-  }, [user, authenticated, fbUser]);
+    if (!user || !authenticated) return null;
+    const wallet = findWallet(user);
+    return wallet && "address" in wallet ? (wallet.address as string) : null;
+  }, [user, authenticated]);
 
   const { addressDoc, addressDocRef } = useWeb3Identity(connectedAddress);
 
