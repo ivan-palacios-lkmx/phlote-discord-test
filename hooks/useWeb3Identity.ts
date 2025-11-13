@@ -1,9 +1,7 @@
 import { usePrismicio } from "@/components/PrismicioProvider";
 import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
-import { db } from "@/lib/firebase";
 import type { AddressDoc } from "@/types/client";
 import { usePrivy } from "@privy-io/react-auth";
-import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 
 /**
@@ -55,29 +53,24 @@ export function useWeb3Identity() {
     );
   }, [user?.wallet?.address]);
 
+  // Get username from synced data (calculated in backend), fallback to shortAddress
   const username = useMemo(() => {
-    const ensUsername = addressDocument?.ens?.name;
-    let zoraUsername = addressDocument?.zora?.zoraUsername;
-    let openSeaUsername = addressDocument?.openSea?.osUsername;
-
-    zoraUsername = zoraUsername ? `${zoraUsername}` : "";
-    openSeaUsername = openSeaUsername ? `${openSeaUsername}` : "";
-
-    const username = ensUsername || openSeaUsername || zoraUsername || shortAddress;
-    return username;
-  }, [addressDocument, shortAddress]);
+    return syncedAddressDoc?.username || shortAddress;
+  }, [syncedAddressDoc?.username, shortAddress]);
 
   const { settings: prismicioSettings } = usePrismicio();
 
+  // Calculate avatar on client
   const avatar = useMemo(() => {
+    const addressDoc = syncedAddressDoc || addressDocument;
     return (
-      addressDocument?.ens?.avatar ||
-      addressDocument?.zora?.profileImageURL ||
-      addressDocument?.openSea?.profileImageURL ||
+      addressDoc?.ens?.avatar ||
+      addressDoc?.zora?.profileImageURL ||
+      addressDoc?.openSea?.profileImageURL ||
       prismicioSettings?.default_user_image?.url ||
       "/images/phlote-poster.jpg"
     );
-  }, [addressDocument, prismicioSettings]);
+  }, [syncedAddressDoc, addressDocument, prismicioSettings]);
 
   return {
     shortAddress,

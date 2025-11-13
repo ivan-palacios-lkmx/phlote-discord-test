@@ -6,6 +6,7 @@ export interface SyncUserRequest {
 
 export interface SyncUserResponse extends AddressDoc {
   success: boolean;
+  username?: string | null;
 }
 
 export interface VersionStemsResponse {

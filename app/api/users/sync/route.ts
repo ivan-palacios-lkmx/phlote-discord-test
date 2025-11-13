@@ -237,10 +237,17 @@ export async function POST(request: NextRequest) {
     const updatedDoc = await addressDocRef.get();
     const updatedData = updatedDoc.exists ? updatedDoc.data() : null;
 
+    // Calculate username (shortAddress will be calculated on client if needed)
+    const ensUsername = updatedData?.ens?.name;
+    const zoraUsername = updatedData?.zora?.zoraUsername;
+    const openSeaUsername = updatedData?.openSea?.osUsername;
+    const username = ensUsername || openSeaUsername || zoraUsername || null;
+
     // Return data at the top level, not nested
     return NextResponse.json({
       success: true,
       ...updatedData,
+      username,
     });
   } catch (error) {
     console.error("[POST /api/users/sync] ERROR caught in catch block:", error);
