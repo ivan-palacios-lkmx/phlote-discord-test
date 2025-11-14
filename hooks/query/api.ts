@@ -2,6 +2,7 @@ import {
   ApplicationTracksResponse,
   DiscordInteractionRequest,
   DiscordInteractionResponse,
+  ImageColorsResponse,
   SyncUserRequest,
   SyncUserResponse,
   VersionStemsResponse,
@@ -71,6 +72,19 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error handling discord interaction:", error);
+      throw error;
+    }
+  }
+  static async getImageColors(imageUrl: string): Promise<ImageColorsResponse> {
+    try {
+      const stripped = imageUrl.replace(/\?.+/g, "");
+      const response = await fetch(`${stripped}?palette=json`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image colors: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching image colors:", error);
       throw error;
     }
   }

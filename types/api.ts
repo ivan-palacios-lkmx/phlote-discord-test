@@ -29,3 +29,13 @@ export interface DiscordInteractionResponse {
   success: boolean;
   [key: string]: unknown;
 }
+
+export interface ImageColorsResponse {
+  colors?: unknown[];
+  dominant_colors?: {
+    vibrant_dark?: { hex: string };
+    muted_dark?: { hex: string };
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}

@@ -1,8 +1,9 @@
 "use client";
 
+import { useGetImageColors } from "@/hooks/query/query-hooks/use-get-image-colors";
 import type { ImageField } from "@prismicio/client";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 import "./PrismicImage.scss";
 
@@ -34,9 +35,6 @@ export default function PrismicImage({
   src = "",
   aspect = -1,
   innerWrapper: InnerWrapper = "div",
-  sizes = defaultSizes,
-  transition = "fade",
-  hidePreview = false,
   fillSpace = false,
   fit = "cover",
   transparent = false,
@@ -46,99 +44,48 @@ export default function PrismicImage({
   url = "",
   field,
 }: PrismicImageProps) {
-  const [colors, setColors] = useState<{
-    vibrant_dark?: { hex: string };
-    muted_dark?: { hex: string };
-  } | null>(null);
-  const [loaded, setLoaded] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   // Get image data from Prismic field if provided
-  const cmpUrl = useMemo(() => {
-    if (field?.url) return field.url;
-    if (url) return url;
-    return src;
-  }, [field, url, src]);
+  const cmpUrl = field?.url || url || src;
+  const cmpWidth = field?.dimensions?.width || dimensions.width;
+  const cmpHeight = field?.dimensions?.height || dimensions.height;
+  const imageAlt = field?.alt || alt;
 
-  const cmpWidth = useMemo(() => {
-    if (field?.dimensions?.width) return field.dimensions.width;
-    return dimensions.width;
-  }, [field, dimensions.width]);
+  // Fetch image colors using React Query
+  const { data: colorsData } = useGetImageColors({
+    imageUrl: cmpUrl,
+    enabled: !!cmpUrl,
+  });
 
-  const cmpHeight = useMemo(() => {
-    if (field?.dimensions?.height) return field.dimensions.height;
-    return dimensions.height;
-  }, [field, dimensions.height]);
+  const colors = colorsData?.dominant_colors || null;
 
-  const imageAlt = useMemo(() => {
-    if (field?.alt) return field.alt;
-    return alt;
-  }, [field, alt]);
-
-  const cmpAspect = useMemo(() => {
-    // Calculate if no aspect provided
-    if (aspect === -1) {
-      if (cmpWidth > 0 && cmpHeight > 0) {
-        return (cmpHeight / cmpWidth) * 100;
-      }
-      return 0;
+  // Calculate aspect ratio
+  let cmpAspect: number;
+  if (aspect === -1) {
+    if (cmpWidth > 0 && cmpHeight > 0) {
+      cmpAspect = (cmpHeight / cmpWidth) * 100;
+    } else {
+      cmpAspect = 0;
     }
-    // Otherwise, parse provided aspect, handling both 56.25 and 0.5625 style
+  } else {
+    // Parse provided aspect, handling both 56.25 and 0.5625 style
     const toParse = parseFloat(String(aspect));
-    return toParse <= 1 ? toParse * 100 : toParse;
-  }, [aspect, cmpWidth, cmpHeight]);
+    cmpAspect = toParse <= 1 ? toParse * 100 : toParse;
+  }
 
-  const cmpSrcset = useMemo(() => {
-    if (!cmpUrl) return "";
-    return sizes
-      .map((size) => {
-        const width = size === null ? cmpWidth : size;
-        if (width <= 0) return "";
-        const height = Math.round(width / (cmpAspect / 100));
-        return `${cmpUrl}&w=${width}&h=${height} ${width}w`;
-      })
-      .filter(Boolean)
-      .join(", ");
-  }, [cmpUrl, sizes, cmpWidth, cmpAspect]);
+  const primaryColor = colors?.vibrant_dark?.hex || "";
+  const secondaryColor = colors?.muted_dark?.hex || "";
 
-  const primaryColor = useMemo(() => {
-    return colors?.vibrant_dark?.hex || "";
-  }, [colors]);
+  const styles = { "--aspect": `${cmpAspect}%` } as React.CSSProperties;
 
-  const secondaryColor = useMemo(() => {
-    return colors?.muted_dark?.hex || "";
-  }, [colors]);
-
-  const styles = useMemo(() => {
-    return { "--aspect": `${cmpAspect}%` } as React.CSSProperties;
-  }, [cmpAspect]);
-
-  const wrapperStyles = useMemo(() => {
-    if (transparent) return {};
-    if (!primaryColor && !secondaryColor) return {};
-    return {
-      backgroundColor: primaryColor,
-      backgroundImage: `linear-gradient(${primaryColor}, ${secondaryColor})`,
-    };
-  }, [transparent, primaryColor, secondaryColor]);
-
-  // Watch cmpUrl for color fetching (equivalent to Vue watch)
-  useEffect(() => {
-    setColors(null);
-    if (!cmpUrl) return;
-
-    const stripped = cmpUrl.replace(/\?.+/g, "");
-    fetch(`${stripped}?palette=json`)
-      .then((r) => r.json())
-      .then((res) => {
-        if (res && res.colors && res.colors.length) {
-          setColors(res.dominant_colors);
-        }
-      })
-      .catch((err) => {
-        console.log("color error: ", err);
-      });
-  }, [cmpUrl]);
+  const wrapperStyles =
+    transparent || (!primaryColor && !secondaryColor)
+      ? {}
+      : {
+          backgroundColor: primaryColor,
+          backgroundImage: `linear-gradient(${primaryColor}, ${secondaryColor})`,
+        };
 
   if (!cmpUrl) return null;
 
