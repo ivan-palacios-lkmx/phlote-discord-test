@@ -6,10 +6,13 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   try {
     const visibility = searchParams.get("visibility") as "public" | "private" | undefined;
+
     if (!visibilitySchema.safeParse(visibility).success || !visibility) {
       return NextResponse.json({ error: "Visibility parameter is required" }, { status: 400 });
     }
+
     const addressesAndTotalCount = await getAddressesAndTotalCount(visibility);
+
     return NextResponse.json(addressesAndTotalCount, { status: 200 });
   } catch (error) {
     console.error("Error fetching user:", error);
