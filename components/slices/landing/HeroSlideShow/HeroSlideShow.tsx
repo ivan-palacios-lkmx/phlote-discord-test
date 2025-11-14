@@ -1,6 +1,6 @@
 "use client";
 
-import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
+import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
 import HeroSlideShowButton from "@/components/slices/landing/HeroSlideShowButton/HeroSlideShowButton";
 import { useHeroSlideShow } from "@/hooks/useHeroSlideShow";
 import useIntersect from "@/hooks/useIntersect";
@@ -38,7 +38,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
     <section className="slice-hero-slideshow" ref={containerRef}>
       <div className="slide hero-enter-active hero-leave-active" key={currentSlideIndex}>
         {currentSlide?.image && (
-          <PrismicImage
+          <ProgressiveMedia
             field={currentSlide.image}
             videoSrc={videoURL}
             fillSpace

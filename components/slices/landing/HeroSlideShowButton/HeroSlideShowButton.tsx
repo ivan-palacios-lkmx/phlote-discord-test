@@ -1,6 +1,6 @@
 "use client";
 
-import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
+import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
 import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview/HeroTrackPreview";
 import PlayIcon from "@/components/svg/play.svg";
 import { HeroSlideShowSlide } from "@/types/client";
@@ -26,7 +26,7 @@ export default function HeroSlideShowButton({
   return (
     <div className={`slideshow-button ${active ? "active" : ""}`} onClick={onClick}>
       <div className="img-wrap">
-        {slide.image && <PrismicImage field={slide.image} />}
+        {slide.image && <ProgressiveMedia field={slide.image} />}
         <span>{active ? <span>Playing</span> : <PlayIcon className="svg-play" />}</span>
       </div>
       <div className="title desktop-only">

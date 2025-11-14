@@ -1,35 +1,13 @@
 "use client";
 
 import { useGetImageColors } from "@/hooks/query/query-hooks/use-get-image-colors";
-import type { ImageField } from "@prismicio/client";
+import { ProgressiveMediaProps } from "@/types/client";
 import Image from "next/image";
 import { useState } from "react";
 
-import "./PrismicImage.scss";
+import "./ProgressiveMedia.scss";
 
-const defaultSizes = [null, 1920, 1100, 800, 500];
-
-interface PrismicImageProps {
-  wrapper?: keyof JSX.IntrinsicElements;
-  videoSrc?: string;
-  src?: string;
-  aspect?: string | number;
-  innerWrapper?: keyof JSX.IntrinsicElements;
-  sizes?: (number | null)[];
-  transition?: string;
-  hidePreview?: boolean;
-  fillSpace?: boolean;
-  fit?: "cover" | "contain";
-  transparent?: boolean;
-  muted?: boolean;
-  // Prismic props
-  dimensions?: { width: number; height: number };
-  alt?: string;
-  url?: string;
-  field?: ImageField;
-}
-
-export default function PrismicImage({
+export default function ProgressiveMedia({
   wrapper: Wrapper = "div",
   videoSrc = "",
   src = "",
@@ -43,26 +21,24 @@ export default function PrismicImage({
   alt = "",
   url = "",
   field,
-}: PrismicImageProps) {
+}: ProgressiveMediaProps) {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   const canShowVideo = videoSrc && videoLoaded;
-
-  // Get image data from Prismic field if provided
-  const cmpUrl = field?.url || url || src;
-  const cmpWidth = field?.dimensions?.width || dimensions.width;
-  const cmpHeight = field?.dimensions?.height || dimensions.height;
-  const imageAlt = field?.alt || alt;
+  const imageUrl = field?.url || url || src;
+  const imageWidth = field?.dimensions?.width || dimensions.width;
+  const imageHeight = field?.dimensions?.height || dimensions.height;
+  const altText = field?.alt || alt;
 
   const { data: imageColors } = useGetImageColors({
-    imageUrl: cmpUrl,
-    enabled: !!cmpUrl,
+    imageUrl: imageUrl,
+    enabled: !!imageUrl,
   });
 
   let cmpAspect: number;
   if (aspect === -1) {
-    if (cmpWidth > 0 && cmpHeight > 0) {
-      cmpAspect = (cmpHeight / cmpWidth) * 100;
+    if (imageWidth > 0 && imageHeight > 0) {
+      cmpAspect = (imageHeight / imageWidth) * 100;
     } else {
       cmpAspect = 0;
     }
@@ -71,9 +47,9 @@ export default function PrismicImage({
     cmpAspect = toParse <= 1 ? toParse * 100 : toParse;
   }
 
-  const styles = { "--aspect": `${cmpAspect}%` } as React.CSSProperties;
+  const WrapperStyles = { "--aspect": `${cmpAspect}%` } as React.CSSProperties;
 
-  const wrapperStyles =
+  const InnerWrapperStyles =
     transparent || (!imageColors?.primary && !imageColors?.secondary)
       ? {}
       : {
@@ -81,7 +57,7 @@ export default function PrismicImage({
           backgroundImage: `linear-gradient(${imageColors?.primary}, ${imageColors?.secondary})`,
         };
 
-  if (!cmpUrl) return null;
+  if (!imageUrl) return null;
 
   return (
     <Wrapper
@@ -93,19 +69,19 @@ export default function PrismicImage({
       ]
         .filter(Boolean)
         .join(" ")}
-      style={styles}>
-      <InnerWrapper className="image-sizer" style={wrapperStyles}>
+      style={WrapperStyles}>
+      <InnerWrapper className="image-sizer" style={InnerWrapperStyles}>
         <Image
-          src={cmpUrl}
-          width={cmpWidth > 0 ? cmpWidth : undefined}
-          height={cmpHeight > 0 ? cmpHeight : undefined}
-          alt={imageAlt}
+          src={imageUrl}
+          width={imageWidth > 0 ? imageWidth : undefined}
+          height={imageHeight > 0 ? imageHeight : undefined}
+          alt={altText}
           className="media media-image"
         />
         {videoSrc && (
           <video
-            height={cmpHeight > 0 ? cmpHeight : undefined}
-            width={cmpWidth > 0 ? cmpWidth : undefined}
+            height={imageHeight > 0 ? imageHeight : undefined}
+            width={imageWidth > 0 ? imageWidth : undefined}
             src={videoSrc}
             className="media media-video"
             playsInline

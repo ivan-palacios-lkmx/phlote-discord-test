@@ -1,6 +1,6 @@
 "use client";
 
-import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
+import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import type { ReleaseCarouselItem } from "@/types/client";
@@ -172,7 +172,7 @@ export default function ReleaseBlock({ release }: ReleaseBlockProps) {
     <div ref={containerRef} className={`release-block ${isIntersected ? "visible" : ""}`}>
       {/* Image */}
       <div className="image-wrap">
-        {release.image && <PrismicImage field={release.image} videoSrc={videoURL} />}
+        {release.image && <ProgressiveMedia field={release.image} videoSrc={videoURL} />}
 
         {hasReleaseData && (
           <>

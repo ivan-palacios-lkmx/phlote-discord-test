@@ -154,3 +154,23 @@ export interface AddressDoc {
   };
   sessionsContributed?: number;
 }
+
+export interface ProgressiveMediaProps {
+  wrapper?: keyof JSX.IntrinsicElements;
+  videoSrc?: string;
+  src?: string;
+  aspect?: string | number;
+  innerWrapper?: keyof JSX.IntrinsicElements;
+  sizes?: (number | null)[];
+  transition?: string;
+  hidePreview?: boolean;
+  fillSpace?: boolean;
+  fit?: "cover" | "contain";
+  transparent?: boolean;
+  muted?: boolean;
+  // Prismic props
+  dimensions?: { width: number; height: number };
+  alt?: string;
+  url?: string;
+  field?: ImageField;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
+import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
 import useIntersect from "@/hooks/useIntersect";
 import type { HeroSlice } from "@/types/client";
 import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
@@ -37,7 +37,7 @@ export default function Hero({ slice }: SliceComponentProps<HeroSlice>) {
     <section ref={containerRef as React.RefObject<HTMLElement>} className="slice-hero">
       {background_image && (
         <>
-          <PrismicImage field={background_image} videoSrc={videoURL} />
+          <ProgressiveMedia field={background_image} videoSrc={videoURL} />
         </>
       )}
 

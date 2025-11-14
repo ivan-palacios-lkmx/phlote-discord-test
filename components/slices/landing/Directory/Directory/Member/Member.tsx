@@ -2,7 +2,7 @@
 
 // import { useClientDoc } from "@/hooks/useClientDoc";
 // import { db } from "@/lib/firebase";
-import PrismicImage from "@/components/Prismic/PrismicImage/PrismicImage";
+import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
 import CopyButton from "@/components/slices/landing/Directory/CopyButton";
@@ -118,7 +118,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
             <Web3Avatar address={member.objectID} />
           ) : defaultUserImage ? (
             <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
-              <PrismicImage field={defaultUserImage} />
+              <ProgressiveMedia field={defaultUserImage} />
             </div>
           ) : null}
 
@@ -160,7 +160,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
             <Web3Avatar address={member.objectID} />
           ) : defaultUserImage ? (
             <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
-              <PrismicImage field={defaultUserImage as never} />
+              <ProgressiveMedia field={defaultUserImage as never} />
             </div>
           ) : null}
 
