@@ -11,7 +11,7 @@ export default function ProgressiveMedia({
   wrapper: Wrapper = "div",
   videoSrc = "",
   src = "",
-  aspect = -1,
+  aspect = null,
   innerWrapper: InnerWrapper = "div",
   fillSpace = false,
   fit = "cover",
@@ -35,27 +35,23 @@ export default function ProgressiveMedia({
     enabled: !!imageUrl,
   });
 
-  let cmpAspect: number;
-  if (aspect === -1) {
+  let wrapperAspectRatio: number;
+
+  if (aspect === null) {
     if (imageWidth > 0 && imageHeight > 0) {
-      cmpAspect = (imageHeight / imageWidth) * 100;
+      wrapperAspectRatio = (imageHeight / imageWidth) * 100;
     } else {
-      cmpAspect = 0;
+      wrapperAspectRatio = 0;
     }
   } else {
     const toParse = parseFloat(String(aspect));
-    cmpAspect = toParse <= 1 ? toParse * 100 : toParse;
+    wrapperAspectRatio = toParse <= 1 ? toParse * 100 : toParse;
   }
 
-  const WrapperStyles = { "--aspect": `${cmpAspect}%` } as React.CSSProperties;
+  const WrapperStyles = { "--aspect": `${wrapperAspectRatio}%` } as React.CSSProperties;
 
-  const InnerWrapperStyles =
-    transparent || (!imageColors?.primary && !imageColors?.secondary)
-      ? {}
-      : {
-          backgroundColor: imageColors?.primary,
-          backgroundImage: `linear-gradient(${imageColors?.primary}, ${imageColors?.secondary})`,
-        };
+  const shouldInnerWrapperHaveStyles =
+    transparent || (!imageColors?.primary && !imageColors?.secondary);
 
   if (!imageUrl) return null;
 
@@ -70,7 +66,16 @@ export default function ProgressiveMedia({
         .filter(Boolean)
         .join(" ")}
       style={WrapperStyles}>
-      <InnerWrapper className="image-sizer" style={InnerWrapperStyles}>
+      <InnerWrapper
+        className="image-sizer"
+        style={
+          shouldInnerWrapperHaveStyles
+            ? {
+                backgroundColor: imageColors?.primary,
+                backgroundImage: `linear-gradient(${imageColors?.primary}, ${imageColors?.secondary})`,
+              }
+            : {}
+        }>
         <Image
           src={imageUrl}
           width={imageWidth > 0 ? imageWidth : undefined}

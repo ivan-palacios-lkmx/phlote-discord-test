@@ -159,7 +159,7 @@ export interface ProgressiveMediaProps {
   wrapper?: keyof JSX.IntrinsicElements;
   videoSrc?: string;
   src?: string;
-  aspect?: string | number;
+  aspect?: string | number | null;
   innerWrapper?: keyof JSX.IntrinsicElements;
   sizes?: (number | null)[];
   transition?: string;
