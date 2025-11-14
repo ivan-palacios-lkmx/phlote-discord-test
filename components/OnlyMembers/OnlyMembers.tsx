@@ -9,9 +9,10 @@ import "./OnlyMembers.scss";
 
 interface OnlyMembersProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-export default function OnlyMembers({ children }: OnlyMembersProps) {
+export default function OnlyMembers({ children, className }: OnlyMembersProps) {
   const { login } = useLogin();
   const { addressDoc, isPending, isError } = useSyncUser();
   const { authenticated, logout, ready } = usePrivy();
@@ -27,8 +28,8 @@ export default function OnlyMembers({ children }: OnlyMembersProps) {
   };
 
   return (
-    <main className="only-members">
-      {isPending || !ready ? (
+    <main className={`only-members ${className}`}>
+      {(isPending && authenticated) || !ready ? (
         <div className="only-members-loading">
           <LoadingSpinnerIcon />
         </div>

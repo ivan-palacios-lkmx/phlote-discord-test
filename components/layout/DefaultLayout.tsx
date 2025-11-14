@@ -113,8 +113,8 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
 
   const classes = useMemo(() => {
     return [
-      "container",
       "default",
+      "container",
       fontsLoaded ? "fonts-loaded" : "fonts-loading",
       routeName,
       mounted ? "mounted" : "",
@@ -136,12 +136,11 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     <PrismicioProvider settings={settings}>
       <div className={classes} style={styles}>
         {/* Header */}
-        <div ref={headerRef as React.RefObject<HTMLDivElement>}>
-          {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
-        </div>
+
+        {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
 
         {/* Page */}
-        <main>{children}</main>
+        {children}
 
         {/* Footer */}
         {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
