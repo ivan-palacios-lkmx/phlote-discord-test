@@ -11,17 +11,23 @@ async function getDocumentDataFromQuerySnapshot<T>(snapshot: QuerySnapshot): Pro
 export async function getAddresses(visibility?: "public" | "private"): Promise<AddressDoc[]> {
   const onlyPublic = visibility === "public";
   const onlyPrivate = visibility === "private";
+
   if (onlyPublic) {
-    const snap = await adminDb.collection(ADDRESSES_COLLECTION).where("isPublic", "==", true).get();
-    return getDocumentDataFromQuerySnapshot<AddressDoc>(snap);
+    const addressesSnapshot = await adminDb
+      .collection(ADDRESSES_COLLECTION)
+      .where("isPublic", "==", true)
+      .get();
+    return getDocumentDataFromQuerySnapshot<AddressDoc>(addressesSnapshot);
   }
+
   if (onlyPrivate) {
-    const snap = await adminDb
+    const addressesSnapshot = await adminDb
       .collection(ADDRESSES_COLLECTION)
       .where("isPublic", "==", false)
       .get();
-    return getDocumentDataFromQuerySnapshot<AddressDoc>(snap);
+    return getDocumentDataFromQuerySnapshot<AddressDoc>(addressesSnapshot);
   }
+
   const addressesSnapshot = await adminDb.collection(ADDRESSES_COLLECTION).get();
   return getDocumentDataFromQuerySnapshot<AddressDoc>(addressesSnapshot);
 }
@@ -42,6 +48,7 @@ export async function getAddressesAndTotalCount(
       totalCount,
     };
   }
+
   if (onlyPrivate) {
     return {
       addresses: addresses.filter((address) => address.isPublic === false),
