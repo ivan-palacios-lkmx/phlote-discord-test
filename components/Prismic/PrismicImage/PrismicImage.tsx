@@ -46,21 +46,19 @@ export default function PrismicImage({
 }: PrismicImageProps) {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
+  const canShowVideo = videoSrc && videoLoaded;
+
   // Get image data from Prismic field if provided
   const cmpUrl = field?.url || url || src;
   const cmpWidth = field?.dimensions?.width || dimensions.width;
   const cmpHeight = field?.dimensions?.height || dimensions.height;
   const imageAlt = field?.alt || alt;
 
-  // Fetch image colors using React Query
-  const { data: colorsData } = useGetImageColors({
+  const { data: imageColors } = useGetImageColors({
     imageUrl: cmpUrl,
     enabled: !!cmpUrl,
   });
 
-  const colors = colorsData?.dominant_colors || null;
-
-  // Calculate aspect ratio
   let cmpAspect: number;
   if (aspect === -1) {
     if (cmpWidth > 0 && cmpHeight > 0) {
@@ -69,22 +67,18 @@ export default function PrismicImage({
       cmpAspect = 0;
     }
   } else {
-    // Parse provided aspect, handling both 56.25 and 0.5625 style
     const toParse = parseFloat(String(aspect));
     cmpAspect = toParse <= 1 ? toParse * 100 : toParse;
   }
 
-  const primaryColor = colors?.vibrant_dark?.hex || "";
-  const secondaryColor = colors?.muted_dark?.hex || "";
-
   const styles = { "--aspect": `${cmpAspect}%` } as React.CSSProperties;
 
   const wrapperStyles =
-    transparent || (!primaryColor && !secondaryColor)
+    transparent || (!imageColors?.primary && !imageColors?.secondary)
       ? {}
       : {
-          backgroundColor: primaryColor,
-          backgroundImage: `linear-gradient(${primaryColor}, ${secondaryColor})`,
+          backgroundColor: imageColors?.primary,
+          backgroundImage: `linear-gradient(${imageColors?.primary}, ${imageColors?.secondary})`,
         };
 
   if (!cmpUrl) return null;
@@ -95,7 +89,7 @@ export default function PrismicImage({
         "prismic-image",
         fillSpace && "fill-space",
         `fit-${fit}`,
-        videoSrc && videoLoaded && "video-loaded",
+        canShowVideo && "video-loaded",
       ]
         .filter(Boolean)
         .join(" ")}

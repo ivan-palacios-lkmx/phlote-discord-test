@@ -1,4 +1,4 @@
-import Api from "@/hooks/query/api";
+import ImageColorsService from "@/services/image-colors-service";
 import { useQuery } from "@tanstack/react-query";
 
 interface UseGetImageColorsOptions {
@@ -9,7 +9,10 @@ interface UseGetImageColorsOptions {
 export function useGetImageColors({ imageUrl, enabled = true }: UseGetImageColorsOptions) {
   return useQuery({
     queryKey: ["imageColors", imageUrl],
-    queryFn: () => Api.getImageColors(imageUrl),
+    queryFn: async () => {
+      const colors = await ImageColorsService.getImageColors(imageUrl);
+      return colors;
+    },
     enabled: enabled && !!imageUrl,
   });
 }

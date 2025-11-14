@@ -75,7 +75,7 @@ class Api {
       throw error;
     }
   }
-  static async getImageColors(imageUrl: string): Promise<ImageColorsResponse> {
+  static async getImageColors(imageUrl: string) {
     try {
       const stripped = imageUrl.replace(/\?.+/g, "");
       const response = await fetch(`${stripped}?palette=json`);

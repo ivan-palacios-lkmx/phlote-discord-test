@@ -37,5 +37,7 @@ export interface ImageColorsResponse {
     muted_dark?: { hex: string };
     [key: string]: unknown;
   };
+  primary?: string;
+  secondary?: string;
   [key: string]: unknown;
 }
