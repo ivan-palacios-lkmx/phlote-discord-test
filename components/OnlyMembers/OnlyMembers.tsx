@@ -28,7 +28,7 @@ export default function OnlyMembers({ children }: OnlyMembersProps) {
 
   return (
     <main className="only-members">
-      {isPending || !ready ? (
+      {(isPending && authenticated) || !ready ? (
         <div className="only-members-loading">
           <LoadingSpinnerIcon />
         </div>
