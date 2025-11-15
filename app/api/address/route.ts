@@ -1,4 +1,4 @@
-import { getAddressesAndTotalCount } from "@/utils/firebase-queries";
+import { AddressService } from "@/services/address-service";
 import { visibilitySchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Visibility parameter is required" }, { status: 400 });
     }
 
-    const addressesAndTotalCount = await getAddressesAndTotalCount(visibility);
+    const addressesAndTotalCount = await AddressService.getAddressesAndTotalCount(visibility);
 
     return NextResponse.json(addressesAndTotalCount, { status: 200 });
   } catch (error) {
