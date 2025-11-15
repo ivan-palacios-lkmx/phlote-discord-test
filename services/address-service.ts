@@ -1,7 +1,10 @@
 import { adminDb } from "@/lib/firebase-admin";
 import { AddressDoc } from "@/types/client";
 import { ADDRESSES_COLLECTION } from "@/utils/constants";
-import { getDocumentDataFromQuerySnapshot } from "@/utils/firebase-queries";
+import {
+  getDocumentDataFromDocumentSnapshot,
+  getDocumentDataFromQuerySnapshot,
+} from "@/utils/firebase-queries";
 
 export class AddressService {
   static async getAddresses(visibility?: "public" | "private"): Promise<AddressDoc[]> {
@@ -51,5 +54,10 @@ export class AddressService {
     }
 
     return { addresses, totalCount };
+  }
+
+  static async getSingleAddress(address: string): Promise<AddressDoc | null> {
+    const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).get();
+    return getDocumentDataFromDocumentSnapshot<AddressDoc>(addressDoc);
   }
 }

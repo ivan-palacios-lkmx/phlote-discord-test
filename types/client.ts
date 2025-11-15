@@ -179,3 +179,21 @@ export interface ProgressiveMediaProps {
   url?: string;
   field?: ImageField;
 }
+
+export interface TagCategory {
+  name: string;
+  options: string[];
+}
+
+export interface SettingsDoc {
+  availableMemberTags?: TagCategory[];
+  availableSessionTags?: TagCategory[];
+  stemsCarousel?: string[];
+  membershipContracts?: string[];
+  /** @deprecated Use availableMemberTags instead */
+  availableLocations?: Array<{ name: string }>;
+  /** @deprecated Use availableMemberTags instead */
+  availableSkills?: Array<{ name: string }>;
+  /** @deprecated Use availableSessionTags instead */
+  availableTags?: Record<string, string[]>;
+}
