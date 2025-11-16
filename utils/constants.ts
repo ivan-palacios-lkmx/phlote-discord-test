@@ -6,3 +6,4 @@ export const ADDRESSES_COLLECTION = "addresses";
 export const GLOBAL_COLLECTION = "globals";
 export const SETTING_DOC_ID = "settings";
 export const SESSIONS_COLLECTION = "sessions";
+export const SESSION_VERSIONS_COLLECTION = "session-versions";

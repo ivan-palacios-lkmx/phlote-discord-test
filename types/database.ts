@@ -116,6 +116,18 @@ export interface SessionDoc {
 }
 
 /**
+ * The Stem interface defines the schema for individual stem audio files.
+ *
+ * Stems are separate audio tracks that make up a version (e.g., drums, bass, vocals).
+ */
+export interface Stem {
+  /** Unique identifier for the stem */
+  id: string;
+  /** Name of the stem (e.g., "Drums", "Bass", "Vocals") */
+  name: string;
+}
+
+/**
  * AlgoliaSession extends SessionDoc with an objectID field.
  *
  * This interface represents session documents returned from Algolia search results.
@@ -124,5 +136,52 @@ export interface SessionDoc {
  */
 export interface AlgoliaSession extends SessionDoc {
   /** Unique identifier for the session, typically the same as the session ID */
+  objectID: string;
+}
+
+/**
+ * The SessionVersionDoc interface defines the schema for session version documents.
+ *
+ * This interface is stored in Firestore and represents a specific version of a music session,
+ * including its audio files (bounce and stems), metadata, collaboration data, and statistics.
+ */
+export interface SessionVersionDoc {
+  /** Date the version was created */
+  created: Date | string;
+  /** Creator address */
+  creator: string;
+  /** ID of the parent session */
+  sessionID: string;
+  /** URL or path to the bounce (mixed/master) audio file */
+  bounce: string;
+  /** Array of stem audio files */
+  stems: Array<Stem>;
+  /** Version notes or description */
+  notes?: string;
+  /** List of tags associated with this version */
+  tags?: string[];
+  /** BPM (beats per minute) for this version */
+  bpm: number;
+  /** ID of the source version this version was derived from */
+  sourceVersion?: string;
+  /** Index number of this version within the session */
+  versionIndex?: number;
+  /** List of collaborator addresses for this version */
+  collaborators?: string[];
+  /** Total number of plays for this version */
+  playCount?: number;
+  /** Total number of downloads for this version */
+  downloadCount?: number;
+}
+
+/**
+ * AlgoliaSessionVersion extends SessionVersionDoc with an objectID field.
+ *
+ * This interface represents version documents returned from Algolia search results.
+ * The objectID is used as a unique identifier and can be used to reference the version
+ * in various parts of the application (e.g., building URLs, document references).
+ */
+export interface AlgoliaSessionVersion extends SessionVersionDoc {
+  /** Unique identifier for the version, typically the same as the version ID */
   objectID: string;
 }

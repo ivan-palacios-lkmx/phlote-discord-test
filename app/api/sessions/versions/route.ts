@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const sessions = await SessionService.getSessions();
-    return NextResponse.json(sessions, { status: 200 });
+    const versions = await SessionService.getSessionVersions();
+    return NextResponse.json(versions, { status: 200 });
   } catch (error) {
-    console.error("Error getting sessions:", error);
+    console.error("Error getting versions:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
