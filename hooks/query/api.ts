@@ -8,6 +8,7 @@ import {
   VersionStemsResponse,
 } from "@/types/api";
 import { SettingsDoc } from "@/types/client";
+import { SessionDoc, SessionVersionDoc } from "@/types/database";
 
 import apiClient from "./axios";
 import { ENDPOINTS } from "./endpoints";
@@ -26,6 +27,7 @@ class Api {
       throw error;
     }
   }
+
   static async syncUser(userData: SyncUserRequest): Promise<SyncUserResponse> {
     try {
       const response = await apiClient.post(ENDPOINTS.SYNC_USER, userData);
@@ -35,6 +37,7 @@ class Api {
       throw error;
     }
   }
+
   static async getVersionStems(
     versionID: string,
     action: string = "play",
@@ -52,6 +55,7 @@ class Api {
       throw error;
     }
   }
+
   static async getApplicationTracks(applicationID: string): Promise<ApplicationTracksResponse> {
     try {
       const response = await apiClient.get(ENDPOINTS.GET_APPLICATION_TRACKS, {
@@ -65,6 +69,7 @@ class Api {
       throw error;
     }
   }
+
   static async handleDiscordInteraction(
     data: DiscordInteractionRequest,
   ): Promise<DiscordInteractionResponse> {
@@ -76,6 +81,7 @@ class Api {
       throw error;
     }
   }
+
   static async getImageColors(imageUrl: string) {
     try {
       const stripped = imageUrl.replace(/\?.+/g, "");
@@ -89,12 +95,61 @@ class Api {
       throw error;
     }
   }
+
   static async getSettings(): Promise<SettingsDoc> {
     try {
       const response = await apiClient.get(ENDPOINTS.GET_SETTINGS);
       return response.data;
     } catch (error) {
       console.error("Error fetching settings:", error);
+      throw error;
+    }
+  }
+
+  static async getSessions(): Promise<SessionDoc[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.GET_SESSIONS);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+      throw error;
+    }
+  }
+
+  static async getSession(sessionID: string): Promise<SessionDoc> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.GET_SESSION, {
+        params: {
+          sessionID,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching session:", error);
+      throw error;
+    }
+  }
+
+  static async getSessionVersions(): Promise<SessionVersionDoc[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSIONS);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching session versions:", error);
+      throw error;
+    }
+  }
+
+  static async getSessionVersion(versionID: string): Promise<SessionVersionDoc> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSION, {
+        params: {
+          versionID,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching session version:", error);
       throw error;
     }
   }
