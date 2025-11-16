@@ -122,14 +122,6 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
     router.push(`${pathname}?${current.toString()}`);
   };
 
-  // Pagination handler (for future use)
-  // const currentPage = parseInt(searchParams.get("page") || "0");
-  // const onPageClick = (page: number) => {
-  //   const current = new URLSearchParams(searchParams.toString());
-  //   current.set("page", page.toString());
-  //   router.push(`${pathname}?${current.toString()}`);
-  // };
-
   return (
     <section className="slice-directory">
       {/* Header */}

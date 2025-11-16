@@ -8,6 +8,7 @@ import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
 import CopyButton from "@/components/slices/landing/Directory/CopyButton";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
+import type { AlgoliaAddress } from "@/types/database";
 // import { doc } from "firebase/firestore";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -16,15 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import "./Member.scss";
 
 interface MemberProps {
-  member: {
-    objectID?: string;
-    title?: string;
-    isPublic?: boolean;
-    isAdmin?: boolean;
-    isCreator?: boolean;
-    tags?: string[];
-    [key: string]: unknown;
-  };
+  member: AlgoliaAddress;
   activeFilters?: ActiveFilter[];
   style?: React.CSSProperties;
 }
@@ -115,7 +108,14 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
           className="member-link block w-full uppercase">
           {/* Image */}
           {isPublic && member.objectID ? (
-            <Web3Avatar address={member.objectID} />
+            <Web3Avatar
+              avatar={
+                member.ens?.avatar ||
+                member.openSea?.profileImageURL ||
+                member.zora?.profileImageURL ||
+                ""
+              }
+            />
           ) : defaultUserImage ? (
             <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
               <ProgressiveMedia field={defaultUserImage} />
@@ -157,7 +157,14 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
         <div className="member-link block w-full uppercase">
           {/* Image */}
           {isPublic && member.objectID ? (
-            <Web3Avatar address={member.objectID} />
+            <Web3Avatar
+              avatar={
+                member.ens?.avatar ||
+                member.openSea?.profileImageURL ||
+                member.zora?.profileImageURL ||
+                ""
+              }
+            />
           ) : defaultUserImage ? (
             <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
               <ProgressiveMedia field={defaultUserImage as never} />

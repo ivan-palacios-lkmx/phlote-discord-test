@@ -55,3 +55,7 @@ export interface ZoraData {
   zoraUsername: string;
   profileImageURL?: string;
 }
+
+export interface AlgoliaAddress extends AddressDoc {
+  objectID: string;
+}

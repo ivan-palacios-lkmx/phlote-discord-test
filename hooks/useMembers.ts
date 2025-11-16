@@ -1,5 +1,6 @@
 import useAlgolia from "@/hooks/useAlgolia";
 import useMemberFilters from "@/hooks/useMemberFilters";
+import type { AddressDoc, AlgoliaAddress } from "@/types/database";
 import { quickHash } from "@/utils/functions";
 import { LRUCache } from "lru-cache";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -19,13 +20,8 @@ interface UseMembersOptions {
   sort?: string | null;
 }
 
-interface Member {
-  objectID: string;
-  [key: string]: unknown;
-}
-
 interface UseMembersReturn {
-  members: Member[];
+  members: AlgoliaAddress[];
   loadingMembers: boolean;
   totalResults: number;
   totalPages: number;
@@ -59,7 +55,7 @@ export default function useMembers({
 }: UseMembersOptions = {}): UseMembersReturn {
   const indexes = useAlgolia();
   const [loadingMembers, setLoadingMembers] = useState(false);
-  const [members, setMembers] = useState<Member[]>([]);
+  const [members, setMembers] = useState<AddressDoc[]>([]);
   const [reachedEnd, setReachedEnd] = useState(true);
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -175,7 +171,7 @@ export default function useMembers({
         result = cache.get(qHash)!;
       }
 
-      setMembers(result.hits as Member[]);
+      setMembers(result.hits as AddressDoc[]);
       setTotalResults(result.nbHits);
       setTotalPages(result.nbPages);
       setReachedEnd(page >= result.nbPages - 1);
