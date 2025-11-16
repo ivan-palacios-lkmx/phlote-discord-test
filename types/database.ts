@@ -5,7 +5,7 @@
  * their roles, contribution data, and associated metadata, as well as connected ENS, OpenSea, and Zora information.
  */
 export interface AddressDoc {
-  /** Unique address ID (also used as the Firestore/Algolia object ID) */
+  /** Unique address ID */
   id: string;
   /** Date the address was created */
   created?: Date;
@@ -56,6 +56,14 @@ export interface ZoraData {
   profileImageURL?: string;
 }
 
+/**
+ * AlgoliaAddress extends AddressDoc with an objectID field.
+ *
+ * This interface represents address documents returned from Algolia search results.
+ * The objectID is used as a unique identifier and can be used to reference the address
+ * in various parts of the application (e.g., building URLs, document references).
+ */
 export interface AlgoliaAddress extends AddressDoc {
+  /** Unique identifier for the address, typically the same as the address ID */
   objectID: string;
 }
