@@ -129,37 +129,6 @@ export interface Version {
   [key: string]: unknown;
 }
 
-export interface AddressDoc {
-  id: string;
-  created?: Date;
-  updated?: Date;
-  shouldUpdate?: boolean;
-  isAdmin?: boolean;
-  isCreator?: boolean;
-  isMember?: boolean;
-  isPublic?: boolean;
-  memberSince?: Date;
-  title?: string;
-  tags?: string[];
-  sessionsContributed?: number;
-  ens?: ENSData;
-  openSea?: OpenSeaData;
-  zora?: ZoraData;
-  errorCount?: number;
-  error?: string | boolean;
-}
-export interface ENSData {
-  name: string | false;
-  avatar: string | false;
-}
-export interface OpenSeaData {
-  osUsername: string;
-  profileImageURL?: string;
-}
-export interface ZoraData {
-  zoraUsername: string;
-  profileImageURL?: string;
-}
 export interface ProgressiveMediaProps {
   wrapper?: keyof JSX.IntrinsicElements;
   videoSrc?: string;

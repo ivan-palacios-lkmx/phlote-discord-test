@@ -1,4 +1,4 @@
-import type { AddressDoc } from "./client";
+import type { AddressDoc } from "./database";
 
 export interface SyncUserRequest {
   address: string;

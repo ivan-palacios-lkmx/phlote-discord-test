@@ -1,7 +1,7 @@
 import apiClient from "@/hooks/query/axios";
 import { ENDPOINTS } from "@/hooks/query/endpoints";
 import { SyncUserRequest, SyncUserResponse } from "@/types/api";
-import type { AddressDoc } from "@/types/client";
+import type { AddressDoc } from "@/types/database";
 
 class AuthenticationService {
   static getShortAddress(address: string): string {
@@ -21,7 +21,12 @@ class AuthenticationService {
 
   static async getUsername(account: AddressDoc, shortAddress: string): Promise<string> {
     try {
-      return account.username || shortAddress;
+      return (
+        account.ens?.name ||
+        account.openSea?.osUsername ||
+        account.zora?.zoraUsername ||
+        shortAddress
+      );
     } catch (error) {
       console.error("Error getting user:", error);
       throw error;
