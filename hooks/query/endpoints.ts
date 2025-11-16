@@ -6,7 +6,9 @@ export const ENDPOINTS = {
   HANDLE_DISCORD_INTERACTION: "/discord/interaction",
   GET_SETTINGS: "/settings",
   GET_SESSIONS: "/sessions",
-  GET_SESSION: "/sessions/:id",
+  GET_SESSION: "/sessions",
   GET_SESSION_VERSIONS: "/sessions/versions",
-  GET_SESSION_VERSION: "/sessions/versions/:id",
+  GET_SESSION_VERSION: "/sessions/versions",
+  GET_ADDRESSES_INFO: "/address",
+  GET_ADDRESS_INFO: "/address",
 };

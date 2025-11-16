@@ -3,10 +3,10 @@
 import VersionPlayer from "@/components/VersionPlayer/VersionPlayer";
 import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
-import { useClientDoc } from "@/hooks/useClientDoc";
-import { db } from "@/lib/firebase";
-import { doc } from "firebase/firestore";
-import { useMemo, useState } from "react";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
+import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
+import { useGetVersionSession } from "@/hooks/query/query-hooks/use-get-version-session";
+import { useState } from "react";
 
 import "./Slice.scss";
 
@@ -17,17 +17,12 @@ interface SliceProps {
 export default function Slice({ versionID }: SliceProps) {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
-  // Firebase document references
-  const versionDocRef = useMemo(() => doc(db, `session-versions/${versionID}`), [versionID]);
-  const versionDoc = useClientDoc(versionDocRef);
-
-  const creator = versionDoc?.creator as string | undefined;
-
-  const sessionDocRef = useMemo(
-    () => (versionDoc?.sessionID ? doc(db, `sessions/${versionDoc.sessionID}`) : null),
-    [versionDoc?.sessionID],
+  const { data: version, isLoading: isVersionLoading } = useGetVersionSession(versionID);
+  const { data: session, isLoading: isSessionLoading } = useGetSession(
+    version?.sessionID as string,
+    !!version?.sessionID,
   );
-  const sessionDoc = useClientDoc(sessionDocRef);
+  const { data: creatorInfo } = useGetAddressInfo(version?.creator as string, !!version?.creator);
 
   return (
     <div
@@ -37,35 +32,36 @@ export default function Slice({ versionID }: SliceProps) {
       onMouseUp={() => setIsPointerDown(false)}
       onMouseLeave={() => setIsPointerDown(false)}>
       <div className="padder">
-        {creator && (
+        {version?.creator && (
           <Web3Avatar
             avatar={
-              creator.ens?.avatar ||
-              creator.openSea?.profileImageURL ||
-              creator.zora?.profileImageURL ||
-              ""
+              creatorInfo?.ens?.avatar ||
+              creatorInfo?.openSea?.profileImageURL ||
+              creatorInfo?.zora?.profileImageURL ||
+              "/images/phlote-poster.jpg"
             }
             className="background-image"
           />
         )}
 
         <div className="session-info">
-          {creator && (
+          {version?.creator && (
             <Web3Avatar
               avatar={
-                creator.ens?.avatar ||
-                creator.openSea?.profileImageURL ||
-                creator.zora?.profileImageURL ||
-                ""
+                creatorInfo?.ens?.avatar ||
+                creatorInfo?.openSea?.profileImageURL ||
+                creatorInfo?.zora?.profileImageURL ||
+                "/images/phlote-poster.jpg"
               }
               className="artwork desktop-only"
             />
           )}
-
-          <SessionDetailTitle session={sessionDoc} version={versionDoc} />
+          {!isSessionLoading && !isVersionLoading && (
+            <SessionDetailTitle session={session} version={version} />
+          )}
         </div>
 
-        {versionDoc && <VersionPlayer versionData={versionDoc} />}
+        {version && <VersionPlayer versionData={version} />}
       </div>
     </div>
   );

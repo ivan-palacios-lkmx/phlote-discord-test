@@ -2,13 +2,12 @@ import {
   ApplicationTracksResponse,
   DiscordInteractionRequest,
   DiscordInteractionResponse,
-  ImageColorsResponse,
   SyncUserRequest,
   SyncUserResponse,
   VersionStemsResponse,
 } from "@/types/api";
 import { SettingsDoc } from "@/types/client";
-import { SessionDoc, SessionVersionDoc } from "@/types/database";
+import { AddressDoc, SessionDoc, SessionVersionDoc } from "@/types/database";
 
 import apiClient from "./axios";
 import { ENDPOINTS } from "./endpoints";
@@ -118,11 +117,7 @@ class Api {
 
   static async getSession(sessionID: string): Promise<SessionDoc> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_SESSION, {
-        params: {
-          sessionID,
-        },
-      });
+      const response = await apiClient.get(ENDPOINTS.GET_SESSION + "/" + sessionID);
       return response.data;
     } catch (error) {
       console.error("Error fetching session:", error);
@@ -142,14 +137,30 @@ class Api {
 
   static async getSessionVersion(versionID: string): Promise<SessionVersionDoc> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSION, {
-        params: {
-          versionID,
-        },
-      });
+      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSION + "/" + versionID);
       return response.data;
     } catch (error) {
       console.error("Error fetching session version:", error);
+      throw error;
+    }
+  }
+
+  static async getAddressesInfo(): Promise<AddressDoc[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.GET_ADDRESSES_INFO);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+      throw error;
+    }
+  }
+
+  static async getAddressInfo(address: string): Promise<AddressDoc> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.GET_ADDRESS_INFO + "/" + address);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching address:", error);
       throw error;
     }
   }

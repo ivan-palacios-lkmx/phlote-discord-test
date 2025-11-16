@@ -1,5 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
-import { AddressDoc } from "@/types/client";
+import { AddressDoc } from "@/types/database";
 import { ADDRESSES_COLLECTION } from "@/utils/constants";
 import {
   getDocumentDataFromDocumentSnapshot,
