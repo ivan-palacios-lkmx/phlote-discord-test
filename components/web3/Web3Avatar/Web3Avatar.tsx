@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import "./Web3Avatar.scss";
 
 interface Web3AvatarProps {
@@ -12,7 +14,7 @@ export default function Web3Avatar({ avatar, className = "" }: Web3AvatarProps) 
     <div className={`web3-avatar ${className}`.trim()}>
       {avatar && (
         <div className="fade-enter-active fade-leave-active">
-          <img src={avatar} alt="Avatar" />
+          <Image src={avatar} alt="Avatar" width={100} height={100} />
         </div>
       )}
     </div>
