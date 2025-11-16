@@ -55,7 +55,7 @@ export default function useMembers({
 }: UseMembersOptions = {}): UseMembersReturn {
   const indexes = useAlgolia();
   const [loadingMembers, setLoadingMembers] = useState(false);
-  const [members, setMembers] = useState<AddressDoc[]>([]);
+  const [members, setMembers] = useState<AlgoliaAddress[]>([]);
   const [reachedEnd, setReachedEnd] = useState(true);
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -171,7 +171,7 @@ export default function useMembers({
         result = cache.get(qHash)!;
       }
 
-      setMembers(result.hits as AddressDoc[]);
+      setMembers(result.hits as AlgoliaAddress[]);
       setTotalResults(result.nbHits);
       setTotalPages(result.nbPages);
       setReachedEnd(page >= result.nbPages - 1);

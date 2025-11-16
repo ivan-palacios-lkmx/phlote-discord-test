@@ -5,3 +5,4 @@ export const UPDATE_THRESHOLD_IN_MS = 5 * 60 * 1000;
 export const ADDRESSES_COLLECTION = "addresses";
 export const GLOBAL_COLLECTION = "globals";
 export const SETTING_DOC_ID = "settings";
+export const SESSIONS_COLLECTION = "sessions";

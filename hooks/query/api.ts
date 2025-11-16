@@ -7,6 +7,7 @@ import {
   SyncUserResponse,
   VersionStemsResponse,
 } from "@/types/api";
+import { SettingsDoc } from "@/types/client";
 
 import apiClient from "./axios";
 import { ENDPOINTS } from "./endpoints";
@@ -88,5 +89,15 @@ class Api {
       throw error;
     }
   }
+  static async getSettings(): Promise<SettingsDoc> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.GET_SETTINGS);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+      throw error;
+    }
+  }
 }
+
 export default Api;

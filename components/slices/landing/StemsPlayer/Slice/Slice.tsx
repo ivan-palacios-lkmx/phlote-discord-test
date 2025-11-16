@@ -37,10 +37,30 @@ export default function Slice({ versionID }: SliceProps) {
       onMouseUp={() => setIsPointerDown(false)}
       onMouseLeave={() => setIsPointerDown(false)}>
       <div className="padder">
-        {creator && <Web3Avatar address={creator} className="background-image" />}
+        {creator && (
+          <Web3Avatar
+            avatar={
+              creator.ens?.avatar ||
+              creator.openSea?.profileImageURL ||
+              creator.zora?.profileImageURL ||
+              ""
+            }
+            className="background-image"
+          />
+        )}
 
         <div className="session-info">
-          {creator && <Web3Avatar address={creator} className="artwork desktop-only" />}
+          {creator && (
+            <Web3Avatar
+              avatar={
+                creator.ens?.avatar ||
+                creator.openSea?.profileImageURL ||
+                creator.zora?.profileImageURL ||
+                ""
+              }
+              className="artwork desktop-only"
+            />
+          )}
 
           <SessionDetailTitle session={sessionDoc} version={versionDoc} />
         </div>

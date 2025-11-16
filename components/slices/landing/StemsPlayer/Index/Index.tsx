@@ -1,15 +1,15 @@
 "use client";
 
 import Slice from "@/components/slices/landing/StemsPlayer/Slice/Slice";
-import { useFbGlobals } from "@/hooks/useFbGlobals";
+import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import useEmblaCarousel from "embla-carousel-react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import "./Index.scss";
 
 export default function StemsPlayer() {
-  const { settingsDoc } = useFbGlobals();
-  const versionIDs = useMemo(() => (settingsDoc?.stemsCarousel as string[]) || [], [settingsDoc]);
+  const { data: settings } = useGetSettings();
+
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -32,16 +32,16 @@ export default function StemsPlayer() {
     if (emblaApi) {
       emblaApi.reInit();
     }
-  }, [emblaApi, versionIDs.length]);
+  }, [emblaApi, settings?.stemsCarousel?.length]);
 
-  const shouldMountCarousel = versionIDs.length > 0;
+  const shouldMountCarousel = settings?.stemsCarousel && settings.stemsCarousel.length > 0;
 
   return (
     <section className="slice-stems-player">
       {shouldMountCarousel ? (
         <div className="embla" ref={setRefs}>
           <div className="embla__container">
-            {versionIDs.map((versionID, index) => (
+            {settings?.stemsCarousel?.map((versionID, index) => (
               <div key={versionID || index} className="embla__slide">
                 <Slice versionID={versionID} />
               </div>
@@ -49,7 +49,8 @@ export default function StemsPlayer() {
           </div>
         </div>
       ) : (
-        versionIDs.length > 0 && <Slice versionID={versionIDs[0]} />
+        settings?.stemsCarousel &&
+        settings.stemsCarousel.length > 0 && <Slice versionID={settings.stemsCarousel[0]} />
       )}
     </section>
   );

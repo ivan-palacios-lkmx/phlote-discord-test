@@ -4,4 +4,5 @@ export const ENDPOINTS = {
   GET_VERSION_STEMS: "/version-stems",
   GET_APPLICATION_TRACKS: "/application-tracks",
   HANDLE_DISCORD_INTERACTION: "/discord/interaction",
+  GET_SETTINGS: "/settings",
 };
