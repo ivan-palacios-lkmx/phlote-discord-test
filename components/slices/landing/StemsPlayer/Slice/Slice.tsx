@@ -27,12 +27,12 @@ export default function Slice({ versionID }: SliceProps) {
     data: session,
     isPending: isSessionPending,
     isError: isSessionError,
-  } = useGetSession(version?.sessionID!, !!version?.sessionID && !isVersionError);
+  } = useGetSession(version?.sessionID ?? "", !!version?.sessionID && !isVersionError);
   const {
     data: creatorInfo,
     isPending: isCreatorInfoPending,
     isError: isCreatorInfoError,
-  } = useGetAddressInfo(version?.creator, !!version?.creator && !isVersionError);
+  } = useGetAddressInfo(version?.creator ?? "", !!version?.creator && !isVersionError);
 
   const isPending = isVersionPending || isSessionPending || isCreatorInfoPending;
   const isError = isVersionError || isSessionError || isCreatorInfoError;
