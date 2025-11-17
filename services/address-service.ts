@@ -65,15 +65,17 @@ export class AddressService {
     return getDocumentDataFromDocumentSnapshot<AddressDoc>(addressDoc);
   }
 
-  static async createAddress(address: string): Promise<WriteResult> {
+  static async createAddress(
+    address: string,
+    isAddressMember: boolean,
+    addressAvatar: string | null,
+  ): Promise<WriteResult> {
     try {
-      const avatar = await this.getAvatarFromExternalSources(address);
-      const isAddressMember = await RoleService.isMember(address);
       const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).set({
         address,
         created: new Date(),
         updated: new Date(),
-        avatar,
+        avatar: addressAvatar,
         isMember: isAddressMember,
         isAdmin: false,
         isCreator: false,
