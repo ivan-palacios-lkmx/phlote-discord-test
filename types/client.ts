@@ -149,20 +149,54 @@ export interface ProgressiveMediaProps {
   field?: ImageField;
 }
 
-export interface TagCategory {
-  name: string;
-  options: string[];
+export interface PrismicSettings {
+  app_menu?: AppMenuItem[];
+  home_copy?: string;
+  main_menu?: MainMenuItem[];
+  social_menu?: SocialMenuItem[];
+  footer_copy?: RichTextField;
+  secondary_menu?: SecondaryMenuItem[];
+  body?: RichTextField[];
+  meta_title?: string;
+  meta_description?: string;
+  og_image?: OGImage;
+  default_user_image?: DefaultUserImage;
+  newsletter_placeholder_text?: NewsletterPlaceholderText;
+  newsletter_submit_text?: NewsletterSubmitText;
 }
 
-export interface SettingsDoc {
-  availableMemberTags?: TagCategory[];
-  availableSessionTags?: TagCategory[];
-  stemsCarousel?: string[];
-  membershipContracts?: string[];
-  /** @deprecated Use availableMemberTags instead */
-  availableLocations?: Array<{ name: string }>;
-  /** @deprecated Use availableMemberTags instead */
-  availableSkills?: Array<{ name: string }>;
-  /** @deprecated Use availableSessionTags instead */
-  availableTags?: Record<string, string[]>;
+interface OGImage {
+  url?: string;
+}
+
+interface DefaultUserImage {
+  url?: string;
+}
+
+interface NewsletterPlaceholderText {
+  text?: string;
+}
+
+interface NewsletterSubmitText {
+  text?: string;
+}
+
+interface SocialMenuItem {
+  name?: string;
+  link?: string;
+}
+
+interface SecondaryMenuItem {
+  name?: string;
+  link?: unknown;
+}
+
+interface MainMenuItem {
+  name?: string;
+  link?: string;
+}
+
+interface AppMenuItem {
+  name?: string;
+  link?: string;
 }

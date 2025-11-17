@@ -185,3 +185,32 @@ export interface AlgoliaSessionVersion extends SessionVersionDoc {
   /** Unique identifier for the version, typically the same as the version ID */
   objectID: string;
 }
+
+export interface TagCategory {
+  name: string;
+  options: string[];
+}
+
+/**
+ * The SettingsDoc interface defines the schema for settings documents.
+ *
+ * This interface is stored in Firestore and represents the settings for the application,
+ * including available member tags, session tags, stems carousel, membership contracts,
+ * and available tags.
+ */
+export interface SettingsDoc {
+  /** List of available member tags */
+  availableMemberTags?: TagCategory[];
+  /** List of available session tags */
+  availableSessionTags?: TagCategory[];
+  /** List of stems carousel */
+  stemsCarousel?: string[];
+  /** List of membership contracts */
+  membershipContracts?: string[];
+  /** @deprecated Use availableMemberTags instead */
+  availableLocations?: Array<{ name: string }>;
+  /** @deprecated Use availableMemberTags instead */
+  availableSkills?: Array<{ name: string }>;
+  /** @deprecated Use availableSessionTags instead */
+  availableTags?: Record<string, string[]>;
+}

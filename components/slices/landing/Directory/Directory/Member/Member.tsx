@@ -1,7 +1,5 @@
 "use client";
 
-// import { useClientDoc } from "@/hooks/useClientDoc";
-// import { db } from "@/lib/firebase";
 import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
@@ -9,7 +7,6 @@ import CopyButton from "@/components/slices/landing/Directory/CopyButton";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import type { AlgoliaAddress } from "@/types/database";
-// import { doc } from "firebase/firestore";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -53,11 +50,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
     return () => observer.disconnect();
   }, []);
 
-  // Gating - TODO: Implement useFbAuth hook
-  // Firebase Auth - Commented out
-  // const { userDoc } = useFbAuth();
-  // const userDoc = null as { isMember?: boolean } | null; // Placeholder
-  const isPublic = member?.isPublic || false; // TODO: Add userDoc?.isMember when Firebase is enabled
+  const isPublic = member?.isPublic || false;
 
   // Tags - TODO: Implement useFbGlobals and useTags hooks
   // const { settingsDoc } = useFbGlobals();
@@ -99,9 +92,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
   return (
     <div
       ref={containerRef}
-      className={`directory-member text-center transition-all duration-[400ms] ease-in-out ${
-        isPublic ? "public" : ""
-      } ${isIntersected ? "visible" : "opacity-0 translate-y-[100px]"}`}>
+      className={`directory-member ${isPublic ? "public" : ""} ${isIntersected ? "visible" : ""}`}>
       {linkTo ? (
         <Link
           href={{ pathname: linkTo.pathname, query: linkTo.query }}
@@ -117,24 +108,27 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
               }
             />
           ) : defaultUserImage ? (
-            <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
+            <div className="prismic-image">
               <ProgressiveMedia field={defaultUserImage} />
             </div>
           ) : null}
 
           {/* Title */}
           <h6
-            className={`m-0 font-condensed leading-[0.9] text-base ${!isPublic ? "opacity-50" : ""}`}
+            className={`${!isPublic ? "opacity-50" : ""}`}
             dangerouslySetInnerHTML={{ __html: member?.title || "&nbsp;" }}
           />
 
           {/* Name */}
-          <h3
-            className={`my-[10px] tracking-[-0.03em] grid grid-cols-1 text-[30px] leading-[100%] ${!isPublic ? "opacity-50" : ""}`}>
+          <h3 className={`${!isPublic ? "opacity-50" : ""}`}>
             {name ? (
               <span>{name}</span>
             ) : isPublic && member.objectID ? (
-              <Web3Username address={member.objectID} />
+              <Web3Username
+                username={
+                  member.ens?.name || member.openSea?.osUsername || member.zora?.zoraUsername || ""
+                }
+              />
             ) : (
               <span>Hidden Member</span>
             )}
@@ -142,11 +136,9 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
           {/* Tags */}
           {isPublic && tags.length > 0 && (
-            <div className="tag-wrap flex justify-center flex-wrap gap-[5px] mt-5">
+            <div className="tag-wrap">
               {tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="mono transparent text-xs font-mono font-normal bg-transparent border border-black rounded-[7px] text-black py-[0.4em] px-4 box-border leading-none uppercase">
+                <span key={index} className="tag">
                   {tag}
                 </span>
               ))}
@@ -166,24 +158,27 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
               }
             />
           ) : defaultUserImage ? (
-            <div className="prismic-image rounded-full overflow-hidden mb-[30px]">
+            <div className="prismic-image">
               <ProgressiveMedia field={defaultUserImage as never} />
             </div>
           ) : null}
 
           {/* Title */}
           <h6
-            className={`m-0 font-condensed leading-[0.9] text-base ${!isPublic ? "opacity-50" : ""}`}
+            className={`${!isPublic ? "opacity-50" : ""}`}
             dangerouslySetInnerHTML={{ __html: member?.title || "&nbsp;" }}
           />
 
           {/* Name */}
-          <h3
-            className={`my-[10px] tracking-[-0.03em] grid grid-cols-1 text-[30px] leading-[100%] ${!isPublic ? "opacity-50" : ""}`}>
+          <h3 className={`${!isPublic ? "opacity-50" : ""}`}>
             {name ? (
               <span>{name}</span>
             ) : isPublic && member.objectID ? (
-              <Web3Username address={member.objectID} />
+              <Web3Username
+                username={
+                  member.ens?.name || member.openSea?.osUsername || member.zora?.zoraUsername || ""
+                }
+              />
             ) : (
               <span>Hidden Member</span>
             )}
@@ -191,11 +186,9 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
           {/* Tags */}
           {isPublic && tags.length > 0 && (
-            <div className="tag-wrap flex justify-center flex-wrap gap-[5px] mt-5">
+            <div className="tag-wrap">
               {tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="mono transparent text-xs font-mono font-normal bg-transparent border border-black rounded-[7px] text-black py-[0.4em] px-4 box-border leading-none uppercase">
+                <span key={index} className="tag">
                   {tag}
                 </span>
               ))}
@@ -205,7 +198,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
       )}
 
       {/* Contact */}
-      <div className="link-wrap flex justify-center flex-wrap gap-[5px] mt-[10px]">
+      <div className="link-wrap">
         {discordHandle && <CopyButton copyText={discordHandle}>Discord</CopyButton>}
         {twitterLink && <ADiv href={twitterLink}>Twitter</ADiv>}
         {email && <ADiv href={`mailto:${email}`}>Email</ADiv>}

@@ -1,22 +1,7 @@
 "use client";
 
+import { type PrismicSettings } from "@/types/client";
 import { type ReactNode, createContext, useContext } from "react";
-
-export interface PrismicSettings {
-  app_menu?: Array<{ name?: string; link?: string }>;
-  home_copy?: string;
-  main_menu?: Array<{ name?: string; link?: string }>;
-  social_menu?: Array<{ name?: string; link?: string }>;
-  footer_copy?: unknown;
-  secondary_menu?: Array<{ name?: string; link?: unknown }>;
-  body?: unknown;
-  meta_title?: string;
-  meta_description?: string;
-  og_image?: { url?: string };
-  default_user_image?: { url?: string };
-  newsletter_placeholder_text?: string;
-  newsletter_submit_text?: string;
-}
 
 interface PrismicioContextValue {
   settings: PrismicSettings;
