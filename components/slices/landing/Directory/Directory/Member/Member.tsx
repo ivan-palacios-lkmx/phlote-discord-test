@@ -1,5 +1,6 @@
 "use client";
 
+import { AddressClientService } from "@/app/client/services/address-client-service";
 import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
@@ -14,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import "./Member.scss";
 
 interface MemberProps {
-  member: AlgoliaAddress;
+  address: AlgoliaAddress;
   activeFilters?: ActiveFilter[];
   style?: React.CSSProperties;
 }
@@ -25,7 +26,7 @@ interface ActiveFilter {
   name: string;
 }
 
-export default function Member({ member, activeFilters: activeFilters, style }: MemberProps) {
+export default function Member({ address, activeFilters: activeFilters, style }: MemberProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isIntersected, setIsIntersected] = useState(false);
   const pathname = usePathname();
@@ -54,8 +55,8 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
   // const { settingsDoc } = useFbGlobals();
   // const { decodeTag } = useTags();
   const tags: string[] = [];
-  if (member?.isAdmin) tags.push("Admin");
-  else if (member?.isCreator) tags.push("Creator");
+  if (address?.isAdmin) tags.push("Admin");
+  else if (address?.isCreator) tags.push("Creator");
   // TODO: Add tag decoding logic
 
   // Contact info - Firebase commented out
@@ -70,12 +71,12 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
   // Create member link
   const linkTo =
-    member.isPublic && member.objectID
+    address.isPublic && address.objectID
       ? {
           pathname,
           query: {
             ...Object.fromEntries(searchParams.entries()),
-            profile: member.objectID,
+            profile: address.objectID,
           },
         }
       : null;
@@ -84,21 +85,22 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
   const { settings } = usePrismicio();
   const defaultUserImage = settings.default_user_image;
 
+  const username = AddressClientService.getAddressUsername(address);
   return (
     <div
       ref={containerRef}
-      className={`directory-member ${member.isPublic ? "public" : ""} ${isIntersected ? "visible" : ""}`}>
+      className={`directory-member ${address.isPublic ? "public" : ""} ${isIntersected ? "visible" : ""}`}>
       {linkTo ? (
         <Link
           href={{ pathname: linkTo.pathname, query: linkTo.query }}
           className="member-link block w-full uppercase">
           {/* Image */}
-          {member.isPublic && member.objectID ? (
+          {address.isPublic && address.objectID ? (
             <Web3Avatar
               avatar={
-                member.ens?.avatar ||
-                member.openSea?.profileImageURL ||
-                member.zora?.profileImageURL ||
+                address.ens?.avatar ||
+                address.openSea?.profileImageURL ||
+                address.zora?.profileImageURL ||
                 ""
               }
             />
@@ -110,23 +112,23 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
           {/* Title */}
           <h6
-            className={`${!member.isPublic ? "opacity-50" : ""}`}
-            dangerouslySetInnerHTML={{ __html: member?.title || "&nbsp;" }}
+            className={`${!address.isPublic ? "opacity-50" : ""}`}
+            dangerouslySetInnerHTML={{ __html: address?.title || "&nbsp;" }}
           />
 
           {/* Name */}
-          <h3 className={`${!member.isPublic ? "opacity-50" : ""}`}>
-            {member.title ? (
-              <span>{member.title}</span>
-            ) : member.isPublic && member.objectID ? (
-              <Web3Username username={member.username || ""} />
+          <h3 className={`${!address.isPublic ? "opacity-50" : ""}`}>
+            {address.title ? (
+              <span>{address.title}</span>
+            ) : address.isPublic && address.objectID && username ? (
+              <Web3Username username={username} />
             ) : (
               <span>Hidden Member</span>
             )}
           </h3>
 
           {/* Tags */}
-          {member.isPublic && tags.length > 0 && (
+          {address.isPublic && tags.length > 0 && (
             <div className="tag-wrap">
               {tags.map((tag, index) => (
                 <span key={index} className="tag">
@@ -139,12 +141,12 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
       ) : (
         <div className="member-link block w-full uppercase">
           {/* Image */}
-          {member.isPublic && member.objectID ? (
+          {address.isPublic && address.objectID ? (
             <Web3Avatar
               avatar={
-                member.ens?.avatar ||
-                member.openSea?.profileImageURL ||
-                member.zora?.profileImageURL ||
+                address.ens?.avatar ||
+                address.openSea?.profileImageURL ||
+                address.zora?.profileImageURL ||
                 ""
               }
             />
@@ -156,27 +158,23 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
           {/* Title */}
           <h6
-            className={`${!member.isPublic ? "opacity-50" : ""}`}
-            dangerouslySetInnerHTML={{ __html: member?.title || "&nbsp;" }}
+            className={`${!address.isPublic ? "opacity-50" : ""}`}
+            dangerouslySetInnerHTML={{ __html: address?.title || "&nbsp;" }}
           />
 
           {/* Name */}
-          <h3 className={`${!member.isPublic ? "opacity-50" : ""}`}>
-            {member.title ? (
-              <span>{member.title}</span>
-            ) : member.isPublic && member.objectID ? (
-              <Web3Username
-                username={
-                  member.ens?.name || member.openSea?.osUsername || member.zora?.zoraUsername || ""
-                }
-              />
+          <h3 className={`${!address.isPublic ? "opacity-50" : ""}`}>
+            {address.title ? (
+              <span>{address.title}</span>
+            ) : address.isPublic && address.objectID && username ? (
+              <Web3Username username={username} />
             ) : (
               <span>Hidden Member</span>
             )}
           </h3>
 
           {/* Tags */}
-          {member.isPublic && tags.length > 0 && (
+          {address.isPublic && tags.length > 0 && (
             <div className="tag-wrap">
               {tags.map((tag, index) => (
                 <span key={index} className="tag">
@@ -190,9 +188,9 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
       {/* Contact */}
       <div className="link-wrap">
-        {member.discordHandle && <CopyButton copyText={member.discordHandle}>Discord</CopyButton>}
+        {address.discordHandle && <CopyButton copyText={address.discordHandle}>Discord</CopyButton>}
         {twitterLink && <ADiv href={twitterLink}>Twitter</ADiv>}
-        {member.email && <ADiv href={`mailto:${member.email}`}>Email</ADiv>}
+        {address.email && <ADiv href={`mailto:${address.email}`}>Email</ADiv>}
       </div>
     </div>
   );

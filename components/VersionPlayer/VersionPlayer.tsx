@@ -5,7 +5,7 @@ import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
 import { useFbEndpoints } from "@/hooks/useFbEndpoints";
-import { Version } from "@/types/client";
+import { SessionVersionDoc } from "@/types/database";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -13,7 +13,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./VersionPlayer.scss";
 
 interface VersionPlayerProps {
-  versionData: Version;
+  versionData: SessionVersionDoc;
 }
 
 export default function VersionPlayer({ versionData }: VersionPlayerProps) {
@@ -26,8 +26,6 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
   const framerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pathname = usePathname();
-
-  const versionID = useMemo(() => versionData?.id, [versionData?.id]);
 
   const progress = useMemo(() => {
     if (!duration) return 0;
@@ -47,7 +45,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
   const onPlay = async () => {
     setLoading(true);
-    if (!versionID) {
+    if (!versionData?.sessionID) {
       setLoading(false);
       return;
     }
@@ -56,7 +54,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     if (!tracks) {
       try {
         const { bounce, stems } = await getVersionStems({
-          versionID: versionID,
+          versionID: versionData?.sessionID,
         });
 
         // Create Howl instances for each track

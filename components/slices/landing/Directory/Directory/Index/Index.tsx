@@ -191,7 +191,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
           {members.map((member, i) => (
             <li key={member.objectID || i}>
               <Member
-                member={member}
+                address={member}
                 activeFilters={activeFilters}
                 style={{ transitionDelay: `${(i % 4) * 200}ms` }}
               />
