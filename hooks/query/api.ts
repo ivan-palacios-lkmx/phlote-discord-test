@@ -1,18 +1,29 @@
 import {
   ApplicationTracksResponse,
+  AuthResponse,
   DiscordInteractionRequest,
   DiscordInteractionResponse,
   SyncUserRequest,
   SyncUserResponse,
   VersionStemsResponse,
 } from "@/types/api";
-import { SettingsDoc } from "@/types/client";
+import { SettingsDoc } from "@/types/database";
 import { AddressDoc, SessionDoc, SessionVersionDoc } from "@/types/database";
 
 import apiClient from "./axios";
 import { ENDPOINTS } from "./endpoints";
 
 class Api {
+  static async auth(address: string): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.AUTH, { address });
+      return response.data;
+    } catch (error) {
+      console.error("Error authenticating:", error);
+      throw error;
+    }
+  }
+
   static async getAccount(address: string) {
     try {
       const response = await apiClient.get(ENDPOINTS.GET_ACCOUNT, {

@@ -41,3 +41,7 @@ export interface ImageColorsResponse {
   secondary?: string;
   [key: string]: unknown;
 }
+
+export interface AuthResponse {
+  address: AddressDoc;
+}

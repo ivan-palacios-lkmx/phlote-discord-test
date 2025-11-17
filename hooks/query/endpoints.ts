@@ -11,4 +11,5 @@ export const ENDPOINTS = {
   GET_SESSION_VERSION: "/sessions/versions",
   GET_ADDRESSES_INFO: "/address",
   GET_ADDRESS_INFO: "/address",
+  AUTH: "/auth",
 };
