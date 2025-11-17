@@ -50,8 +50,6 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
     return () => observer.disconnect();
   }, []);
 
-  const isPublic = member?.isPublic || false;
-
   // Tags - TODO: Implement useFbGlobals and useTags hooks
   // const { settingsDoc } = useFbGlobals();
   // const { decodeTag } = useTags();
@@ -67,15 +65,12 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
   // Placeholder values until Firebase is enabled
   // const contactDoc = null;
-  const name = undefined; // contactDoc?.name as string | undefined;
-  const discordHandle = undefined; // contactDoc?.discordHandle as string | undefined;
   // const twitterHandle = undefined; // contactDoc?.twitterHandle as string | undefined;
   const twitterLink = undefined; // twitterHandle ? `https://x.com/${twitterHandle.replace(/^@/, "")}` : undefined;
-  const email = undefined; // contactDoc?.email as string | undefined;
 
   // Create member link
   const linkTo =
-    isPublic && member.objectID
+    member.isPublic && member.objectID
       ? {
           pathname,
           query: {
@@ -92,13 +87,13 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
   return (
     <div
       ref={containerRef}
-      className={`directory-member ${isPublic ? "public" : ""} ${isIntersected ? "visible" : ""}`}>
+      className={`directory-member ${member.isPublic ? "public" : ""} ${isIntersected ? "visible" : ""}`}>
       {linkTo ? (
         <Link
           href={{ pathname: linkTo.pathname, query: linkTo.query }}
           className="member-link block w-full uppercase">
           {/* Image */}
-          {isPublic && member.objectID ? (
+          {member.isPublic && member.objectID ? (
             <Web3Avatar
               avatar={
                 member.ens?.avatar ||
@@ -115,27 +110,23 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
           {/* Title */}
           <h6
-            className={`${!isPublic ? "opacity-50" : ""}`}
+            className={`${!member.isPublic ? "opacity-50" : ""}`}
             dangerouslySetInnerHTML={{ __html: member?.title || "&nbsp;" }}
           />
 
           {/* Name */}
-          <h3 className={`${!isPublic ? "opacity-50" : ""}`}>
-            {name ? (
-              <span>{name}</span>
-            ) : isPublic && member.objectID ? (
-              <Web3Username
-                username={
-                  member.ens?.name || member.openSea?.osUsername || member.zora?.zoraUsername || ""
-                }
-              />
+          <h3 className={`${!member.isPublic ? "opacity-50" : ""}`}>
+            {member.title ? (
+              <span>{member.title}</span>
+            ) : member.isPublic && member.objectID ? (
+              <Web3Username username={member.username || ""} />
             ) : (
               <span>Hidden Member</span>
             )}
           </h3>
 
           {/* Tags */}
-          {isPublic && tags.length > 0 && (
+          {member.isPublic && tags.length > 0 && (
             <div className="tag-wrap">
               {tags.map((tag, index) => (
                 <span key={index} className="tag">
@@ -148,7 +139,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
       ) : (
         <div className="member-link block w-full uppercase">
           {/* Image */}
-          {isPublic && member.objectID ? (
+          {member.isPublic && member.objectID ? (
             <Web3Avatar
               avatar={
                 member.ens?.avatar ||
@@ -165,15 +156,15 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
           {/* Title */}
           <h6
-            className={`${!isPublic ? "opacity-50" : ""}`}
+            className={`${!member.isPublic ? "opacity-50" : ""}`}
             dangerouslySetInnerHTML={{ __html: member?.title || "&nbsp;" }}
           />
 
           {/* Name */}
-          <h3 className={`${!isPublic ? "opacity-50" : ""}`}>
-            {name ? (
-              <span>{name}</span>
-            ) : isPublic && member.objectID ? (
+          <h3 className={`${!member.isPublic ? "opacity-50" : ""}`}>
+            {member.title ? (
+              <span>{member.title}</span>
+            ) : member.isPublic && member.objectID ? (
               <Web3Username
                 username={
                   member.ens?.name || member.openSea?.osUsername || member.zora?.zoraUsername || ""
@@ -185,7 +176,7 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
           </h3>
 
           {/* Tags */}
-          {isPublic && tags.length > 0 && (
+          {member.isPublic && tags.length > 0 && (
             <div className="tag-wrap">
               {tags.map((tag, index) => (
                 <span key={index} className="tag">
@@ -199,9 +190,9 @@ export default function Member({ member, activeFilters: activeFilters, style }: 
 
       {/* Contact */}
       <div className="link-wrap">
-        {discordHandle && <CopyButton copyText={discordHandle}>Discord</CopyButton>}
+        {member.discordHandle && <CopyButton copyText={member.discordHandle}>Discord</CopyButton>}
         {twitterLink && <ADiv href={twitterLink}>Twitter</ADiv>}
-        {email && <ADiv href={`mailto:${email}`}>Email</ADiv>}
+        {member.email && <ADiv href={`mailto:${member.email}`}>Email</ADiv>}
       </div>
     </div>
   );

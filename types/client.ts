@@ -1,6 +1,8 @@
 import type { ImageField, LinkField, RichTextField } from "@prismicio/client";
 import { Timestamp } from "firebase/firestore";
 
+import type { AddressDoc } from "./database";
+
 export type UnknownSlice = Record<string, unknown>;
 
 export interface HeroSlideShowSlide {
@@ -199,4 +201,8 @@ interface MainMenuItem {
 interface AppMenuItem {
   name?: string;
   link?: string;
+}
+
+export interface ClientAddressInfo extends AddressDoc {
+  username?: string | null;
 }
