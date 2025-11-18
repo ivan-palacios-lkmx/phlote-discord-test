@@ -1,16 +1,5 @@
 import type { AddressDoc } from "./database";
 
-export interface SyncUserRequest {
-  address: string;
-}
-
-export interface SyncUserResponse extends AddressDoc {
-  success: boolean;
-  username?: string | null;
-  avatar?: string | false | null;
-  shortAddress?: string;
-}
-
 export interface VersionStemsResponse {
   bounce: string;
   stems: string[];

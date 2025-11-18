@@ -3,8 +3,6 @@ import {
   AuthResponse,
   DiscordInteractionRequest,
   DiscordInteractionResponse,
-  SyncUserRequest,
-  SyncUserResponse,
   VersionStemsResponse,
 } from "@/types/api";
 import { SettingsDoc } from "@/types/database";
@@ -38,15 +36,6 @@ class Api {
     }
   }
 
-  static async syncUser(userData: SyncUserRequest): Promise<SyncUserResponse> {
-    try {
-      const response = await apiClient.post(ENDPOINTS.SYNC_USER, userData);
-      return response.data;
-    } catch (error) {
-      console.error("Error syncing user:", error);
-      throw error;
-    }
-  }
 
   static async getVersionStems(
     versionID: string,

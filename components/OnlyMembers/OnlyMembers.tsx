@@ -1,9 +1,9 @@
 "use client";
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
+import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
-import { useEffect } from "react";
+import { useMemo } from "react";
 
 import "./OnlyMembers.scss";
 
@@ -14,8 +14,18 @@ interface OnlyMembersProps {
 
 export default function OnlyMembers({ children, className }: OnlyMembersProps) {
   const { login } = useLogin();
-  const { addressDoc, isPending, isError } = useSyncUser();
-  const { authenticated, logout, ready } = usePrivy();
+  const { authenticated, logout, ready, user } = usePrivy();
+
+  const walletAddress = useMemo(() => {
+    if (!user?.linkedAccounts) return null;
+    const wallet = user.linkedAccounts.find((acc) => acc.type === "wallet");
+    return wallet && "address" in wallet ? (wallet.address as string) : null;
+  }, [user]);
+
+  const { data: addressDoc, isPending, isError } = useGetAccount({
+    address: walletAddress || "",
+    enabled: !!walletAddress && authenticated,
+  });
 
   const isMember =
     authenticated && (addressDoc?.isAdmin || addressDoc?.isCreator || addressDoc?.isMember);

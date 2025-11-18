@@ -1,8 +1,7 @@
 "use client";
 
-import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { useConnectWallet, usePrivy } from "@privy-io/react-auth";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 /**
  * Debug component to show what Privy user object contains
@@ -11,16 +10,6 @@ export default function PrivyUserDebug() {
   const { user, ready, authenticated } = usePrivy();
   const { connectWallet } = useConnectWallet();
   const [isConnecting, setIsConnecting] = useState(false);
-
-  // Sync user address automatically
-  const { isPending: isSyncing, isSuccess, isError } = useSyncUser();
-
-  const syncStatus = useMemo(() => {
-    if (isSyncing) return "Syncing...";
-    if (isSuccess) return "Synced ✓";
-    if (isError) return "Sync failed ✗";
-    return "";
-  }, [isSyncing, isSuccess, isError]);
 
   const handleConnectWallet = async () => {
     setIsConnecting(true);
@@ -45,18 +34,6 @@ export default function PrivyUserDebug() {
     <div className="p-4 border rounded-lg bg-gray-50">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Privy User Object Debug</h2>
-        {(syncStatus || isSyncing) && (
-          <span
-            className={`text-sm px-3 py-1 rounded ${
-              isSyncing || syncStatus.includes("Syncing")
-                ? "bg-blue-100 text-blue-700"
-                : syncStatus.includes("✓")
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-            }`}>
-            {isSyncing ? "Syncing..." : syncStatus}
-          </span>
-        )}
       </div>
 
       {/* User ID - This is UNIQUE for each user */}

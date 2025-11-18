@@ -13,7 +13,7 @@ import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useAllVersions } from "@/hooks/sessions/useAllVersions";
 import { useSession } from "@/hooks/sessions/useSession";
-import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import type { Version } from "@/types/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -60,10 +60,12 @@ export default function SessionDetailClient({
 
   // Creator info
   const creator = useMemo(() => activeVersion?.creator, [activeVersion?.creator]);
-  const { addressDoc } = useSyncUser();
+  const { data: creatorInfo } = useGetAddressInfo(creator || "", !!creator);
   const creatorHasAvatar = useMemo(() => {
-    return !!(addressDoc?.zora?.profileImageURL || addressDoc?.openSea?.profileImageURL);
-  }, [addressDoc]);
+    return !!(
+      creatorInfo?.zora?.profileImageURL || creatorInfo?.openSea?.profileImageURL
+    );
+  }, [creatorInfo]);
 
   // Get artwork height
   useEffect(() => {

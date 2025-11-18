@@ -1,7 +1,7 @@
 "use client";
 
+import { AddressClientService } from "@/app/client/services/address-client-service";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
-import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { db } from "@/lib/firebase";
 import type { AddressDoc } from "@/types/client";
@@ -35,8 +35,9 @@ export default function Vanity({ address, name }: VanityProps) {
     return "Member";
   }, [profileDoc]);
 
-  const { addressDoc } = useSyncUser();
-  const username = addressDoc?.username;
+  const username = useMemo(() => {
+    return AddressClientService.getAddressUsername(profileDoc);
+  }, [profileDoc]);
 
   const profileName = useMemo(() => name || username, [name, username]);
 

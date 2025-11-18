@@ -15,7 +15,6 @@ import { useGetWaveTrace } from "@/hooks/query/query-hooks/use-get-wave-trace";
 import { useFirstVersion } from "@/hooks/sessions/useFirstVersion";
 import useAudio from "@/hooks/useAudio";
 import { useClientDoc } from "@/hooks/useClientDoc";
-import { useSyncUser } from "@/hooks/query/query-hooks/use-sync-user";
 import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
 import { startCase } from "lodash";
@@ -52,12 +51,10 @@ export default function SessionPreviewBlock({
   // Prismicio settings
   const { settings } = usePrismicio();
 
-  // Web3 identity for creator avatar
-  const { addressDoc } = useSyncUser();
-  const avatar = addressDoc?.avatar;
+  // Session image
   const sessionImage = useMemo(
-    () => avatar || settings?.default_user_image?.url || "",
-    [avatar, settings?.default_user_image?.url],
+    () => settings?.default_user_image?.url || "",
+    [settings?.default_user_image?.url],
   );
 
   // Get first version data
