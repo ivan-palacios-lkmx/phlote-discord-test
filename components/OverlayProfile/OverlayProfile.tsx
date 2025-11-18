@@ -7,6 +7,7 @@ import EditContact from "@/components/OverlayProfile/EditContact/EditContact";
 import SessionsLink from "@/components/OverlayProfile/SessionsLink/SessionsLink";
 import Vanity from "@/components/OverlayProfile/Vanity/Vanity";
 import CloseIcon from "@/components/svg/close.svg";
+import { useUpdatePrivateAddress } from "@/hooks/query/mutations/use-update-private-address";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";
 import { ContactDocWithID } from "@/types/database";
@@ -29,7 +30,7 @@ export default function OverlayProfile() {
   const { data: addressInfo } = useGetAddressInfo(profileID!, !!profileID);
 
   const shouldIncludePrivateInfo: boolean = !!(addressInfo?.isPublic || isCurrentSesion);
-
+  const { mutate: updatePrivateAddress } = useUpdatePrivateAddress();
   const { data: addressPrivateInfo } = useGetAddressPrivateInfo(
     profileID!,
     shouldIncludePrivateInfo,
@@ -96,6 +97,7 @@ export default function OverlayProfile() {
   }, [pathname, profileID]);
 
   function setContact(contact: ContactDocWithID) {
+    updatePrivateAddress({ address: profileID!, contact });
     if (!profileID) return;
   }
   if (!profileID) return null;

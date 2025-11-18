@@ -7,6 +7,7 @@ import {
 } from "@/types/api";
 import { ContactDocWithID, SettingsDoc } from "@/types/database";
 import { AddressDoc, AddressDocWithID, SessionDoc, SessionVersionDoc } from "@/types/database";
+import { WriteResult } from "firebase-admin/firestore";
 
 import apiClient from "./axios";
 import { ENDPOINTS } from "./endpoints";
@@ -179,6 +180,22 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error fetching private address data:", error);
+      throw error;
+    }
+  }
+
+  static async updatePrivateAddressData(
+    address: string,
+    contact: ContactDocWithID,
+  ): Promise<WriteResult> {
+    try {
+      const response = await apiClient.put(
+        ENDPOINTS.UPDATE_PRIVATE_ADDRESS_DATA + "/" + address,
+        contact,
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating private address data:", error);
       throw error;
     }
   }
