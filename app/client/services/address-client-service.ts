@@ -10,7 +10,7 @@ export class AddressClientService {
       addressInfo.id
     );
   }
-  static getAddressAvatar(addressInfo: AddressDoc | null | undefined): string {
+  static getAddressAvatar(addressInfo: AddressDoc): string {
     if (!addressInfo) return "/images/phlote-poster.jpg";
     return (
       addressInfo.ens?.avatar ||

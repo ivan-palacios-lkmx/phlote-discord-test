@@ -11,6 +11,7 @@ export function useGetAddressInfo(address: string, enabled: boolean = true) {
       return {
         ...addressInfo,
         username: AddressClientService.getAddressUsername(addressInfo),
+        avatar: AddressClientService.getAddressAvatar(addressInfo),
       };
     },
     enabled: enabled,

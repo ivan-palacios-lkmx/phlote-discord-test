@@ -205,4 +205,5 @@ interface AppMenuItem {
 
 export interface ClientAddressInfo extends AddressDoc {
   username?: string | null;
+  avatar?: string | null;
 }
