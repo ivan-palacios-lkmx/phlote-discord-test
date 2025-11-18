@@ -1,6 +1,7 @@
 import firebase from "@/lib/firebase-admin";
 import { AudioAction } from "@/types/api";
 import { SessionVersionDoc } from "@/types/database";
+import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
 
 export class AudioService {
   static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
@@ -29,7 +30,7 @@ export class AudioService {
     const bucket = this.getBucket();
     const [signedUrl] = await bucket.file(`audio/${hash}/${filename}`).getSignedUrl({
       action: "read",
-      expires: Date.now() + 3 * 60 * 60 * 1000, // 3 hours
+      expires: Date.now() + SIGNED_URL_EXPIRATION_TIME_IN_MS,
     });
     return signedUrl;
   }
