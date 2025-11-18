@@ -20,4 +20,14 @@ export class AddressClientService {
       "/images/phlote-poster.jpg"
     );
   }
+  static getAddressTitle(addressInfo: AddressDocWithID): string {
+    if (!addressInfo) return "";
+    if (addressInfo.isAdmin) {
+      return "Admin";
+    }
+    if (addressInfo.isCreator) {
+      return "Creator";
+    }
+    return "Member";
+  }
 }

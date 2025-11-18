@@ -28,8 +28,6 @@ export interface AddressDoc {
   isPublic?: boolean;
   /** Date since the user has been a member */
   memberSince?: Date;
-  /** Optional human-readable title */
-  title?: string;
   /** List of tags associated with this address */
   tags?: string[];
   /** Number of sessions this address has contributed to */

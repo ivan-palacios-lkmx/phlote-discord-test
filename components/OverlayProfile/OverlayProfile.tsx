@@ -7,9 +7,10 @@ import EditContact from "@/components/OverlayProfile/EditContact/EditContact";
 import SessionsLink from "@/components/OverlayProfile/SessionsLink/SessionsLink";
 import Vanity from "@/components/OverlayProfile/Vanity/Vanity";
 import CloseIcon from "@/components/svg/close.svg";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { db } from "@/lib/firebase";
-import type { AddressDoc } from "@/types/client";
+import type { ClientAddressInfo } from "@/types/client";
 import { usePrivy } from "@privy-io/react-auth";
 import { doc, setDoc } from "firebase/firestore";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -24,13 +25,9 @@ export default function OverlayProfile() {
   const modalRef = useRef<HTMLDivElement>(null);
   const [profileID, setProfileID] = useState<string | null>(null);
 
-  // Get connected address from Privy
-  const { user, authenticated } = usePrivy();
-  const connectedAddress = useMemo(() => {
-    if (!user || !authenticated) return null;
-    const wallet = user.linkedAccounts?.find((acc) => acc.type === "wallet");
-    return wallet && "address" in wallet ? (wallet.address as string) : null;
-  }, [user, authenticated]);
+  const { data: addressInfo } = useGetAddressInfo(profileID!, !!profileID);
+
+  const { user } = usePrivy();
 
   // Get profileID from query params
   useEffect(() => {
@@ -48,7 +45,7 @@ export default function OverlayProfile() {
     [profileID],
   );
 
-  const memberDoc = useClientDoc(memberRef) as AddressDoc | null;
+  const memberDoc = useClientDoc(memberRef) as ClientAddressInfo | null;
 
   // Check if profile is public or user is member
   const isPublic = useMemo(() => {
@@ -66,9 +63,8 @@ export default function OverlayProfile() {
   const contactDoc = useClientDoc(profileContactsRef);
 
   // Check if address is current user
-  const isCurrent = useMemo(() => {
-    return profileID && profileID.toLowerCase() === connectedAddress?.toLowerCase();
-  }, [profileID, connectedAddress]);
+  const isCurrentSesion =
+    profileID && profileID.toLowerCase() === user?.wallet?.address?.toLowerCase();
 
   // Set contact handler
   const setContact = async (contact: {
@@ -136,16 +132,15 @@ export default function OverlayProfile() {
   if (!profileID) return null;
 
   return (
-    <div className={`overlay-profile ${isCurrent ? "current" : ""}`} data-lenis-prevent>
+    <div className={`overlay-profile ${isCurrentSesion ? "current" : ""}`} data-lenis-prevent>
       <div className="profile-modal" ref={modalRef}>
         <button type="button" onClick={onClose} className="close-modal">
           <CloseIcon className="svg-close" />
         </button>
 
-        <Vanity address={profileID} name={contactDoc?.name as string | undefined} />
+        <Vanity address={profileID} />
 
-        {/* Logged in user */}
-        {isCurrent ? (
+        {isCurrentSesion ? (
           <div className="current-user">
             {contactDoc && (
               <EditContact
@@ -159,7 +154,6 @@ export default function OverlayProfile() {
             <SessionsLink profileID={profileID} onClose={onClose} />
           </div>
         ) : (
-          /* Other user */
           <div className="other-user">
             {isPublic && contactDoc && (
               <Contact

@@ -1,51 +1,35 @@
 "use client";
 
-import { AddressClientService } from "@/app/client/services/address-client-service";
+import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
-import { useClientDoc } from "@/hooks/useClientDoc";
-import { db } from "@/lib/firebase";
-import type { AddressDoc } from "@/types/client";
-import { doc } from "firebase/firestore";
-import { useMemo } from "react";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 
 import "./Vanity.scss";
 
 interface VanityProps {
   address: string;
-  name?: string;
 }
 
-export default function Vanity({ address, name }: VanityProps) {
-  const profileDocRef = useMemo(
-    () => (address ? doc(db, `addresses/${address}`) : null),
-    [address],
-  );
-
-  const profileDoc = useClientDoc(profileDocRef) as AddressDoc | null;
-
-  const profileTitle = useMemo(() => {
-    if (!profileDoc) return null;
-
-    if (profileDoc.isAdmin) {
-      return "Admin";
-    }
-    if (profileDoc.isCreator) {
-      return "Creator";
-    }
-    return "Member";
-  }, [profileDoc]);
-
-  const username = useMemo(() => {
-    return AddressClientService.getAddressUsername(profileDoc);
-  }, [profileDoc]);
-
-  const profileName = useMemo(() => name || username, [name, username]);
+export default function Vanity({ address }: VanityProps) {
+  const {
+    data: addressInfo,
+    isPending: isAddressInfoPending,
+    isError: isAddressInfoError,
+  } = useGetAddressInfo(address, !!address);
 
   return (
     <div className="overlay-profile-vanity">
-      <Web3Avatar address={address} />
-      <h5 className="profile-name">{profileName}</h5>
-      {profileTitle && <div className="profile-title">{profileTitle}</div>}
+      {isAddressInfoPending ? (
+        <LoadingSpinnerIcon />
+      ) : isAddressInfoError ? (
+        <span>Error</span>
+      ) : (
+        <>
+          {addressInfo?.avatar && <Web3Avatar avatar={addressInfo.avatar} />}
+          <h5 className="profile-name">{addressInfo?.username}</h5>
+          {addressInfo?.title && <div className="profile-title">{addressInfo.title}</div>}
+        </>
+      )}
     </div>
   );
 }

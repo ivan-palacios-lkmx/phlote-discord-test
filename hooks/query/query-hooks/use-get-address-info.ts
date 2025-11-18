@@ -12,6 +12,7 @@ export function useGetAddressInfo(address: string, enabled: boolean = true) {
         ...addressInfo,
         username: AddressClientService.getAddressUsername(addressInfo),
         avatar: AddressClientService.getAddressAvatar(addressInfo),
+        title: AddressClientService.getAddressTitle(addressInfo),
       };
     },
     enabled: enabled,
