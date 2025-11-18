@@ -22,7 +22,11 @@ export default function OnlyMembers({ children, className }: OnlyMembersProps) {
     return wallet && "address" in wallet ? (wallet.address as string) : null;
   }, [user]);
 
-  const { data: addressDoc, isPending, isError } = useGetAccount({
+  const {
+    data: addressDoc,
+    isPending,
+    isError,
+  } = useGetAccount({
     address: walletAddress || "",
     enabled: !!walletAddress && authenticated,
   });
