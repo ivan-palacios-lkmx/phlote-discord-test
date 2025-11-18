@@ -8,12 +8,14 @@ import { useAuth } from "@/hooks/query/mutations/use-auth";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 import "./ConnectWallet.scss";
 
 export default function ConnectWallet() {
-  const { user } = usePrivy();
+  const { user, ready, authenticated } = usePrivy();
   const walletAddress = user?.wallet?.address;
+  const hasAuthenticatedRef = useRef(false);
 
   const {
     data: addressInfo,
@@ -26,11 +28,34 @@ export default function ConnectWallet() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { login } = useLogin({
-    onComplete: () => {
-      auth(walletAddress!);
-    },
-  });
+  // Log addressInfo for debugging
+  useEffect(() => {
+    console.log("addressInfo", addressInfo?.id);
+  }, [addressInfo, isAddressInfoPending, isAddressInfoError, walletAddress]);
+
+  useEffect(() => {
+    if (!ready) {
+      return;
+    }
+
+    if (!authenticated) {
+      hasAuthenticatedRef.current = false;
+      return;
+    }
+
+    if (!walletAddress) {
+      return;
+    }
+
+    if (hasAuthenticatedRef.current) {
+      return;
+    }
+
+    hasAuthenticatedRef.current = true;
+    auth(walletAddress);
+  }, [ready, authenticated, walletAddress, auth]);
+
+  const { login } = useLogin();
 
   function showProfileOverlay() {
     if (!walletAddress) return;

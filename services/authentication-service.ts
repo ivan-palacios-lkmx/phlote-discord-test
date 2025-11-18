@@ -1,4 +1,5 @@
 import type { AddressDoc } from "@/types/database";
+import { transformToShortAddress } from "@/utils/functions";
 
 class AuthenticationService {
   static getShortAddress(address: string): string {
@@ -16,13 +17,13 @@ class AuthenticationService {
     );
   }
 
-  static async getUsername(account: AddressDoc, shortAddress: string): Promise<string> {
+  static async getUsername(account: ClientAddressInfo): Promise<string> {
     try {
       return (
         account.ens?.name ||
         account.openSea?.osUsername ||
         account.zora?.zoraUsername ||
-        shortAddress
+        transformToShortAddress(account.id)
       );
     } catch (error) {
       console.error("Error getting user:", error);

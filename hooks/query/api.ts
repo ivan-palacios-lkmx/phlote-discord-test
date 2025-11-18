@@ -6,7 +6,7 @@ import {
   VersionStemsResponse,
 } from "@/types/api";
 import { SettingsDoc } from "@/types/database";
-import { AddressDoc, SessionDoc, SessionVersionDoc } from "@/types/database";
+import { AddressDoc, AddressDocWithID, SessionDoc, SessionVersionDoc } from "@/types/database";
 
 import apiClient from "./axios";
 import { ENDPOINTS } from "./endpoints";
@@ -35,7 +35,6 @@ class Api {
       throw error;
     }
   }
-
 
   static async getVersionStems(
     versionID: string,
@@ -155,7 +154,7 @@ class Api {
     }
   }
 
-  static async getAddressInfo(address: string): Promise<AddressDoc> {
+  static async getAddressInfo(address: string): Promise<AddressDocWithID> {
     try {
       const response = await apiClient.get(ENDPOINTS.GET_ADDRESS_INFO + "/" + address);
       return response.data;

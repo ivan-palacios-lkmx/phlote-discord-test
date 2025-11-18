@@ -1,14 +1,12 @@
 import { adminDb } from "@/lib/firebase-admin";
-import { AddressDoc, OpenSeaData } from "@/types/database";
+import { AddressDoc, AddressDocWithID, OpenSeaData } from "@/types/database";
 import { ADDRESSES_COLLECTION, OPEN_SEA_API_URL } from "@/utils/constants";
 import {
-  getDocumentDataFromDocumentSnapshot,
   getDocumentDataFromQuerySnapshot,
+  getIDAndDocumentDataFromDocumentSnapshot,
 } from "@/utils/firebase-queries";
 import { InfuraProvider, Provider } from "ethers";
 import { WriteResult } from "firebase-admin/firestore";
-
-import { RoleService } from "./role-service";
 
 export class AddressService {
   static async getAddresses(visibility?: "public" | "private"): Promise<AddressDoc[]> {
@@ -60,9 +58,9 @@ export class AddressService {
     return { addresses, totalCount };
   }
 
-  static async getSingleAddress(address: string): Promise<AddressDoc | null> {
+  static async getSingleAddress(address: string): Promise<AddressDocWithID | null> {
     const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).get();
-    return getDocumentDataFromDocumentSnapshot<AddressDoc>(addressDoc);
+    return getIDAndDocumentDataFromDocumentSnapshot<AddressDocWithID>(addressDoc);
   }
 
   static async createAddress(

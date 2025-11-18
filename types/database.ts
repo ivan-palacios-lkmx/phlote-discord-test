@@ -1,3 +1,7 @@
+export interface WithID {
+  id: string;
+}
+
 /**
  * The AddressDoc interface defines the schema for address-related user documents.
  *
@@ -5,8 +9,6 @@
  * their roles, contribution data, and associated metadata, as well as connected ENS, OpenSea, and Zora information.
  */
 export interface AddressDoc {
-  /** Unique address ID */
-  id: string;
   /** Date the address was created */
   created?: Date;
   /** Date the address was last updated */
@@ -55,6 +57,8 @@ export interface ZoraData {
   zoraUsername: string;
   profileImageURL?: string;
 }
+
+export interface AddressDocWithID extends WithID, AddressDoc {}
 
 /**
  * AlgoliaAddress extends AddressDoc with an objectID field.

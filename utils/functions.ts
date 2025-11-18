@@ -172,3 +172,8 @@ export async function handleInteraction({
 
   throw new Error("Unknown interaction type or command");
 }
+
+export function transformToShortAddress(address: string): string {
+  if (!address) return "";
+  return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+}

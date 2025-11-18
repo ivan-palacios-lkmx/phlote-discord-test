@@ -3,8 +3,8 @@ import { SessionDoc, SessionVersionDoc } from "@/types/database";
 import { SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
-  getDocumentDataFromDocumentSnapshot,
   getDocumentDataFromQuerySnapshot,
+  getIDAndDocumentDataFromDocumentSnapshot,
 } from "@/utils/firebase-queries";
 
 export class SessionService {
@@ -15,7 +15,7 @@ export class SessionService {
 
   static async getSession(sessionID: string): Promise<SessionDoc | null> {
     const sessionDoc = await adminDb.collection(SESSIONS_COLLECTION).doc(sessionID).get();
-    return getDocumentDataFromDocumentSnapshot<SessionDoc>(sessionDoc) || null;
+    return getIDAndDocumentDataFromDocumentSnapshot<SessionDoc>(sessionDoc) || null;
   }
 
   static async getSessionVersions(): Promise<SessionVersionDoc[]> {
@@ -25,6 +25,6 @@ export class SessionService {
 
   static async getSessionVersion(versionID: string): Promise<SessionVersionDoc | null> {
     const versionDoc = await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionID).get();
-    return getDocumentDataFromDocumentSnapshot<SessionVersionDoc>(versionDoc) || null;
+    return getIDAndDocumentDataFromDocumentSnapshot<SessionVersionDoc>(versionDoc) || null;
   }
 }
