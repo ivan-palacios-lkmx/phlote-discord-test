@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const version = await SessionService.getSessionVersion(sessionID, versionID);
+    const version = await SessionService.getSessionVersion(versionID);
 
     if (!version) {
       return NextResponse.json({ error: "Version not found" }, { status: 404 });
