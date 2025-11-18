@@ -8,3 +8,5 @@ export const SETTING_DOC_ID = "settings";
 export const SESSIONS_COLLECTION = "sessions";
 export const SESSION_VERSIONS_COLLECTION = "session-versions";
 export const OPEN_SEA_API_URL = "https://api.opensea.io/api/v1";
+export const PRIVATE_COLLECTION = "private";
+export const CONTACT_DOC_ID = "contact";

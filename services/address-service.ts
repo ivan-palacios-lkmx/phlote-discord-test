@@ -1,6 +1,18 @@
 import { adminDb } from "@/lib/firebase-admin";
-import { AddressDoc, AddressDocWithID, OpenSeaData } from "@/types/database";
-import { ADDRESSES_COLLECTION, OPEN_SEA_API_URL } from "@/utils/constants";
+import {
+  AddressDoc,
+  AddressDocWithID,
+  AddressDocWithPrivateData,
+  ContactDoc,
+  ContactDocWithID,
+  OpenSeaData,
+} from "@/types/database";
+import {
+  ADDRESSES_COLLECTION,
+  CONTACT_DOC_ID,
+  OPEN_SEA_API_URL,
+  PRIVATE_COLLECTION,
+} from "@/utils/constants";
 import {
   getDocumentDataFromQuerySnapshot,
   getIDAndDocumentDataFromDocumentSnapshot,
@@ -58,9 +70,23 @@ export class AddressService {
     return { addresses, totalCount };
   }
 
-  static async getSingleAddress(address: string): Promise<AddressDocWithID | null> {
-    const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).get();
-    return getIDAndDocumentDataFromDocumentSnapshot<AddressDocWithID>(addressDoc);
+  static async getSingleAddress(
+    address: string,
+    includePrivate: boolean,
+  ): Promise<AddressDocWithID | AddressDocWithPrivateData | null> {
+    if (includePrivate) {
+      const publicAddressDoc = await this.getPublicAddressData(address);
+      if (!publicAddressDoc) return null;
+      const privateAddressDoc = await this.getPrivateAddressData(address);
+      const fullAddressDoc: AddressDocWithPrivateData = {
+        ...publicAddressDoc,
+        private: privateAddressDoc,
+      };
+      return fullAddressDoc;
+    } else {
+      const addressDoc = await this.getPublicAddressData(address);
+      return addressDoc;
+    }
   }
 
   static async createAddress(
@@ -149,5 +175,20 @@ export class AddressService {
       console.error("Error fetching OpenSea address data:", error);
       throw error;
     }
+  }
+
+  static async getPrivateAddressData(address: string): Promise<ContactDocWithID | null> {
+    const privateAddressDoc = await adminDb
+      .collection(ADDRESSES_COLLECTION)
+      .doc(address)
+      .collection(PRIVATE_COLLECTION)
+      .doc(CONTACT_DOC_ID)
+      .get();
+    return getIDAndDocumentDataFromDocumentSnapshot<ContactDocWithID>(privateAddressDoc);
+  }
+
+  static async getPublicAddressData(address: string): Promise<AddressDocWithID | null> {
+    const publicAddressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).get();
+    return getIDAndDocumentDataFromDocumentSnapshot<AddressDocWithID>(publicAddressDoc);
   }
 }

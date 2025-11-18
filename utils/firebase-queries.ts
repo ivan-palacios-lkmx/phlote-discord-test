@@ -4,8 +4,9 @@ export async function getDocumentDataFromQuerySnapshot<T>(snapshot: QuerySnapsho
   return snapshot.docs.map((doc) => doc.data() as T);
 }
 
-export async function getIDAndDocumentDataFromDocumentSnapshot<T>(
+export function getIDAndDocumentDataFromDocumentSnapshot<T>(
   snapshot: DocumentSnapshot,
-): Promise<T | null> {
-  return { id: snapshot.id, ...snapshot.data() } as T | null;
+): (T & { id: string }) | null {
+  if (!snapshot.exists) return null;
+  return { id: snapshot.id, ...snapshot.data() } as T & { id: string };
 }

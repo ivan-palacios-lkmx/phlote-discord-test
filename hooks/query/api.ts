@@ -5,7 +5,7 @@ import {
   DiscordInteractionResponse,
   VersionStemsResponse,
 } from "@/types/api";
-import { SettingsDoc } from "@/types/database";
+import { ContactDoc, SettingsDoc } from "@/types/database";
 import { AddressDoc, AddressDocWithID, SessionDoc, SessionVersionDoc } from "@/types/database";
 
 import apiClient from "./axios";
@@ -160,6 +160,18 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error fetching address:", error);
+      throw error;
+    }
+  }
+
+  static async getPrivateAddressData(address: string): Promise<ContactDoc> {
+    try {
+      const response = await apiClient.get(
+        ENDPOINTS.GET_ADDRESS_INFO + "/" + address + ENDPOINTS.GET_PRIVATE_ADDRESS_DATA,
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching private address data:", error);
       throw error;
     }
   }

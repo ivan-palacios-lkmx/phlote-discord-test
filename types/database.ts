@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface WithID {
   id: string;
 }
@@ -57,7 +59,9 @@ export interface ZoraData {
 }
 
 export interface AddressDocWithID extends WithID, AddressDoc {}
-
+export interface AddressDocWithPrivateData extends AddressDocWithID {
+  private: ContactDocWithID | null;
+}
 /**
  * AlgoliaAddress extends AddressDoc with an objectID field.
  *
@@ -215,4 +219,35 @@ export interface SettingsDoc {
   availableSkills?: Array<{ name: string }>;
   /** @deprecated Use availableSessionTags instead */
   availableTags?: Record<string, string[]>;
+}
+
+/**
+ * The ContactDoc interface defines the schema for private contact information documents.
+ *
+ * This interface is stored in Firestore under `addresses/{address}/private/contact`.
+ * It is used to represent private contact information for addresses, including social media handles,
+ * email addresses, and Discord-related data. This information is only accessible to the address owner
+ * or when the address profile is marked as public.
+ */
+export interface ContactDoc {
+  /** Full name of the contact */
+  name?: string;
+  /** Email address */
+  email?: string;
+  /** Twitter/X username handle */
+  twitterHandle?: string;
+  /** Discord user ID */
+  discordUserID?: string;
+  /** Discord username handle */
+  discordHandle?: string;
+  /** Discord DM channel ID */
+  dmChannel?: string;
+  /** Date the contact information was last updated */
+  updated?: Timestamp | Date;
+}
+
+export interface ContactDocWithID extends WithID, ContactDoc {}
+
+export interface AddressWithPrivateData extends AddressDocWithID {
+  private?: ContactDocWithID;
 }
