@@ -26,12 +26,8 @@ export class SessionService {
     return getDocumentDataFromQuerySnapshot<SessionVersionDocWithID>(versionsSnapshot);
   }
 
-  static async getSessionVersion(
-    sessionID: string,
-    versionID: string,
-  ): Promise<SessionVersionDocWithID | undefined> {
-    const AllSessionVersions = await this.getSessionVersions(sessionID);
-    const specificVersion = AllSessionVersions.find((version) => version.id === versionID);
-    return specificVersion;
+  static async getSessionVersion(versionID: string): Promise<SessionVersionDocWithID | null> {
+    const versionDoc = await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionID).get();
+    return getIDAndDocumentDataFromDocumentSnapshot<SessionVersionDocWithID>(versionDoc) || null;
   }
 }
