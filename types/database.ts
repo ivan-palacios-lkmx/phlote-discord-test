@@ -109,7 +109,7 @@ export interface SessionDoc {
   downloadCount?: number;
   /** Date when the session was last active */
   activeLast?: Date | string;
-  /** Flag indicating if the session should be processed */
+  /** @deprecated Flag indicating if the session should be processed */
   shouldProcess?: boolean;
   /** Flag indicating if an image should be generated */
   shouldGenerateImage?: boolean;
@@ -179,7 +179,7 @@ export interface SessionVersionDoc {
   /** Total number of downloads for this version */
   downloadCount?: number;
 }
-
+export interface SessionVersionDocWithID extends WithID, SessionVersionDoc {}
 /**
  * AlgoliaSessionVersion extends SessionVersionDoc with an objectID field.
  *

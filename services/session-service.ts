@@ -1,5 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
-import { SessionDoc, SessionVersionDoc } from "@/types/database";
+import { SessionDoc, SessionVersionDoc, SessionVersionDocWithID } from "@/types/database";
 import { SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
@@ -18,16 +18,20 @@ export class SessionService {
     return getIDAndDocumentDataFromDocumentSnapshot<SessionDoc>(sessionDoc) || null;
   }
 
-  static async getSessionVersions(): Promise<SessionVersionDoc[]> {
-    const versionsSnapshot = await adminDb.collection(SESSION_VERSIONS_COLLECTION).get();
-    return getDocumentDataFromQuerySnapshot<SessionVersionDoc>(versionsSnapshot);
+  static async getSessionVersions(sessionID: string): Promise<SessionVersionDocWithID[]> {
+    const versionsSnapshot = await adminDb
+      .collection(SESSION_VERSIONS_COLLECTION)
+      .where("sessionID", "==", sessionID)
+      .get();
+    return getDocumentDataFromQuerySnapshot<SessionVersionDocWithID>(versionsSnapshot);
   }
 
   static async getSessionVersion(
     sessionID: string,
     versionID: string,
-  ): Promise<SessionVersionDoc | null> {
-    const versionDoc = await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionID).get();
-    return getIDAndDocumentDataFromDocumentSnapshot<SessionVersionDoc>(versionDoc) || null;
+  ): Promise<SessionVersionDocWithID | undefined> {
+    const AllSessionVersions = await this.getSessionVersions(sessionID);
+    const specificVersion = AllSessionVersions.find((version) => version.id === versionID);
+    return specificVersion;
   }
 }
