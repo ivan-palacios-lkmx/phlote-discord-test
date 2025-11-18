@@ -1,6 +1,7 @@
 import type { ImageField, LinkField, RichTextField } from "@prismicio/client";
 import { Timestamp } from "firebase/firestore";
 
+import type { ContactDocWithID } from "./database";
 import type { AddressDocWithID } from "./database";
 
 export type UnknownSlice = Record<string, unknown>;
@@ -207,4 +208,8 @@ export interface ClientAddressInfo extends AddressDocWithID {
   username?: string | null;
   avatar?: string | null;
   title?: string | null;
+}
+
+export interface ClientAddressInfoWithPrivate extends ClientAddressInfo {
+  private?: ContactDocWithID;
 }

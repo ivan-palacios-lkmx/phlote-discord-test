@@ -8,13 +8,11 @@ import SessionsLink from "@/components/OverlayProfile/SessionsLink/SessionsLink"
 import Vanity from "@/components/OverlayProfile/Vanity/Vanity";
 import CloseIcon from "@/components/svg/close.svg";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
-import { useClientDoc } from "@/hooks/useClientDoc";
-import { db } from "@/lib/firebase";
-import type { ClientAddressInfo } from "@/types/client";
+import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";
+import { ContactDocWithID } from "@/types/database";
 import { usePrivy } from "@privy-io/react-auth";
-import { doc, setDoc } from "firebase/firestore";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import "./OverlayProfile.scss";
 
@@ -24,10 +22,18 @@ export default function OverlayProfile() {
   const searchParams = useSearchParams();
   const modalRef = useRef<HTMLDivElement>(null);
   const [profileID, setProfileID] = useState<string | null>(null);
+  const { user } = usePrivy();
 
+  const isCurrentSesion =
+    profileID && profileID.toLowerCase() === user?.wallet?.address?.toLowerCase();
   const { data: addressInfo } = useGetAddressInfo(profileID!, !!profileID);
 
-  const { user } = usePrivy();
+  const shouldIncludePrivateInfo: boolean = !!(addressInfo?.isPublic || isCurrentSesion);
+
+  const { data: addressPrivateInfo } = useGetAddressPrivateInfo(
+    profileID!,
+    shouldIncludePrivateInfo,
+  );
 
   // Get profileID from query params
   useEffect(() => {
@@ -38,44 +44,6 @@ export default function OverlayProfile() {
       setProfileID(null);
     }
   }, [searchParams]);
-
-  // Member document reference
-  const memberRef = useMemo(
-    () => (profileID ? doc(db, `addresses/${profileID}`) : null),
-    [profileID],
-  );
-
-  const memberDoc = useClientDoc(memberRef) as ClientAddressInfo | null;
-
-  // Check if profile is public or user is member
-  const isPublic = useMemo(() => {
-    // TODO: Check if memberDoc has isPublic field and if userDoc is member
-    // For now, assume public if memberDoc exists
-    return !!memberDoc;
-  }, [memberDoc]);
-
-  // Profile contacts reference
-  const profileContactsRef = useMemo(() => {
-    if (!profileID || !isPublic) return null;
-    return doc(db, `addresses/${profileID}/private/contact`);
-  }, [profileID, isPublic]);
-
-  const contactDoc = useClientDoc(profileContactsRef);
-
-  // Check if address is current user
-  const isCurrentSesion =
-    profileID && profileID.toLowerCase() === user?.wallet?.address?.toLowerCase();
-
-  // Set contact handler
-  const setContact = async (contact: {
-    name: string;
-    discordHandle: string;
-    twitterHandle: string;
-    email: string;
-  }) => {
-    if (!profileContactsRef) return;
-    await setDoc(profileContactsRef, contact, { merge: true });
-  };
 
   // Handle modal close
   const onClose = useCallback(() => {
@@ -118,8 +86,6 @@ export default function OverlayProfile() {
     };
   }, [profileID, onClose]);
 
-  // Close if route changes (pathname changes) - but preserve query params
-  // We use a ref to track the previous pathname to avoid closing on initial mount
   const prevPathnameRef = useRef<string | null>(null);
   useEffect(() => {
     if (prevPathnameRef.current !== null && prevPathnameRef.current !== pathname && profileID) {
@@ -129,6 +95,9 @@ export default function OverlayProfile() {
     prevPathnameRef.current = pathname;
   }, [pathname, profileID]);
 
+  function setContact(contact: ContactDocWithID) {
+    if (!profileID) return;
+  }
   if (!profileID) return null;
 
   return (
@@ -142,12 +111,12 @@ export default function OverlayProfile() {
 
         {isCurrentSesion ? (
           <div className="current-user">
-            {contactDoc && (
+            {shouldIncludePrivateInfo && (
               <EditContact
-                name={contactDoc.name as string | undefined}
-                discordHandle={contactDoc.discordHandle as string | undefined}
-                twitterHandle={contactDoc.twitterHandle as string | undefined}
-                email={contactDoc.email as string | undefined}
+                name={addressPrivateInfo?.name as string | undefined}
+                discordHandle={addressPrivateInfo?.discordHandle as string | undefined}
+                twitterHandle={addressPrivateInfo?.twitterHandle as string | undefined}
+                email={addressPrivateInfo?.email as string | undefined}
                 onSubmit={setContact}
               />
             )}
@@ -155,11 +124,11 @@ export default function OverlayProfile() {
           </div>
         ) : (
           <div className="other-user">
-            {isPublic && contactDoc && (
+            {shouldIncludePrivateInfo && (
               <Contact
-                discordHandle={contactDoc.discordHandle as string | undefined}
-                twitterHandle={contactDoc.twitterHandle as string | undefined}
-                email={contactDoc.email as string | undefined}
+                discordHandle={addressPrivateInfo?.discordHandle as string | undefined}
+                twitterHandle={addressPrivateInfo?.twitterHandle as string | undefined}
+                email={addressPrivateInfo?.email as string | undefined}
               />
             )}
             <Created address={profileID} />

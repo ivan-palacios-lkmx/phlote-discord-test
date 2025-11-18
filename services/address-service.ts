@@ -191,4 +191,17 @@ export class AddressService {
     const publicAddressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).get();
     return getIDAndDocumentDataFromDocumentSnapshot<AddressDocWithID>(publicAddressDoc);
   }
+
+  static async updatePrivateAddressData(
+    address: string,
+    contact: ContactDocWithID,
+  ): Promise<WriteResult> {
+    const privateAddressDoc = await adminDb
+      .collection(ADDRESSES_COLLECTION)
+      .doc(address)
+      .collection(PRIVATE_COLLECTION)
+      .doc(CONTACT_DOC_ID)
+      .set(contact);
+    return privateAddressDoc;
+  }
 }
