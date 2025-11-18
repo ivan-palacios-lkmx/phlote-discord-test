@@ -1,5 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
-import { SessionDoc, SessionVersionDoc, SessionVersionDocWithID } from "@/types/database";
+import { SessionDoc, SessionVersionDocWithID } from "@/types/database";
 import { SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
