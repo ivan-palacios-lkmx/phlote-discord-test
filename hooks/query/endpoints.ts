@@ -1,3 +1,4 @@
+// TODO: update endpoints to remove the duplicated endpoints
 export const ENDPOINTS = {
   GET_ACCOUNT: "/account",
   GET_VERSION_STEMS: "/version-stems",
@@ -11,5 +12,6 @@ export const ENDPOINTS = {
   GET_ADDRESSES_INFO: "/address",
   GET_ADDRESS_INFO: "/address",
   GET_PRIVATE_ADDRESS_DATA: "/private",
+  UPDATE_PRIVATE_ADDRESS_DATA: "/private",
   AUTH: "/auth",
 };
