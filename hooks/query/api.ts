@@ -125,9 +125,9 @@ class Api {
     }
   }
 
-  static async getSessionVersions(): Promise<SessionVersionDoc[]> {
+  static async getSessionVersions(sessionID: string): Promise<SessionVersionDoc[]> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSIONS);
+      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSIONS + "/" + sessionID);
       return response.data;
     } catch (error) {
       console.error("Error fetching session versions:", error);
@@ -135,9 +135,14 @@ class Api {
     }
   }
 
-  static async getSessionVersion(versionID: string): Promise<SessionVersionDoc> {
+  static async getSessionVersion(
+    sessionID: string,
+    versionID: string,
+  ): Promise<SessionVersionDoc | null> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSION + "/" + versionID);
+      const response = await apiClient.get(
+        ENDPOINTS.GET_SESSION_VERSION + "/" + sessionID + "/" + versionID,
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching session version:", error);
