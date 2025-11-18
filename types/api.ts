@@ -34,3 +34,5 @@ export interface ImageColorsResponse {
 export interface AuthResponse {
   address: AddressDoc;
 }
+
+export type AudioAction = "play" | "download";

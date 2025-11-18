@@ -12,3 +12,5 @@ export const contactSchema = z.object({
   discordUserID: z.string().optional(),
   dmChannel: z.string().optional(),
 });
+
+export const audioActionSchema = z.enum(["play", "download"]);

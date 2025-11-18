@@ -251,3 +251,20 @@ export interface ContactDocWithID extends WithID, ContactDoc {}
 export interface AddressWithPrivateData extends AddressDocWithID {
   private?: ContactDocWithID;
 }
+
+export interface AudioDoc {
+  /** Date the audio was created */
+  created: Date | Timestamp;
+  /** Date the audio was last updated */
+  updated?: Date | Timestamp;
+  /** Source of the audio */
+  source: string;
+  /** URL of the waveform data */
+  waveData: string;
+  /** URL of the waveform trace */
+  waveTrace: string;
+  /** Number of samples in the audio */
+  sampleCount: number;
+}
+
+export interface AudioDocWithID extends WithID, AudioDoc {}
