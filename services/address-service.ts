@@ -3,7 +3,6 @@ import {
   AddressDoc,
   AddressDocWithID,
   AddressDocWithPrivateData,
-  ContactDoc,
   ContactDocWithID,
   OpenSeaData,
 } from "@/types/database";

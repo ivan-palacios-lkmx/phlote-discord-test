@@ -1,18 +1,41 @@
 import { z } from "zod";
 
-export const addressSchema = z.string().regex(/^0x[a-fA-F0-9]{40}$/);
+const address = z.string().regex(/^0x[a-fA-F0-9]{40}$/);
+export const addressSchema = address;
 
-export const visibilitySchema = z.enum(["public", "private"]).optional();
+const visibility = z.enum(["public", "private"]).optional();
+export const visibilitySchema = visibility;
+
+const name = z.string().optional();
+const email = z.string().email().optional();
+const twitterHandle = z.string().optional();
+const discordHandle = z.string().optional();
+const discordUserID = z.string().optional();
+const dmChannel = z.string().optional();
 
 export const contactSchema = z.object({
-  name: z.string().optional(),
-  email: z.string().email().optional(),
-  twitterHandle: z.string().optional(),
-  discordHandle: z.string().optional(),
-  discordUserID: z.string().optional(),
-  dmChannel: z.string().optional(),
+  name,
+  email,
+  twitterHandle,
+  discordHandle,
+  discordUserID,
+  dmChannel,
 });
 
-export const audioActionSchema = z.enum(["play", "download"]);
+const audioAction = z.enum(["play", "download"]);
+export const audioActionSchema = audioAction;
 
-export const activityTypeSchema = z.enum(["PLAY", "DOWNLOAD"]);
+const activityType = z.enum(["PLAY", "DOWNLOAD"]);
+export const activityTypeSchema = activityType;
+
+const isAddressMember = z.boolean();
+export const isAddressMemberSchema = isAddressMember;
+
+const addressAvatar = z.string().optional();
+export const addressAvatarSchema = addressAvatar;
+
+export const createAddressSchema = z.object({
+  address,
+  isAddressMember,
+  addressAvatar,
+});
