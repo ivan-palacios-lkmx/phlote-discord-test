@@ -1,15 +1,15 @@
 import { SessionService } from "@/services/session-service";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { sessionId: string } }) {
   try {
-    const id = params.id;
+    const sessionId = params.sessionId;
 
-    if (!id) {
+    if (!sessionId) {
       return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
     }
 
-    const session = await SessionService.getSession(id);
+    const session = await SessionService.getSession(sessionId);
 
     if (!session) {
       return NextResponse.json({ error: "Session not found" }, { status: 404 });

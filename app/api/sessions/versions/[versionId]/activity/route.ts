@@ -2,9 +2,13 @@ import { SessionService } from "@/services/session-service";
 import { activityTypeSchema, addressSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { versionId: string } }) {
   try {
-    const versionID = params.id;
+    const versionID = params.versionId;
+
+    if (!versionID) {
+      return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
+    }
 
     const activity = await SessionService.getVersionActivity(versionID);
 
@@ -15,17 +19,20 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { versionId: string; sessionId: string } },
+) {
   try {
-    const versionID = params.id;
-    const sessionID = params.id;
-
-    if (!sessionID) {
-      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
-    }
+    const versionID = params.versionId;
+    const sessionID = params.sessionId;
 
     if (!versionID) {
       return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
+    }
+
+    if (!sessionID) {
+      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
     }
 
     const body = await request.json();

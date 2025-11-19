@@ -1,10 +1,15 @@
 import { SessionService } from "@/services/session-service";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { versionId: string; sessionId: string } },
+) {
   try {
-    const sessionID = request.nextUrl.pathname.split("/")[2];
-    const versionID = request.nextUrl.pathname.split("/").pop();
+    const sessionID = params.sessionId;
+
+    const versionID = params.versionId;
+
     if (!sessionID || !versionID) {
       return NextResponse.json(
         { error: "Session ID and version ID are required" },

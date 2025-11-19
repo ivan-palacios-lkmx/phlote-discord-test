@@ -4,9 +4,21 @@ import { AudioAction } from "@/types/api";
 import { audioActionSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { versionId: string; sessionId: string } },
+) {
   try {
-    const versionID = params.id;
+    const versionID = params.versionId;
+    const sessionID = params.sessionId;
+
+    if (!versionID || !sessionID) {
+      return NextResponse.json(
+        { error: "Version ID and session ID are required" },
+        { status: 400 },
+      );
+    }
+
     const action = request.nextUrl.searchParams.get("action");
 
     if (!action || !audioActionSchema.safeParse(action).success) {
