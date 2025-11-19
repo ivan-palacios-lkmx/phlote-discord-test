@@ -8,7 +8,7 @@ import {
   getIDAndDocumentDataFromDocumentSnapshot,
 } from "@/utils/firebase-queries";
 import { formatProjectId } from "@/utils/functions";
-import { DocumentReference } from "firebase-admin/firestore";
+import { DocumentReference, Transaction } from "firebase-admin/firestore";
 import ShortUniqueId from "short-unique-id";
 
 export class SessionService {
@@ -81,32 +81,49 @@ export class SessionService {
     sessionDetails: SessionDetails,
   ): Promise<{ sessionId: string; versionId: string }> {
     const sessionId = await this.createProjectId("session");
-
     const versionId = await this.createProjectId("version");
 
     await adminDb.runTransaction(async (transaction) => {
-      const sessionRef = adminDb.collection(SESSIONS_COLLECTION).doc(sessionId);
-      transaction.set(sessionRef, {
-        created: new Date(),
-        creator: sessionDetails.creator,
-        name: sessionDetails.name,
-      });
-      const versionRef = adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
-      transaction.set(versionRef, {
-        created: new Date(),
-        creator: sessionDetails.creator,
-        sessionID: sessionId,
-        bounce: sessionDetails.bounce,
-        stems: sessionDetails.stems,
-        notes: sessionDetails.notes,
-        tags: sessionDetails.tags,
-        bpm: sessionDetails.bpm,
-      });
+      this.createSessionDocumentForTransaction(transaction, sessionId, sessionDetails);
+      this.createVersionDocumentForTransaction(transaction, versionId, sessionId, sessionDetails);
     });
+
     return {
       sessionId,
       versionId,
     };
+  }
+
+  private static createSessionDocumentForTransaction(
+    transaction: Transaction,
+    sessionId: string,
+    sessionDetails: SessionDetails,
+  ): void {
+    const sessionRef = adminDb.collection(SESSIONS_COLLECTION).doc(sessionId);
+    transaction.set(sessionRef, {
+      created: new Date(),
+      creator: sessionDetails.creator,
+      name: sessionDetails.name,
+    });
+  }
+
+  private static createVersionDocumentForTransaction(
+    transaction: Transaction,
+    versionId: string,
+    sessionId: string,
+    sessionDetails: SessionDetails,
+  ): void {
+    const versionRef = adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
+    transaction.set(versionRef, {
+      created: new Date(),
+      creator: sessionDetails.creator,
+      sessionID: sessionId,
+      bounce: sessionDetails.bounce,
+      stems: sessionDetails.stems,
+      notes: sessionDetails.notes,
+      tags: sessionDetails.tags,
+      bpm: sessionDetails.bpm,
+    });
   }
 
   static async createProjectId(projectType: "session" | "version"): Promise<string> {
