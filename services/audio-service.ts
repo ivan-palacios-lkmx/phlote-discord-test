@@ -56,15 +56,22 @@ export class AudioService {
     return "";
   }
 
-  static async uploadAudioToStorageAndSetProcessingStatus(audioFile: File): Promise<boolean> {
+  static async uploadAudioToStorageAndSetProcessingStatus(
+    audioFile: File,
+  ): Promise<{ tmpName: string; status: "processing" | "error" }> {
     try {
-      const audioPath = this.getAudioStoragePath(audioFile);
+      const audioFilename = this.getAudioStorageFileName(audioFile);
+      const audioPath = this.buildAudioPath(audioFilename);
       const audioBuffer = await this.convertAudioToBuffer(audioFile);
       const success = await this.uploadAudioToStorage(audioFile, audioPath, audioBuffer);
-      return success;
+
+      // This is not awaited because we want to return the status immediately and process takes time
+      this.processAudio(audioPath);
+
+      return { tmpName: audioFilename, status: success ? "processing" : "error" };
     } catch (error) {
       console.error("Error processing version audio:", error);
-      return false;
+      return { tmpName: "", status: "error" };
     }
   }
 
@@ -84,11 +91,11 @@ export class AudioService {
     }
   }
 
-  static getAudioStoragePath(audioFile: File): string {
+  static getAudioStorageFileName(audioFile: File): string {
     const seed = this.generateRandomSeed();
     const milliseconds = getCurrentTimestampInMilliseconds();
     const safeFileName = this.getSafeFileName(audioFile.name);
-    return this.buildAudioPath(seed, safeFileName, milliseconds);
+    return `${seed}-${safeFileName}-${milliseconds}`;
   }
 
   private static generateRandomSeed(): string {
@@ -101,12 +108,19 @@ export class AudioService {
     return kebabCase(startCasedName);
   }
 
-  private static buildAudioPath(seed: string, safeName: string, milliseconds: number): string {
-    return `tmp/${seed}-${safeName}-${milliseconds}`;
+  private static buildAudioPath(audioFileName: string): string {
+    return `tmp/${audioFileName}`;
   }
 
   static async convertAudioToBuffer(audioFile: File): Promise<Buffer> {
     const audioBuffer = await audioFile.arrayBuffer();
     return Buffer.from(audioBuffer);
+  }
+
+  static async processAudio(audioPath: string): Promise<void> {
+    try {
+    } catch (error) {
+      console.error("Error processing audio:", error);
+    }
   }
 }
