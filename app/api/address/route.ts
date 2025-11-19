@@ -1,5 +1,6 @@
 import { AddressService } from "@/services/address-service";
-import { createAddressSchema, visibilitySchema } from "@/utils/zod-schemas";
+import { RoleService } from "@/services/role-service";
+import { addressSchema, visibilitySchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -23,11 +24,15 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { address, isAddressMember, addressAvatar } = body;
+    const { address } = body;
 
-    if (!createAddressSchema.safeParse(body).success) {
+    if (!addressSchema.safeParse(address).success) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
+
+    const isAddressMember = await RoleService.isMember(address);
+
+    const addressAvatar = await AddressService.getAvatarFromExternalSources(address);
 
     const newAddress = await AddressService.createAddress(address, isAddressMember, addressAvatar);
 
@@ -35,7 +40,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to create address" }, { status: 500 });
     }
 
-    return NextResponse.json(newAddress, { status: 200 });
+    return NextResponse.json({ address: newAddress }, { status: 200 });
   } catch (error) {
     console.error("Error creating address:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
