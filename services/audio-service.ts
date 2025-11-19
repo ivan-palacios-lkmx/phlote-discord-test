@@ -79,11 +79,23 @@ export class AudioService {
   }
 
   static getAudioPath(audioFile: File): string {
-    const seed = Math.random().toString(36).slice(2);
+    const seed = this.generateRandomSeed();
     const milliseconds = getCurrentTimestampInMilliseconds();
-    const prettyName = _startCase(String(audioFile.name).split(".")[0]);
-    const safeName = kebabCase(prettyName);
-    const path = `tmp/${seed}-${safeName}-${milliseconds}`;
-    return path;
+    const safeFileName = this.getSafeFileName(audioFile.name);
+    return this.buildAudioPath(seed, safeFileName, milliseconds);
+  }
+
+  private static generateRandomSeed(): string {
+    return Math.random().toString(36).slice(2);
+  }
+
+  private static getSafeFileName(fileName: string): string {
+    const nameWithoutExtension = String(fileName).split(".")[0];
+    const titleCaseName = _startCase(nameWithoutExtension);
+    return kebabCase(titleCaseName);
+  }
+
+  private static buildAudioPath(seed: string, safeName: string, milliseconds: number): string {
+    return `tmp/${seed}-${safeName}-${milliseconds}`;
   }
 }
