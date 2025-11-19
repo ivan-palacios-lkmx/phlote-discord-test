@@ -283,3 +283,24 @@ export interface ActivityDoc {
 }
 
 export interface ActivityDocWithID extends WithID, ActivityDoc {}
+
+export interface ApplicationDoc {
+  /** Date the application was created */
+  created: Date | string;
+  /** First name of the applicant */
+  firstName: string;
+  /** Last name of the applicant */
+  lastName: string;
+  /** Email address of the applicant */
+  email: string;
+  /** City of the applicant */
+  city: string;
+  /** Ethereum address of the applicant */
+  ethAddress: string;
+  /** Tracks of the applicant */
+  tracks: Array<{ name: string; id: string }>;
+  /** Additional information of the applicant */
+  info?: string;
+  /** Link to the applicant's portfolio/work */
+  workLink?: string;
+}
