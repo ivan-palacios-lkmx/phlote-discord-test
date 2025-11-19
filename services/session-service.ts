@@ -154,7 +154,7 @@ export class SessionService {
   }
 
   // In the legacy app, the session name was the only field that could be updated.
-  static async updateSession(sessionId: string, name: string): Promise<{ success: boolean }> {
+  static async updateSessionName(sessionId: string, name: string): Promise<{ success: boolean }> {
     try {
       const sessionRef = await this.getSessionReference(sessionId);
       await sessionRef.update({ name });

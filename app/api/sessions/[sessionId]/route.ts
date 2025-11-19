@@ -32,7 +32,7 @@ export async function PATCH(request: Request, { params }: { params: { sessionId:
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    const { success } = await SessionService.updateSession(sessionId, name);
+    const { success } = await SessionService.updateSessionName(sessionId, name);
 
     if (!success) {
       return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
