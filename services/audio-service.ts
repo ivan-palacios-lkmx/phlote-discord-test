@@ -56,29 +56,35 @@ export class AudioService {
     return "";
   }
 
-  static async uploadAudioToStorageAndSetProcessingStatus(
-    audioFile: File,
-  ): Promise<{ success: boolean }> {
+  static async uploadAudioToStorageAndSetProcessingStatus(audioFile: File): Promise<boolean> {
     try {
-      const audioPath = this.getAudioPath(audioFile);
-      const success = await this.uploadAudioToStorage(audioFile);
-      return { success: true };
+      const audioPath = this.getAudioStoragePath(audioFile);
+      const audioBuffer = await this.convertAudioToBuffer(audioFile);
+      const success = await this.uploadAudioToStorage(audioFile, audioPath, audioBuffer);
+      return success;
     } catch (error) {
       console.error("Error processing version audio:", error);
-      return { success: false };
+      return false;
     }
   }
 
-  static async uploadAudioToStorage(audioFile: File): Promise<{ success: boolean }> {
+  static async uploadAudioToStorage(
+    audioFile: File,
+    audioPath: string,
+    audioBuffer: Buffer,
+  ): Promise<boolean> {
     try {
-      return { success: true };
+      const bucket = this.getBucket();
+      const file = bucket.file(audioPath);
+      await file.save(audioBuffer);
+      return true;
     } catch (error) {
       console.error("Error uploading audio to storage:", error);
-      return { success: false };
+      return false;
     }
   }
 
-  static getAudioPath(audioFile: File): string {
+  static getAudioStoragePath(audioFile: File): string {
     const seed = this.generateRandomSeed();
     const milliseconds = getCurrentTimestampInMilliseconds();
     const safeFileName = this.getSafeFileName(audioFile.name);
@@ -97,5 +103,10 @@ export class AudioService {
 
   private static buildAudioPath(seed: string, safeName: string, milliseconds: number): string {
     return `tmp/${seed}-${safeName}-${milliseconds}`;
+  }
+
+  static async convertAudioToBuffer(audioFile: File): Promise<Buffer> {
+    const audioBuffer = await audioFile.arrayBuffer();
+    return Buffer.from(audioBuffer);
   }
 }
