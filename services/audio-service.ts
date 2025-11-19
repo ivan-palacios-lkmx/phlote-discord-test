@@ -60,19 +60,30 @@ export class AudioService {
     audioFile: File,
   ): Promise<{ tmpName: string; status: "processing" | "error" }> {
     try {
-      const audioFilename = this.getAudioStorageFileName(audioFile);
-      const audioPath = this.buildAudioPath(audioFilename);
-      const audioBuffer = await this.convertAudioToBuffer(audioFile);
-      await this.uploadAudioToStorage(audioPath, audioBuffer);
+      const { audioFilename, audioPath, audioBuffer } = await this.prepareAudioForUpload(audioFile);
 
-      // This is not awaited because we want to return the status immediately and process takes time
-      this.processAudio(audioPath);
+      await this.uploadAudioToStorage(audioPath, audioBuffer);
+      this.startAudioProcessing(audioPath);
 
       return { tmpName: audioFilename, status: "processing" };
     } catch (error) {
       console.error("Error processing version audio:", error);
       return { tmpName: "", status: "error" };
     }
+  }
+
+  private static async prepareAudioForUpload(
+    audioFile: File,
+  ): Promise<{ audioFilename: string; audioPath: string; audioBuffer: Buffer }> {
+    const audioFilename = this.getAudioStorageFileName(audioFile);
+    const audioPath = this.buildAudioPath(audioFilename);
+    const audioBuffer = await this.convertAudioToBuffer(audioFile);
+    return { audioFilename, audioPath, audioBuffer };
+  }
+
+  private static startAudioProcessing(audioPath: string): void {
+    // This is not awaited because we want to return the status immediately and process takes time
+    this.processAudio(audioPath);
   }
 
   static async uploadAudioToStorage(audioPath: string, audioBuffer: Buffer): Promise<void> {
