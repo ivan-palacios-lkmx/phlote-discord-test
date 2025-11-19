@@ -1,10 +1,4 @@
-import {
-  ApplicationTracksResponse,
-  AuthResponse,
-  DiscordInteractionRequest,
-  DiscordInteractionResponse,
-  VersionStemsResponse,
-} from "@/types/api";
+import { AudioAction, AuthResponse } from "@/types/api";
 import { ContactDocWithID, SettingsDoc } from "@/types/database";
 import { AddressDoc, AddressDocWithID, SessionDoc, SessionVersionDoc } from "@/types/database";
 import { WriteResult } from "firebase-admin/firestore";
@@ -19,64 +13,6 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error authenticating:", error);
-      throw error;
-    }
-  }
-
-  static async getAccount(address: string) {
-    try {
-      const response = await apiClient.get(ENDPOINTS.GET_ACCOUNT, {
-        params: {
-          address,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching account:", error);
-      throw error;
-    }
-  }
-
-  static async getVersionStems(
-    versionID: string,
-    action: string = "play",
-  ): Promise<VersionStemsResponse> {
-    try {
-      const response = await apiClient.get(ENDPOINTS.GET_VERSION_STEMS, {
-        params: {
-          versionID,
-          action,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching version stems:", error);
-      throw error;
-    }
-  }
-
-  static async getApplicationTracks(applicationID: string): Promise<ApplicationTracksResponse> {
-    try {
-      const response = await apiClient.get(ENDPOINTS.GET_APPLICATION_TRACKS, {
-        params: {
-          applicationID,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching application tracks:", error);
-      throw error;
-    }
-  }
-
-  static async handleDiscordInteraction(
-    data: DiscordInteractionRequest,
-  ): Promise<DiscordInteractionResponse> {
-    try {
-      const response = await apiClient.post(ENDPOINTS.HANDLE_DISCORD_INTERACTION, data);
-      return response.data;
-    } catch (error) {
-      console.error("Error handling discord interaction:", error);
       throw error;
     }
   }
@@ -107,7 +43,7 @@ class Api {
 
   static async getSessions(): Promise<SessionDoc[]> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_SESSIONS);
+      const response = await apiClient.get(ENDPOINTS.SESSIONS);
       return response.data;
     } catch (error) {
       console.error("Error fetching sessions:", error);
@@ -117,7 +53,7 @@ class Api {
 
   static async getSession(sessionID: string): Promise<SessionDoc> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_SESSION + "/" + sessionID);
+      const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID);
       return response.data;
     } catch (error) {
       console.error("Error fetching session:", error);
@@ -127,7 +63,9 @@ class Api {
 
   static async getSessionVersions(sessionID: string): Promise<SessionVersionDoc[]> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_SESSION_VERSIONS + "/" + sessionID);
+      const response = await apiClient.get(
+        ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + sessionID,
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching session versions:", error);
@@ -141,7 +79,7 @@ class Api {
   ): Promise<SessionVersionDoc | null> {
     try {
       const response = await apiClient.get(
-        ENDPOINTS.GET_SESSION_VERSION + "/" + sessionID + "/" + versionID,
+        ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + versionID,
       );
       return response.data;
     } catch (error) {
@@ -152,7 +90,7 @@ class Api {
 
   static async getAddressesInfo(): Promise<AddressDoc[]> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_ADDRESSES_INFO);
+      const response = await apiClient.get(ENDPOINTS.ADDRESS);
       return response.data;
     } catch (error) {
       console.error("Error fetching addresses:", error);
@@ -165,7 +103,7 @@ class Api {
     includePrivate: boolean = false,
   ): Promise<AddressDocWithID> {
     try {
-      const response = await apiClient.get(ENDPOINTS.GET_ADDRESS_INFO + "/" + address, {
+      const response = await apiClient.get(ENDPOINTS.ADDRESS + "/" + address, {
         params: {
           include: includePrivate ? "private" : undefined,
         },
@@ -180,7 +118,7 @@ class Api {
   static async getAddressPrivateInfo(address: string): Promise<ContactDocWithID> {
     try {
       const response = await apiClient.get(
-        ENDPOINTS.GET_ADDRESS_INFO + "/" + address + ENDPOINTS.GET_PRIVATE_ADDRESS_DATA,
+        ENDPOINTS.ADDRESS + "/" + address + ENDPOINTS.PRIVATE_ADDRESS_INFO,
       );
       return response.data;
     } catch (error) {
@@ -195,12 +133,26 @@ class Api {
   ): Promise<WriteResult> {
     try {
       const response = await apiClient.put(
-        ENDPOINTS.UPDATE_PRIVATE_ADDRESS_DATA + "/" + address,
+        ENDPOINTS.ADDRESS + ENDPOINTS.PRIVATE_ADDRESS_INFO + "/" + address,
         contact,
       );
       return response.data;
     } catch (error) {
       console.error("Error updating private address data:", error);
+      throw error;
+    }
+  }
+
+  static async getVersionAudio(versionID: string, action: AudioAction): Promise<string> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.VERSION_AUDIO + "/" + versionID, {
+        params: {
+          action,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching session version audio:", error);
       throw error;
     }
   }
