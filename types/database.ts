@@ -40,6 +40,8 @@ export interface AddressDoc {
   openSea?: OpenSeaData;
   /** Zora profile data */
   zora?: ZoraData;
+  /** Title of the address */
+  title?: string;
   /** Number of errors that occurred for this address */
   errorCount?: number;
   /** Error details or a boolean flag for error presence */

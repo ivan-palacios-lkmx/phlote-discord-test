@@ -227,4 +227,28 @@ export class AddressService {
     }
     return addressDoc.ref.set(addressDoc.data()!);
   }
+
+  static async updateAddressTitle(address: string, title: string): Promise<WriteResult | null> {
+    const addressDoc = await this.getRawAddressSnapshot(address);
+    if (!addressDoc) return null;
+    addressDoc.data()!.title = title;
+    return addressDoc.ref.set(addressDoc.data()!);
+  }
+
+  static async updateAddressTags(address: string, tags: string[]): Promise<WriteResult | null> {
+    const addressDoc = await this.getRawAddressSnapshot(address);
+    if (!addressDoc) return null;
+    addressDoc.data()!.tags = tags;
+    return addressDoc.ref.set(addressDoc.data()!);
+  }
+
+  static async updateAddressVisibility(
+    address: string,
+    visibility: "public" | "private",
+  ): Promise<WriteResult | null> {
+    const addressDoc = await this.getRawAddressSnapshot(address);
+    if (!addressDoc) return null;
+    addressDoc.data()!.isPublic = visibility === "public";
+    return addressDoc.ref.set(addressDoc.data()!);
+  }
 }

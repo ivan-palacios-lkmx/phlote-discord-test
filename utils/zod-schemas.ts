@@ -42,3 +42,9 @@ export const createAddressSchema = z.object({
 
 const role = z.enum(["admin", "creator", "member"]);
 export const roleSchema = role;
+
+const title = z.string().optional();
+export const titleSchema = title;
+
+const tags = z.array(z.string()).optional();
+export const tagsSchema = tags;
