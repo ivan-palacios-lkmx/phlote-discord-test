@@ -61,11 +61,14 @@ export async function POST(request: NextRequest, { params }: { params: { version
       return NextResponse.json({ error: "Invalid audio file type" }, { status: 400 });
     }
 
-    const { success } = await AudioService.uploadAudioToStorageAndSetProcessingStatus(audioFile);
+    const { tmpName, status } =
+      await AudioService.uploadAudioToStorageAndSetProcessingStatus(audioFile);
 
-    if (!success) {
+    if (status === "error") {
       return NextResponse.json({ error: "Failed to process audio" }, { status: 500 });
     }
+
+    return NextResponse.json({ tmpName, status }, { status: 200 });
   } catch (error) {
     console.error("Error processing audio:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
