@@ -17,7 +17,7 @@ import {
   getIDAndDocumentDataFromDocumentSnapshot,
 } from "@/utils/firebase-queries";
 import { InfuraProvider, Provider } from "ethers";
-import { WriteResult } from "firebase-admin/firestore";
+import { DocumentSnapshot, WriteResult } from "firebase-admin/firestore";
 
 export class AddressService {
   static async getAddresses(visibility?: "public" | "private"): Promise<AddressDoc[]> {
@@ -202,5 +202,29 @@ export class AddressService {
       .doc(CONTACT_DOC_ID)
       .set(contact);
     return privateAddressDoc;
+  }
+
+  static async getRawAddressSnapshot(
+    address: string,
+  ): Promise<DocumentSnapshot<AddressDoc> | null> {
+    const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).get();
+    if (!addressDoc.exists) return null;
+    return addressDoc;
+  }
+
+  static async updateAddressRole(
+    address: string,
+    role: "admin" | "creator" | "member",
+  ): Promise<WriteResult | null> {
+    const addressDoc = await this.getRawAddressSnapshot(address);
+    if (!addressDoc) return null;
+    if (role === "admin") {
+      addressDoc.data()!.isAdmin = true;
+    } else if (role === "creator") {
+      addressDoc.data()!.isCreator = true;
+    } else if (role === "member") {
+      addressDoc.data()!.isMember = true;
+    }
+    return addressDoc.ref.set(addressDoc.data()!);
   }
 }

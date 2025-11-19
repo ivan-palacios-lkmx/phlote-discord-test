@@ -39,3 +39,6 @@ export const createAddressSchema = z.object({
   isAddressMember,
   addressAvatar,
 });
+
+const role = z.enum(["admin", "creator", "member"]);
+export const roleSchema = role;
