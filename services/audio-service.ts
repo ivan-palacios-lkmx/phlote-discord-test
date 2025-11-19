@@ -63,6 +63,7 @@ export class AudioService {
       const { audioFilename, audioPath, audioBuffer } = await this.prepareAudioForUpload(audioFile);
 
       await this.uploadAudioToStorage(audioPath, audioBuffer);
+      // We only start the audio process and we do not await it because we want to return the status immediately
       this.startAudioProcessing(audioPath);
 
       return { tmpName: audioFilename, status: "processing" };
