@@ -18,6 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     return NextResponse.json(session, { status: 200 });
   } catch (error) {
     console.error("Error getting session:", error);
+
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
