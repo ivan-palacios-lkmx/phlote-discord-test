@@ -153,6 +153,10 @@ export class SessionService {
     return adminDb.collection(SESSIONS_COLLECTION).doc(sessionId);
   }
 
+  static async getVersionReference(versionId: string): Promise<DocumentReference> {
+    return adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
+  }
+
   // In the legacy app, the session name was the only field that could be updated.
   static async updateSessionName(sessionId: string, name: string): Promise<{ success: boolean }> {
     try {
@@ -161,6 +165,28 @@ export class SessionService {
       return { success: true };
     } catch (error) {
       console.error("Error updating session:", error);
+      return { success: false };
+    }
+  }
+
+  static async updateVersionTags(versionId: string, tags: string[]): Promise<{ success: boolean }> {
+    try {
+      const versionRef = await this.getVersionReference(versionId);
+      await versionRef.update({ tags });
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating version tags:", error);
+      return { success: false };
+    }
+  }
+
+  static async updateVersionNotes(versionId: string, notes: string): Promise<{ success: boolean }> {
+    try {
+      const versionRef = await this.getVersionReference(versionId);
+      await versionRef.update({ notes });
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating version notes:", error);
       return { success: false };
     }
   }
