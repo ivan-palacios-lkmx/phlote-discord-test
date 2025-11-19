@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const version = await SessionService.getSessionVersion(sessionID, versionID);
+    const version = await SessionService.getSessionVersion(sessionID);
 
     if (!version?.bounce) {
       return NextResponse.json({ error: "Version bounce not found" }, { status: 404 });
