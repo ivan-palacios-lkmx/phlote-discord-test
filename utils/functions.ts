@@ -182,3 +182,7 @@ export function transformToShortAddress(address: string): string {
 export function formatProjectId(projectId: ShortUniqueId): string {
   return projectId.slice(0, 3) + "-" + projectId.slice(3, 7) + "-" + projectId.slice(7, 10);
 }
+
+export function getCurrentTimestampInMilliseconds(): number {
+  return Date.now();
+}

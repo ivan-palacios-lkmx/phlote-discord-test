@@ -2,6 +2,9 @@ import firebase from "@/lib/firebase-admin";
 import { AudioAction } from "@/types/api";
 import { SessionVersionDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
+import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
+import kebabCase from "lodash/kebabCase";
+import _startCase from "lodash/startCase";
 
 export class AudioService {
   static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
@@ -51,5 +54,36 @@ export class AudioService {
       return this.getAudioSignedUrlByHash(bounceHash, "loseless");
     }
     return "";
+  }
+
+  static async uploadAudioToStorageAndSetProcessingStatus(
+    audioFile: File,
+  ): Promise<{ success: boolean }> {
+    try {
+      const audioPath = this.getAudioPath(audioFile);
+      const success = await this.uploadAudioToStorage(audioFile);
+      return { success: true };
+    } catch (error) {
+      console.error("Error processing version audio:", error);
+      return { success: false };
+    }
+  }
+
+  static async uploadAudioToStorage(audioFile: File): Promise<{ success: boolean }> {
+    try {
+      return { success: true };
+    } catch (error) {
+      console.error("Error uploading audio to storage:", error);
+      return { success: false };
+    }
+  }
+
+  static getAudioPath(audioFile: File): string {
+    const seed = Math.random().toString(36).slice(2);
+    const milliseconds = getCurrentTimestampInMilliseconds();
+    const prettyName = _startCase(String(audioFile.name).split(".")[0]);
+    const safeName = kebabCase(prettyName);
+    const path = `tmp/${seed}-${safeName}-${milliseconds}`;
+    return path;
   }
 }
