@@ -4,9 +4,9 @@ import { AudioAction } from "@/types/api";
 import { audioActionSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const versionID = request.nextUrl.pathname.split("/").pop();
+    const versionID = params.id;
     const action = request.nextUrl.searchParams.get("action");
 
     if (!action || !audioActionSchema.safeParse(action).success) {
