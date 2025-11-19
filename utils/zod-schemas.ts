@@ -48,3 +48,25 @@ export const titleSchema = title;
 
 const tags = z.array(z.string()).optional();
 export const tagsSchema = tags;
+
+const bounce = z.string();
+export const bounceSchema = bounce;
+
+const stems = z.array(z.string());
+export const stemsSchema = stems;
+
+const notes = z.string().optional();
+export const notesSchema = notes;
+
+const bpm = z.number();
+export const bpmSchema = bpm;
+
+export const sessionDetailsSchema = z.object({
+  creator: address,
+  name: name,
+  bounce: bounce,
+  stems: stems,
+  notes: notes,
+  tags: tags,
+  bpm: bpm,
+});
