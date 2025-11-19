@@ -31,18 +31,28 @@ export class SessionService {
     return getIDAndDocumentDataFromDocumentSnapshot<SessionVersionDocWithID>(versionDoc) || null;
   }
 
-  static async getSessionActivity(sessionID: string): Promise<ActivityDocWithID[]> {
+  static async getSessionActivity(
+    sessionID: string,
+    limit: number = 60,
+  ): Promise<ActivityDocWithID[]> {
     const activitySnapshot = await adminDb
       .collection(ACTIVITY_COLLECTION)
       .where("sessionID", "==", sessionID)
+      .orderBy("__name__", "desc")
+      .limit(limit)
       .get();
     return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
   }
 
-  static async getVersionActivity(versionID: string): Promise<ActivityDocWithID[]> {
+  static async getVersionActivity(
+    versionID: string,
+    limit: number = 60,
+  ): Promise<ActivityDocWithID[]> {
     const activitySnapshot = await adminDb
       .collection(ACTIVITY_COLLECTION)
       .where("versionID", "==", versionID)
+      .orderBy("__name__", "desc")
+      .limit(limit)
       .get();
     return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
   }
