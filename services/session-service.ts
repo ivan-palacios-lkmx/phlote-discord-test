@@ -1,6 +1,6 @@
 import { adminDb } from "@/lib/firebase-admin";
-import { SessionDoc, SessionVersionDocWithID } from "@/types/database";
-import { SESSIONS_COLLECTION } from "@/utils/constants";
+import { ActivityDocWithID, SessionDoc, SessionVersionDocWithID } from "@/types/database";
+import { ACTIVITY_COLLECTION, SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
   getDocumentDataFromQuerySnapshot,
@@ -29,5 +29,21 @@ export class SessionService {
   static async getSessionVersion(versionID: string): Promise<SessionVersionDocWithID | null> {
     const versionDoc = await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionID).get();
     return getIDAndDocumentDataFromDocumentSnapshot<SessionVersionDocWithID>(versionDoc) || null;
+  }
+
+  static async getSessionActivity(sessionID: string): Promise<ActivityDocWithID[]> {
+    const activitySnapshot = await adminDb
+      .collection(ACTIVITY_COLLECTION)
+      .where("sessionID", "==", sessionID)
+      .get();
+    return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
+  }
+
+  static async getVersionActivity(versionID: string): Promise<ActivityDocWithID[]> {
+    const activitySnapshot = await adminDb
+      .collection(ACTIVITY_COLLECTION)
+      .where("versionID", "==", versionID)
+      .get();
+    return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
   }
 }

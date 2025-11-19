@@ -11,3 +11,4 @@ export const OPEN_SEA_API_URL = "https://api.opensea.io/api/v1";
 export const PRIVATE_COLLECTION = "private";
 export const CONTACT_DOC_ID = "contact";
 export const SIGNED_URL_EXPIRATION_TIME_IN_MS = 3 * 60 * 60 * 1000;
+export const ACTIVITY_COLLECTION = "activity";

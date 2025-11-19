@@ -268,3 +268,18 @@ export interface AudioDoc {
 }
 
 export interface AudioDocWithID extends WithID, AudioDoc {}
+
+export interface ActivityDoc {
+  /** Date the activity was created */
+  created: Date | string;
+  /** Initiator of the activity */
+  initiator: string;
+  /** Type of the activity */
+  type: "PLAY" | "DOWNLOAD";
+  /** Session ID */
+  sessionID: string;
+  /** Version ID */
+  versionID: string;
+}
+
+export interface ActivityDocWithID extends WithID, ActivityDoc {}
