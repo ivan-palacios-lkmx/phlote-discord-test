@@ -36,3 +36,14 @@ export interface AuthResponse {
 }
 
 export type AudioAction = "play" | "download";
+
+// TODO: Omit from original type
+export interface SessionDetails {
+  creator: string;
+  name: string;
+  bounce: string;
+  stems: string[];
+  notes: string;
+  tags: string[];
+  bpm: number;
+}

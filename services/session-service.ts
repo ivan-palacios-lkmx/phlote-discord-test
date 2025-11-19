@@ -1,4 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
+import { SessionDetails } from "@/types/api";
 import { ActivityDocWithID, SessionDoc, SessionVersionDocWithID } from "@/types/database";
 import { ACTIVITY_COLLECTION, SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
@@ -6,7 +7,9 @@ import {
   getDocumentDataFromQuerySnapshot,
   getIDAndDocumentDataFromDocumentSnapshot,
 } from "@/utils/firebase-queries";
+import { formatProjectId } from "@/utils/functions";
 import { DocumentReference } from "firebase-admin/firestore";
+import ShortUniqueId from "short-unique-id";
 
 export class SessionService {
   static async getSessions(): Promise<SessionDoc[]> {
@@ -72,5 +75,60 @@ export class SessionService {
       .limit(limit)
       .get();
     return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
+  }
+
+  static async createSession(
+    sessionDetails: SessionDetails,
+  ): Promise<{ sessionId: string; versionId: string }> {
+    const sessionId = await this.createProjectId("session");
+
+    const versionId = await this.createProjectId("version");
+
+    await adminDb.runTransaction(async (transaction) => {
+      const sessionRef = adminDb.collection(SESSIONS_COLLECTION).doc(sessionId);
+      transaction.set(sessionRef, {
+        created: new Date(),
+        creator: sessionDetails.creator,
+        name: sessionDetails.name,
+      });
+      const versionRef = adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
+      transaction.set(versionRef, {
+        created: new Date(),
+        creator: sessionDetails.creator,
+        sessionID: sessionId,
+        bounce: sessionDetails.bounce,
+        stems: sessionDetails.stems,
+        notes: sessionDetails.notes,
+        tags: sessionDetails.tags,
+        bpm: sessionDetails.bpm,
+      });
+    });
+    return {
+      sessionId,
+      versionId,
+    };
+  }
+
+  static async createProjectId(projectType: "session" | "version"): Promise<string> {
+    const MAX_ID_CREATION_ATTEMPTS = 10;
+
+    const collection =
+      projectType === "session" ? SESSIONS_COLLECTION : SESSION_VERSIONS_COLLECTION;
+
+    for (let i = 0; i < MAX_ID_CREATION_ATTEMPTS; i++) {
+      const projectId = new ShortUniqueId({
+        dictionary: "alpha_lower",
+        length: 10,
+      });
+
+      const formattedProjectId = formatProjectId(projectId);
+
+      const projectIdDoc = await adminDb.collection(collection).doc(formattedProjectId).get();
+
+      if (!projectIdDoc.exists) {
+        return formattedProjectId;
+      }
+    }
+    throw new Error("Failed to create track ID");
   }
 }

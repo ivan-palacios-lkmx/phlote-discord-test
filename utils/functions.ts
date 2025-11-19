@@ -4,6 +4,7 @@ import {
   MessageComponentTypes,
 } from "discord-interactions";
 import { ButtonStyleTypes } from "discord-interactions";
+import ShortUniqueId from "short-unique-id";
 
 /**
  * Generates a quick, non-cryptographic hexadecimal hash from a string.
@@ -176,4 +177,8 @@ export async function handleInteraction({
 export function transformToShortAddress(address: string): string {
   if (!address) return "";
   return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+}
+
+export function formatProjectId(projectId: ShortUniqueId): string {
+  return projectId.slice(0, 3) + "-" + projectId.slice(3, 7) + "-" + projectId.slice(7, 10);
 }
