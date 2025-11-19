@@ -2,7 +2,7 @@
 
 import AvatarStack from "@/components/AvatarStack/AvatarStack";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
-import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useFbEndpoints } from "@/hooks/useFbEndpoints";
 import { Version } from "@/types/client";
 import { Session } from "@/types/client";
@@ -21,22 +21,17 @@ export default function SessionDetailMeta({ session, version }: SessionDetailMet
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Get wallet address
-  const walletAddress = useMemo(() => {
-    if (!user || !authenticated) return "";
-    const walletAccount = user.linkedAccounts?.find((acc) => acc.type === "wallet");
-    return walletAccount && "address" in walletAccount ? (walletAccount.address as string) : "";
-  }, [user, authenticated]);
 
   // Get account info to check if user is creator
-  const { data: accountInfo } = useGetAccount({
-    address: walletAddress,
-    enabled: authenticated && !!walletAddress,
-  });
+  const { data: accountInfo } = useGetAddressInfo(
+    user?.wallet?.address || "",
+    !!user?.wallet?.address && authenticated,
+  );
 
   const isCreator = useMemo(() => {
-    if (!authenticated || !accountInfo?.data) return false;
-    const role = accountInfo.data.role;
-    return role === "admin" || role === "creator";
+    if (!authenticated || !accountInfo) return false;
+    const isCreator = accountInfo.isAdmin || accountInfo.isCreator;
+    return isCreator;
   }, [authenticated, accountInfo]);
 
   const { downloadStemsZip, stemDlProgress } = useFbEndpoints();

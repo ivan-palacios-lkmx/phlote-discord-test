@@ -1,9 +1,8 @@
 "use client";
 
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
-import { useMemo } from "react";
 
 import "./OnlyMembers.scss";
 
@@ -16,20 +15,11 @@ export default function OnlyMembers({ children, className }: OnlyMembersProps) {
   const { login } = useLogin();
   const { authenticated, logout, ready, user } = usePrivy();
 
-  const walletAddress = useMemo(() => {
-    if (!user?.linkedAccounts) return null;
-    const wallet = user.linkedAccounts.find((acc) => acc.type === "wallet");
-    return wallet && "address" in wallet ? (wallet.address as string) : null;
-  }, [user]);
-
   const {
     data: addressDoc,
     isPending,
     isError,
-  } = useGetAccount({
-    address: walletAddress || "",
-    enabled: !!walletAddress && authenticated,
-  });
+  } = useGetAddressInfo(user?.wallet?.address || "", !!user?.wallet?.address && authenticated);
 
   const isMember =
     authenticated && (addressDoc?.isAdmin || addressDoc?.isCreator || addressDoc?.isMember);

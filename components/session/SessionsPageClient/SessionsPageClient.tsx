@@ -7,7 +7,7 @@ import SessionPreviewBlock from "@/components/session/SessionPreviewBlock/Sessio
 import SessionsResultsFilters from "@/components/session/SessionsResultsFilters/SessionsResultsFilters";
 import SessionsResultsSorting from "@/components/session/SessionsResultsSorting/SessionsResultsSorting";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import useSessions from "@/hooks/useSessions";
 import { PrismicRichText } from "@prismicio/react";
 import { usePrivy } from "@privy-io/react-auth";
@@ -30,23 +30,16 @@ export default function SessionsPageClient({ prismicPage }: SessionsPageClientPr
   const searchParams = useSearchParams();
   const { user, authenticated } = usePrivy();
 
-  // Get wallet address
-  const walletAddress = useMemo(() => {
-    if (!user || !authenticated) return "";
-    const walletAccount = user.linkedAccounts?.find((acc) => acc.type === "wallet");
-    return walletAccount && "address" in walletAccount ? (walletAccount.address as string) : "";
-  }, [user, authenticated]);
-
   // Get account info to check if user is creator
-  const { data: accountInfo } = useGetAccount({
-    address: walletAddress,
-    enabled: authenticated && !!walletAddress,
-  });
+  const { data: accountInfo } = useGetAddressInfo(
+    user?.wallet?.address || "",
+    !!user?.wallet?.address && authenticated,
+  );
 
   const isCreator = useMemo(() => {
-    if (!authenticated || !accountInfo?.data) return false;
-    const role = accountInfo.data.role;
-    return role === "admin" || role === "creator";
+    if (!authenticated || !accountInfo) return false;
+    const isCreator = accountInfo.isAdmin || accountInfo.isCreator;
+    return isCreator;
   }, [authenticated, accountInfo]);
 
   // Page size

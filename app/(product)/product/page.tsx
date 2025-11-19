@@ -2,7 +2,6 @@
 
 import PrivyUserDebug from "@/components/PrivyUserDebug";
 import Button from "@/components/ui/Button";
-import { useGetAccount } from "@/hooks/query/query-hooks/useAccount";
 import { useLogout, usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
 
@@ -15,15 +14,6 @@ export default function ProductPage() {
     },
   });
   const walletAddress = user?.wallet?.address || "";
-
-  const {
-    data: accountInfo,
-    isLoading,
-    error,
-  } = useGetAccount({
-    address: walletAddress,
-    enabled: authenticated && !!walletAddress,
-  });
 
   const handleLogout = () => {
     logout();
