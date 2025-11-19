@@ -145,11 +145,20 @@ class Api {
 
   static async getVersionAudio(versionID: string, action: AudioAction): Promise<string> {
     try {
-      const response = await apiClient.get(ENDPOINTS.VERSION_AUDIO + "/" + versionID, {
-        params: {
-          action,
+      const response = await apiClient.get(
+        ENDPOINTS.SESSIONS +
+          "/" +
+          ENDPOINTS.VERSIONS +
+          "/" +
+          versionID +
+          "/" +
+          ENDPOINTS.VERSION_AUDIO,
+        {
+          params: {
+            action,
+          },
         },
-      });
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching session version audio:", error);
