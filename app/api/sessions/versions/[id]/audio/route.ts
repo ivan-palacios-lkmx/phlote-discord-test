@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const sessionID = request.nextUrl.pathname.split("/")[2];
     const versionID = request.nextUrl.pathname.split("/").pop();
     const action = request.nextUrl.searchParams.get("action");
 
@@ -14,14 +13,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
 
-    if (!sessionID || !versionID) {
-      return NextResponse.json(
-        { error: "Session ID and version ID are required" },
-        { status: 400 },
-      );
+    if (!versionID) {
+      return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
     }
 
-    const version = await SessionService.getSessionVersion(sessionID);
+    const version = await SessionService.getSessionVersion(versionID);
 
     if (!version?.bounce) {
       return NextResponse.json({ error: "Version bounce not found" }, { status: 404 });
