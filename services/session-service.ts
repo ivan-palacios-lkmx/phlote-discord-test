@@ -6,6 +6,7 @@ import {
   getDocumentDataFromQuerySnapshot,
   getIDAndDocumentDataFromDocumentSnapshot,
 } from "@/utils/firebase-queries";
+import { DocumentReference } from "firebase-admin/firestore";
 
 export class SessionService {
   static async getSessions(): Promise<SessionDoc[]> {
@@ -42,6 +43,22 @@ export class SessionService {
       .limit(limit)
       .get();
     return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
+  }
+
+  static async registerSessionActivity(
+    sessionID: string,
+    versionID: string,
+    type: "PLAY" | "DOWNLOAD",
+    initiator: string,
+  ): Promise<DocumentReference> {
+    const activity = await adminDb.collection(ACTIVITY_COLLECTION).add({
+      sessionID,
+      versionID,
+      type,
+      initiator,
+      created: new Date(),
+    });
+    return activity;
   }
 
   static async getVersionActivity(

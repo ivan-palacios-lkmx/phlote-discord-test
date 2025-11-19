@@ -14,3 +14,5 @@ export const contactSchema = z.object({
 });
 
 export const audioActionSchema = z.enum(["play", "download"]);
+
+export const activityTypeSchema = z.enum(["PLAY", "DOWNLOAD"]);
