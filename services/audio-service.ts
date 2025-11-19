@@ -63,31 +63,25 @@ export class AudioService {
       const audioFilename = this.getAudioStorageFileName(audioFile);
       const audioPath = this.buildAudioPath(audioFilename);
       const audioBuffer = await this.convertAudioToBuffer(audioFile);
-      const success = await this.uploadAudioToStorage(audioFile, audioPath, audioBuffer);
+      await this.uploadAudioToStorage(audioPath, audioBuffer);
 
       // This is not awaited because we want to return the status immediately and process takes time
       this.processAudio(audioPath);
 
-      return { tmpName: audioFilename, status: success ? "processing" : "error" };
+      return { tmpName: audioFilename, status: "processing" };
     } catch (error) {
       console.error("Error processing version audio:", error);
       return { tmpName: "", status: "error" };
     }
   }
 
-  static async uploadAudioToStorage(
-    audioFile: File,
-    audioPath: string,
-    audioBuffer: Buffer,
-  ): Promise<boolean> {
+  static async uploadAudioToStorage(audioPath: string, audioBuffer: Buffer): Promise<void> {
     try {
       const bucket = this.getBucket();
       const file = bucket.file(audioPath);
       await file.save(audioBuffer);
-      return true;
     } catch (error) {
       console.error("Error uploading audio to storage:", error);
-      return false;
     }
   }
 
