@@ -91,8 +91,8 @@ export class AudioService {
 
   private static getSafeFileName(fileName: string): string {
     const nameWithoutExtension = String(fileName).split(".")[0];
-    const titleCaseName = _startCase(nameWithoutExtension);
-    return kebabCase(titleCaseName);
+    const startCasedName = _startCase(nameWithoutExtension);
+    return kebabCase(startCasedName);
   }
 
   private static buildAudioPath(seed: string, safeName: string, milliseconds: number): string {
