@@ -22,3 +22,25 @@ export async function GET(request: NextRequest, { params }: { params: { sessionI
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function PATCH(request: Request, { params }: { params: { sessionId: string } }) {
+  try {
+    const sessionId = params.sessionId;
+    const name = await request.json();
+
+    if (!sessionId || !name) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
+
+    const { success } = await SessionService.updateSession(sessionId, name);
+
+    if (!success) {
+      return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
+    }
+
+    return NextResponse.json({ message: "Session updated successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating session:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

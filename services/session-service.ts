@@ -148,4 +148,20 @@ export class SessionService {
     }
     throw new Error("Failed to create track ID");
   }
+
+  static async getSessionReference(sessionId: string): Promise<DocumentReference> {
+    return adminDb.collection(SESSIONS_COLLECTION).doc(sessionId);
+  }
+
+  // In the legacy app, the session name was the only field that could be updated.
+  static async updateSession(sessionId: string, name: string): Promise<{ success: boolean }> {
+    try {
+      const sessionRef = await this.getSessionReference(sessionId);
+      await sessionRef.update({ name });
+      return { success: true };
+    } catch (error) {
+      console.error("Error updating session:", error);
+      return { success: false };
+    }
+  }
 }
