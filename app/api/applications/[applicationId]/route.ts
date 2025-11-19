@@ -1,9 +1,9 @@
 import { ApplicationService } from "@/services/application-service";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { applicationId: string } }) {
   try {
-    const applicationID = params.id;
+    const applicationID = params.applicationId;
 
     const application = await ApplicationService.getApplication(applicationID);
 
