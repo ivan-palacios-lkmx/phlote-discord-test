@@ -304,3 +304,16 @@ export interface ApplicationDoc {
   /** Link to the applicant's portfolio/work */
   workLink?: string;
 }
+
+export interface SubscriberDoc {
+  /** Date the subscriber was created */
+  created: Date | string;
+  /** Email address of the subscriber */
+  email: string;
+  /** ID from Flodesk email service */
+  flodeskID?: string;
+  /** Date when successfully subscribed to Flodesk */
+  subscribed?: Date | string;
+  /** @deprecated Error message if subscription failed */
+  error?: string;
+}

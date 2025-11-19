@@ -13,3 +13,4 @@ export const CONTACT_DOC_ID = "contact";
 export const SIGNED_URL_EXPIRATION_TIME_IN_MS = 3 * 60 * 60 * 1000;
 export const ACTIVITY_COLLECTION = "activity";
 export const APPLICATION_COLLECTION = "application";
+export const SUBSCRIBERS_COLLECTION = "subscribers";
