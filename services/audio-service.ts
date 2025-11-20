@@ -12,7 +12,11 @@ import _max from "lodash/max";
 import _mean from "lodash/mean";
 import _range from "lodash/range";
 import _startCase from "lodash/startCase";
+import potrace from "potrace";
+import sharp from "sharp";
+import { v4 as uuidv4 } from "uuid";
 import { WaveFile } from "wavefile";
+import wf from "wavefile";
 
 export class AudioService {
   static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
@@ -174,8 +178,10 @@ export class AudioService {
         normalizedAudioToWAV,
         serverAudioPath,
       );
-      const generatedWaveformJSON = this.generateWaveformJSON(temporaryAudioFile);
-      const generatedWaveformSVG = this.generateWaveformSVG(temporaryAudioFile);
+
+      const waveFile = new wf.WaveFile(normalizedAudioBuffer);
+      const generatedWaveformJSON = this.generateWaveformJSON(waveFile);
+      const generatedWaveformSVG = await this.generateWaveformSVG(waveFile);
 
       const audioProcessingResults = {
         temporaryAudioFile,
@@ -243,11 +249,91 @@ export class AudioService {
   static generateWAVLoselessAudio(temporaryAudioFile: GCSFile) {
     throw new Error("Method not implemented.");
   }
-  static generateWaveformJSON(temporaryAudioFile: GCSFile) {
-    throw new Error("Method not implemented.");
+  static generateWaveformJSON(waveFile: WaveFile) {
+    const waveformData = this.makeWaveData(waveFile);
+    return waveformData;
   }
-  static generateWaveformSVG(temporaryAudioFile: GCSFile) {
-    throw new Error("Method not implemented.");
+
+  static async generateWaveformSVG(waveFile: WaveFile): Promise<string> {
+    const waveformData = this.makeWaveData(waveFile);
+    const samples = waveformData.map((v) => parseFloat(v));
+    return await this.makeWaveTrace(samples);
+  }
+
+  private static samplesToSVG(samples: number[]): string {
+    const resolution = samples.length;
+    return `
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        viewBox="0 0 ${resolution * 4} 100"
+        width="${resolution * 4}"
+        height="200"
+    >
+        <g>
+            ${samples
+              .map((v) => v * 50)
+              .map((amp, i) => {
+                if (!amp) return "";
+                return `<rect
+                         x="${i * 4}"
+                         y="${50 - amp}"
+                         width="5"
+                         height="${amp * 2}"
+                     />`;
+              })
+              .join("")}
+        </g>
+    </svg>
+    `;
+  }
+
+  private static async makeWaveTrace(samples: number[]): Promise<string> {
+    const jobID = uuidv4();
+    const jobPath = `/tmp/${jobID}`;
+    await fs.promises.rm(jobPath, { recursive: true }).catch(() => {});
+    await fs.promises.mkdir(jobPath, { recursive: true });
+
+    await sharp(Buffer.from(this.samplesToSVG(samples))).toFile(`${jobPath}/flattened.png`);
+
+    const finalSVG = await new Promise<string>((res, rej) => {
+      potrace.trace(
+        `${jobPath}/flattened.png`,
+        {
+          threshold: 128,
+          color: "#000",
+        },
+        function (err: Error | null, svg: string) {
+          if (err) {
+            rej(new Error(String(err)));
+            return;
+          }
+          const reg = /path d="([^"]+)/i;
+          const matches = svg.match(reg);
+          if (!matches || !matches[1]) {
+            rej(new Error("Could not extract path from SVG"));
+            return;
+          }
+          const pathD = matches[1];
+          const slug = Math.random().toString(36).slice(2);
+          return res(
+            `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="4800" height="200" viewBox="0 0 4800 200" preserveAspectRatio="none" version="1.1">
+                        <mask id="masker-${slug}">
+                            <rect x="0" y="0" width="4800" height="200" fill="white" />
+                            <path d="${pathD}" fill="black" />
+                        </mask>
+                        <rect class="silence" mask="url(#masker-${slug})" x="0" y="99" width="4800" height="2" fill="currentColor" />
+                        <path class="blobs" d="${pathD}" fill="currentColor" />
+                    </svg>
+                `.trim(),
+          );
+        },
+      );
+    });
+
+    await fs.promises.rm(jobPath, { recursive: true }).catch(() => {});
+    return finalSVG;
   }
 
   static makeWaveData(wav: WaveFile, waveformResolution: number = 200): string[] {
