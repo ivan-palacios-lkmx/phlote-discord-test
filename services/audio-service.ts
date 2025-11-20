@@ -48,6 +48,17 @@ export class AudioService {
         : "audio-low.mp3";
   }
 
+  static isAudioWavOrMp3(mimeType: string): "wav" | "mp3" {
+    const lowerMimeType = mimeType.toLowerCase();
+    if (lowerMimeType === "audio/wav") {
+      return "wav";
+    }
+    if (lowerMimeType === "audio/mp3") {
+      return "mp3";
+    }
+    throw new Error("Audio file must be WAV or MP3 format");
+  }
+
   static async getBounceSignedUrl(bounceHash: string, action: AudioAction): Promise<string> {
     if (action === "play") {
       return this.getAudioSignedUrlByHash(bounceHash, "high");
@@ -129,9 +140,8 @@ export class AudioService {
 
   static async processAudio(temporaryAudioFile: GCSFile): Promise<void> {
     try {
-      // TODO: Check if we need firebase jobs to process audio
-      await this.prepareDirectoryForAudioProcessing(temporaryAudioFile.name);
       const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
+      const audioFormat = this.isAudioWavOrMp3(temporaryAudioFileMetadata.contentType || "");
       const normalizedAudioToWAV = await this.normalizeAudioToWAV(temporaryAudioFile);
       const calculatedAudioIPFSHash = this.calculateAudioIPFSHash(temporaryAudioFile);
       const generatedMP3HighQualityAudio = this.generateMP3HighQualityAudio(temporaryAudioFile);
@@ -159,7 +169,7 @@ export class AudioService {
   }
   static saveAudioToDatabase(audioProcessingResults: {
     temporaryAudioFile: GCSFile;
-    temporaryAudioFileMetadata: [FileMetadata, unknown];
+    temporaryAudioFileMetadata: FileMetadata;
     normalizedAudioToWAV: void;
     calculatedAudioIPFSHash: unknown;
     generatedMP3HighQualityAudio: unknown;
@@ -191,14 +201,17 @@ export class AudioService {
   private static async normalizeAudioToWAV(temporaryAudioFile: GCSFile): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  private static async getMetadataFromAudioFile(temporaryAudioFile: GCSFile) {
-    const metadata = await temporaryAudioFile.getMetadata();
+  private static async getMetadataFromAudioFile(
+    temporaryAudioFile: GCSFile,
+  ): Promise<FileMetadata> {
+    const [metadata] = await temporaryAudioFile.getMetadata();
     return metadata;
   }
-  private static async prepareDirectoryForAudioProcessing(fileName: string): Promise<void> {
+  private static async prepareDirectoryForAudioProcessing(fileName: string): Promise<string> {
     const serverAudioPath = `/tmp/audio-processing/${fileName}`;
     await this.cleanDirectoryIfExists(serverAudioPath);
     await this.createDirectory(serverAudioPath);
+    return serverAudioPath;
   }
 
   private static async cleanDirectoryIfExists(directoryPath: string): Promise<void> {
