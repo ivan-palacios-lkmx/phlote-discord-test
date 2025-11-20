@@ -62,7 +62,7 @@ export async function POST(request: NextRequest, { params }: { params: { version
     }
 
     const { tmpName, status } =
-      await AudioService.uploadAudioToStorageAndSetProcessingStatus(audioFile);
+      await AudioService.uploadAudioToStorageAndStartProcessing(audioFile);
 
     if (status === "error") {
       return NextResponse.json({ error: "Failed to process audio" }, { status: 500 });

@@ -3,8 +3,11 @@ import { AudioAction } from "@/types/api";
 import { SessionVersionDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
+import { Storage } from "@google-cloud/storage";
+import fs from "fs";
 import kebabCase from "lodash/kebabCase";
 import _startCase from "lodash/startCase";
+import path from "path";
 
 export class AudioService {
   static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
@@ -56,7 +59,7 @@ export class AudioService {
     return "";
   }
 
-  static async uploadAudioToStorageAndSetProcessingStatus(
+  static async uploadAudioToStorageAndStartProcessing(
     audioFile: File,
   ): Promise<{ tmpName: string; status: "processing" | "error" }> {
     try {
@@ -125,8 +128,37 @@ export class AudioService {
 
   static async processAudio(audioPath: string): Promise<void> {
     try {
+      // TODO: Check if we need firebase jobs to process audio
+      await this.prepareDirectoryForAudioProcessing(audioPath);
+      const temporaryAudioFile = await this.getTemporaryAudioFileFromBucket(audioPath);
+      const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
+  }
+  private static async getMetadataFromAudioFile(
+    temporaryAudioFile: File,
+  ): Promise<{ size: number; contentType: string }> {
+    const metadata = await temporaryAudioFile.getMetadata();
+    return metadata;
+  }
+  private static async prepareDirectoryForAudioProcessing(audioPath: string): Promise<void> {
+    const serverAudioPath = `/tmp/audio-processing/${audioPath}`;
+    await this.cleanDirectoryIfExists(serverAudioPath);
+    await this.createDirectory(serverAudioPath);
+  }
+
+  private static async cleanDirectoryIfExists(directoryPath: string): Promise<void> {
+    await fs.promises.rm(directoryPath, { recursive: true });
+  }
+
+  private static async createDirectory(directoryPath: string): Promise<void> {
+    await fs.promises.mkdir(directoryPath, { recursive: true });
+  }
+
+  private static async getTemporaryAudioFileFromBucket(audioPath: string) {
+    const bucket = this.getBucket();
+    const file = bucket.file(audioPath);
+    return file;
   }
 }
