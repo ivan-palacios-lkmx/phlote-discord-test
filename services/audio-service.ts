@@ -64,9 +64,9 @@ export class AudioService {
     try {
       const { audioFilename, audioPath, audioBuffer } = await this.prepareAudioForUpload(audioFile);
 
-      await this.uploadAudioToStorage(audioPath, audioBuffer);
+      const temporaryAudioFile = await this.uploadAudioToStorage(audioPath, audioBuffer);
       // We only start the audio process and we do not await it because we want to return the status immediately
-      this.startAudioProcessing(audioPath);
+      this.startAudioProcessing(temporaryAudioFile);
 
       return { tmpName: audioFilename, status: "processing" };
     } catch (error) {
@@ -84,18 +84,20 @@ export class AudioService {
     return { audioFilename, audioPath, audioBuffer };
   }
 
-  private static startAudioProcessing(audioPath: string): void {
+  private static startAudioProcessing(temporaryAudioFile: GCSFile): void {
     // This is not awaited because we want to return the status immediately and process takes time
-    this.processAudio(audioPath);
+    this.processAudio(temporaryAudioFile);
   }
 
-  static async uploadAudioToStorage(audioPath: string, audioBuffer: Buffer): Promise<void> {
+  static async uploadAudioToStorage(audioPath: string, audioBuffer: Buffer): Promise<GCSFile> {
     try {
       const bucket = this.getBucket();
       const file = bucket.file(audioPath);
       await file.save(audioBuffer);
+      return file;
     } catch (error) {
       console.error("Error uploading audio to storage:", error);
+      throw error;
     }
   }
 
@@ -125,25 +127,47 @@ export class AudioService {
     return Buffer.from(audioBuffer);
   }
 
-  static async processAudio(audioPath: string): Promise<void> {
+  static async processAudio(temporaryAudioFile: GCSFile): Promise<void> {
     try {
       // TODO: Check if we need firebase jobs to process audio
-      await this.prepareDirectoryForAudioProcessing(audioPath);
-      const temporaryAudioFile = await this.getTemporaryAudioFileFromBucket(audioPath);
+      await this.prepareDirectoryForAudioProcessing(temporaryAudioFile.name);
       const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
-      this.normalizeAudioToWAV(temporaryAudioFile);
-      this.calculateAudioIPFSHash(temporaryAudioFile);
-      this.generateMP3HighQualityAudio(temporaryAudioFile);
-      this.generateMP3LowQualityAudio(temporaryAudioFile);
-      this.generateWAVLoselessAudio(temporaryAudioFile);
-      this.generateWaveformJSON(temporaryAudioFile);
-      this.generateWaveformSVG(temporaryAudioFile);
-      this.saveAudioToDatabase(temporaryAudioFile);
+      const normalizedAudioToWAV = await this.normalizeAudioToWAV(temporaryAudioFile);
+      const calculatedAudioIPFSHash = this.calculateAudioIPFSHash(temporaryAudioFile);
+      const generatedMP3HighQualityAudio = this.generateMP3HighQualityAudio(temporaryAudioFile);
+      const generatedMP3LowQualityAudio = this.generateMP3LowQualityAudio(temporaryAudioFile);
+      const generatedWAVLoselessAudio = this.generateWAVLoselessAudio(temporaryAudioFile);
+      const generatedWaveformJSON = this.generateWaveformJSON(temporaryAudioFile);
+      const generatedWaveformSVG = this.generateWaveformSVG(temporaryAudioFile);
+
+      const audioProcessingResults = {
+        temporaryAudioFile,
+        temporaryAudioFileMetadata,
+        normalizedAudioToWAV,
+        calculatedAudioIPFSHash,
+        generatedMP3HighQualityAudio,
+        generatedMP3LowQualityAudio,
+        generatedWAVLoselessAudio,
+        generatedWaveformJSON,
+        generatedWaveformSVG,
+      };
+
+      this.saveAudioToDatabase(audioProcessingResults);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
   }
-  static saveAudioToDatabase(temporaryAudioFile: GCSFile) {
+  static saveAudioToDatabase(audioProcessingResults: {
+    temporaryAudioFile: GCSFile;
+    temporaryAudioFileMetadata: [FileMetadata, unknown];
+    normalizedAudioToWAV: void;
+    calculatedAudioIPFSHash: unknown;
+    generatedMP3HighQualityAudio: unknown;
+    generatedMP3LowQualityAudio: unknown;
+    generatedWAVLoselessAudio: unknown;
+    generatedWaveformJSON: unknown;
+    generatedWaveformSVG: unknown;
+  }) {
     throw new Error("Method not implemented.");
   }
   static calculateAudioIPFSHash(temporaryAudioFile: GCSFile) {
@@ -171,8 +195,8 @@ export class AudioService {
     const metadata = await temporaryAudioFile.getMetadata();
     return metadata;
   }
-  private static async prepareDirectoryForAudioProcessing(audioPath: string): Promise<void> {
-    const serverAudioPath = `/tmp/audio-processing/${audioPath}`;
+  private static async prepareDirectoryForAudioProcessing(fileName: string): Promise<void> {
+    const serverAudioPath = `/tmp/audio-processing/${fileName}`;
     await this.cleanDirectoryIfExists(serverAudioPath);
     await this.createDirectory(serverAudioPath);
   }
@@ -183,11 +207,5 @@ export class AudioService {
 
   private static async createDirectory(directoryPath: string): Promise<void> {
     await fs.promises.mkdir(directoryPath, { recursive: true });
-  }
-
-  private static async getTemporaryAudioFileFromBucket(audioPath: string): Promise<GCSFile> {
-    const bucket = this.getBucket();
-    const file = bucket.file(audioPath);
-    return file;
   }
 }
