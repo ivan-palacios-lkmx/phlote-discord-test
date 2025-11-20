@@ -158,7 +158,10 @@ export class AudioService {
       const normalizedAudioBuffer = await this.getBufferFromPath(normalizedAudioToWAV);
       const calculatedAudioIPFSHash =
         await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
-      const generatedMP3HighQualityAudio = this.generateMP3HighQualityAudio(temporaryAudioFile);
+      const generatedMP3HighQualityAudio = await this.generateMP3HighQualityAudio(
+        normalizedAudioToWAV,
+        serverAudioPath,
+      );
       const generatedMP3LowQualityAudio = this.generateMP3LowQualityAudio(temporaryAudioFile);
       const generatedWAVLoselessAudio = this.generateWAVLoselessAudio(temporaryAudioFile);
       const generatedWaveformJSON = this.generateWaveformJSON(temporaryAudioFile);
@@ -197,8 +200,21 @@ export class AudioService {
   static async calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer): Promise<string> {
     return await Hash.of(normalizedAudioBuffer);
   }
-  static generateMP3HighQualityAudio(temporaryAudioFile: GCSFile) {
-    throw new Error("Method not implemented.");
+  static async generateMP3HighQualityAudio(
+    normLocalPath: string,
+    serverAudioPath: string,
+  ): Promise<string> {
+    const mp3LocalPath = `${serverAudioPath}/audio.mp3`;
+    await new Promise<void>((res, rej) => {
+      return ffmpeg(normLocalPath)
+        .inputOptions([])
+        .outputOptions(["-vn", "-ar 44100", "-ac 2", "-b:a 192k"])
+        .output(mp3LocalPath)
+        .on("error", rej)
+        .on("end", res)
+        .run();
+    });
+    return mp3LocalPath;
   }
   static generateMP3LowQualityAudio(temporaryAudioFile: GCSFile) {
     throw new Error("Method not implemented.");
