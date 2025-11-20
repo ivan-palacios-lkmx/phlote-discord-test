@@ -179,7 +179,9 @@ export class AudioService {
       );
 
       const waveFile = new wf.WaveFile(normalizedAudioBuffer);
+
       const generatedWaveformJSON = this.generateWaveformJSON(waveFile);
+
       const generatedWaveformSVG = await this.generateWaveformSVG(waveFile);
 
       const audioProcessingResults = {
@@ -245,9 +247,7 @@ export class AudioService {
     });
     return mp3LowLocalPath;
   }
-  static generateWAVLoselessAudio(temporaryAudioFile: GCSFile) {
-    throw new Error("Method not implemented.");
-  }
+
   static generateWaveformJSON(waveFile: WaveFile) {
     const waveformData = this.makeWaveData(waveFile);
     return waveformData;
