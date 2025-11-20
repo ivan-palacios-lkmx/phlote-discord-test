@@ -140,9 +140,19 @@ export class AudioService {
 
   static async processAudio(temporaryAudioFile: GCSFile): Promise<void> {
     try {
+      const serverAudioPath = await this.prepareDirectoryForAudioProcessing(
+        temporaryAudioFile.name,
+      );
       const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
       const audioFormat = this.isAudioWavOrMp3(temporaryAudioFileMetadata.contentType || "");
-      const normalizedAudioToWAV = await this.normalizeAudioToWAV(temporaryAudioFile);
+      const downloadedAudioPath = await this.downloadAudioToLocal(
+        temporaryAudioFile,
+        serverAudioPath,
+      );
+      const normalizedAudioToWAV = await this.normalizeAudioToWAV(
+        serverAudioPath,
+        downloadedAudioPath,
+      );
       const calculatedAudioIPFSHash = this.calculateAudioIPFSHash(temporaryAudioFile);
       const generatedMP3HighQualityAudio = this.generateMP3HighQualityAudio(temporaryAudioFile);
       const generatedMP3LowQualityAudio = this.generateMP3LowQualityAudio(temporaryAudioFile);
@@ -198,7 +208,10 @@ export class AudioService {
   static generateWaveformSVG(temporaryAudioFile: GCSFile) {
     throw new Error("Method not implemented.");
   }
-  private static async normalizeAudioToWAV(temporaryAudioFile: GCSFile): Promise<void> {
+  private static async normalizeAudioToWAV(
+    serverAudioPath: string,
+    downloadedAudioPath: string,
+  ): Promise<void> {
     throw new Error("Method not implemented.");
   }
   private static async getMetadataFromAudioFile(
@@ -220,5 +233,15 @@ export class AudioService {
 
   private static async createDirectory(directoryPath: string): Promise<void> {
     await fs.promises.mkdir(directoryPath, { recursive: true });
+  }
+
+  private static async downloadAudioToLocal(
+    temporaryAudioFile: GCSFile,
+    serverAudioPath: string,
+  ): Promise<string> {
+    const fileNameFromPath = temporaryAudioFile.name.split("/").pop() || "audio";
+    const downloadedAudioPath = `${serverAudioPath}/${fileNameFromPath}`;
+    await temporaryAudioFile.download({ destination: downloadedAudioPath });
+    return downloadedAudioPath;
   }
 }
