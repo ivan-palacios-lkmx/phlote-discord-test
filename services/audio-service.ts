@@ -155,14 +155,22 @@ export class AudioService {
         serverAudioPath,
         downloadedAudioPath,
       );
+
       const normalizedAudioBuffer = await this.getBufferFromPath(normalizedAudioToWAV);
+
       const calculatedAudioIPFSHash =
         await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
+
       const generatedMP3HighQualityAudio = await this.generateMP3HighQualityAudio(
         normalizedAudioToWAV,
         serverAudioPath,
       );
-      const generatedMP3LowQualityAudio = this.generateMP3LowQualityAudio(temporaryAudioFile);
+
+      const generatedMP3LowQualityAudio = await this.generateMP3LowQualityAudio(
+        normalizedAudioToWAV,
+        serverAudioPath,
+      );
+
       const generatedWAVLoselessAudio = this.generateWAVLoselessAudio(temporaryAudioFile);
       const generatedWaveformJSON = this.generateWaveformJSON(temporaryAudioFile);
       const generatedWaveformSVG = this.generateWaveformSVG(temporaryAudioFile);
@@ -216,8 +224,21 @@ export class AudioService {
     });
     return mp3LocalPath;
   }
-  static generateMP3LowQualityAudio(temporaryAudioFile: GCSFile) {
-    throw new Error("Method not implemented.");
+  static async generateMP3LowQualityAudio(
+    normLocalPath: string,
+    serverAudioPath: string,
+  ): Promise<string> {
+    const mp3LowLocalPath = `${serverAudioPath}/audio-low.mp3`;
+    await new Promise<void>((res, rej) => {
+      return ffmpeg(normLocalPath)
+        .inputOptions([])
+        .outputOptions(["-vn", "-codec:a libmp3lame", "-q:a 7"])
+        .output(mp3LowLocalPath)
+        .on("error", rej)
+        .on("end", res)
+        .run();
+    });
+    return mp3LowLocalPath;
   }
   static generateWAVLoselessAudio(temporaryAudioFile: GCSFile) {
     throw new Error("Method not implemented.");
