@@ -4,6 +4,7 @@ import { SessionVersionDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
+import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import kebabCase from "lodash/kebabCase";
 import _startCase from "lodash/startCase";
@@ -212,7 +213,16 @@ export class AudioService {
     serverAudioPath: string,
     downloadedAudioPath: string,
   ): Promise<void> {
-    throw new Error("Method not implemented.");
+    const normalizedLocalPath = `${serverAudioPath}/normalized.wav`;
+    await new Promise<void>((res, rej) => {
+      return ffmpeg(downloadedAudioPath)
+        .inputOptions([])
+        .outputOptions(["-bitexact", "-acodec pcm_s16le", "-ar 44100", "-ac 2"])
+        .output(normalizedLocalPath)
+        .on("error", rej)
+        .on("end", res)
+        .run();
+    });
   }
   private static async getMetadataFromAudioFile(
     temporaryAudioFile: GCSFile,
