@@ -170,8 +170,6 @@ export class AudioService {
         normalizedAudioToWAV,
         serverAudioPath,
       );
-
-      const generatedWAVLoselessAudio = this.generateWAVLoselessAudio(temporaryAudioFile);
       const generatedWaveformJSON = this.generateWaveformJSON(temporaryAudioFile);
       const generatedWaveformSVG = this.generateWaveformSVG(temporaryAudioFile);
 
@@ -182,24 +180,22 @@ export class AudioService {
         calculatedAudioIPFSHash,
         generatedMP3HighQualityAudio,
         generatedMP3LowQualityAudio,
-        generatedWAVLoselessAudio,
         generatedWaveformJSON,
         generatedWaveformSVG,
       };
 
-      this.saveAudioToDatabase(audioProcessingResults);
+      this.saveAudioToDatabaseAndBucket(audioProcessingResults);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
   }
-  static saveAudioToDatabase(audioProcessingResults: {
+  static saveAudioToDatabaseAndBucket(audioProcessingResults: {
     temporaryAudioFile: GCSFile;
     temporaryAudioFileMetadata: FileMetadata;
     normalizedAudioToWAV: string;
     calculatedAudioIPFSHash: string;
     generatedMP3HighQualityAudio: unknown;
     generatedMP3LowQualityAudio: unknown;
-    generatedWAVLoselessAudio: unknown;
     generatedWaveformJSON: unknown;
     generatedWaveformSVG: unknown;
   }) {
