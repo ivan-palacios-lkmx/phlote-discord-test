@@ -6,6 +6,7 @@ import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
+import Hash from "ipfs-only-hash";
 import kebabCase from "lodash/kebabCase";
 import _startCase from "lodash/startCase";
 
@@ -155,7 +156,8 @@ export class AudioService {
         downloadedAudioPath,
       );
       const normalizedAudioBuffer = await this.getBufferFromPath(normalizedAudioToWAV);
-      const calculatedAudioIPFSHash = this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
+      const calculatedAudioIPFSHash =
+        await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
       const generatedMP3HighQualityAudio = this.generateMP3HighQualityAudio(temporaryAudioFile);
       const generatedMP3LowQualityAudio = this.generateMP3LowQualityAudio(temporaryAudioFile);
       const generatedWAVLoselessAudio = this.generateWAVLoselessAudio(temporaryAudioFile);
@@ -183,7 +185,7 @@ export class AudioService {
     temporaryAudioFile: GCSFile;
     temporaryAudioFileMetadata: FileMetadata;
     normalizedAudioToWAV: string;
-    calculatedAudioIPFSHash: unknown;
+    calculatedAudioIPFSHash: string;
     generatedMP3HighQualityAudio: unknown;
     generatedMP3LowQualityAudio: unknown;
     generatedWAVLoselessAudio: unknown;
@@ -192,8 +194,8 @@ export class AudioService {
   }) {
     throw new Error("Method not implemented.");
   }
-  static calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer) {
-    throw new Error("Method not implemented.");
+  static async calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer): Promise<string> {
+    return await Hash.of(normalizedAudioBuffer);
   }
   static generateMP3HighQualityAudio(temporaryAudioFile: GCSFile) {
     throw new Error("Method not implemented.");

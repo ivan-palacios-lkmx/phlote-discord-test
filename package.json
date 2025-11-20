@@ -42,7 +42,8 @@
     "react-dom": "^18.3.1",
     "short-unique-id": "^5.3.2",
     "smart-truncate": "^1.0.1",
-    "valtio": "^1.13.2"
+    "valtio": "^1.13.2",
+    "wavefile": "^11.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
