@@ -154,7 +154,6 @@ export class AudioService {
         temporaryAudioFile.name,
       );
       const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
-      const audioFormat = this.isAudioWavOrMp3(temporaryAudioFileMetadata.contentType || "");
       const downloadedAudioPath = await this.downloadAudioToLocal(
         temporaryAudioFile,
         serverAudioPath,
