@@ -3,11 +3,10 @@ import { AudioAction } from "@/types/api";
 import { SessionVersionDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
-import { Storage } from "@google-cloud/storage";
+import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
 import fs from "fs";
 import kebabCase from "lodash/kebabCase";
 import _startCase from "lodash/startCase";
-import path from "path";
 
 export class AudioService {
   static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
@@ -132,13 +131,43 @@ export class AudioService {
       await this.prepareDirectoryForAudioProcessing(audioPath);
       const temporaryAudioFile = await this.getTemporaryAudioFileFromBucket(audioPath);
       const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
+      this.normalizeAudioToWAV(temporaryAudioFile);
+      this.calculateAudioIPFSHash(temporaryAudioFile);
+      this.generateMP3HighQualityAudio(temporaryAudioFile);
+      this.generateMP3LowQualityAudio(temporaryAudioFile);
+      this.generateWAVLoselessAudio(temporaryAudioFile);
+      this.generateWaveformJSON(temporaryAudioFile);
+      this.generateWaveformSVG(temporaryAudioFile);
+      this.saveAudioToDatabase(temporaryAudioFile);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
   }
-  private static async getMetadataFromAudioFile(
-    temporaryAudioFile: File,
-  ): Promise<{ size: number; contentType: string }> {
+  static saveAudioToDatabase(temporaryAudioFile: GCSFile) {
+    throw new Error("Method not implemented.");
+  }
+  static calculateAudioIPFSHash(temporaryAudioFile: GCSFile) {
+    throw new Error("Method not implemented.");
+  }
+  static generateMP3HighQualityAudio(temporaryAudioFile: GCSFile) {
+    throw new Error("Method not implemented.");
+  }
+  static generateMP3LowQualityAudio(temporaryAudioFile: GCSFile) {
+    throw new Error("Method not implemented.");
+  }
+  static generateWAVLoselessAudio(temporaryAudioFile: GCSFile) {
+    throw new Error("Method not implemented.");
+  }
+  static generateWaveformJSON(temporaryAudioFile: GCSFile) {
+    throw new Error("Method not implemented.");
+  }
+  static generateWaveformSVG(temporaryAudioFile: GCSFile) {
+    throw new Error("Method not implemented.");
+  }
+  private static async normalizeAudioToWAV(temporaryAudioFile: GCSFile): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  private static async getMetadataFromAudioFile(temporaryAudioFile: GCSFile) {
     const metadata = await temporaryAudioFile.getMetadata();
     return metadata;
   }
@@ -156,7 +185,7 @@ export class AudioService {
     await fs.promises.mkdir(directoryPath, { recursive: true });
   }
 
-  private static async getTemporaryAudioFileFromBucket(audioPath: string) {
+  private static async getTemporaryAudioFileFromBucket(audioPath: string): Promise<GCSFile> {
     const bucket = this.getBucket();
     const file = bucket.file(audioPath);
     return file;
