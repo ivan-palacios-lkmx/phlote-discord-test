@@ -154,7 +154,8 @@ export class AudioService {
         serverAudioPath,
         downloadedAudioPath,
       );
-      const calculatedAudioIPFSHash = this.calculateAudioIPFSHash(temporaryAudioFile);
+      const normalizedAudioBuffer = await this.getBufferFromPath(normalizedAudioToWAV);
+      const calculatedAudioIPFSHash = this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
       const generatedMP3HighQualityAudio = this.generateMP3HighQualityAudio(temporaryAudioFile);
       const generatedMP3LowQualityAudio = this.generateMP3LowQualityAudio(temporaryAudioFile);
       const generatedWAVLoselessAudio = this.generateWAVLoselessAudio(temporaryAudioFile);
@@ -181,7 +182,7 @@ export class AudioService {
   static saveAudioToDatabase(audioProcessingResults: {
     temporaryAudioFile: GCSFile;
     temporaryAudioFileMetadata: FileMetadata;
-    normalizedAudioToWAV: void;
+    normalizedAudioToWAV: string;
     calculatedAudioIPFSHash: unknown;
     generatedMP3HighQualityAudio: unknown;
     generatedMP3LowQualityAudio: unknown;
@@ -191,7 +192,7 @@ export class AudioService {
   }) {
     throw new Error("Method not implemented.");
   }
-  static calculateAudioIPFSHash(temporaryAudioFile: GCSFile) {
+  static calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer) {
     throw new Error("Method not implemented.");
   }
   static generateMP3HighQualityAudio(temporaryAudioFile: GCSFile) {
@@ -212,7 +213,7 @@ export class AudioService {
   private static async normalizeAudioToWAV(
     serverAudioPath: string,
     downloadedAudioPath: string,
-  ): Promise<void> {
+  ): Promise<string> {
     const normalizedLocalPath = `${serverAudioPath}/normalized.wav`;
     await new Promise<void>((res, rej) => {
       return ffmpeg(downloadedAudioPath)
@@ -223,6 +224,7 @@ export class AudioService {
         .on("end", res)
         .run();
     });
+    return normalizedLocalPath;
   }
   private static async getMetadataFromAudioFile(
     temporaryAudioFile: GCSFile,
@@ -245,12 +247,17 @@ export class AudioService {
     await fs.promises.mkdir(directoryPath, { recursive: true });
   }
 
+  private static async getBufferFromPath(filePath: string): Promise<Buffer> {
+    return await fs.promises.readFile(filePath);
+  }
+
   private static async downloadAudioToLocal(
     temporaryAudioFile: GCSFile,
     serverAudioPath: string,
   ): Promise<string> {
     const fileNameFromPath = temporaryAudioFile.name.split("/").pop() || "audio";
-    const downloadedAudioPath = `${serverAudioPath}/${fileNameFromPath}`;
+    const fileExtension = fileNameFromPath.split(".").pop() || "wav";
+    const downloadedAudioPath = `${serverAudioPath}/source.${fileExtension}`;
     await temporaryAudioFile.download({ destination: downloadedAudioPath });
     return downloadedAudioPath;
   }
