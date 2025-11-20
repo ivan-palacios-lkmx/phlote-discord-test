@@ -8,7 +8,11 @@ import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import Hash from "ipfs-only-hash";
 import kebabCase from "lodash/kebabCase";
+import _max from "lodash/max";
+import _mean from "lodash/mean";
+import _range from "lodash/range";
 import _startCase from "lodash/startCase";
+import { WaveFile } from "wavefile";
 
 export class AudioService {
   static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
@@ -245,6 +249,19 @@ export class AudioService {
   static generateWaveformSVG(temporaryAudioFile: GCSFile) {
     throw new Error("Method not implemented.");
   }
+
+  static makeWaveData(wav: WaveFile, waveformResolution: number = 200): string[] {
+    const samplesArray = wav.getSamples();
+    const samples = Array.isArray(samplesArray[0]) ? (samplesArray[0] as number[]) : [];
+    const stepSize = Math.floor(samples.length / waveformResolution);
+    const resampled = _range(waveformResolution).map((i) =>
+      _mean(samples.slice(i * stepSize, (i + 1) * stepSize).map(Math.abs)),
+    );
+    const newMax = _max(resampled);
+    const normalized = resampled.map((s) => ((s || 0) / (newMax || 1)).toFixed(4));
+    return normalized;
+  }
+
   private static async normalizeAudioToWAV(
     serverAudioPath: string,
     downloadedAudioPath: string,
