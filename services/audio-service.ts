@@ -173,7 +173,7 @@ export class AudioService {
 
       const waveFile = new wf.WaveFile(normalizedAudioBuffer);
 
-      const generatedWaveformJSON = this.generateWaveformJSON(waveFile);
+      const generatedWaveformJSONPath = this.generateWaveformJSON(waveFile);
 
       const generatedWaveformSVGPath = await this.generateWaveformSVG(waveFile);
 
@@ -182,7 +182,7 @@ export class AudioService {
         calculatedAudioIPFSHash,
         generatedMP3HighQualityAudioPath,
         generatedMP3LowQualityAudioPath,
-        generatedWaveformJSONPath: generatedWaveformSVGPath,
+        generatedWaveformJSONPath,
         generatedWaveformSVGPath,
       };
 
@@ -197,6 +197,7 @@ export class AudioService {
       calculatedAudioIPFSHash: string;
       generatedMP3HighQualityAudioPath: string;
       generatedMP3LowQualityAudioPath: string;
+      generatedWaveformJSONPath: string;
       generatedWaveformSVGPath: string;
     },
     trackDirectory: string,
