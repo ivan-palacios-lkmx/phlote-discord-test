@@ -153,38 +153,37 @@ export class AudioService {
     try {
       const trackDirectory = await this.prepareDirectoryForAudioProcessing(temporaryAudioFile.name);
 
-      const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
-
-      const normalizedAudioToWAV = await this.normalizeAudioToWAV(trackDirectory, audioBuffer);
+      const { normalizedAudioBuffer, normalizedAudioPath } = await this.normalizeAudioToWAV(
+        trackDirectory,
+        audioBuffer,
+      );
 
       const calculatedAudioIPFSHash =
-        await this.calculateIPFSHashFromWAVAudio(normalizedAudioToWAV);
+        await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
 
-      const generatedMP3HighQualityAudio = await this.generateMP3HighQualityAudio(
-        normalizedAudioToWAV,
+      const generatedMP3HighQualityAudioPath = await this.generateMP3HighQualityAudio(
+        normalizedAudioBuffer,
         trackDirectory,
       );
 
-      const generatedMP3LowQualityAudio = await this.generateMP3LowQualityAudio(
-        normalizedAudioToWAV,
+      const generatedMP3LowQualityAudioPath = await this.generateMP3LowQualityAudio(
+        normalizedAudioBuffer,
         trackDirectory,
       );
 
-      const waveFile = new wf.WaveFile(normalizedAudioToWAV);
+      const waveFile = new wf.WaveFile(normalizedAudioBuffer);
 
       const generatedWaveformJSON = this.generateWaveformJSON(waveFile);
 
-      const generatedWaveformSVG = await this.generateWaveformSVG(waveFile);
+      const generatedWaveformSVGPath = await this.generateWaveformSVG(waveFile);
 
       const audioProcessingResults = {
-        temporaryAudioFile,
-        temporaryAudioFileMetadata,
-        normalizedAudioToWAV,
+        loselessAudioPath: normalizedAudioPath,
         calculatedAudioIPFSHash,
-        generatedMP3HighQualityAudio,
-        generatedMP3LowQualityAudio,
-        generatedWaveformJSON,
-        generatedWaveformSVG,
+        generatedMP3HighQualityAudioPath,
+        generatedMP3LowQualityAudioPath,
+        generatedWaveformJSONPath: generatedWaveformSVGPath,
+        generatedWaveformSVGPath,
       };
 
       this.saveAudioToDatabaseAndBucket(audioProcessingResults, trackDirectory);
@@ -194,25 +193,23 @@ export class AudioService {
   }
   static async saveAudioToDatabaseAndBucket(
     audioProcessingResults: {
-      temporaryAudioFile: GCSFile;
-      temporaryAudioFileMetadata: FileMetadata;
-      normalizedAudioToWAV: string;
+      loselessAudioPath: string;
       calculatedAudioIPFSHash: string;
-      generatedMP3HighQualityAudio: string;
-      generatedMP3LowQualityAudio: string;
-      generatedWaveformSVG: string;
+      generatedMP3HighQualityAudioPath: string;
+      generatedMP3LowQualityAudioPath: string;
+      generatedWaveformSVGPath: string;
     },
     trackDirectory: string,
   ) {
     try {
       const bucket = this.getBucket();
-      await bucket.upload(audioProcessingResults.generatedMP3HighQualityAudio, {
+      await bucket.upload(audioProcessingResults.generatedMP3HighQualityAudioPath, {
         destination: `${trackDirectory}/audio.mp3`,
       });
-      await bucket.upload(audioProcessingResults.generatedMP3LowQualityAudio, {
+      await bucket.upload(audioProcessingResults.generatedMP3LowQualityAudioPath, {
         destination: `${trackDirectory}/audio-low.mp3`,
       });
-      await bucket.upload(audioProcessingResults.generatedWaveformSVG, {
+      await bucket.upload(audioProcessingResults.generatedWaveformSVGPath, {
         destination: `${trackDirectory}/waveform.svg`,
       });
     } catch (error) {
@@ -369,7 +366,7 @@ export class AudioService {
   private static async normalizeAudioToWAV(
     trackDirectory: string,
     audioBuffer: Buffer,
-  ): Promise<Buffer> {
+  ): Promise<{ normalizedAudioBuffer: Buffer; normalizedAudioPath: string }> {
     const normalizedLocalPath = `${trackDirectory}/normalized.wav`;
     const stream = await this.bufferToStream(audioBuffer);
     await new Promise<void>((res, rej) => {
@@ -382,7 +379,7 @@ export class AudioService {
         .run();
     });
     const normalizedAudioBuffer = await this.getBufferFromPath(normalizedLocalPath);
-    return normalizedAudioBuffer;
+    return { normalizedAudioBuffer, normalizedAudioPath: normalizedLocalPath };
   }
   private static async getMetadataFromAudioFile(
     temporaryAudioFile: GCSFile,
