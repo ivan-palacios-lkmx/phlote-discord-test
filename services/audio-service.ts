@@ -156,15 +156,16 @@ export class AudioService {
         audioBuffer,
       );
 
-      const waveFile = new WaveFile(normalizedAudioBuffer);
+      const waveFile = new WaveFile();
+      waveFile.fromBuffer(normalizedAudioBuffer);
 
       const isAudioSilent = await this.isWaveFileSilent(waveFile);
 
-      // if (isAudioSilent) {
-      //   console.log("processAudio: Audio detected as silent");
-      //   throw new Error("Audio file is silent");
-      //   return;
-      // }
+      if (isAudioSilent) {
+        console.log("processAudio: Audio detected as silent");
+        throw new Error("Audio file is silent");
+        return;
+      }
 
       const calculatedAudioIPFSHash =
         await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
@@ -236,9 +237,9 @@ export class AudioService {
 
   static async isWaveFileSilent(waveFile: WaveFile): Promise<boolean> {
     const samples = waveFile.getSamples();
-    const samplesArray = Array.isArray(samples[0]) ? (samples[0] as number[]) : [];
+    const samplesArray = Array.isArray(samples) ? (samples[0] as number[]) : [];
     const silentThreshold = 0.01;
-    const isSilent = samplesArray.every((sample) => sample < silentThreshold);
+    const isSilent = samplesArray.every((sample) => Math.abs(sample) < silentThreshold);
     return isSilent;
   }
 
@@ -409,6 +410,7 @@ export class AudioService {
     const normalizedAudioBuffer = await this.getBufferFromPath(normalizedLocalPath);
     return { normalizedAudioBuffer, normalizedAudioPath: normalizedLocalPath };
   }
+
   private static async getMetadataFromAudioFile(
     temporaryAudioFile: GCSFile,
   ): Promise<FileMetadata> {
