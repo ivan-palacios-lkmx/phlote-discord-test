@@ -71,5 +71,5 @@ export const sessionDetailsSchema = z.object({
   bpm: bpm,
 });
 
-export const allowedAudioFileExtensions = z.enum(["audio/wav", "audio/mp3"]);
+export const allowedAudioFileExtensions = z.enum(["audio/wav", "audio/mp3", "audio/mpeg"]);
 export const allowedAudioFileExtensionsSchema = allowedAudioFileExtensions;
