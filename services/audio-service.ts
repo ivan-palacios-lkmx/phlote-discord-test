@@ -238,7 +238,7 @@ export class AudioService {
   static async isWaveFileSilent(waveFile: WaveFile): Promise<boolean> {
     const samples = waveFile.getSamples();
     const samplesArray = Array.isArray(samples) ? (samples[0] as number[]) : [];
-    const silentThreshold = 0.01;
+    const silentThreshold = 100;
     const isSilent = samplesArray.every((sample) => Math.abs(sample) < silentThreshold);
     return isSilent;
   }
