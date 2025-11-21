@@ -17,7 +17,6 @@ import sharp from "sharp";
 import { Readable } from "stream";
 import { v4 as uuidv4 } from "uuid";
 import { WaveFile } from "wavefile";
-import wf from "wavefile";
 
 export class AudioService {
   static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
@@ -158,7 +157,7 @@ export class AudioService {
         audioBuffer,
       );
 
-      const waveFile = new wf.WaveFile(normalizedAudioBuffer);
+      const waveFile = new WaveFile(normalizedAudioBuffer);
 
       const isAudioSilent = await this.isWaveFileSilent(waveFile);
 
@@ -431,7 +430,9 @@ export class AudioService {
   }
 
   private static async cleanDirectoryIfExists(directoryPath: string): Promise<void> {
-    await fs.promises.rm(directoryPath, { recursive: true });
+    if (fs.existsSync(directoryPath)) {
+      await fs.promises.rm(directoryPath, { recursive: true });
+    }
   }
 
   private static async createDirectory(directoryPath: string): Promise<void> {
