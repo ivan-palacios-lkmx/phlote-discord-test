@@ -167,15 +167,15 @@ export class AudioService {
         return;
       }
 
-      const isAudioAlreadyProcessed = await this.isAudioAlreadyProcessed(normalizedAudioPath);
+      const calculatedAudioIPFSHash =
+        await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
+
+      const isAudioAlreadyProcessed = await this.isAudioAlreadyProcessed(calculatedAudioIPFSHash);
 
       if (isAudioAlreadyProcessed) {
         throw new Error("Audio file is already processed");
         return;
       }
-
-      const calculatedAudioIPFSHash =
-        await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
 
       const generatedMP3HighQualityAudioPath = await this.generateMP3HighQualityAudio(
         normalizedAudioBuffer,
