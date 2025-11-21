@@ -151,26 +151,26 @@ export class AudioService {
 
   static async processAudio(temporaryAudioFile: GCSFile, audioBuffer: Buffer): Promise<void> {
     try {
-      const serverAudioPath = await this.prepareDirectoryForAudioProcessing(
-        temporaryAudioFile.name,
-      );
+      const trackDirectory = await this.prepareDirectoryForAudioProcessing(temporaryAudioFile.name);
 
       const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
 
-      const normalizedAudioToWAV = await this.normalizeAudioToWAV(serverAudioPath, audioBuffer);
-
-      const normalizedAudioBuffer = await this.normalizeAudioToWAV(serverAudioPath, audioBuffer);
+      const normalizedAudioToWAV = await this.normalizeAudioToWAV(trackDirectory, audioBuffer);
 
       const calculatedAudioIPFSHash =
-        await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
+        await this.calculateIPFSHashFromWAVAudio(normalizedAudioToWAV);
 
-      const generatedMP3HighQualityAudio =
-        await this.generateMP3HighQualityAudio(normalizedAudioBuffer);
+      const generatedMP3HighQualityAudio = await this.generateMP3HighQualityAudio(
+        normalizedAudioToWAV,
+        trackDirectory,
+      );
 
-      const generatedMP3LowQualityAudio =
-        await this.generateMP3LowQualityAudio(normalizedAudioBuffer);
+      const generatedMP3LowQualityAudio = await this.generateMP3LowQualityAudio(
+        normalizedAudioToWAV,
+        trackDirectory,
+      );
 
-      const waveFile = new wf.WaveFile(normalizedAudioBuffer);
+      const waveFile = new wf.WaveFile(normalizedAudioToWAV);
 
       const generatedWaveformJSON = this.generateWaveformJSON(waveFile);
 
@@ -187,7 +187,7 @@ export class AudioService {
         generatedWaveformSVG,
       };
 
-      this.saveAudioToDatabaseAndBucket(audioProcessingResults, serverAudioPath);
+      this.saveAudioToDatabaseAndBucket(audioProcessingResults, trackDirectory);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
@@ -202,18 +202,18 @@ export class AudioService {
       generatedMP3LowQualityAudio: string;
       generatedWaveformSVG: string;
     },
-    serverAudioPath: string,
+    trackDirectory: string,
   ) {
     try {
       const bucket = this.getBucket();
       await bucket.upload(audioProcessingResults.generatedMP3HighQualityAudio, {
-        destination: `${serverAudioPath}/audio.mp3`,
+        destination: `${trackDirectory}/audio.mp3`,
       });
       await bucket.upload(audioProcessingResults.generatedMP3LowQualityAudio, {
-        destination: `${serverAudioPath}/audio-low.mp3`,
+        destination: `${trackDirectory}/audio-low.mp3`,
       });
       await bucket.upload(audioProcessingResults.generatedWaveformSVG, {
-        destination: `${serverAudioPath}/waveform.svg`,
+        destination: `${trackDirectory}/waveform.svg`,
       });
     } catch (error) {
       console.error("Error saving audio to database and bucket:", error);
@@ -390,14 +390,11 @@ export class AudioService {
     const [metadata] = await temporaryAudioFile.getMetadata();
     return metadata;
   }
-  private static async prepareDirectoryForAudioProcessing(
-    fileName: string,
-  ): Promise<{ localAudioPath: string; serverAudioPath: string }> {
-    const localAudioPath = `/tmp/audio-processing/${fileName}`;
-    const serverAudioPath = `audio/${fileName}`;
-    await this.cleanDirectoryIfExists(serverAudioPath);
-    await this.createDirectory(serverAudioPath);
-    return { localAudioPath, serverAudioPath };
+  private static async prepareDirectoryForAudioProcessing(fileName: string): Promise<string> {
+    const trackDirectory = `audio/${fileName}`;
+    await this.cleanDirectoryIfExists(trackDirectory);
+    await this.createDirectory(trackDirectory);
+    return trackDirectory;
   }
 
   private static async cleanDirectoryIfExists(directoryPath: string): Promise<void> {
