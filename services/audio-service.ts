@@ -167,6 +167,13 @@ export class AudioService {
         return;
       }
 
+      const isAudioAlreadyProcessed = await this.isAudioAlreadyProcessed(normalizedAudioPath);
+
+      if (isAudioAlreadyProcessed) {
+        throw new Error("Audio file is already processed");
+        return;
+      }
+
       const calculatedAudioIPFSHash =
         await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
 
@@ -237,6 +244,12 @@ export class AudioService {
 
   static async calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer): Promise<string> {
     return await Hash.of(normalizedAudioBuffer);
+  }
+
+  static async isAudioAlreadyProcessed(audioIPFSHash: string): Promise<boolean> {
+    const bucket = this.getBucket();
+    const [exists] = await bucket.file(`audio/${audioIPFSHash}/audio.wav`).exists();
+    return exists;
   }
 
   static async generateMP3HighQualityAudio(
