@@ -158,6 +158,15 @@ export class AudioService {
         audioBuffer,
       );
 
+      const waveFile = new wf.WaveFile(normalizedAudioBuffer);
+
+      const isAudioSilent = await this.isWaveFileSilent(waveFile);
+
+      if (isAudioSilent) {
+        throw new Error("Audio file is silent");
+        return;
+      }
+
       const calculatedAudioIPFSHash =
         await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
 
@@ -171,11 +180,9 @@ export class AudioService {
         trackDirectory,
       );
 
-      const waveFile = new wf.WaveFile(normalizedAudioBuffer);
+      const generatedWaveformJSONPath = await this.generateWaveformJSON(waveFile, trackDirectory);
 
-      const generatedWaveformJSONPath = this.generateWaveformJSON(waveFile);
-
-      const generatedWaveformSVGPath = await this.generateWaveformSVG(waveFile);
+      const generatedWaveformSVGPath = await this.generateWaveformSVG(waveFile, trackDirectory);
 
       const audioProcessingResults = {
         loselessAudioPath: normalizedAudioPath,
@@ -186,7 +193,7 @@ export class AudioService {
         generatedWaveformSVGPath,
       };
 
-      this.saveAudioToDatabaseAndBucket(audioProcessingResults, trackDirectory);
+      await this.saveAudioToDatabaseAndBucket(audioProcessingResults, trackDirectory);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
@@ -216,6 +223,13 @@ export class AudioService {
     } catch (error) {
       console.error("Error saving audio to database and bucket:", error);
     }
+  }
+
+  static async isWaveFileSilent(waveFile: WaveFile): Promise<boolean> {
+    const samples = waveFile.getSamples();
+    const samplesArray = Array.isArray(samples[0]) ? (samples[0] as number[]) : [];
+    const silentThreshold = 0.01;
+    return samplesArray.every((sample) => sample < silentThreshold);
   }
 
   static async calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer): Promise<string> {
@@ -265,15 +279,20 @@ export class AudioService {
     return mp3LowLocalPath;
   }
 
-  static generateWaveformJSON(waveFile: WaveFile) {
+  static async generateWaveformJSON(waveFile: WaveFile, trackDirectory: string): Promise<string> {
     const waveformData = this.makeWaveData(waveFile);
-    return waveformData;
+    const waveformJSONPath = `${trackDirectory}/waveform.json`;
+    await fs.promises.writeFile(waveformJSONPath, JSON.stringify(waveformData));
+    return waveformJSONPath;
   }
 
-  static async generateWaveformSVG(waveFile: WaveFile): Promise<string> {
+  static async generateWaveformSVG(waveFile: WaveFile, trackDirectory: string): Promise<string> {
     const waveformData = this.makeWaveData(waveFile);
     const samples = waveformData.map((v) => parseFloat(v));
-    return await this.makeWaveTrace(samples);
+    const waveformSVG = await this.makeWaveTrace(samples);
+    const waveformSVGPath = `${trackDirectory}/waveform.svg`;
+    await fs.promises.writeFile(waveformSVGPath, waveformSVG);
+    return waveformSVGPath;
   }
 
   private static samplesToSVG(samples: number[]): string {
@@ -352,7 +371,7 @@ export class AudioService {
     return finalSVG;
   }
 
-  static makeWaveData(wav: WaveFile, waveformResolution: number = 200): string[] {
+  static makeWaveData(wav: WaveFile, waveformResolution: number = 1200): string[] {
     const samplesArray = wav.getSamples();
     const samples = Array.isArray(samplesArray[0]) ? (samplesArray[0] as number[]) : [];
     const stepSize = Math.floor(samples.length / waveformResolution);
