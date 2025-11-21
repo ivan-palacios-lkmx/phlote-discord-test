@@ -340,7 +340,6 @@ export class AudioService {
     `;
   }
 
-  // TODO: check if the Wavetrace is correct
   private static async makeWaveTrace(samples: number[]): Promise<string> {
     const maxVal = Math.max(...samples);
     const normalizedSamples = samples.map((s) => s / (maxVal || 1));
