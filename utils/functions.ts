@@ -4,6 +4,7 @@ import {
   MessageComponentTypes,
 } from "discord-interactions";
 import { ButtonStyleTypes } from "discord-interactions";
+import fs from "fs";
 import ShortUniqueId from "short-unique-id";
 
 /**
@@ -185,4 +186,10 @@ export function formatProjectId(projectId: ShortUniqueId): string {
 
 export function getCurrentTimestampInMilliseconds(): number {
   return Date.now();
+}
+
+export function deleteDirectory(directoryPath: string): void {
+  if (fs.existsSync(directoryPath)) {
+    fs.rmdirSync(directoryPath, { recursive: true });
+  }
 }

@@ -2,19 +2,16 @@ import firebase from "@/lib/firebase-admin";
 import { AudioAction } from "@/types/api";
 import { SessionVersionDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
-import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
+import { deleteDirectory, getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import Hash from "ipfs-only-hash";
 import kebabCase from "lodash/kebabCase";
 import _max from "lodash/max";
-import _mean from "lodash/mean";
 import _range from "lodash/range";
 import _startCase from "lodash/startCase";
-import sharp from "sharp";
 import { Readable } from "stream";
-import { v4 as uuidv4 } from "uuid";
 import { WaveFile } from "wavefile";
 
 export class AudioService {
@@ -201,6 +198,8 @@ export class AudioService {
       };
 
       await this.saveAudioToDatabaseAndBucket(audioProcessingResults);
+
+      deleteDirectory(trackDirectory);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
@@ -324,17 +323,17 @@ export class AudioService {
     >
         <g>
             ${samples
-        .map((v) => v * 50)
-        .map((amp, i) => {
-          if (!amp) return "";
-          return `<rect
+              .map((v) => v * 50)
+              .map((amp, i) => {
+                if (!amp) return "";
+                return `<rect
                          x="${i * 4}"
                          y="${50 - amp}"
                          width="5"
                          height="${amp * 2}"
                      />`;
-        })
-        .join("")}
+              })
+              .join("")}
         </g>
     </svg>
     `;
@@ -353,13 +352,13 @@ export class AudioService {
 
     for (let i = 0; i < totalPoints; i++) {
       const x = i * step;
-      const y = (height / 2) - (normalizedSamples[i] * (height / 2));
+      const y = height / 2 - normalizedSamples[i] * (height / 2);
       pathD += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
     }
 
     for (let i = totalPoints - 1; i >= 0; i--) {
       const x = i * step;
-      const y = (height / 2) + (normalizedSamples[i] * (height / 2));
+      const y = height / 2 + normalizedSamples[i] * (height / 2);
       pathD += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
     }
 
@@ -381,7 +380,7 @@ export class AudioService {
 
   static makeWaveData(wav: WaveFile, waveformResolution: number = 1200): string[] {
     const allChannels = wav.getSamples();
-    const channelSamples = (allChannels as any)[0] || [];
+    const channelSamples = allChannels[0] || [];
 
     const totalSamples = channelSamples.length;
     const samplesPerPixel = Math.floor(totalSamples / waveformResolution);
@@ -399,7 +398,9 @@ export class AudioService {
     });
 
     const maxAmplitude = _max(averagedSamples);
-    const normalizedSamples = averagedSamples.map((amp) => ((amp || 0) / (maxAmplitude || 1)).toFixed(4));
+    const normalizedSamples = averagedSamples.map((amp) =>
+      ((amp || 0) / (maxAmplitude || 1)).toFixed(4),
+    );
     return normalizedSamples;
   }
 
