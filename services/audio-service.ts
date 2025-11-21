@@ -195,26 +195,43 @@ export class AudioService {
         generatedWaveformSVG,
       };
 
-      this.saveAudioToDatabaseAndBucket(audioProcessingResults);
+      this.saveAudioToDatabaseAndBucket(audioProcessingResults, serverAudioPath);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
   }
-  static saveAudioToDatabaseAndBucket(audioProcessingResults: {
-    temporaryAudioFile: GCSFile;
-    temporaryAudioFileMetadata: FileMetadata;
-    normalizedAudioToWAV: string;
-    calculatedAudioIPFSHash: string;
-    generatedMP3HighQualityAudio: unknown;
-    generatedMP3LowQualityAudio: unknown;
-    generatedWaveformJSON: unknown;
-    generatedWaveformSVG: unknown;
-  }) {
-    throw new Error("Method not implemented.");
+  static async saveAudioToDatabaseAndBucket(
+    audioProcessingResults: {
+      temporaryAudioFile: GCSFile;
+      temporaryAudioFileMetadata: FileMetadata;
+      normalizedAudioToWAV: string;
+      calculatedAudioIPFSHash: string;
+      generatedMP3HighQualityAudio: string;
+      generatedMP3LowQualityAudio: string;
+      generatedWaveformSVG: string;
+    },
+    serverAudioPath: string,
+  ) {
+    try {
+      const bucket = this.getBucket();
+      await bucket.upload(audioProcessingResults.generatedMP3HighQualityAudio, {
+        destination: `${serverAudioPath}/audio.mp3`,
+      });
+      await bucket.upload(audioProcessingResults.generatedMP3LowQualityAudio, {
+        destination: `${serverAudioPath}/audio-low.mp3`,
+      });
+      await bucket.upload(audioProcessingResults.generatedWaveformSVG, {
+        destination: `${serverAudioPath}/waveform.svg`,
+      });
+    } catch (error) {
+      console.error("Error saving audio to database and bucket:", error);
+    }
   }
+
   static async calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer): Promise<string> {
     return await Hash.of(normalizedAudioBuffer);
   }
+
   static async generateMP3HighQualityAudio(
     normLocalPath: string,
     serverAudioPath: string,
@@ -231,6 +248,7 @@ export class AudioService {
     });
     return mp3LocalPath;
   }
+
   static async generateMP3LowQualityAudio(
     normLocalPath: string,
     serverAudioPath: string,
@@ -369,11 +387,14 @@ export class AudioService {
     const [metadata] = await temporaryAudioFile.getMetadata();
     return metadata;
   }
-  private static async prepareDirectoryForAudioProcessing(fileName: string): Promise<string> {
-    const serverAudioPath = `/tmp/audio-processing/${fileName}`;
+  private static async prepareDirectoryForAudioProcessing(
+    fileName: string,
+  ): Promise<{ localAudioPath: string; serverAudioPath: string }> {
+    const localAudioPath = `/tmp/audio-processing/${fileName}`;
+    const serverAudioPath = `audio/${fileName}`;
     await this.cleanDirectoryIfExists(serverAudioPath);
     await this.createDirectory(serverAudioPath);
-    return serverAudioPath;
+    return { localAudioPath, serverAudioPath };
   }
 
   private static async cleanDirectoryIfExists(directoryPath: string): Promise<void> {
