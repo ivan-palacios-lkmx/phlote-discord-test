@@ -14,6 +14,7 @@ import _range from "lodash/range";
 import _startCase from "lodash/startCase";
 import potrace from "potrace";
 import sharp from "sharp";
+import { Readable } from "stream";
 import { v4 as uuidv4 } from "uuid";
 import { WaveFile } from "wavefile";
 import wf from "wavefile";
@@ -87,7 +88,7 @@ export class AudioService {
 
       const temporaryAudioFile = await this.uploadAudioToStorage(audioPath, audioBuffer);
       // We only start the audio process and we do not await it because we want to return the status immediately
-      this.startAudioProcessing(temporaryAudioFile);
+      this.startAudioProcessing(temporaryAudioFile, audioBuffer);
 
       return { tmpName: audioFilename, status: "processing" };
     } catch (error) {
@@ -105,9 +106,9 @@ export class AudioService {
     return { audioFilename, audioPath, audioBuffer };
   }
 
-  private static startAudioProcessing(temporaryAudioFile: GCSFile): void {
+  private static startAudioProcessing(temporaryAudioFile: GCSFile, audioBuffer: Buffer): void {
     // This is not awaited because we want to return the status immediately and process takes time
-    this.processAudio(temporaryAudioFile);
+    this.processAudio(temporaryAudioFile, audioBuffer);
   }
 
   static async uploadAudioToStorage(audioPath: string, audioBuffer: Buffer): Promise<GCSFile> {
@@ -148,35 +149,26 @@ export class AudioService {
     return Buffer.from(audioBuffer);
   }
 
-  static async processAudio(temporaryAudioFile: GCSFile): Promise<void> {
+  static async processAudio(temporaryAudioFile: GCSFile, audioBuffer: Buffer): Promise<void> {
     try {
       const serverAudioPath = await this.prepareDirectoryForAudioProcessing(
         temporaryAudioFile.name,
       );
-      const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
-      const downloadedAudioPath = await this.downloadAudioToLocal(
-        temporaryAudioFile,
-        serverAudioPath,
-      );
-      const normalizedAudioToWAV = await this.normalizeAudioToWAV(
-        serverAudioPath,
-        downloadedAudioPath,
-      );
 
-      const normalizedAudioBuffer = await this.getBufferFromPath(normalizedAudioToWAV);
+      const temporaryAudioFileMetadata = await this.getMetadataFromAudioFile(temporaryAudioFile);
+
+      const normalizedAudioToWAV = await this.normalizeAudioToWAV(serverAudioPath, audioBuffer);
+
+      const normalizedAudioBuffer = await this.normalizeAudioToWAV(serverAudioPath, audioBuffer);
 
       const calculatedAudioIPFSHash =
         await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
 
-      const generatedMP3HighQualityAudio = await this.generateMP3HighQualityAudio(
-        normalizedAudioToWAV,
-        serverAudioPath,
-      );
+      const generatedMP3HighQualityAudio =
+        await this.generateMP3HighQualityAudio(normalizedAudioBuffer);
 
-      const generatedMP3LowQualityAudio = await this.generateMP3LowQualityAudio(
-        normalizedAudioToWAV,
-        serverAudioPath,
-      );
+      const generatedMP3LowQualityAudio =
+        await this.generateMP3LowQualityAudio(normalizedAudioBuffer);
 
       const waveFile = new wf.WaveFile(normalizedAudioBuffer);
 
@@ -233,29 +225,38 @@ export class AudioService {
   }
 
   static async generateMP3HighQualityAudio(
-    normLocalPath: string,
-    serverAudioPath: string,
+    normalizedAudioBuffer: Buffer,
+    trackDirectory: string,
   ): Promise<string> {
-    const mp3LocalPath = `${serverAudioPath}/audio.mp3`;
+    const mp3HighQualityLocalPath = `${trackDirectory}/audio.mp3`;
+    const stream = await this.bufferToStream(normalizedAudioBuffer);
     await new Promise<void>((res, rej) => {
-      return ffmpeg(normLocalPath)
+      return ffmpeg(stream)
         .inputOptions([])
         .outputOptions(["-vn", "-ar 44100", "-ac 2", "-b:a 192k"])
-        .output(mp3LocalPath)
+        .output(mp3HighQualityLocalPath)
         .on("error", rej)
         .on("end", res)
         .run();
     });
-    return mp3LocalPath;
+    return mp3HighQualityLocalPath;
+  }
+
+  static async bufferToStream(buffer: Buffer): Promise<Readable> {
+    const stream = new Readable();
+    stream.push(buffer);
+    stream.push(null);
+    return stream;
   }
 
   static async generateMP3LowQualityAudio(
-    normLocalPath: string,
-    serverAudioPath: string,
+    normalizedAudioBuffer: Buffer,
+    trackDirectory: string,
   ): Promise<string> {
-    const mp3LowLocalPath = `${serverAudioPath}/audio-low.mp3`;
+    const mp3LowLocalPath = `${trackDirectory}/audio-low.mp3`;
+    const stream = await this.bufferToStream(normalizedAudioBuffer);
     await new Promise<void>((res, rej) => {
-      return ffmpeg(normLocalPath)
+      return ffmpeg(stream)
         .inputOptions([])
         .outputOptions(["-vn", "-codec:a libmp3lame", "-q:a 7"])
         .output(mp3LowLocalPath)
@@ -366,12 +367,13 @@ export class AudioService {
   }
 
   private static async normalizeAudioToWAV(
-    serverAudioPath: string,
-    downloadedAudioPath: string,
-  ): Promise<string> {
-    const normalizedLocalPath = `${serverAudioPath}/normalized.wav`;
+    trackDirectory: string,
+    audioBuffer: Buffer,
+  ): Promise<Buffer> {
+    const normalizedLocalPath = `${trackDirectory}/normalized.wav`;
+    const stream = await this.bufferToStream(audioBuffer);
     await new Promise<void>((res, rej) => {
-      return ffmpeg(downloadedAudioPath)
+      return ffmpeg(stream)
         .inputOptions([])
         .outputOptions(["-bitexact", "-acodec pcm_s16le", "-ar 44100", "-ac 2"])
         .output(normalizedLocalPath)
@@ -379,7 +381,8 @@ export class AudioService {
         .on("end", res)
         .run();
     });
-    return normalizedLocalPath;
+    const normalizedAudioBuffer = await this.getBufferFromPath(normalizedLocalPath);
+    return normalizedAudioBuffer;
   }
   private static async getMetadataFromAudioFile(
     temporaryAudioFile: GCSFile,
