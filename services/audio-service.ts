@@ -193,32 +193,35 @@ export class AudioService {
         generatedWaveformSVGPath,
       };
 
-      await this.saveAudioToDatabaseAndBucket(audioProcessingResults, trackDirectory);
+      await this.saveAudioToDatabaseAndBucket(audioProcessingResults);
     } catch (error) {
       console.error("Error processing audio:", error);
     }
   }
-  static async saveAudioToDatabaseAndBucket(
-    audioProcessingResults: {
-      loselessAudioPath: string;
-      calculatedAudioIPFSHash: string;
-      generatedMP3HighQualityAudioPath: string;
-      generatedMP3LowQualityAudioPath: string;
-      generatedWaveformJSONPath: string;
-      generatedWaveformSVGPath: string;
-    },
-    trackDirectory: string,
-  ) {
+  static async saveAudioToDatabaseAndBucket(audioProcessingResults: {
+    loselessAudioPath: string;
+    calculatedAudioIPFSHash: string;
+    generatedMP3HighQualityAudioPath: string;
+    generatedMP3LowQualityAudioPath: string;
+    generatedWaveformJSONPath: string;
+    generatedWaveformSVGPath: string;
+  }) {
     try {
       const bucket = this.getBucket();
       await bucket.upload(audioProcessingResults.generatedMP3HighQualityAudioPath, {
-        destination: `${trackDirectory}/audio.mp3`,
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio.mp3`,
       });
       await bucket.upload(audioProcessingResults.generatedMP3LowQualityAudioPath, {
-        destination: `${trackDirectory}/audio-low.mp3`,
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio-low.mp3`,
       });
       await bucket.upload(audioProcessingResults.generatedWaveformSVGPath, {
-        destination: `${trackDirectory}/waveform.svg`,
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
+      });
+      await bucket.upload(audioProcessingResults.generatedWaveformJSONPath, {
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
+      });
+      await bucket.upload(audioProcessingResults.loselessAudioPath, {
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio.wav`,
       });
     } catch (error) {
       console.error("Error saving audio to database and bucket:", error);
