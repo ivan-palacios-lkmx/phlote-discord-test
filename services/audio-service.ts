@@ -12,7 +12,6 @@ import _max from "lodash/max";
 import _mean from "lodash/mean";
 import _range from "lodash/range";
 import _startCase from "lodash/startCase";
-import potrace from "potrace";
 import sharp from "sharp";
 import { Readable } from "stream";
 import { v4 as uuidv4 } from "uuid";
@@ -161,10 +160,11 @@ export class AudioService {
 
       const isAudioSilent = await this.isWaveFileSilent(waveFile);
 
-      if (isAudioSilent) {
-        throw new Error("Audio file is silent");
-        return;
-      }
+      // if (isAudioSilent) {
+      //   console.log("processAudio: Audio detected as silent");
+      //   throw new Error("Audio file is silent");
+      //   return;
+      // }
 
       const calculatedAudioIPFSHash =
         await this.calculateIPFSHashFromWAVAudio(normalizedAudioBuffer);
@@ -238,7 +238,8 @@ export class AudioService {
     const samples = waveFile.getSamples();
     const samplesArray = Array.isArray(samples[0]) ? (samples[0] as number[]) : [];
     const silentThreshold = 0.01;
-    return samplesArray.every((sample) => sample < silentThreshold);
+    const isSilent = samplesArray.every((sample) => sample < silentThreshold);
+    return isSilent;
   }
 
   static async calculateIPFSHashFromWAVAudio(normalizedAudioBuffer: Buffer): Promise<string> {
@@ -322,68 +323,60 @@ export class AudioService {
     >
         <g>
             ${samples
-              .map((v) => v * 50)
-              .map((amp, i) => {
-                if (!amp) return "";
-                return `<rect
+        .map((v) => v * 50)
+        .map((amp, i) => {
+          if (!amp) return "";
+          return `<rect
                          x="${i * 4}"
                          y="${50 - amp}"
                          width="5"
                          height="${amp * 2}"
                      />`;
-              })
-              .join("")}
+        })
+        .join("")}
         </g>
     </svg>
     `;
   }
 
+  // TODO: check if the Wavetrace is correct
   private static async makeWaveTrace(samples: number[]): Promise<string> {
-    const jobID = uuidv4();
-    const jobPath = `/tmp/${jobID}`;
-    await fs.promises.rm(jobPath, { recursive: true }).catch(() => {});
-    await fs.promises.mkdir(jobPath, { recursive: true });
+    const maxVal = Math.max(...samples);
+    const normalizedSamples = samples.map((s) => s / (maxVal || 1));
 
-    await sharp(Buffer.from(this.samplesToSVG(samples))).toFile(`${jobPath}/flattened.png`);
+    const width = 4800;
+    const height = 200;
+    const totalPoints = normalizedSamples.length;
+    const step = width / totalPoints;
 
-    const finalSVG = await new Promise<string>((res, rej) => {
-      potrace.trace(
-        `${jobPath}/flattened.png`,
-        {
-          threshold: 128,
-          color: "#000",
-        },
-        function (err: Error | null, svg: string) {
-          if (err) {
-            rej(new Error(String(err)));
-            return;
-          }
-          const reg = /path d="([^"]+)/i;
-          const matches = svg.match(reg);
-          if (!matches || !matches[1]) {
-            rej(new Error("Could not extract path from SVG"));
-            return;
-          }
-          const pathD = matches[1];
-          const slug = Math.random().toString(36).slice(2);
-          return res(
-            `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="4800" height="200" viewBox="0 0 4800 200" preserveAspectRatio="none" version="1.1">
-                        <mask id="masker-${slug}">
-                            <rect x="0" y="0" width="4800" height="200" fill="white" />
-                            <path d="${pathD}" fill="black" />
-                        </mask>
-                        <rect class="silence" mask="url(#masker-${slug})" x="0" y="99" width="4800" height="2" fill="currentColor" />
-                        <path class="blobs" d="${pathD}" fill="currentColor" />
-                    </svg>
-                `.trim(),
-          );
-        },
-      );
-    });
+    let pathD = `M 0 ${height / 2}`;
 
-    await fs.promises.rm(jobPath, { recursive: true }).catch(() => {});
-    return finalSVG;
+    for (let i = 0; i < totalPoints; i++) {
+      const x = i * step;
+      const y = (height / 2) - (normalizedSamples[i] * (height / 2));
+      pathD += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+    }
+
+    for (let i = totalPoints - 1; i >= 0; i--) {
+      const x = i * step;
+      const y = (height / 2) + (normalizedSamples[i] * (height / 2));
+      pathD += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+    }
+
+    pathD += " Z";
+
+    const slug = Math.random().toString(36).slice(2);
+
+    return `
+            <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" version="1.1">
+                <mask id="masker-${slug}">
+                    <rect x="0" y="0" width="${width}" height="${height}" fill="white" />
+                    <path d="${pathD}" fill="black" />
+                </mask>
+                <rect class="silence" mask="url(#masker-${slug})" x="0" y="${height / 2 - 1}" width="${width}" height="2" fill="currentColor" />
+                <path class="blobs" d="${pathD}" fill="currentColor" />
+            </svg>
+        `.trim();
   }
 
   static makeWaveData(wav: WaveFile, waveformResolution: number = 1200): string[] {
