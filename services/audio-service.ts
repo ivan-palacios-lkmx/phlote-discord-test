@@ -264,7 +264,7 @@ export class AudioService {
         .outputOptions(["-vn", "-ar 44100", "-ac 2", "-b:a 192k"])
         .output(mp3HighQualityLocalPath)
         .on("error", rej)
-        .on("end", res)
+        .on("end", () => res())
         .run();
     });
     return mp3HighQualityLocalPath;
@@ -289,7 +289,7 @@ export class AudioService {
         .outputOptions(["-vn", "-codec:a libmp3lame", "-q:a 7"])
         .output(mp3LowLocalPath)
         .on("error", rej)
-        .on("end", res)
+        .on("end", () => res())
         .run();
     });
     return mp3LowLocalPath;
@@ -411,7 +411,7 @@ export class AudioService {
         .outputOptions(["-bitexact", "-acodec pcm_s16le", "-ar 44100", "-ac 2"])
         .output(normalizedLocalPath)
         .on("error", rej)
-        .on("end", res)
+        .on("end", () => res())
         .run();
     });
     const normalizedAudioBuffer = await this.getBufferFromPath(normalizedLocalPath);
