@@ -381,15 +381,27 @@ export class AudioService {
   }
 
   static makeWaveData(wav: WaveFile, waveformResolution: number = 1200): string[] {
-    const samplesArray = wav.getSamples();
-    const samples = Array.isArray(samplesArray[0]) ? (samplesArray[0] as number[]) : [];
-    const stepSize = Math.floor(samples.length / waveformResolution);
-    const resampled = _range(waveformResolution).map((i) =>
-      _mean(samples.slice(i * stepSize, (i + 1) * stepSize).map(Math.abs)),
-    );
-    const newMax = _max(resampled);
-    const normalized = resampled.map((s) => ((s || 0) / (newMax || 1)).toFixed(4));
-    return normalized;
+    const allChannels = wav.getSamples();
+    const channelSamples = (allChannels as any)[0] || [];
+
+    const totalSamples = channelSamples.length;
+    const samplesPerPixel = Math.floor(totalSamples / waveformResolution);
+
+    const averagedSamples = _range(waveformResolution).map((i) => {
+      const start = i * samplesPerPixel;
+      const end = (i + 1) * samplesPerPixel;
+      const chunk = channelSamples.slice(start, end);
+
+      let sum = 0;
+      for (let j = 0; j < chunk.length; j++) {
+        sum += Math.abs(chunk[j]);
+      }
+      return chunk.length > 0 ? sum / chunk.length : 0;
+    });
+
+    const maxAmplitude = _max(averagedSamples);
+    const normalizedSamples = averagedSamples.map((amp) => ((amp || 0) / (maxAmplitude || 1)).toFixed(4));
+    return normalizedSamples;
   }
 
   private static async normalizeAudioToWAV(
