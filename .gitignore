@@ -47,3 +47,6 @@ firebase/**/node_modules
 
 # functions
 firebase/functions/node_modules
+
+# audio tmp
+audio/tmp/**
