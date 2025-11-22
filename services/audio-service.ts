@@ -1,9 +1,10 @@
-import firebase from "@/lib/firebase-admin";
-import { AudioAction } from "@/types/api";
+import firebase, { adminDb } from "@/lib/firebase-admin";
+import { AudioAction, AudioProcessingStatus } from "@/types/api";
 import { SessionVersionDoc } from "@/types/database";
-import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
+import { SIGNED_URL_EXPIRATION_TIME_IN_MS, TEMPORARY_AUDIO_COLLECTION } from "@/utils/constants";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
+import { FieldValue } from "firebase-admin/firestore";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import Hash from "ipfs-only-hash";
@@ -81,9 +82,14 @@ export class AudioService {
     try {
       const { audioFilename, audioPath, audioBuffer } = await this.prepareAudioForUpload(audioFile);
 
+      await adminDb.collection("audio_uploads").doc(audioFilename).set({
+        status: "processing",
+        created: FieldValue.serverTimestamp(),
+      });
+
       const temporaryAudioFile = await this.uploadAudioToStorage(audioPath, audioBuffer);
       // We only start the audio process and we do not await it because we want to return the status immediately
-      this.startAudioProcessing(temporaryAudioFile, audioBuffer);
+      this.startAudioProcessing(temporaryAudioFile, audioBuffer, audioFilename);
 
       return { tmpName: audioFilename, status: "processing" };
     } catch (error) {
@@ -101,9 +107,13 @@ export class AudioService {
     return { audioFilename, audioPath, audioBuffer };
   }
 
-  private static startAudioProcessing(temporaryAudioFile: GCSFile, audioBuffer: Buffer): void {
+  private static startAudioProcessing(
+    temporaryAudioFile: GCSFile,
+    audioBuffer: Buffer,
+    audioFilename: string,
+  ): void {
     // This is not awaited because we want to return the status immediately and process takes time
-    this.processAudio(temporaryAudioFile, audioBuffer);
+    this.processAudio(temporaryAudioFile, audioBuffer, audioFilename);
   }
 
   static async uploadAudioToStorage(audioPath: string, audioBuffer: Buffer): Promise<GCSFile> {
@@ -144,9 +154,15 @@ export class AudioService {
     return Buffer.from(audioBuffer);
   }
 
-  static async processAudio(temporaryAudioFile: GCSFile, audioBuffer: Buffer): Promise<void> {
+  static async processAudio(
+    temporaryAudioFile: GCSFile,
+    audioBuffer: Buffer,
+    audioFilename: string,
+  ): Promise<void> {
+    // the track directory is defined here because it is used in the finally block, there we do the existence check
+    let trackDirectory: string | null = null;
     try {
-      const trackDirectory = await this.prepareDirectoryForAudioProcessing(temporaryAudioFile.name);
+      trackDirectory = await this.prepareDirectoryForAudioProcessing(temporaryAudioFile.name);
 
       const { normalizedAudioBuffer, normalizedAudioPath } = await this.normalizeAudioToWAV(
         trackDirectory,
@@ -170,7 +186,7 @@ export class AudioService {
       const isAudioAlreadyProcessed = await this.isAudioAlreadyProcessed(calculatedAudioIPFSHash);
 
       if (isAudioAlreadyProcessed) {
-        throw new Error("Audio file is already processed");
+        await this.updateAudioProcessingStatus(audioFilename, "ready", calculatedAudioIPFSHash);
         return;
       }
 
@@ -198,8 +214,15 @@ export class AudioService {
       };
 
       await this.saveAudioToDatabaseAndBucket(audioProcessingResults);
+
+      await this.updateAudioProcessingStatus(audioFilename, "ready", calculatedAudioIPFSHash);
     } catch (error) {
       console.error("Error processing audio:", error);
+      await this.updateAudioProcessingStatus(audioFilename, "failed", "");
+    } finally {
+      if (trackDirectory) {
+        await this.deleteDirectory(trackDirectory);
+      }
     }
   }
   static async saveAudioToDatabaseAndBucket(audioProcessingResults: {
@@ -457,5 +480,22 @@ export class AudioService {
     const downloadedAudioPath = `${serverAudioPath}/source.${fileExtension}`;
     await temporaryAudioFile.download({ destination: downloadedAudioPath });
     return downloadedAudioPath;
+  }
+
+  private static async deleteDirectory(directoryPath: string): Promise<void> {
+    await fs.promises.rm(directoryPath, { recursive: true });
+  }
+
+  private static async updateAudioProcessingStatus(
+    audioFilename: string,
+    status: AudioProcessingStatus,
+    hash: string,
+  ): Promise<void> {
+    if (audioFilename) {
+      await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).update({
+        status,
+        hash,
+      });
+    }
   }
 }

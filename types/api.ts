@@ -47,3 +47,5 @@ export interface SessionDetails {
   tags: string[];
   bpm: number;
 }
+
+export type AudioProcessingStatus = "pending" | "processing" | "ready" | "failed";
