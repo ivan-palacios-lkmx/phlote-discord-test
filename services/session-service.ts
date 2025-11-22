@@ -52,9 +52,7 @@ export class SessionService {
     const newVersion: VersionDoc = {
       ...versionDetails,
       sessionID,
-      created: new Date(),
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      created: serverTimestamp(),
     };
 
     await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId).set(newVersion);

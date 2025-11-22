@@ -155,7 +155,7 @@ export interface AlgoliaSession extends SessionDoc {
  */
 export interface VersionDoc {
   /** Date the version was created */
-  created: Date | string;
+  created: FieldValue | string;
   /** Creator address */
   creator: string;
   /** ID of the parent session */
@@ -180,10 +180,6 @@ export interface VersionDoc {
   playCount?: number;
   /** Total number of downloads for this version */
   downloadCount?: number;
-  /** Date the version was last updated */
-  updatedAt?: FieldValue;
-  /** Date the version was created */
-  createdAt?: FieldValue;
 }
 export interface VersionDocWithID extends WithID, VersionDoc {}
 
