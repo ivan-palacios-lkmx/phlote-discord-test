@@ -1,6 +1,6 @@
 import { adminDb } from "@/lib/firebase-admin";
 import { SessionDetails } from "@/types/api";
-import { ActivityDocWithID, SessionDoc, SessionVersionDocWithID } from "@/types/database";
+import { ActivityDocWithID, SessionDoc, VersionDocWithID } from "@/types/database";
 import { ACTIVITY_COLLECTION, SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
@@ -22,17 +22,25 @@ export class SessionService {
     return getIDAndDocumentDataFromDocumentSnapshot<SessionDoc>(sessionDoc) || null;
   }
 
-  static async getSessionVersions(sessionID: string): Promise<SessionVersionDocWithID[]> {
+  static async getSessionVersions(sessionID: string): Promise<VersionDocWithID[]> {
     const versionsSnapshot = await adminDb
       .collection(SESSION_VERSIONS_COLLECTION)
       .where("sessionID", "==", sessionID)
       .get();
-    return getDocumentDataFromQuerySnapshot<SessionVersionDocWithID>(versionsSnapshot);
+    return getDocumentDataFromQuerySnapshot<VersionDocWithID>(versionsSnapshot);
   }
 
-  static async getVersion(versionID: string): Promise<SessionVersionDocWithID | null> {
+  // Versions Logic
+  static async getVersion(versionID: string): Promise<VersionDocWithID | null> {
     const versionDoc = await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionID).get();
-    return getIDAndDocumentDataFromDocumentSnapshot<SessionVersionDocWithID>(versionDoc) || null;
+    return getIDAndDocumentDataFromDocumentSnapshot<VersionDocWithID>(versionDoc) || null;
+  }
+
+  static async createVersion(
+    sessionID: string,
+    versionDetails: VersionDocWithID,
+  ): Promise<VersionDocWithID | null> {
+    return null;
   }
 
   static async getSessionActivity(

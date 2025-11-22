@@ -3,13 +3,13 @@
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
-import { SessionDoc, SessionVersionDoc } from "@/types/database";
+import { SessionDoc, VersionDoc } from "@/types/database";
 
 import "./SessionDetailTitle.scss";
 
 interface SessionDetailTitleProps {
   session: SessionDoc;
-  version: SessionVersionDoc;
+  version: VersionDoc;
 }
 
 export default function SessionDetailTitle({ session, version }: SessionDetailTitleProps) {

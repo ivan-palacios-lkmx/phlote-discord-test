@@ -153,7 +153,7 @@ export interface AlgoliaSession extends SessionDoc {
  * This interface is stored in Firestore and represents a specific version of a music session,
  * including its audio files (bounce and stems), metadata, collaboration data, and statistics.
  */
-export interface SessionVersionDoc {
+export interface VersionDoc {
   /** Date the version was created */
   created: Date | string;
   /** Creator address */
@@ -181,15 +181,18 @@ export interface SessionVersionDoc {
   /** Total number of downloads for this version */
   downloadCount?: number;
 }
-export interface SessionVersionDocWithID extends WithID, SessionVersionDoc {}
+export interface VersionDocWithID extends WithID, VersionDoc {}
+
+export type VersionDetails = Omit<VersionDoc, "created">;
+
 /**
- * AlgoliaSessionVersion extends SessionVersionDoc with an objectID field.
+ * AlgoliaVersion extends VersionDoc with an objectID field.
  *
  * This interface represents version documents returned from Algolia search results.
  * The objectID is used as a unique identifier and can be used to reference the version
  * in various parts of the application (e.g., building URLs, document references).
  */
-export interface AlgoliaSessionVersion extends SessionVersionDoc {
+export interface AlgoliaVersion extends VersionDoc {
   /** Unique identifier for the version, typically the same as the version ID */
   objectID: string;
 }

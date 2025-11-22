@@ -1,6 +1,6 @@
 import firebase, { adminDb } from "@/lib/firebase-admin";
 import { AudioAction, AudioProcessingStatus } from "@/types/api";
-import { SessionVersionDoc } from "@/types/database";
+import { VersionDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS, TEMPORARY_AUDIO_COLLECTION } from "@/utils/constants";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
@@ -16,7 +16,7 @@ import { Readable } from "stream";
 import { WaveFile } from "wavefile";
 
 export class AudioService {
-  static getStemsHashesFromVersion(version: SessionVersionDoc): string[] {
+  static getStemsHashesFromVersion(version: VersionDoc): string[] {
     return version.stems.map((stem: { id: string }) => stem.id);
   }
 
@@ -458,5 +458,9 @@ export class AudioService {
         hash,
       });
     }
+  }
+
+  static async deleteTemporaryDocument(audioFilename: string): Promise<void> {
+    await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).delete();
   }
 }

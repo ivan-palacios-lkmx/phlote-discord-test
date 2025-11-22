@@ -17,3 +17,20 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const sessionID = params.id;
+
+    if (!sessionID) {
+      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
+    }
+
+    const version = await SessionService.createVersion(sessionID);
+
+    return NextResponse.json(version, { status: 200 });
+  } catch (error) {
+    console.error("Error creating version:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
