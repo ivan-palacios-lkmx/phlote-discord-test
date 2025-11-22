@@ -332,34 +332,6 @@ export class AudioService {
     return waveformSVGPath;
   }
 
-  private static samplesToSVG(samples: number[]): string {
-    const resolution = samples.length;
-    return `
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-        viewBox="0 0 ${resolution * 4} 100"
-        width="${resolution * 4}"
-        height="200"
-    >
-        <g>
-            ${samples
-              .map((v) => v * 50)
-              .map((amp, i) => {
-                if (!amp) return "";
-                return `<rect
-                         x="${i * 4}"
-                         y="${50 - amp}"
-                         width="5"
-                         height="${amp * 2}"
-                     />`;
-              })
-              .join("")}
-        </g>
-    </svg>
-    `;
-  }
-
   private static async makeWaveTrace(samples: number[]): Promise<string> {
     const maxVal = Math.max(...samples);
     const normalizedSamples = samples.map((s) => s / (maxVal || 1));
