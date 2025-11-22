@@ -443,17 +443,6 @@ export class AudioService {
     return await fs.promises.readFile(filePath);
   }
 
-  private static async downloadAudioToLocal(
-    temporaryAudioFile: GCSFile,
-    serverAudioPath: string,
-  ): Promise<string> {
-    const fileNameFromPath = temporaryAudioFile.name.split("/").pop() || "audio";
-    const fileExtension = fileNameFromPath.split(".").pop() || "wav";
-    const downloadedAudioPath = `${serverAudioPath}/source.${fileExtension}`;
-    await temporaryAudioFile.download({ destination: downloadedAudioPath });
-    return downloadedAudioPath;
-  }
-
   private static async deleteDirectory(directoryPath: string): Promise<void> {
     await fs.promises.rm(directoryPath, { recursive: true });
   }
