@@ -1,5 +1,7 @@
 import { FieldValue, Timestamp } from "firebase/firestore";
 
+import { AudioProcessingStatus } from "./api";
+
 export interface WithID {
   id: string;
 }
@@ -321,4 +323,13 @@ export interface SubscriberDoc {
   subscribed?: Date | string;
   /** @deprecated Error message if subscription failed */
   error?: string;
+}
+
+export interface TemporaryAudioDoc {
+  /** Date the temporary audio was created */
+  created: Date | string;
+  /** Hash of the temporary audio */
+  hash: string;
+  /** Status of the temporary audio */
+  status: AudioProcessingStatus;
 }

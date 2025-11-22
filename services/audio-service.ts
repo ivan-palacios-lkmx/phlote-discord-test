@@ -1,7 +1,9 @@
 import firebase, { adminDb } from "@/lib/firebase-admin";
 import { AudioAction, AudioProcessingStatus } from "@/types/api";
 import { VersionDoc } from "@/types/database";
+import { TemporaryAudioDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS, TEMPORARY_AUDIO_COLLECTION } from "@/utils/constants";
+import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queries";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
 import { FieldValue } from "firebase-admin/firestore";
@@ -460,7 +462,46 @@ export class AudioService {
     }
   }
 
-  static async deleteTemporaryDocument(audioFilename: string): Promise<void> {
+  static async deleteTemporaryAudioReference(audioFilename: string): Promise<void> {
     await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).delete();
+  }
+
+  static async getDirectoryHash(filename: string): Promise<string | undefined> {
+    try {
+      const temporaryAudioFileDocSnapshot = await adminDb
+        .collection(TEMPORARY_AUDIO_COLLECTION)
+        .doc(filename)
+        .get();
+
+      if (!temporaryAudioFileDocSnapshot.exists) {
+        throw new Error(`No temporary audio file found for filename: ${filename}`);
+      }
+
+      const data = getIDAndDocumentDataFromDocumentSnapshot<TemporaryAudioDoc>(
+        temporaryAudioFileDocSnapshot,
+      );
+
+      if (data?.status === "processing") {
+        throw new Error(`Audio file ${filename} is still being processed`);
+      }
+      if (data?.status === "failed") {
+        throw new Error(`Audio file ${filename} failed to process`);
+      }
+      if (data?.status === "pending") {
+        throw new Error(`Audio file ${filename} is pending`);
+      }
+
+      return data?.hash;
+    } catch (error) {
+      console.error(`Error getting directory hash for filename: ${filename}`, error);
+      return "";
+    }
+  }
+
+  static async getDirectoryHashes(filenames: string[]): Promise<string[]> {
+    const directoryHashes = await Promise.all(
+      filenames.map((filename) => this.getDirectoryHash(filename)),
+    );
+    return directoryHashes.filter((hash): hash is string => !!hash);
   }
 }

@@ -18,6 +18,8 @@ import { DocumentReference, Transaction } from "firebase-admin/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import ShortUniqueId from "short-unique-id";
 
+import { AudioService } from "./audio-service";
+
 export class SessionService {
   static async getSessions(): Promise<SessionDoc[]> {
     const sessionsSnapshot = await adminDb.collection(SESSIONS_COLLECTION).get();
@@ -46,11 +48,28 @@ export class SessionService {
   static async createVersion(
     sessionID: string,
     versionDetails: VersionDetails,
+    stemsTemporaryFileNames: string[],
+    stemCannonicalNames: string[],
+    bounceTemporaryFileName: string,
   ): Promise<VersionDocWithID | null> {
     const versionId = await this.createProjectId("version");
 
+    const stemsHashes = await AudioService.getDirectoryHashes(stemsTemporaryFileNames);
+    const bounce = await AudioService.getDirectoryHash(bounceTemporaryFileName);
+
+    if (!stemsHashes || !bounce) {
+      throw new Error("Stems or bounce not found");
+    }
+
+    const stems = stemsHashes.map((hash, index) => ({
+      id: hash,
+      name: stemCannonicalNames[index],
+    }));
+
     const newVersion: VersionDoc = {
       ...versionDetails,
+      stems,
+      bounce,
       sessionID,
       created: serverTimestamp(),
     };
