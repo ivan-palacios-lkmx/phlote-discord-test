@@ -4,19 +4,12 @@ import { AudioAction } from "@/types/api";
 import { audioActionSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { versionId: string; sessionId: string } },
-) {
+export async function GET(request: NextRequest, { params }: { params: { versionId: string } }) {
   try {
     const versionID = params.versionId;
-    const sessionID = params.sessionId;
 
-    if (!versionID || !sessionID) {
-      return NextResponse.json(
-        { error: "Version ID and session ID are required" },
-        { status: 400 },
-      );
+    if (!versionID) {
+      return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
     }
 
     const action = request.nextUrl.searchParams.get("action");
@@ -25,11 +18,7 @@ export async function GET(
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
 
-    if (!versionID) {
-      return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
-    }
-
-    const version = await SessionService.getSessionVersion(versionID);
+    const version = await SessionService.getVersion(versionID);
 
     if (!version?.bounce) {
       return NextResponse.json({ error: "Version bounce not found" }, { status: 404 });

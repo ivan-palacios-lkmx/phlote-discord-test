@@ -30,7 +30,7 @@ export class SessionService {
     return getDocumentDataFromQuerySnapshot<SessionVersionDocWithID>(versionsSnapshot);
   }
 
-  static async getSessionVersion(versionID: string): Promise<SessionVersionDocWithID | null> {
+  static async getVersion(versionID: string): Promise<SessionVersionDocWithID | null> {
     const versionDoc = await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionID).get();
     return getIDAndDocumentDataFromDocumentSnapshot<SessionVersionDocWithID>(versionDoc) || null;
   }
