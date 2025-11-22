@@ -132,6 +132,7 @@ export class SessionService {
     });
   }
 
+  // This method is used to create the first version of a session in a transaction.
   private static createVersionDocumentForTransaction(
     transaction: Transaction,
     versionId: string,
