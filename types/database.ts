@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore";
+import { FieldValue, Timestamp } from "firebase/firestore";
 
 export interface WithID {
   id: string;
@@ -180,10 +180,14 @@ export interface VersionDoc {
   playCount?: number;
   /** Total number of downloads for this version */
   downloadCount?: number;
+  /** Date the version was last updated */
+  updatedAt?: FieldValue;
+  /** Date the version was created */
+  createdAt?: FieldValue;
 }
 export interface VersionDocWithID extends WithID, VersionDoc {}
 
-export type VersionDetails = Omit<VersionDoc, "created">;
+export type VersionDetails = Omit<VersionDoc, "created" | "sessionID">;
 
 /**
  * AlgoliaVersion extends VersionDoc with an objectID field.

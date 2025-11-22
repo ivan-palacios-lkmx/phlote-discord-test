@@ -1,6 +1,12 @@
 import { adminDb } from "@/lib/firebase-admin";
 import { SessionDetails } from "@/types/api";
-import { ActivityDocWithID, SessionDoc, VersionDocWithID } from "@/types/database";
+import {
+  ActivityDocWithID,
+  SessionDoc,
+  VersionDetails,
+  VersionDoc,
+  VersionDocWithID,
+} from "@/types/database";
 import { ACTIVITY_COLLECTION, SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
@@ -9,6 +15,7 @@ import {
 } from "@/utils/firebase-queries";
 import { formatProjectId } from "@/utils/functions";
 import { DocumentReference, Transaction } from "firebase-admin/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import ShortUniqueId from "short-unique-id";
 
 export class SessionService {
@@ -38,9 +45,21 @@ export class SessionService {
 
   static async createVersion(
     sessionID: string,
-    versionDetails: VersionDocWithID,
+    versionDetails: VersionDetails,
   ): Promise<VersionDocWithID | null> {
-    return null;
+    const versionId = await this.createProjectId("version");
+
+    const newVersion: VersionDoc = {
+      ...versionDetails,
+      sessionID,
+      created: new Date(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId).set(newVersion);
+
+    return { id: versionId, ...newVersion };
   }
 
   static async getSessionActivity(
