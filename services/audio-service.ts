@@ -2,7 +2,7 @@ import firebase from "@/lib/firebase-admin";
 import { AudioAction } from "@/types/api";
 import { SessionVersionDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS } from "@/utils/constants";
-import { deleteDirectory, getCurrentTimestampInMilliseconds } from "@/utils/functions";
+import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
@@ -198,8 +198,6 @@ export class AudioService {
       };
 
       await this.saveAudioToDatabaseAndBucket(audioProcessingResults);
-
-      deleteDirectory(trackDirectory);
     } catch (error) {
       console.error("Error processing audio:", error);
     }

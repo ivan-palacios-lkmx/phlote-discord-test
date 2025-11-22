@@ -6,7 +6,7 @@ import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionD
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
-import { useGetVersionSession } from "@/hooks/query/query-hooks/use-get-version-session";
+import { useGetVersion } from "@/hooks/query/query-hooks/use-get-version";
 import { useState } from "react";
 
 import "./Slice.scss";
@@ -22,7 +22,7 @@ export default function Slice({ versionID }: SliceProps) {
     data: version,
     isPending: isVersionPending,
     isError: isVersionError,
-  } = useGetVersionSession(versionID);
+  } = useGetVersion(versionID);
   const {
     data: session,
     isPending: isSessionPending,

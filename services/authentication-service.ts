@@ -1,3 +1,4 @@
+import { ClientAddressInfo } from "@/types/client";
 import type { AddressDoc } from "@/types/database";
 import { transformToShortAddress } from "@/utils/functions";
 

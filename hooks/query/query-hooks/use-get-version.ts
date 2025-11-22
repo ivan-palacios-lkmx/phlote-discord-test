@@ -1,11 +1,11 @@
 import Api from "@/hooks/query/api";
 import { useQuery } from "@tanstack/react-query";
 
-export function useGetVersionSession(versionID: string) {
+export function useGetVersion(versionID: string) {
   return useQuery({
-    queryKey: ["versionSession", versionID],
+    queryKey: ["version", versionID],
     queryFn: async () => {
-      const version = await Api.getSessionVersion(versionID);
+      const version = await Api.getVersion(versionID);
       return version;
     },
   });
