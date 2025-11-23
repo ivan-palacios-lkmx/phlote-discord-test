@@ -87,3 +87,15 @@ export const versionDetailsSchema = z.object({
 const tagCategory = z.enum(["member", "session"]).optional();
 
 export const tagCategorySchema = tagCategory;
+
+const tagName = z.string();
+export const createTagSchema = z.object({
+  tagName,
+  tagCategory,
+});
+
+export const updateTagSchema = z.object({
+  oldTagName: tagName,
+  newTagName: tagName,
+  tagCategory,
+});
