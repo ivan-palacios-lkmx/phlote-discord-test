@@ -1,16 +1,12 @@
 "use client";
 
+import Tooltip from "@/components/Tooltip/Tooltip";
 import TrackUpload from "@/components/TrackUpload/TrackUpload";
 import CloseIcon from "@/components/svg/close.svg";
 import DragIcon from "@/components/svg/drag.svg";
 import React, { useRef, useState } from "react";
 
 import "./MultiTrackUpload.scss";
-
-// Placeholder Tooltip
-const Tooltip = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={`tooltip ${className || ""}`}>{children}</div>
-);
 
 interface Track {
   name: string;
