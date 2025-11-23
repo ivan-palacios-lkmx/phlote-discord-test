@@ -67,4 +67,28 @@ export class GlobalsService {
       transaction.update(docRef, { [categoryToUpdate]: updatedTags });
     });
   }
+
+  static async deleteTag(category: "member" | "session", tag: TagCategory): Promise<void> {
+    const categoryToUpdate = category === "member" ? "availableMemberTags" : "availableSessionTags";
+    const docRef = adminDb.collection(GLOBAL_COLLECTION).doc(SETTING_DOC_ID);
+
+    await adminDb.runTransaction(async (transaction) => {
+      const doc = await transaction.get(docRef);
+
+      if (!doc.exists) {
+        throw new Error("Settings document does not exist");
+      }
+
+      const data = doc.data() as SettingsDoc;
+      const tags = category === "member" ? data.availableMemberTags : data.availableSessionTags;
+
+      if (!tags) {
+        throw new Error("No tags found for this category");
+      }
+
+      const updatedTags = tags.filter((t) => t.name !== tag.name);
+
+      transaction.update(docRef, { [categoryToUpdate]: updatedTags });
+    });
+  }
 }

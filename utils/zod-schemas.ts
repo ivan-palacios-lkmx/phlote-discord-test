@@ -99,3 +99,8 @@ export const updateTagSchema = z.object({
   newTagName: tagName,
   tagCategory,
 });
+
+export const deleteTagSchema = z.object({
+  tagName,
+  tagCategory,
+});

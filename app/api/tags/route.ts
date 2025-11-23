@@ -1,5 +1,10 @@
 import { GlobalsService } from "@/services/globals-service";
-import { createTagSchema, tagCategorySchema, updateTagSchema } from "@/utils/zod-schemas";
+import {
+  createTagSchema,
+  deleteTagSchema,
+  tagCategorySchema,
+  updateTagSchema,
+} from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -60,6 +65,28 @@ export async function PATCH(request: NextRequest) {
     }
 
     const tag = await GlobalsService.updateTag(oldTagName, newTagName, category);
+
+    return NextResponse.json(tag, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { tagName, category } = body;
+
+    if (!tagName || !category) {
+      return NextResponse.json({ error: "Missing name or category" }, { status: 400 });
+    }
+
+    if (!deleteTagSchema.safeParse({ tagName, category }).success) {
+      return NextResponse.json({ error: "Invalid tag name or category" }, { status: 400 });
+    }
+
+    const tag = await GlobalsService.deleteTag(tagName, category);
 
     return NextResponse.json(tag, { status: 200 });
   } catch (error) {
