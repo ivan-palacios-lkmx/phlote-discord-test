@@ -44,6 +44,25 @@ export class AddressService {
     return getDocumentDataFromQuerySnapshot<AddressDoc>(addressesSnapshot);
   }
 
+  static async updateAddress(
+    address: string,
+    { slug, role }: { slug: string; role: string },
+  ): Promise<WriteResult> {
+    let isCreator = false;
+    let isAdmin = false;
+    let isMember = false;
+    if (role === "creator") isCreator = true;
+    if (role === "admin") isAdmin = true;
+    if (role === "member") isMember = true;
+    const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).update({
+      slug,
+      isCreator,
+      isAdmin,
+      isMember,
+    });
+    return addressDoc;
+  }
+
   static async getAddressesAndTotalCount(
     visibility?: "public" | "private",
   ): Promise<{ addresses: AddressDoc[]; totalCount: number }> {

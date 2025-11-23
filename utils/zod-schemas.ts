@@ -104,3 +104,12 @@ export const deleteTagSchema = z.object({
   tagName,
   tagCategory,
 });
+
+const slug = z.string();
+export const slugSchema = slug;
+
+export const updateAddressSchema = z.object({
+  slug,
+  role,
+  address,
+});
