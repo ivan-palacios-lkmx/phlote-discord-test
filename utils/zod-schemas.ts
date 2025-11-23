@@ -83,3 +83,7 @@ export const versionDetailsSchema = z.object({
   tags: tags,
   bpm: bpm,
 });
+
+const tagCategory = z.enum(["member", "session"]).optional();
+
+export const tagCategorySchema = tagCategory;

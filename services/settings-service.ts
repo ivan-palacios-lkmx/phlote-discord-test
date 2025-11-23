@@ -15,7 +15,7 @@ export class GlobalsService {
     return settingsSnapshot;
   }
 
-  static async getTags(category: "member" | "session"): Promise<TagCategory[] | undefined> {
+  static async getTags(category?: "member" | "session"): Promise<TagCategory[] | undefined> {
     const settings = await this.getSettingsData();
     if (!settings) {
       return undefined;
@@ -23,7 +23,10 @@ export class GlobalsService {
     if (category === "member") {
       return settings.availableMemberTags;
     }
-    return settings.availableSessionTags;
+    if (category === "session") {
+      return settings.availableSessionTags;
+    }
+    return [...(settings.availableMemberTags ?? []), ...(settings.availableSessionTags ?? [])];
   }
 
   static async createTag(category: "member" | "session", tag: TagCategory): Promise<void> {
