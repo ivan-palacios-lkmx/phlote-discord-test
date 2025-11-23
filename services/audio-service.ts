@@ -4,6 +4,7 @@ import { Stem, VersionDoc } from "@/types/database";
 import { TemporaryAudioDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS, TEMPORARY_AUDIO_COLLECTION } from "@/utils/constants";
 import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queries";
+import { getDocumentDataFromCollectionById } from "@/utils/firebase-queries";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
 import { FieldValue } from "firebase-admin/firestore";
@@ -470,30 +471,28 @@ export class AudioService {
     filename: string,
   ): Promise<string | undefined> {
     try {
-      const temporaryAudioFileDocSnapshot = await adminDb
-        .collection(TEMPORARY_AUDIO_COLLECTION)
-        .doc(filename)
-        .get();
+      const temporaryAudioFileData = await getDocumentDataFromCollectionById<TemporaryAudioDoc>(
+        TEMPORARY_AUDIO_COLLECTION,
+        filename,
+      );
 
-      if (!temporaryAudioFileDocSnapshot.exists) {
+      if (!temporaryAudioFileData) {
         throw new Error(`No temporary audio file found for filename: ${filename}`);
       }
 
-      const data = getIDAndDocumentDataFromDocumentSnapshot<TemporaryAudioDoc>(
-        temporaryAudioFileDocSnapshot,
-      );
-
-      if (data?.status === "processing") {
+      if (temporaryAudioFileData.status === "processing") {
         throw new Error(`Audio file ${filename} is still being processed`);
       }
-      if (data?.status === "failed") {
+
+      if (temporaryAudioFileData.status === "failed") {
         throw new Error(`Audio file ${filename} failed to process`);
       }
-      if (data?.status === "pending") {
+
+      if (temporaryAudioFileData.status === "pending") {
         throw new Error(`Audio file ${filename} is pending`);
       }
 
-      return data?.hash;
+      return temporaryAudioFileData.hash;
     } catch (error) {
       console.error(`Error getting directory hash for filename: ${filename}`, error);
       return "";
