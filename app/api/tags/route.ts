@@ -86,7 +86,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Invalid tag name or category" }, { status: 400 });
     }
 
-    const tag = await GlobalsService.deleteTag(tagName, category);
+    const tag = await GlobalsService.deleteTag(category, tagName);
 
     return NextResponse.json(tag, { status: 200 });
   } catch (error) {

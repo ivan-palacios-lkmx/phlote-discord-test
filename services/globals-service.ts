@@ -68,7 +68,7 @@ export class GlobalsService {
     });
   }
 
-  static async deleteTag(category: "member" | "session", tag: TagCategory): Promise<void> {
+  static async deleteTag(category: "member" | "session", tagName: string): Promise<void> {
     const categoryToUpdate = category === "member" ? "availableMemberTags" : "availableSessionTags";
     const docRef = adminDb.collection(GLOBAL_COLLECTION).doc(SETTING_DOC_ID);
 
@@ -86,7 +86,7 @@ export class GlobalsService {
         throw new Error("No tags found for this category");
       }
 
-      const updatedTags = tags.filter((t) => t.name !== tag.name);
+      const updatedTags = tags.filter((t) => t.name !== tagName);
 
       transaction.update(docRef, { [categoryToUpdate]: updatedTags });
     });
