@@ -1,12 +1,6 @@
 import { adminDb } from "@/lib/firebase-admin";
 import { SessionDetails } from "@/types/api";
-import {
-  ActivityDocWithID,
-  SessionDoc,
-  VersionDetails,
-  VersionDoc,
-  VersionDocWithID,
-} from "@/types/database";
+import { ActivityDocWithID, SessionDoc, VersionDetails, VersionDocWithID } from "@/types/database";
 import { ACTIVITY_COLLECTION, SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
@@ -109,16 +103,21 @@ export class SessionService {
   ): Promise<string[]> {
     let isGenesisVersion = false;
 
+    const MAX_VERSIONS_TO_TRAVERSE = 20;
+
     let currentVersion = versionDetails;
 
     const extraCollaborators: string[] = [];
 
-    while (!isGenesisVersion) {
+    let versionsTraversed = 0;
+
+    while (!isGenesisVersion && versionsTraversed < MAX_VERSIONS_TO_TRAVERSE) {
       if (currentVersion.sourceVersion) {
         const sourceVersion = await this.getVersion(currentVersion.sourceVersion);
         if (sourceVersion) {
           extraCollaborators.push(...sourceVersion.creator);
           currentVersion = sourceVersion;
+          versionsTraversed++;
         }
       } else {
         isGenesisVersion = true;
