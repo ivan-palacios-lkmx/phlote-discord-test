@@ -88,10 +88,22 @@ export class AddressService {
     }
   }
 
+  /**
+   * Creates a new address document in the database.
+   * @param address The blockchain address string.
+   * @param isAddressMember A boolean indicating if the address is a member.
+   * @param addressAvatar The URL of the address's avatar, or null if none.
+   * @param isCreator A boolean indicating if the address is a creator.
+   * @param isAdmin A boolean indicating if the address has admin privileges.
+   * @returns A Promise that resolves to a WriteResult upon successful creation.
+   * @throws Throws an error if there's an issue creating the address.
+   */
   static async createAddress(
     address: string,
     isAddressMember: boolean,
     addressAvatar: string | null,
+    isCreator: boolean,
+    isAdmin: boolean,
   ): Promise<WriteResult> {
     try {
       const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).set({
@@ -100,8 +112,8 @@ export class AddressService {
         updated: new Date(),
         avatar: addressAvatar,
         isMember: isAddressMember,
-        isAdmin: false,
-        isCreator: false,
+        isAdmin,
+        isCreator,
       });
       return addressDoc;
     } catch (error) {
