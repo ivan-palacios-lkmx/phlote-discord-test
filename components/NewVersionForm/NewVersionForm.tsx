@@ -2,52 +2,11 @@
 
 import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
 import SingleTrackUpload from "@/components/SingleTrackUpload/SingleTrackUpload";
+import TagGroup from "@/components/TagGroup/TagGroup";
 import Tooltip from "@/components/Tooltip/Tooltip";
 import React, { useState } from "react";
 
 import "./NewVersionForm.scss";
-
-// Placeholder TagGroup
-const TagGroup = ({
-  name,
-  values,
-  labels,
-  inputType = "checkbox",
-  value,
-  onChange,
-}: {
-  name: string;
-  values: string[];
-  labels: string[];
-  inputType?: "checkbox" | "radio";
-  value?: any;
-  onChange?: (val: any) => void;
-}) => {
-  return (
-    <div className="tag-group">
-      {values.map((val, i) => (
-        <label key={val} style={{ display: "block", marginBottom: "5px" }}>
-          <input
-            type={inputType}
-            name={name}
-            value={val}
-            checked={inputType === "radio" ? value === val : value?.includes(val)}
-            onChange={(e) => {
-              if (inputType === "radio") {
-                onChange?.(val);
-              } else {
-                // handle checkbox logic if needed
-                onChange?.(val);
-              }
-            }}
-            style={{ marginRight: "10px" }}
-          />
-          {labels[i]}
-        </label>
-      ))}
-    </div>
-  );
-};
 
 interface NewVersionFormProps {
   settings?: any;
