@@ -1,6 +1,6 @@
 import { Contract, InfuraProvider } from "ethers";
 
-import { SettingsService } from "./settings-service";
+import { GlobalsService } from "./settings-service";
 
 export class RoleService {
   static async isMember(address: string): Promise<boolean> {
@@ -21,7 +21,7 @@ export class RoleService {
   }
 
   private static async getMembershipContracts(): Promise<string[]> {
-    const settings = await SettingsService.getSettings();
+    const settings = await GlobalsService.getSettingsData();
     return settings?.membershipContracts || [];
   }
 }
