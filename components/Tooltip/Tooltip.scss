@@ -1,0 +1,49 @@
+.tooltip {
+  height: 1em;
+
+  svg {
+    margin-left: 5px;
+    width: 10px;
+    height: 10px;
+    display: block;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+
+      path {
+        mix-blend-mode: difference;
+      }
+
+      rect {
+        fill: currentColor;
+      }
+    }
+  }
+
+  .content {
+    border-radius: 7px;
+    border: 1px solid #808080;
+    background: rgba(#000, 0.8);
+    max-width: 250px;
+    padding: 20px;
+    text-transform: none;
+    @include fontSize(12px);
+    transition: opacity 100ms 300ms;
+
+    .title {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      @include fontSize(11px);
+      margin: 0;
+    }
+
+    p {
+      font-weight: 400;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

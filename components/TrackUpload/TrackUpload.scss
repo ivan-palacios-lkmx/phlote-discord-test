@@ -1,0 +1,19 @@
+@import "../../app/assets/scss/vars";
+
+.track-upload {
+  font-family: var(--font-mono);
+
+  .track {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .loading-spinner,
+  .svg-progress-ring {
+    width: 1em;
+    height: 1em;
+    margin: 0 !important;
+  }
+}

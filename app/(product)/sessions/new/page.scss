@@ -1,0 +1,28 @@
+@import "../../../../app/assets/scss/vars";
+
+main.new-session {
+  background: var(--black);
+  color: var(--white);
+  padding-bottom: 150px;
+  padding-top: 150px;
+
+  .title-area {
+    margin-bottom: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    h3 {
+      font-family: var(--font-condensed);
+      @include fontSize(70px);
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      @include fontSize(12px);
+      text-transform: none;
+      line-height: 1.2;
+      max-width: 300px;
+    }
+  }
+}

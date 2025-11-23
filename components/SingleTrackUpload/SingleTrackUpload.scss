@@ -1,0 +1,44 @@
+@import "../../app/assets/scss/vars";
+
+.single-track-upload {
+  border-radius: 7px;
+  border: 0.5px dashed rgba(#fff, 0.75);
+  background: rgba(#fff, 0.05);
+  min-height: 120px;
+  display: flex;
+  text-align: center;
+  font-family: var(--font-mono);
+  cursor: pointer;
+
+  &.hovered {
+    color: rgba(#fff, 0.35);
+  }
+
+  &.has-file {
+    border: 1px solid rgba(#fff, 0.35);
+    cursor: default;
+  }
+
+  &.has-error {
+    color: var(--light-red);
+  }
+
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  .track {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .centered {
+    width: 90%;
+    margin: auto;
+  }
+
+  .svg-close {
+    height: 0.7em;
+    width: 0.7em;
+  }
+}
