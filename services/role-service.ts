@@ -1,6 +1,6 @@
 import { Contract, InfuraProvider } from "ethers";
 
-import { GlobalsService } from "./settings-service";
+import { GlobalsService } from "./globals-service";
 
 export class RoleService {
   static async isMember(address: string): Promise<boolean> {

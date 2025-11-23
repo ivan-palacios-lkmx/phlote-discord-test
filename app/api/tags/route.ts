@@ -1,4 +1,4 @@
-import { GlobalsService } from "@/services/settings-service";
+import { GlobalsService } from "@/services/globals-service";
 import { createTagSchema, tagCategorySchema, updateTagSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 

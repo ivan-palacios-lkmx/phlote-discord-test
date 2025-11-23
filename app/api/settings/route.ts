@@ -1,4 +1,4 @@
-import { GlobalsService } from "@/services/settings-service";
+import { GlobalsService } from "@/services/globals-service";
 import { NextResponse } from "next/server";
 
 export async function GET() {
