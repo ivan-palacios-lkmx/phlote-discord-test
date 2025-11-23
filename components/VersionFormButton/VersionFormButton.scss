@@ -1,0 +1,40 @@
+@import "../../app/assets/scss/vars";
+
+.version-form-button {
+  @include standard-button;
+  font-family: var(--font-condensed);
+  @include fontSize(26px);
+  display: inline-flex;
+  align-items: center;
+  gap: 60px;
+  padding: 20px;
+
+  span {
+    position: relative;
+    bottom: -0.1em;
+  }
+
+  svg {
+    height: 0.9em;
+    width: auto;
+    transition: transform 300ms;
+  }
+
+  &.inverse:not(:disabled):hover {
+    background: var(--white);
+    color: var(--black);
+
+    svg {
+      transform: translateX(5px);
+    }
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  &.loading {
+    pointer-events: none;
+  }
+}
