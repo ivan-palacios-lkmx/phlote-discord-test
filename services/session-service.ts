@@ -66,12 +66,15 @@ export class SessionService {
         throw new Error("Stems or bounce not found");
       }
 
+      const collaborators = await this.getSessionColaborators(versionDetails);
+
       const newVersion: VersionDocWithID = {
         ...versionDetails,
         id: versionId,
         stems,
         bounce,
         sessionID,
+        collaborators,
         created: serverTimestamp(),
       };
 
@@ -86,6 +89,43 @@ export class SessionService {
 
   static async saveVersionInDatabase(version: VersionDocWithID): Promise<void> {
     await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(version.id).set(version);
+  }
+
+  static async getSessionColaborators(versionDetails: VersionDetails): Promise<string[]> {
+    const collaborators: string[] = [];
+
+    collaborators.push(versionDetails.creator);
+
+    const otherVersionsCollaborators =
+      await this.getOtherVersionsColaboratorsFromSourceVersion(versionDetails);
+
+    collaborators.push(...otherVersionsCollaborators);
+
+    return collaborators;
+  }
+
+  static async getOtherVersionsColaboratorsFromSourceVersion(
+    versionDetails: VersionDetails,
+  ): Promise<string[]> {
+    let isGenesisVersion = false;
+
+    let currentVersion = versionDetails;
+
+    const extraCollaborators: string[] = [];
+
+    while (!isGenesisVersion) {
+      if (currentVersion.sourceVersion) {
+        const sourceVersion = await this.getVersion(currentVersion.sourceVersion);
+        if (sourceVersion) {
+          extraCollaborators.push(...sourceVersion.creator);
+          currentVersion = sourceVersion;
+        }
+      } else {
+        isGenesisVersion = true;
+      }
+    }
+
+    return extraCollaborators;
   }
 
   static async getSessionActivity(
