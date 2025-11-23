@@ -1,6 +1,6 @@
 import firebase, { adminDb } from "@/lib/firebase-admin";
 import { AudioAction, AudioProcessingStatus } from "@/types/api";
-import { VersionDoc } from "@/types/database";
+import { Stem, VersionDoc } from "@/types/database";
 import { TemporaryAudioDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS, TEMPORARY_AUDIO_COLLECTION } from "@/utils/constants";
 import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queries";
@@ -466,7 +466,9 @@ export class AudioService {
     await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).delete();
   }
 
-  static async getDirectoryHash(filename: string): Promise<string | undefined> {
+  static async getTrackHashFromTemporaryAudioReference(
+    filename: string,
+  ): Promise<string | undefined> {
     try {
       const temporaryAudioFileDocSnapshot = await adminDb
         .collection(TEMPORARY_AUDIO_COLLECTION)
@@ -498,10 +500,30 @@ export class AudioService {
     }
   }
 
-  static async getDirectoryHashes(filenames: string[]): Promise<string[]> {
-    const directoryHashes = await Promise.all(
-      filenames.map((filename) => this.getDirectoryHash(filename)),
+  static async getTrackHashesFromTemporaryAudioReferences(filenames: string[]): Promise<string[]> {
+    const trackHashes = await Promise.all(
+      filenames.map((filename) => this.getTrackHashFromTemporaryAudioReference(filename)),
     );
-    return directoryHashes.filter((hash): hash is string => !!hash);
+    return trackHashes.filter((hash): hash is string => !!hash);
+  }
+
+  static async getStemsFromTemporaryAudioReferences(
+    filenames: string[],
+    names: string[],
+  ): Promise<Stem[]> {
+    const stems = await Promise.all(
+      filenames.map((filename) => this.getTrackHashFromTemporaryAudioReference(filename)),
+    );
+
+    return stems
+      .filter((stem): stem is string => !!stem)
+      .map((stem, index) => ({
+        id: stem,
+        name: names[index],
+      }));
+  }
+
+  static async getBounceFromTemporaryAudioReference(filename: string): Promise<string | undefined> {
+    return this.getTrackHashFromTemporaryAudioReference(filename);
   }
 }

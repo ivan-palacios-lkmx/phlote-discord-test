@@ -52,31 +52,40 @@ export class SessionService {
     stemCannonicalNames: string[],
     bounceTemporaryFileName: string,
   ): Promise<VersionDocWithID | null> {
-    const versionId = await this.createProjectId("version");
+    try {
+      const versionId = await this.createProjectId("version");
 
-    const stemsHashes = await AudioService.getDirectoryHashes(stemsTemporaryFileNames);
-    const bounce = await AudioService.getDirectoryHash(bounceTemporaryFileName);
+      const stems = await AudioService.getStemsFromTemporaryAudioReferences(
+        stemsTemporaryFileNames,
+        stemCannonicalNames,
+      );
+      const bounce =
+        await AudioService.getBounceFromTemporaryAudioReference(bounceTemporaryFileName);
 
-    if (!stemsHashes || !bounce) {
-      throw new Error("Stems or bounce not found");
+      if (!stems || !bounce) {
+        throw new Error("Stems or bounce not found");
+      }
+
+      const newVersion: VersionDocWithID = {
+        ...versionDetails,
+        id: versionId,
+        stems,
+        bounce,
+        sessionID,
+        created: serverTimestamp(),
+      };
+
+      await this.saveVersionInDatabase(newVersion);
+
+      return newVersion;
+    } catch (error) {
+      console.error("Error creating version:", error);
+      return null;
     }
+  }
 
-    const stems = stemsHashes.map((hash, index) => ({
-      id: hash,
-      name: stemCannonicalNames[index],
-    }));
-
-    const newVersion: VersionDoc = {
-      ...versionDetails,
-      stems,
-      bounce,
-      sessionID,
-      created: serverTimestamp(),
-    };
-
-    await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId).set(newVersion);
-
-    return { id: versionId, ...newVersion };
+  static async saveVersionInDatabase(version: VersionDocWithID): Promise<void> {
+    await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(version.id).set(version);
   }
 
   static async getSessionActivity(
