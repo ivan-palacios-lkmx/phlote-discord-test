@@ -41,7 +41,14 @@ export async function POST(request: NextRequest) {
 
     const addressAvatar = await AddressService.getAvatarFromExternalSources(address);
 
-    const newAddress = await AddressService.createAddress(address, isAddressMember, addressAvatar);
+    // This handles only the onboarding process, so we only detect if the address is a member
+    const newAddress = await AddressService.createAddress(
+      address,
+      isAddressMember,
+      addressAvatar,
+      false,
+      false,
+    );
 
     if (!newAddress) {
       return NextResponse.json({ error: "Failed to create address" }, { status: 500 });
