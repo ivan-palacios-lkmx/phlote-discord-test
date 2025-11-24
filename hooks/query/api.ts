@@ -143,13 +143,7 @@ class Api {
   static async getVersionAudio(versionID: string, action: AudioAction): Promise<string> {
     try {
       const response = await apiClient.get(
-        ENDPOINTS.SESSIONS +
-          "/" +
-          ENDPOINTS.VERSIONS +
-          "/" +
-          versionID +
-          "/" +
-          ENDPOINTS.VERSION_AUDIO,
+        ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + versionID + "/" + ENDPOINTS.AUDIO,
         {
           params: {
             action,
@@ -159,6 +153,28 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error fetching session version audio:", error);
+      throw error;
+    }
+  }
+
+  static async getAudioProcessingStatus(temporaryAudioFileName: string): Promise<string> {
+    try {
+      const response = await apiClient.get(
+        ENDPOINTS.AUDIO + "/" + temporaryAudioFileName + ENDPOINTS.PROCESSING_STATUS,
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching audio processing status:", error);
+      throw error;
+    }
+  }
+
+  static async submitAudio(audioFile: File): Promise<string> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.AUDIO, audioFile);
+      return response.data;
+    } catch (error) {
+      console.error("Error submitting audio:", error);
       throw error;
     }
   }

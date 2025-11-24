@@ -10,5 +10,6 @@ export const ENDPOINTS = {
   ADDRESS: "/address",
   PRIVATE_ADDRESS_INFO: "/private",
   AUTH: "/auth",
-  VERSION_AUDIO: "/audio",
+  AUDIO: "/audio",
+  PROCESSING_STATUS: "/status",
 };

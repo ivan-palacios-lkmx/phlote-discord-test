@@ -54,7 +54,6 @@ export default function MultiTrackUpload() {
             <span>Drop Stems (.wav or .mp3)</span>
           </div>
         ) : (
-          // Placeholder for draggable list (e.g., dnd-kit or react-beautiful-dnd)
           <SortableContext items={tracks.map((track) => track.name)}>
             {tracks.map((track, i) => {
               return (
