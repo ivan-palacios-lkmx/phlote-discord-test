@@ -1,0 +1,57 @@
+@import '../../../../assets/scss/vars';
+
+main.new-version {
+  background: var(--black);
+  color: var(--white);
+  padding-bottom: 150px;
+  padding-top: 150px;
+
+  .title-area {
+    margin-bottom: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    h3 {
+      font-family: var(--font-condensed);
+      @include fontSize(70px);
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      @include fontSize(12px);
+      text-transform: none;
+      line-height: 1.2;
+      max-width: 300px;
+    }
+  }
+
+  .session-info {
+    grid-template-columns: auto 1fr;
+    display: grid;
+    gap: 20px;
+    margin-bottom: 75px;
+
+    .artwork {
+      min-width: 150px;
+      max-width: 300px;
+      position: relative;
+      padding-bottom: 100%;
+      align-self: flex-start;
+      border-radius: 4px;
+      overflow: hidden;
+
+      .web3-avatar {
+        @include fill;
+      }
+    }
+
+    .session-detail-title {
+      border-bottom: none;
+
+      .tag-area {
+        display: none;
+      }
+    }
+  }
+}
