@@ -3,27 +3,23 @@ import { useCheckAudioStatus } from "@/hooks/query/query-hooks/use-check-audio-s
 import { AudioProcessingStatus } from "@/types/api";
 import { useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useFormContext } from "react-hook-form";
 
-interface UseSingleTrackUploadProps {
-  name: string;
+export interface AudioUploadValue {
+  id: string;
+  status: AudioProcessingStatus;
 }
 
-export function useSingleTrackUpload({ name }: UseSingleTrackUploadProps) {
-  if (!name) {
-    throw new Error("useSingleTrackUpload requires a 'name' prop");
-  }
+interface UseSingleTrackUploadProps {
+  onChange: (value: AudioUploadValue | undefined) => void;
+  value: AudioUploadValue | undefined;
+}
 
-  const { setValue, watch } = useFormContext();
-  if (!setValue || !watch) {
-    throw new Error("useSingleTrackUpload must be used within a FormProvider");
-  }
-
+export function useSingleTrackUpload({ onChange, value }: UseSingleTrackUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<{ title: string; message: string } | null>(null);
   const areaRef = useRef<HTMLDivElement>(null);
 
-  const currentValue = watch(name);
+  const currentValue = value;
   const tempFileName = currentValue?.id;
 
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
@@ -41,14 +37,14 @@ export function useSingleTrackUpload({ name }: UseSingleTrackUploadProps) {
 
     try {
       const { tmpName, status } = await submitAudio({ audioFile: droppedFile });
-      setValue(name, { id: tmpName, status });
+      onChange({ id: tmpName, status });
     } catch {
       setError({
         title: "error",
         message: "Failed to upload",
       });
       setFile(null);
-      setValue(name, undefined);
+      onChange(undefined);
     }
   }
 
@@ -56,7 +52,7 @@ export function useSingleTrackUpload({ name }: UseSingleTrackUploadProps) {
     e.stopPropagation();
     setFile(null);
     setError(null);
-    setValue(name, undefined);
+    onChange(undefined);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

@@ -3,8 +3,9 @@
 import Tooltip from "@/components/Tooltip/Tooltip";
 import TrackUpload from "@/components/TrackUpload/TrackUpload";
 import CloseIcon from "@/components/svg/close.svg";
-import { useSingleTrackUpload } from "@/hooks/use-single-track-upload";
+import { type AudioUploadValue, useSingleTrackUpload } from "@/hooks/use-single-track-upload";
 import React from "react";
+import { Controller, useFormContext } from "react-hook-form";
 
 import "./SingleTrackUpload.scss";
 
@@ -12,7 +13,12 @@ interface SingleTrackUploadProps {
   name: string;
 }
 
-export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
+interface SingleTrackUploadFieldProps {
+  onChange: (value: AudioUploadValue | undefined) => void;
+  value: AudioUploadValue | undefined;
+}
+
+function SingleTrackUploadField({ onChange, value }: SingleTrackUploadFieldProps) {
   const {
     file,
     error,
@@ -25,7 +31,7 @@ export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
     getInputProps,
     isDragActive,
     handleFileClear,
-  } = useSingleTrackUpload({ name });
+  } = useSingleTrackUpload({ onChange, value });
 
   const dropzoneClasses = [
     "single-track-upload",
@@ -64,5 +70,19 @@ export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
+  const { control } = useFormContext();
+
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <SingleTrackUploadField onChange={field.onChange} value={field.value} />
+      )}
+    />
   );
 }
