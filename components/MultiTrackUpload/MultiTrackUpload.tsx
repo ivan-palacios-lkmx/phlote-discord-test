@@ -8,7 +8,7 @@ import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import React, { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 import "./MultiTrackUpload.scss";
 
@@ -23,18 +23,20 @@ export interface Track {
 }
 
 interface MultiTrackUploadProps {
-  name?: string;
-  value?: AudioProcessingStatusResponse[];
-  onChange?: (value: AudioProcessingStatusResponse[]) => void;
+  name: string;
 }
 
-function MultiTrackUploadContent({
-  onChange,
-}: {
-  onChange?: (value: AudioProcessingStatusResponse[]) => void;
-}) {
-  const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
+export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
+  if (!name) {
+    throw new Error("MultiTrackUpload requires a 'name' prop");
+  }
 
+  const { setValue } = useFormContext();
+  if (!setValue) {
+    throw new Error("MultiTrackUpload must be used within a FormProvider");
+  }
+
+  const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [tempFileNames, setTempFileNames] = useState<string[]>([]);
   const areaRef = useRef<HTMLDivElement>(null);
@@ -49,11 +51,11 @@ function MultiTrackUploadContent({
         .map((query) => query.data)
         .filter((data): data is AudioProcessingStatusResponse => data !== undefined);
 
-      if (statusResponses.length > 0 && onChange) {
-        onChange(statusResponses);
+      if (statusResponses.length > 0) {
+        setValue(name, statusResponses);
       }
     }
-  }, [audioStatusQueries, onChange]);
+  }, [audioStatusQueries, setValue, name]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -90,6 +92,7 @@ function MultiTrackUploadContent({
 
     setTempFileNames((prev) => [...prev, ...newTempFileNames]);
   }
+
   const onRemoveTrack = (name: string) => {
     setTracks((prevTracks) => {
       const trackToRemove = prevTracks.find((track) => track.name === name);
@@ -140,24 +143,5 @@ function MultiTrackUploadContent({
         )}
       </div>
     </DndContext>
-  );
-}
-
-export default function MultiTrackUpload({ name, onChange }: MultiTrackUploadProps) {
-  if (name) {
-    return <MultiTrackUploadWithRHF name={name} />;
-  }
-
-  return <MultiTrackUploadContent onChange={onChange} />;
-}
-
-function MultiTrackUploadWithRHF({ name }: { name: string }) {
-  const { control } = useFormContext();
-  return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field }) => <MultiTrackUploadContent onChange={field.onChange} />}
-    />
   );
 }
