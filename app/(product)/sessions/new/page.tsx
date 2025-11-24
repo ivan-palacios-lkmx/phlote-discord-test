@@ -18,10 +18,7 @@ export default function NewSessionPage() {
   const handleSubmit = async (formValues: z.infer<typeof newVersionFormSchema>) => {
     setLoading(true);
     try {
-      console.log("Create version", {
-        ...formValues,
-        bounce: null,
-      });
+      console.log("Create version", formValues);
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } finally {
       setLoading(false);

@@ -56,6 +56,24 @@ class Api {
     }
   }
 
+  static async createSession(sessionDetails: {
+    creator: string;
+    name: string;
+    bounce: string;
+    stems: string[];
+    notes?: string;
+    tags?: string[];
+    bpm: number;
+  }): Promise<{ message: string; sessionId: string; versionId: string }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.SESSIONS, sessionDetails);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating session:", error);
+      throw error;
+    }
+  }
+
   static async getSession(sessionID: string): Promise<SessionDoc> {
     try {
       const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID);
