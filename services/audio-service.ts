@@ -467,6 +467,17 @@ export class AudioService {
     await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).delete();
   }
 
+  static async getAudioProcessingStatus(audioFilename: string): Promise<AudioProcessingStatus> {
+    const temporaryAudioFileData = await getDocumentDataFromCollectionById<TemporaryAudioDoc>(
+      TEMPORARY_AUDIO_COLLECTION,
+      audioFilename,
+    );
+    if (!temporaryAudioFileData) {
+      throw new Error(`No temporary audio file found for filename: ${audioFilename}`);
+    }
+    return temporaryAudioFileData.status;
+  }
+
   static async getTrackHashFromTemporaryAudioReference(
     filename: string,
   ): Promise<string | undefined> {

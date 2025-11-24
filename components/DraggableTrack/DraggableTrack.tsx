@@ -3,34 +3,34 @@ import Tooltip from "@/components/Tooltip/Tooltip";
 import TrackUpload from "@/components/TrackUpload/TrackUpload";
 import CloseIcon from "@/components/svg/close.svg";
 import DragIcon from "@/components/svg/drag.svg";
+import { AudioProcessingStatus } from "@/types/api";
 import { useSortable } from "@dnd-kit/sortable";
 
 interface DraggableTrackProps {
   track: Track;
-  i: number;
-  hasError: (i: number) => boolean;
-  error: { title: string; message: string } | null;
-  onRemoveTrack: (i: number) => void;
+  onRemoveTrack: (name: string) => void;
+  status: AudioProcessingStatus;
   isUploading: boolean;
-  isProcessing: boolean;
 }
 
 export default function DraggableTrack({
   track,
-  i,
-  hasError,
-  error,
+  status,
   onRemoveTrack,
   isUploading,
-  isProcessing,
 }: DraggableTrackProps) {
   const { attributes, listeners, setNodeRef } = useSortable({
     id: track.name,
   });
+
+  const hasError = status === "failed";
+
+  const isProcessing = status === "processing";
+
   return (
     <div
-      key={track.name + i}
-      className={`uploaded-track ${hasError(i) ? "has-error" : ""}`}
+      key={track.name}
+      className={`uploaded-track ${hasError ? "has-error" : ""}`}
       onClick={(e) => e.stopPropagation()}
       ref={setNodeRef}
       {...attributes}
@@ -39,15 +39,15 @@ export default function DraggableTrack({
         <DragIcon />
       </button>
       <TrackUpload name={track.name} isUploading={isUploading} isProcessing={isProcessing}>
-        {hasError(i) && error && (
+        {hasError && (
           <Tooltip className="error">
-            <p className="title">{error.title}</p>
-            <p>{error.message}</p>
+            <p className="title">error</p>
+            <p>error processing track</p>
           </Tooltip>
         )}
       </TrackUpload>
 
-      <button onClick={() => onRemoveTrack(i)} type="button" className="close">
+      <button onClick={() => onRemoveTrack(track.name)} type="button" className="close">
         <CloseIcon />
       </button>
     </div>

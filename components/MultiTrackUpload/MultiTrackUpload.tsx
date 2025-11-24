@@ -25,21 +25,18 @@ export default function MultiTrackUpload() {
   });
 
   function onDrop(acceptedFiles: File[]) {
-    setTracks((prevTracks) => [...prevTracks, ...acceptedFiles]);
+    setTracks((prevTracks) => [
+      ...prevTracks,
+      ...acceptedFiles.map((file) => ({ name: file.name, file })),
+    ]);
   }
-  const onRemoveTrack = (index: number) => {
+  const onRemoveTrack = (name: string) => {
     const newTracks = [...tracks];
-    newTracks.splice(index, 1);
+    newTracks.splice(
+      newTracks.findIndex((track) => track.name === name),
+      1,
+    );
     setTracks(newTracks);
-  };
-
-  const hasError = (index: number) => {
-    return !!tracks[index]?.error;
-  };
-
-  const getError = (index: number) => {
-    const error = tracks[index]?.error;
-    return error ? { title: "Error", message: error } : null;
   };
 
   return (
@@ -60,17 +57,13 @@ export default function MultiTrackUpload() {
           // Placeholder for draggable list (e.g., dnd-kit or react-beautiful-dnd)
           <SortableContext items={tracks.map((track) => track.name)}>
             {tracks.map((track, i) => {
-              const error = getError(i);
               return (
                 <DraggableTrack
                   key={track.name + i}
                   track={track}
-                  error={error}
-                  i={i}
-                  hasError={hasError}
                   onRemoveTrack={onRemoveTrack}
                   isUploading={false}
-                  isProcessing={false}
+                  status="ready"
                 />
               );
             })}
