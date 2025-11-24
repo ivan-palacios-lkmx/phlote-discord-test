@@ -1,6 +1,5 @@
 "use client";
 
-import Form from "@/components/Form/Form";
 import { Input } from "@/components/Form/Input";
 import { Textarea } from "@/components/Form/Textarea";
 import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
@@ -9,7 +8,7 @@ import TagGroup from "@/components/TagGroup/TagGroup";
 import Tooltip from "@/components/Tooltip/Tooltip";
 import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
 import { newVersionFormSchema } from "@/utils/zod-schemas";
-import React, { useState } from "react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
 import { z } from "zod";
@@ -26,7 +25,7 @@ interface NewVersionFormProps {
   sessionTags?: { name: string; options: string[] }[];
 }
 
-function NewVersionFormContent({
+export default function NewVersionForm({
   settings = {},
   exampleLink,
   parentName,
@@ -58,7 +57,7 @@ function NewVersionFormContent({
   };
 
   return (
-    <>
+    <div className="new-version-form">
       {/* Upload Area */}
       <div className="uploads">
         <div className="bounce">
@@ -189,21 +188,6 @@ function NewVersionFormContent({
           </div>
         </div>
       </div>
-    </>
-  );
-}
-
-export default function NewVersionForm(props: NewVersionFormProps) {
-  const handleSubmit = (formValues: z.infer<typeof newVersionFormSchema>) => {
-    console.log("Create version", {
-      ...formValues,
-      bounce: null,
-    });
-  };
-
-  return (
-    <Form schema={newVersionFormSchema} handleSubmit={handleSubmit} className="new-version-form">
-      <NewVersionFormContent {...props} />
-    </Form>
+    </div>
   );
 }

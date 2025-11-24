@@ -1,42 +1,49 @@
 "use client";
 
+import Form from "@/components/Form/Form";
 import NewVersionForm from "@/components/NewVersionForm/NewVersionForm";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import VersionFormButton from "@/components/VersionFormButton/VersionFormButton";
+import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { PrismicRichText } from "@prismicio/react";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { z } from "zod";
 
 import "./page.scss";
 
 export default function NewSessionPage() {
   const { settings } = usePrismicio();
   const [loading, setLoading] = useState(false);
-  const [formReady, setFormReady] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
 
-  const submitForm = async () => {
+  const handleSubmit = async (formValues: z.infer<typeof newVersionFormSchema>) => {
     setLoading(true);
-    if (formRef.current) {
-      formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    try {
+      console.log("Create version", {
+        ...formValues,
+        bounce: null,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } finally {
+      setLoading(false);
     }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setLoading(false);
   };
 
   return (
     <main className="new-session">
       <div className="contained">
-        <div className="title-area">
-          <div className="entry">
-            <PrismicRichText field={settings.new_session_copy} />
+        <Form schema={newVersionFormSchema} handleSubmit={handleSubmit}>
+          <div className="title-area">
+            <div className="entry">
+              <PrismicRichText field={settings.new_session_copy} />
+            </div>
+
+            <VersionFormButton type="submit" loading={loading}>
+              Create Session
+            </VersionFormButton>
           </div>
 
-          <VersionFormButton onClick={submitForm} loading={loading} disabled={!formReady}>
-            Create Session
-          </VersionFormButton>
-        </div>
-
-        <NewVersionForm />
+          <NewVersionForm />
+        </Form>
       </div>
     </main>
   );

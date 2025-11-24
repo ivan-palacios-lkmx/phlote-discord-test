@@ -1,4 +1,5 @@
 import useZodForm from "@/hooks/form/use-zod-form";
+import { forwardRef } from "react";
 import { FormProvider } from "react-hook-form";
 import z from "zod";
 
@@ -9,18 +10,20 @@ interface FormProps<Schema extends z.ZodType<any, any, any>> {
   className?: string;
 }
 
-export default function Form<Schema extends z.ZodType<any, any, any>>({
-  children,
-  schema,
-  handleSubmit,
-  className,
-}: FormProps<Schema>) {
+const Form = forwardRef<HTMLFormElement, FormProps<any>>(function Form<
+  Schema extends z.ZodType<any, any, any>,
+>(
+  { children, schema, handleSubmit, className }: FormProps<Schema>,
+  ref: React.Ref<HTMLFormElement>,
+) {
   const { form, onSubmit } = useZodForm(schema, handleSubmit);
   return (
     <FormProvider {...form}>
-      <form onSubmit={onSubmit} className={className}>
+      <form ref={ref} onSubmit={onSubmit} className={className}>
         {children}
       </form>
     </FormProvider>
   );
-}
+});
+
+export default Form;
