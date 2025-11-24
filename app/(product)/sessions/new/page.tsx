@@ -28,7 +28,6 @@ export default function NewSessionPage() {
       <div className="contained">
         <div className="title-area">
           <div className="entry">
-            {/* @ts-ignore - Prismic types mismatch with placeholder data */}
             <PrismicRichText field={settings.new_session_copy} />
           </div>
 

@@ -3,6 +3,7 @@
 import CloseIcon from "@/components/svg/close.svg";
 import _get from "lodash/get";
 import React, { useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
 import "./TagGroup.scss";
 
@@ -10,21 +11,27 @@ interface TagGroupProps {
   name: string;
   values: string[];
   labels?: string[];
-  modelValue?: string | string[];
   inputType?: "checkbox" | "radio";
   required?: boolean;
-  onChange?: (value: string | string[]) => void;
 }
 
 export default function TagGroup({
   name,
   values,
   labels = [],
-  modelValue,
   inputType = "checkbox",
   required = false,
-  onChange,
 }: TagGroupProps) {
+  if (!name) {
+    throw new Error("TagGroup requires a 'name' prop");
+  }
+
+  const { setValue, watch } = useFormContext();
+  if (!setValue || !watch) {
+    throw new Error("TagGroup must be used within a FormProvider");
+  }
+
+  const currentValue = watch(name);
   const labelsText = useMemo(() => {
     return values.map((value, i) => _get(labels, `[${i}]`) || value);
   }, [values, labels]);
@@ -32,28 +39,25 @@ export default function TagGroup({
   const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const targetValue = e.target.value;
 
-    // Radio
     if (inputType === "radio") {
-      onChange?.(targetValue);
-    }
-    // Checkbox
-    else {
-      let newValue: string[] = Array.isArray(modelValue) ? [...modelValue] : [];
+      setValue(name, targetValue);
+    } else {
+      let newValue: string[] = Array.isArray(currentValue) ? [...currentValue] : [];
 
       if (e.target.checked) {
         newValue.push(targetValue);
       } else {
         newValue = newValue.filter((item) => item !== targetValue);
       }
-      onChange?.(newValue);
+      setValue(name, newValue);
     }
   };
 
   const isChecked = (value: string) => {
     if (inputType === "radio") {
-      return modelValue === value;
+      return currentValue === value;
     }
-    return Array.isArray(modelValue) && modelValue.includes(value);
+    return Array.isArray(currentValue) && currentValue.includes(value);
   };
 
   return (

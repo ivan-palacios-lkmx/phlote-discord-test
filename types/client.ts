@@ -166,6 +166,7 @@ export interface PrismicSettings {
   default_user_image?: DefaultUserImage;
   newsletter_placeholder_text?: NewsletterPlaceholderText;
   newsletter_submit_text?: NewsletterSubmitText;
+  new_session_copy?: RichTextField;
 }
 
 interface OGImage {

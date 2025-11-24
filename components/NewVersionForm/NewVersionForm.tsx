@@ -41,11 +41,8 @@ function NewVersionFormContent({
   } = useGetTags({
     category: "session",
   });
-  const { setValue, watch } = useFormContext<z.infer<typeof newVersionFormSchema>>();
+  const { setValue } = useFormContext<z.infer<typeof newVersionFormSchema>>();
   const [bounce, setBounce] = useState(null);
-
-  const sourceVersion = watch("sourceVersion");
-  const catModels = watch("catModels") || {};
 
   function onGenerateName() {
     const generatedName = uniqueNamesGenerator({
@@ -158,12 +155,10 @@ function NewVersionFormContent({
               <div className="version-selection">
                 <h6>{parentName} Versions</h6>
                 <TagGroup
-                  name="version"
+                  name="sourceVersion"
                   values={possibleStarterIds}
                   labels={versionLabels}
                   inputType="radio"
-                  modelValue={sourceVersion || ""}
-                  onChange={(val) => setValue("sourceVersion", typeof val === "string" ? val : "")}
                 />
               </div>
             </div>
@@ -184,11 +179,9 @@ function NewVersionFormContent({
                     <h6>{cat.name}</h6>
                     {cat.name && cat.options?.length && (
                       <TagGroup
-                        name={cat.name}
+                        name={`catModels.${i}`}
                         values={cat.options.map((v) => encodeTag(cat.name, v))}
                         labels={cat.options}
-                        modelValue={catModels[i]}
-                        onChange={(val) => setValue("catModels", { ...catModels, [i]: val })}
                       />
                     )}
                   </div>

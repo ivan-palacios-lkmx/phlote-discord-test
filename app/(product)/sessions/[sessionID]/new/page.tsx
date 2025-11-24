@@ -33,7 +33,6 @@ export default function NewVersionPage({ params }: { params: { sessionID: string
       <div className="contained">
         <div className="title-area">
           <div className="entry">
-            {/* @ts-ignore - Prismic types mismatch with placeholder data */}
             <PrismicRichText field={settings.new_session_copy} />
           </div>
 
@@ -49,7 +48,6 @@ export default function NewVersionPage({ params }: { params: { sessionID: string
               />
             </div>
           </div>
-
           <VersionFormButton onClick={submitForm} loading={loading} disabled={!formReady}>
             Create Version
           </VersionFormButton>
