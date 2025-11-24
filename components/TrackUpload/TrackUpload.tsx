@@ -3,20 +3,22 @@ import ProgressRingIcon from "@/components/svg/progress_ring.svg";
 
 interface TrackUploadProps {
   name: string;
-  file: object;
-  path: string;
   children: React.ReactNode;
+  isProcessing: boolean;
+  isUploading: boolean;
 }
 
-export default function TrackUpload({ name, file, path, children }: TrackUploadProps) {
+export default function TrackUpload({
+  name,
+  children,
+  isProcessing,
+  isUploading,
+}: TrackUploadProps) {
   return (
     <div className="track-upload">
       <div className="track">
         <span>{name} </span>
-        <ProgressRingIcon />
-
-        <LoadingSpinnerIcon />
-
+        {isUploading ? <ProgressRingIcon /> : isProcessing ? <LoadingSpinnerIcon /> : null}
         {children}
       </div>
     </div>

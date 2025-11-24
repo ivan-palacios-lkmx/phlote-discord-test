@@ -1,38 +1,32 @@
 "use client";
 
-import Tooltip from "@/components/Tooltip/Tooltip";
-import TrackUpload from "@/components/TrackUpload/TrackUpload";
-import CloseIcon from "@/components/svg/close.svg";
-import DragIcon from "@/components/svg/drag.svg";
+import DraggableTrack from "@/components/DraggableTrack/DraggableTrack";
+import { DndContext } from "@dnd-kit/core";
+import { SortableContext } from "@dnd-kit/sortable";
 import React, { useRef, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
 import "./MultiTrackUpload.scss";
 
-interface Track {
+export interface Track {
   name: string;
-  file: any; // Placeholder for File object
+  file: File;
   path?: string;
   hash?: string;
   error?: string;
 }
 
 export default function MultiTrackUpload() {
-  const [isOverDropZone, setIsOverDropZone] = useState(false);
-  // Placeholder tracks state
   const [tracks, setTracks] = useState<Track[]>([]);
   const areaRef = useRef<HTMLDivElement>(null);
 
-  const open = () => {
-    console.log("Open file dialog");
-    // For testing purposes, let's add a dummy track on click if empty
-    if (tracks.length === 0) {
-      setTracks([
-        { name: "Bass.wav", file: {}, path: "" },
-        { name: "Drums.wav", file: {}, path: "" },
-      ]);
-    }
-  };
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+  });
 
+  function onDrop(acceptedFiles: File[]) {
+    setTracks((prevTracks) => [...prevTracks, ...acceptedFiles]);
+  }
   const onRemoveTrack = (index: number) => {
     const newTracks = [...tracks];
     newTracks.splice(index, 1);
@@ -49,55 +43,40 @@ export default function MultiTrackUpload() {
   };
 
   return (
-    <div
-      className={`multi-track-upload ${isOverDropZone ? "hovered" : ""} ${
-        tracks.length ? "has-files" : ""
-      }`}
-      ref={areaRef}
-      onClick={open}
-      data-lenis-prevent>
-      {!tracks.length ? (
-        <div className="centered">
-          <span>Drop Stems (.wav or .mp3)</span>
-        </div>
-      ) : (
-        // Placeholder for draggable list (e.g., dnd-kit or react-beautiful-dnd)
-        <div className="draggable">
-          {tracks.map((track, i) => {
-            const error = getError(i);
-            return (
-              <div
-                key={track.name + i}
-                className={`uploaded-track ${hasError(i) ? "has-error" : ""}`}
-                onClick={(e) => e.stopPropagation()}>
-                <button type="button" className="drag">
-                  <DragIcon />
-                </button>
-
-                <TrackUpload
-                  name={track.name}
-                  file={track.file}
-                  path={track.path || ""}
-                  // Placeholder for event handlers
-                  // onProcessed={(hash) => { ... }}
-                  // onError={(err) => { ... }}
-                >
-                  {hasError(i) && error && (
-                    <Tooltip className="error">
-                      <p className="title">{error.title}</p>
-                      <p>{error.message}</p>
-                    </Tooltip>
-                  )}
-                </TrackUpload>
-
-                <button onClick={() => onRemoveTrack(i)} type="button" className="close">
-                  <CloseIcon />
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+    <DndContext>
+      <div
+        className={`multi-track-upload ${isDragActive ? "hovered" : ""} ${
+          tracks.length ? "has-files" : ""
+        }`}
+        ref={areaRef}
+        {...getRootProps()}
+        data-lenis-prevent>
+        <input {...getInputProps()} />
+        {!tracks.length ? (
+          <div className="centered">
+            <span>Drop Stems (.wav or .mp3)</span>
+          </div>
+        ) : (
+          // Placeholder for draggable list (e.g., dnd-kit or react-beautiful-dnd)
+          <SortableContext items={tracks.map((track) => track.name)}>
+            {tracks.map((track, i) => {
+              const error = getError(i);
+              return (
+                <DraggableTrack
+                  key={track.name + i}
+                  track={track}
+                  error={error}
+                  i={i}
+                  hasError={hasError}
+                  onRemoveTrack={onRemoveTrack}
+                  isUploading={false}
+                  isProcessing={false}
+                />
+              );
+            })}
+          </SortableContext>
+        )}
+      </div>
+    </DndContext>
   );
 }
