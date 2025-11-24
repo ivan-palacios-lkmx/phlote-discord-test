@@ -54,3 +54,8 @@ export interface AudioProcessingStatusResponse {
   id: string;
   status: AudioProcessingStatus;
 }
+
+export interface SubmitAudioResponse {
+  tmpName: string;
+  status: AudioProcessingStatus;
+}

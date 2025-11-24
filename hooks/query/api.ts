@@ -1,4 +1,9 @@
-import { AudioAction, AudioProcessingStatusResponse, AuthResponse } from "@/types/api";
+import {
+  AudioAction,
+  AudioProcessingStatusResponse,
+  AuthResponse,
+  SubmitAudioResponse,
+} from "@/types/api";
 import { ContactDocWithID, SettingsDoc } from "@/types/database";
 import { AddressDoc, AddressDocWithID, SessionDoc, VersionDoc } from "@/types/database";
 import { WriteResult } from "firebase-admin/firestore";
@@ -171,7 +176,7 @@ class Api {
     }
   }
 
-  static async submitAudio(audioFile: File): Promise<string> {
+  static async submitAudio(audioFile: File): Promise<SubmitAudioResponse> {
     try {
       const formData = new FormData();
       formData.append("audio", audioFile);
