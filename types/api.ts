@@ -49,3 +49,8 @@ export interface SessionDetails {
 }
 
 export type AudioProcessingStatus = "pending" | "processing" | "ready" | "failed";
+
+export interface AudioProcessingStatusResponse {
+  id: string;
+  status: AudioProcessingStatus;
+}

@@ -11,7 +11,7 @@ export function useCheckAudioStatus({ temporaryAudioFileName }: UseCheckAudioSta
   return useQuery({
     queryFn: async () => {
       const status = await Api.getAudioProcessingStatus(temporaryAudioFileName);
-      setStatus(status);
+      setStatus(status.status);
       return status;
     },
     queryKey: [temporaryAudioFileName],

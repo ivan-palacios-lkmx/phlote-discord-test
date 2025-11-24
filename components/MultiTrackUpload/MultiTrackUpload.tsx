@@ -18,7 +18,8 @@ export interface Track {
 }
 
 export default function MultiTrackUpload() {
-  const { mutate: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
+  const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
+
   const [tracks, setTracks] = useState<Track[]>([]);
   const areaRef = useRef<HTMLDivElement>(null);
 
@@ -26,13 +27,13 @@ export default function MultiTrackUpload() {
     onDrop,
   });
 
-  function onDrop(acceptedFiles: File[]) {
+  async function onDrop(acceptedFiles: File[]) {
     if (acceptedFiles.length === 0) return;
     setTracks((prevTracks) => [
       ...prevTracks,
       ...acceptedFiles.map((file) => ({ name: file.name, file })),
     ]);
-    submitAudio({ audioFile: acceptedFiles[0] });
+    await submitAudio({ audioFile: acceptedFiles[0] });
   }
   const onRemoveTrack = (name: string) => {
     const newTracks = [...tracks];

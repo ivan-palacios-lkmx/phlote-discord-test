@@ -1,4 +1,4 @@
-import { AudioAction, AuthResponse } from "@/types/api";
+import { AudioAction, AudioProcessingStatusResponse, AuthResponse } from "@/types/api";
 import { ContactDocWithID, SettingsDoc } from "@/types/database";
 import { AddressDoc, AddressDocWithID, SessionDoc, VersionDoc } from "@/types/database";
 import { WriteResult } from "firebase-admin/firestore";
@@ -157,7 +157,9 @@ class Api {
     }
   }
 
-  static async getAudioProcessingStatus(temporaryAudioFileName: string): Promise<string> {
+  static async getAudioProcessingStatus(
+    temporaryAudioFileName: string,
+  ): Promise<AudioProcessingStatusResponse> {
     try {
       const response = await apiClient.get(
         ENDPOINTS.AUDIO + "/" + temporaryAudioFileName + ENDPOINTS.PROCESSING_STATUS,
