@@ -27,14 +27,17 @@ export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
     handleFileClear,
   } = useSingleTrackUpload({ name });
 
+  const dropzoneClasses = [
+    "single-track-upload",
+    isDragActive && "hovered",
+    file?.name && "has-file",
+    hasError && "has-error",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      className={`single-track-upload ${isDragActive ? "hovered" : ""} ${
-        file && file.name ? "has-file" : ""
-      } ${hasError ? "has-error" : ""}`}
-      ref={areaRef}
-      {...getRootProps()}
-      data-lenis-prevent>
+    <div className={dropzoneClasses} ref={areaRef} {...getRootProps()} data-lenis-prevent>
       <input {...getInputProps()} />
       <div className="centered">
         {!file ? (
