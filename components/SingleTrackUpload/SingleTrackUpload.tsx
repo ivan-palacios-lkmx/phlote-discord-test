@@ -6,32 +6,36 @@ import CloseIcon from "@/components/svg/close.svg";
 import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { useCheckAudioStatus } from "@/hooks/query/query-hooks/use-check-audio-status";
 import { AudioProcessingStatus } from "@/types/api";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useFormContext } from "react-hook-form";
 
 import "./SingleTrackUpload.scss";
 
-export default function SingleTrackUpload() {
+interface SingleTrackUploadProps {
+  name: string;
+}
+
+export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
+  if (!name) {
+    throw new Error("SingleTrackUpload requires a 'name' prop");
+  }
+
+  const { setValue, watch } = useFormContext();
+  if (!setValue || !watch) {
+    throw new Error("SingleTrackUpload must be used within a FormProvider");
+  }
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
   const [file, setFile] = useState<File | null>(null);
-  const [tempFileName, setTempFileName] = useState<string | null>(null);
   const [error, setError] = useState<{ title: string; message: string } | null>(null);
   const areaRef = useRef<HTMLDivElement>(null);
+
+  const currentValue = watch(name);
+  const tempFileName = currentValue?.id;
 
   const { data: audioStatus } = useCheckAudioStatus({
     temporaryAudioFileName: tempFileName || "",
   });
-
-  useEffect(() => {
-    if (audioStatus?.status === "failed") {
-      setError({
-        title: "error",
-        message: "error processing track",
-      });
-    } else if (audioStatus?.status === "ready") {
-      setError(null);
-    }
-  }, [audioStatus]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -46,27 +50,26 @@ export default function SingleTrackUpload() {
     setError(null);
 
     try {
-      const { tmpName } = await submitAudio({ audioFile: droppedFile });
-      setTempFileName(tmpName);
+      const { tmpName, status } = await submitAudio({ audioFile: droppedFile });
+      setValue(name, { id: tmpName, status });
     } catch {
       setError({
         title: "error",
         message: "Failed to upload",
       });
       setFile(null);
-      setTempFileName(null);
+      setValue(name, undefined);
     }
   }
 
   const handleFileClear = (e: React.MouseEvent) => {
     e.stopPropagation();
     setFile(null);
-    setTempFileName(null);
     setError(null);
+    setValue(name, undefined);
   };
 
-  const status: AudioProcessingStatus =
-    audioStatus?.status || (tempFileName ? "pending" : "pending");
+  const status: AudioProcessingStatus = audioStatus?.status || currentValue?.status || "pending";
 
   const isProcessing = status === "processing";
   const hasError = status === "failed" || error !== null;

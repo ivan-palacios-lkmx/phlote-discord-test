@@ -42,7 +42,6 @@ function NewVersionFormContent({
     category: "session",
   });
   const { setValue } = useFormContext<z.infer<typeof newVersionFormSchema>>();
-  const [bounce, setBounce] = useState(null);
 
   function onGenerateName() {
     const generatedName = uniqueNamesGenerator({
@@ -71,8 +70,7 @@ function NewVersionFormContent({
             </Tooltip>
           </h6>
 
-          {/* @ts-expect-error - ignoring prop types for now as SingleTrackUpload props are placeholders */}
-          <SingleTrackUpload value={bounce} onChange={setBounce} />
+          <SingleTrackUpload name="bounce" />
         </div>
 
         <div className="stems">

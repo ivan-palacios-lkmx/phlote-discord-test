@@ -137,6 +137,9 @@ const audioProcessingStatusResponse = z.object({
 const newVersionStems = z.array(audioProcessingStatusResponse).optional();
 export const newVersionStemsSchema = newVersionStems;
 
+const newVersionBounce = audioProcessingStatusResponse.optional();
+export const newVersionBounceSchema = newVersionBounce;
+
 export const newVersionFormSchema = z.object({
   name: newVersionName,
   bpm: newVersionBpm,
@@ -144,4 +147,5 @@ export const newVersionFormSchema = z.object({
   sourceVersion: newVersionSourceVersion,
   catModels: newVersionCatModels,
   stems: newVersionStems,
+  bounce: newVersionBounce,
 });
