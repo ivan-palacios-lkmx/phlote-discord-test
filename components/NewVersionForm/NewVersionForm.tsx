@@ -6,6 +6,7 @@ import TagGroup from "@/components/TagGroup/TagGroup";
 import Tooltip from "@/components/Tooltip/Tooltip";
 import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
 import React, { useState } from "react";
+import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
 
 import "./NewVersionForm.scss";
 
@@ -44,9 +45,15 @@ export default function NewVersionForm({
   const [catModels, setCatModels] = useState<any>({});
   const [errorMsg, setErrorMsg] = useState("");
 
-  const onGenerateName = () => {
-    setName("Generated Name");
-  };
+  function onGenerateName() {
+    const generatedName = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals],
+      separator: " ",
+      style: "capital",
+    });
+
+    setName(generatedName);
+  }
 
   const onCreate = (e: React.FormEvent) => {
     e.preventDefault();
