@@ -3,12 +3,8 @@
 import Tooltip from "@/components/Tooltip/Tooltip";
 import TrackUpload from "@/components/TrackUpload/TrackUpload";
 import CloseIcon from "@/components/svg/close.svg";
-import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
-import { useCheckAudioStatus } from "@/hooks/query/query-hooks/use-check-audio-status";
-import { AudioProcessingStatus } from "@/types/api";
-import React, { useRef, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { useFormContext } from "react-hook-form";
+import { useSingleTrackUpload } from "@/hooks/use-single-track-upload";
+import React from "react";
 
 import "./SingleTrackUpload.scss";
 
@@ -17,62 +13,19 @@ interface SingleTrackUploadProps {
 }
 
 export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
-  if (!name) {
-    throw new Error("SingleTrackUpload requires a 'name' prop");
-  }
-
-  const { setValue, watch } = useFormContext();
-  if (!setValue || !watch) {
-    throw new Error("SingleTrackUpload must be used within a FormProvider");
-  }
-  const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
-  const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<{ title: string; message: string } | null>(null);
-  const areaRef = useRef<HTMLDivElement>(null);
-
-  const currentValue = watch(name);
-  const tempFileName = currentValue?.id;
-
-  const { data: audioStatus } = useCheckAudioStatus({
-    temporaryAudioFileName: tempFileName || "",
-  });
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    multiple: false,
-  });
-
-  async function onDrop(acceptedFiles: File[]) {
-    if (acceptedFiles.length === 0) return;
-
-    const droppedFile = acceptedFiles[0];
-    setFile(droppedFile);
-    setError(null);
-
-    try {
-      const { tmpName, status } = await submitAudio({ audioFile: droppedFile });
-      setValue(name, { id: tmpName, status });
-    } catch {
-      setError({
-        title: "error",
-        message: "Failed to upload",
-      });
-      setFile(null);
-      setValue(name, undefined);
-    }
-  }
-
-  const handleFileClear = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setFile(null);
-    setError(null);
-    setValue(name, undefined);
-  };
-
-  const status: AudioProcessingStatus = audioStatus?.status || currentValue?.status || "pending";
-
-  const isProcessing = status === "processing";
-  const hasError = status === "failed" || error !== null;
+  const {
+    file,
+    error,
+    areaRef,
+    status,
+    isProcessingFile,
+    hasError,
+    isSubmittingAudio,
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    handleFileClear,
+  } = useSingleTrackUpload({ name });
 
   return (
     <div
@@ -87,7 +40,10 @@ export default function SingleTrackUpload({ name }: SingleTrackUploadProps) {
         {!file ? (
           <pre>Drop Bounce (.wav or .mp3)</pre>
         ) : (
-          <TrackUpload name={file.name} isUploading={isSubmittingAudio} isProcessing={isProcessing}>
+          <TrackUpload
+            name={file.name}
+            isUploading={isSubmittingAudio}
+            isProcessing={isProcessingFile}>
             {hasError ? (
               <div onClick={(e) => e.stopPropagation()}>
                 <Tooltip className="error">
