@@ -4,7 +4,7 @@ import {
   AuthResponse,
   SubmitAudioResponse,
 } from "@/types/api";
-import { ContactDocWithID, SettingsDoc } from "@/types/database";
+import { ContactDocWithID, SettingsDoc, TagCategory } from "@/types/database";
 import { AddressDoc, AddressDocWithID, SessionDoc, VersionDoc } from "@/types/database";
 import { WriteResult } from "firebase-admin/firestore";
 
@@ -186,6 +186,20 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error submitting audio:", error);
+      throw error;
+    }
+  }
+
+  static async getTags(category: "member" | "session"): Promise<TagCategory[] | undefined> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.TAGS, {
+        params: {
+          category: category || undefined,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching tags:", error);
       throw error;
     }
   }

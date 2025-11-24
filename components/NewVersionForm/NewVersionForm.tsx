@@ -4,6 +4,7 @@ import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
 import SingleTrackUpload from "@/components/SingleTrackUpload/SingleTrackUpload";
 import TagGroup from "@/components/TagGroup/TagGroup";
 import Tooltip from "@/components/Tooltip/Tooltip";
+import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
 import React, { useState } from "react";
 
 import "./NewVersionForm.scss";
@@ -25,8 +26,14 @@ export default function NewVersionForm({
   mustSelectStarter = false,
   possibleStarterIds = [],
   versionLabels = [],
-  sessionTags = [],
 }: NewVersionFormProps) {
+  const {
+    data: sessionTags,
+    isLoading: isLoadingSessionTags,
+    isError: isErrorSessionTags,
+  } = useGetTags({
+    category: "session",
+  });
   const [bounce, setBounce] = useState(null);
   const [formStems, setFormStems] = useState([]);
   const [stemErrors, setStemErrors] = useState({});
@@ -177,20 +184,26 @@ export default function NewVersionForm({
             <h6>Categories</h6>
 
             <div className="category-selection">
-              {sessionTags.map((cat, i) => (
-                <div key={i}>
-                  <h6>{cat.name}</h6>
-                  {cat.name && cat.options?.length && (
-                    <TagGroup
-                      name={cat.name}
-                      values={cat.options.map((v) => encodeTag(cat.name, v))}
-                      labels={cat.options}
-                      value={catModels[i]}
-                      onChange={(val) => setCatModels((prev: any) => ({ ...prev, [i]: val }))}
-                    />
-                  )}
-                </div>
-              ))}
+              {isLoadingSessionTags ? (
+                <div>Loading...</div>
+              ) : isErrorSessionTags ? (
+                <div>Error loading session tags</div>
+              ) : (
+                sessionTags?.map((cat, i) => (
+                  <div key={i}>
+                    <h6>{cat.name}</h6>
+                    {cat.name && cat.options?.length && (
+                      <TagGroup
+                        name={cat.name}
+                        values={cat.options.map((v) => encodeTag(cat.name, v))}
+                        labels={cat.options}
+                        modelValue={catModels[i]}
+                        onChange={(val) => setCatModels((prev: any) => ({ ...prev, [i]: val }))}
+                      />
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

@@ -12,4 +12,5 @@ export const ENDPOINTS = {
   AUTH: "/auth",
   AUDIO: "/audio",
   PROCESSING_STATUS: "/status",
+  TAGS: "/tags",
 };
