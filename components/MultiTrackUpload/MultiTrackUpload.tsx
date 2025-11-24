@@ -1,6 +1,7 @@
 "use client";
 
 import DraggableTrack from "@/components/DraggableTrack/DraggableTrack";
+import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import React, { useRef, useState } from "react";
@@ -17,6 +18,7 @@ export interface Track {
 }
 
 export default function MultiTrackUpload() {
+  const { mutate: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
   const [tracks, setTracks] = useState<Track[]>([]);
   const areaRef = useRef<HTMLDivElement>(null);
 
@@ -25,10 +27,12 @@ export default function MultiTrackUpload() {
   });
 
   function onDrop(acceptedFiles: File[]) {
+    if (acceptedFiles.length === 0) return;
     setTracks((prevTracks) => [
       ...prevTracks,
       ...acceptedFiles.map((file) => ({ name: file.name, file })),
     ]);
+    submitAudio({ audioFile: acceptedFiles[0] });
   }
   const onRemoveTrack = (name: string) => {
     const newTracks = [...tracks];
@@ -61,7 +65,7 @@ export default function MultiTrackUpload() {
                   key={track.name + i}
                   track={track}
                   onRemoveTrack={onRemoveTrack}
-                  isUploading={false}
+                  isUploading={isSubmittingAudio}
                   status="ready"
                 />
               );

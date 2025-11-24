@@ -189,6 +189,17 @@ export class AudioService {
       const isAudioAlreadyProcessed = await this.isAudioAlreadyProcessed(calculatedAudioIPFSHash);
 
       if (isAudioAlreadyProcessed) {
+        const temporaryAudioDoc = await getDocumentDataFromCollectionById<TemporaryAudioDoc>(
+          TEMPORARY_AUDIO_COLLECTION,
+          audioFilename,
+        );
+
+        if (!temporaryAudioDoc) {
+          console.log("audio not found, creating temporary audio doc");
+          await this.createTemporaryAudioDoc(audioFilename, "ready", calculatedAudioIPFSHash);
+          return;
+        }
+        console.log("audio already processed, updating status");
         await this.updateAudioProcessingStatus(audioFilename, "ready", calculatedAudioIPFSHash);
         return;
       }
@@ -472,6 +483,7 @@ export class AudioService {
       TEMPORARY_AUDIO_COLLECTION,
       audioFilename,
     );
+
     if (!temporaryAudioFileData) {
       throw new Error(`No temporary audio file found for filename: ${audioFilename}`);
     }
@@ -535,5 +547,16 @@ export class AudioService {
 
   static async getBounceFromTemporaryAudioReference(filename: string): Promise<string | undefined> {
     return this.getTrackHashFromTemporaryAudioReference(filename);
+  }
+  static async createTemporaryAudioDoc(
+    audioFilename: string,
+    status: AudioProcessingStatus,
+    hash: string,
+  ): Promise<void> {
+    await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).set({
+      status,
+      hash,
+      created: FieldValue.serverTimestamp(),
+    });
   }
 }

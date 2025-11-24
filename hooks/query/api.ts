@@ -171,7 +171,11 @@ class Api {
 
   static async submitAudio(audioFile: File): Promise<string> {
     try {
-      const response = await apiClient.post(ENDPOINTS.AUDIO, audioFile);
+      const formData = new FormData();
+      formData.append("audio", audioFile);
+      const response = await apiClient.post(ENDPOINTS.AUDIO, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return response.data;
     } catch (error) {
       console.error("Error submitting audio:", error);
