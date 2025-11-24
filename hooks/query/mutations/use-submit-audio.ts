@@ -8,7 +8,8 @@ interface SubmitAudioProps {
 export function useSubmitAudio() {
   return useMutation({
     mutationFn: async ({ audioFile }: SubmitAudioProps) => {
-      return await Api.submitAudio(audioFile);
+      const response = await Api.submitAudio(audioFile);
+      return response;
     },
   });
 }
