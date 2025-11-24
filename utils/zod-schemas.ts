@@ -129,10 +129,19 @@ export const newVersionSourceVersionSchema = newVersionSourceVersion;
 const newVersionCatModels = z.record(z.string()).optional();
 export const newVersionCatModelsSchema = newVersionCatModels;
 
+const audioProcessingStatus = z.enum(["pending", "processing", "ready", "failed"]);
+const audioProcessingStatusResponse = z.object({
+  id: z.string(),
+  status: audioProcessingStatus,
+});
+const newVersionStems = z.array(audioProcessingStatusResponse).optional();
+export const newVersionStemsSchema = newVersionStems;
+
 export const newVersionFormSchema = z.object({
   name: newVersionName,
   bpm: newVersionBpm,
   notes: newVersionNotes,
   sourceVersion: newVersionSourceVersion,
   catModels: newVersionCatModels,
+  stems: newVersionStems,
 });

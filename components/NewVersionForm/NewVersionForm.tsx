@@ -43,7 +43,6 @@ function NewVersionFormContent({
   });
   const { setValue, watch } = useFormContext<z.infer<typeof newVersionFormSchema>>();
   const [bounce, setBounce] = useState(null);
-  const [formStems, setFormStems] = useState([]);
 
   const sourceVersion = watch("sourceVersion");
   const catModels = watch("catModels") || {};
@@ -94,8 +93,7 @@ function NewVersionFormContent({
             )}
           </h6>
 
-          {/* @ts-expect-error - ignoring prop types for now as MultiTrackUpload props are placeholders */}
-          <MultiTrackUpload value={formStems} errors={{}} onChange={setFormStems} />
+          <MultiTrackUpload name="stems" />
         </div>
       </div>
 
@@ -209,7 +207,6 @@ export default function NewVersionForm(props: NewVersionFormProps) {
     console.log("Create version", {
       ...formValues,
       bounce: null,
-      formStems: [],
     });
   };
 

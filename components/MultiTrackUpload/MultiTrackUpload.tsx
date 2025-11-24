@@ -3,11 +3,12 @@
 import DraggableTrack from "@/components/DraggableTrack/DraggableTrack";
 import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { useCheckMultipleAudioStatus } from "@/hooks/query/query-hooks/use-check-multiple-audio-status";
-import { AudioProcessingStatus } from "@/types/api";
+import { AudioProcessingStatus, AudioProcessingStatusResponse } from "@/types/api";
 import { DndContext } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import React, { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { Controller, useFormContext } from "react-hook-form";
 
 import "./MultiTrackUpload.scss";
 
@@ -21,7 +22,17 @@ export interface Track {
   status?: string;
 }
 
-export default function MultiTrackUpload() {
+interface MultiTrackUploadProps {
+  name?: string;
+  value?: AudioProcessingStatusResponse[];
+  onChange?: (value: AudioProcessingStatusResponse[]) => void;
+}
+
+function MultiTrackUploadContent({
+  onChange,
+}: {
+  onChange?: (value: AudioProcessingStatusResponse[]) => void;
+}) {
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
 
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -31,6 +42,18 @@ export default function MultiTrackUpload() {
   const audioStatusQueries = useCheckMultipleAudioStatus({
     temporaryAudioFileNames: tempFileNames,
   });
+
+  useEffect(() => {
+    if (audioStatusQueries.length > 0) {
+      const statusResponses = audioStatusQueries
+        .map((query) => query.data)
+        .filter((data): data is AudioProcessingStatusResponse => data !== undefined);
+
+      if (statusResponses.length > 0 && onChange) {
+        onChange(statusResponses);
+      }
+    }
+  }, [audioStatusQueries, onChange]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -117,5 +140,24 @@ export default function MultiTrackUpload() {
         )}
       </div>
     </DndContext>
+  );
+}
+
+export default function MultiTrackUpload({ name, onChange }: MultiTrackUploadProps) {
+  if (name) {
+    return <MultiTrackUploadWithRHF name={name} />;
+  }
+
+  return <MultiTrackUploadContent onChange={onChange} />;
+}
+
+function MultiTrackUploadWithRHF({ name }: { name: string }) {
+  const { control } = useFormContext();
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => <MultiTrackUploadContent onChange={field.onChange} />}
+    />
   );
 }
