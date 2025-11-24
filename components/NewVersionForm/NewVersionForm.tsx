@@ -1,17 +1,23 @@
 "use client";
 
+import Form from "@/components/Form/Form";
+import { Input } from "@/components/Form/Input";
+import { Textarea } from "@/components/Form/Textarea";
 import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
 import SingleTrackUpload from "@/components/SingleTrackUpload/SingleTrackUpload";
 import TagGroup from "@/components/TagGroup/TagGroup";
 import Tooltip from "@/components/Tooltip/Tooltip";
 import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
+import { newVersionFormSchema } from "@/utils/zod-schemas";
 import React, { useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
+import { z } from "zod";
 
 import "./NewVersionForm.scss";
 
 interface NewVersionFormProps {
-  settings?: any;
+  settings?: Record<string, string>;
   exampleLink?: string;
   parentName?: string;
   mustSelectStarter?: boolean;
@@ -20,7 +26,7 @@ interface NewVersionFormProps {
   sessionTags?: { name: string; options: string[] }[];
 }
 
-export default function NewVersionForm({
+function NewVersionFormContent({
   settings = {},
   exampleLink,
   parentName,
@@ -35,15 +41,12 @@ export default function NewVersionForm({
   } = useGetTags({
     category: "session",
   });
+  const { setValue, watch } = useFormContext<z.infer<typeof newVersionFormSchema>>();
   const [bounce, setBounce] = useState(null);
   const [formStems, setFormStems] = useState([]);
-  const [stemErrors, setStemErrors] = useState({});
-  const [name, setName] = useState("");
-  const [bpm, setBpm] = useState("");
-  const [notes, setNotes] = useState("");
-  const [sourceVersion, setSourceVersion] = useState("");
-  const [catModels, setCatModels] = useState<any>({});
-  const [errorMsg, setErrorMsg] = useState("");
+
+  const sourceVersion = watch("sourceVersion");
+  const catModels = watch("catModels") || {};
 
   function onGenerateName() {
     const generatedName = uniqueNamesGenerator({
@@ -52,28 +55,15 @@ export default function NewVersionForm({
       style: "capital",
     });
 
-    setName(generatedName);
+    setValue("name", generatedName);
   }
-
-  const onCreate = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Create version", {
-      bounce,
-      formStems,
-      name,
-      bpm,
-      notes,
-      sourceVersion,
-      catModels,
-    });
-  };
 
   const encodeTag = (category: string, option: string) => {
     return `${category}:${option}`;
   };
 
   return (
-    <form className="new-version-form" onSubmit={onCreate}>
+    <>
       {/* Upload Area */}
       <div className="uploads">
         <div className="bounce">
@@ -85,7 +75,7 @@ export default function NewVersionForm({
             </Tooltip>
           </h6>
 
-          {/* @ts-ignore - ignoring prop types for now as SingleTrackUpload props are placeholders */}
+          {/* @ts-expect-error - ignoring prop types for now as SingleTrackUpload props are placeholders */}
           <SingleTrackUpload value={bounce} onChange={setBounce} />
         </div>
 
@@ -104,8 +94,8 @@ export default function NewVersionForm({
             )}
           </h6>
 
-          {/* @ts-ignore - ignoring prop types for now as MultiTrackUpload props are placeholders */}
-          <MultiTrackUpload value={formStems} errors={stemErrors} onChange={setFormStems} />
+          {/* @ts-expect-error - ignoring prop types for now as MultiTrackUpload props are placeholders */}
+          <MultiTrackUpload value={formStems} errors={{}} onChange={setFormStems} />
         </div>
       </div>
 
@@ -121,39 +111,34 @@ export default function NewVersionForm({
                 </button>
               )}
             </div>
-            <input
+            <Input
               id="name"
+              name="name"
               className="name-input"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
               placeholder="ex. Old Skool"
-              required
               disabled={!!parentName}
             />
           </div>
 
           <div className="field">
             <label htmlFor="bpm">BPM</label>
-            <input
+            <Input
               id="bpm"
+              name="bpm"
               className="bpm-input"
               type="number"
-              value={bpm}
-              onChange={(e) => setBpm(e.target.value)}
               placeholder="ex. 175"
               min="1"
-              required
             />
           </div>
 
           <div className="field two-col">
             <label htmlFor="notes">Notes</label>
-            <textarea
+            <Textarea
               id="notes"
+              name="notes"
               className="notes-input"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
               placeholder="Type your notes here..."
             />
           </div>
@@ -179,8 +164,8 @@ export default function NewVersionForm({
                   values={possibleStarterIds}
                   labels={versionLabels}
                   inputType="radio"
-                  value={sourceVersion}
-                  onChange={setSourceVersion}
+                  modelValue={sourceVersion || ""}
+                  onChange={(val) => setValue("sourceVersion", typeof val === "string" ? val : "")}
                 />
               </div>
             </div>
@@ -205,7 +190,7 @@ export default function NewVersionForm({
                         values={cat.options.map((v) => encodeTag(cat.name, v))}
                         labels={cat.options}
                         modelValue={catModels[i]}
-                        onChange={(val) => setCatModels((prev: any) => ({ ...prev, [i]: val }))}
+                        onChange={(val) => setValue("catModels", { ...catModels, [i]: val })}
                       />
                     )}
                   </div>
@@ -214,10 +199,23 @@ export default function NewVersionForm({
             </div>
           </div>
         </div>
-        <div className="error-message">
-          <p>{errorMsg || "\u00A0"}</p>
-        </div>
       </div>
-    </form>
+    </>
+  );
+}
+
+export default function NewVersionForm(props: NewVersionFormProps) {
+  const handleSubmit = (formValues: z.infer<typeof newVersionFormSchema>) => {
+    console.log("Create version", {
+      ...formValues,
+      bounce: null,
+      formStems: [],
+    });
+  };
+
+  return (
+    <Form schema={newVersionFormSchema} handleSubmit={handleSubmit} className="new-version-form">
+      <NewVersionFormContent {...props} />
+    </Form>
   );
 }

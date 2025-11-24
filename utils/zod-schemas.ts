@@ -113,3 +113,26 @@ export const updateAddressSchema = z.object({
   role,
   address,
 });
+
+const newVersionName = z.string().min(1, "Name is required");
+export const newVersionNameSchema = newVersionName;
+
+const newVersionBpm = z.coerce.number().min(1, "BPM must be at least 1");
+export const newVersionBpmSchema = newVersionBpm;
+
+const newVersionNotes = z.string().optional();
+export const newVersionNotesSchema = newVersionNotes;
+
+const newVersionSourceVersion = z.string().optional();
+export const newVersionSourceVersionSchema = newVersionSourceVersion;
+
+const newVersionCatModels = z.record(z.string()).optional();
+export const newVersionCatModelsSchema = newVersionCatModels;
+
+export const newVersionFormSchema = z.object({
+  name: newVersionName,
+  bpm: newVersionBpm,
+  notes: newVersionNotes,
+  sourceVersion: newVersionSourceVersion,
+  catModels: newVersionCatModels,
+});
