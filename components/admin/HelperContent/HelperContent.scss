@@ -1,0 +1,22 @@
+@import '../../../app/assets/scss/vars';
+
+.admin-helper-content {
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: var(--margin);
+  display: grid;
+  text-transform: initial;
+  margin: 50px 0;
+
+  .helper-title {
+    margin: 0;
+  }
+
+  .entry {
+    max-width: 300px;
+    margin-top: 10px;
+
+    a {
+      text-decoration: underline;
+    }
+  }
+}
