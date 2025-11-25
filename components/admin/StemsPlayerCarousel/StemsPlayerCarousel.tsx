@@ -53,11 +53,7 @@ function DraggableCarouselRow({
 }
 
 export default function StemsPlayerCarousel() {
-  const {
-    data: settings,
-    isPending: isPendingSettings,
-    isError: isErrorSettings,
-  } = useGetSettings();
+  const { data: settings } = useGetSettings();
   const [searchText, setSearchText] = useState("");
   const [selectedSession, setSelectedSession] = useState<AlgoliaSession | null>(null);
   // this is working with Algolia, so we dont need to use a query from query client
