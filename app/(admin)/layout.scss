@@ -1,0 +1,37 @@
+@import '../../app/assets/scss/vars';
+
+.container.admin {
+  background-color: var(--black);
+  color: var(--white);
+  transition: min-height 150ms linear, opacity 600ms;
+  min-height: 100vh;
+  position: relative;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: center;
+  display: grid;
+
+  .admin-header {
+    z-index: 60;
+  }
+
+  // Text selection
+  ::selection {
+    color: #000;
+    background: #fff;
+  }
+
+  ::-moz-selection {
+    color: #000;
+    background: #fff;
+  }
+
+  .btn {
+    filter: invert(1);
+  }
+
+  &>* {
+    min-width: 0;
+  }
+}
