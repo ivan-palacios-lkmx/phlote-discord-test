@@ -1,6 +1,7 @@
 "use client";
 
-import { useFbGlobals } from "@/hooks/useFbGlobals";
+import { usePatchSettings } from "@/hooks/query/mutations/use-patch-settings";
+import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { db } from "@/lib/firebase";
 import checkAddress from "@/utils/checkAddress";
 import { collection, getDocs, query, writeBatch } from "firebase/firestore";
@@ -10,12 +11,13 @@ import { useMemo, useState } from "react";
 import "./MembershipContract.scss";
 
 export default function MembershipContract() {
-  const { settingsDoc, updateSettings } = useFbGlobals();
+  const { data: settings, isLoading: loadingSettings } = useGetSettings();
   const [newAddress, setNewAddress] = useState("");
+  const { mutate: patchSettings } = usePatchSettings();
 
   const currentAddresses = useMemo(() => {
-    return (settingsDoc as { membershipContracts?: string[] } | null)?.membershipContracts || [];
-  }, [settingsDoc]);
+    return settings?.membershipContracts || [];
+  }, [settings]);
 
   const newAddressFormatted = useMemo(() => {
     return checkAddress(newAddress);
@@ -51,13 +53,15 @@ export default function MembershipContract() {
       return;
     }
 
-    if (!settingsDoc) {
+    if (loadingSettings) {
       alert("Data not fully loaded yet");
       return;
     }
 
-    await updateSettings({
-      membershipContracts: [...currentAddresses, newAddressFormatted],
+    await patchSettings({
+      patch: {
+        membershipContracts: [...currentAddresses, newAddressFormatted],
+      },
     });
 
     setNewAddress("");
@@ -66,13 +70,15 @@ export default function MembershipContract() {
   };
 
   const onRemoveAddress = async (address: string) => {
-    if (!settingsDoc) {
+    if (loadingSettings) {
       alert("Data not fully loaded yet");
       return;
     }
 
-    await updateSettings({
-      membershipContracts: currentAddresses.filter((a) => a !== address),
+    await patchSettings({
+      patch: {
+        membershipContracts: currentAddresses.filter((a) => a !== address),
+      },
     });
 
     await refreshAddresses();
