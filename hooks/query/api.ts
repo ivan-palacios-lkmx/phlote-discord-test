@@ -208,7 +208,7 @@ class Api {
     }
   }
 
-  static async getTags(category: "member" | "session"): Promise<TagCategory[] | undefined> {
+  static async getTags(category: "member" | "session"): Promise<TagCategory[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.TAGS, {
         params: {
