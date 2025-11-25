@@ -1,0 +1,29 @@
+@import '../../../app/assets/scss/vars';
+
+.session-card {
+  border: 1px solid rgba(#fff, 0.25);
+  border-radius: 7px;
+
+  .card-header {
+    border-bottom: 1px solid rgba(#fff, 0.25);
+    grid-template-columns: 1fr auto;
+    align-items: flex-start;
+    padding: 20px;
+    display: grid;
+  }
+
+  .card-version-list {
+    padding: 20px;
+  }
+
+  .card-header-title {
+    margin: 0;
+  }
+
+  .btn.delete-session {
+    background-color: var(--light-red);
+    border-color: transparent;
+    filter: initial !important;
+    font-size: 14px;
+  }
+}
