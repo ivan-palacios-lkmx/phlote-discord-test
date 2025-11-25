@@ -1,82 +1,43 @@
 "use client";
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
-import Web3Username from "@/components/web3/Web3Username/Web3Username";
-import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
+import { AddressDocWithID } from "@/types/database";
 import checkAddress from "@/utils/checkAddress";
-import uniq from "lodash/uniq";
 import { useMemo, useState } from "react";
 
 import "./RoleCreator.scss";
 
-function useRolesDoc() {
-  // TODO: Implement useRolesDoc hook similar to useFbGlobals
-  // const rolesDocRef = useMemo(() => doc(db, "globals/roles"), []);
-  // const rolesDoc = useClientDoc(rolesDocRef);
-  const rolesDoc = null;
-
-  const updateRoles = async (updates: { creators?: string[] }) => {
-    // TODO: Import setDoc from firebase/firestore
-    // if (rolesDocRef) {
-    //   await setDoc(rolesDocRef, updates, { merge: true });
-    // }
-    console.log("updateRoles called with:", updates);
-  };
-
-  return { rolesDoc, updateRoles };
-}
-
 function CreatorRow({
   address,
   onRemoveCreator,
+  isLoadingUsers,
 }: {
-  address: string;
-  onRemoveCreator: (address: string) => void;
+  address: AddressDocWithID;
+  onRemoveCreator: (address: AddressDocWithID) => void;
+  isLoadingUsers: boolean;
 }) {
-  const {
-    data: addressInfo,
-    isPending: isAddressInfoPending,
-    isError: isAddressInfoError,
-  } = useGetAddressInfo(address, false, !!address);
-
-  const handleRemoveCreator = () => {
-    onRemoveCreator(address);
-  };
-
+  const creatorAvatar =
+    address?.ens?.avatar ||
+    address?.openSea?.profileImageURL ||
+    address?.zora?.profileImageURL ||
+    "/images/phlote-poster.jpg";
   return (
     <div className="creator-row">
-      {isAddressInfoPending ? (
-        <div className="web3-avatar" />
-      ) : isAddressInfoError ? (
-        <div className="web3-avatar" />
-      ) : addressInfo?.avatar ? (
-        <Web3Avatar avatar={addressInfo.avatar} />
-      ) : (
-        <div className="web3-avatar" />
-      )}
-      {isAddressInfoPending ? (
-        <span>Loading...</span>
-      ) : isAddressInfoError ? (
-        <span>Error</span>
-      ) : addressInfo?.username ? (
-        <Web3Username username={addressInfo.username} />
-      ) : (
-        <span>{address}</span>
-      )}
-      <button className="remove-creator" onClick={handleRemoveCreator}>
+      {isLoadingUsers ? <div className="web3-avatar" /> : <Web3Avatar avatar={creatorAvatar} />}
+      <button className="remove-creator" onClick={() => onRemoveCreator(address)}>
         Remove
       </button>
     </div>
   );
 }
 
-export default function RoleCreator() {
-  const { rolesDoc, updateRoles } = useRolesDoc();
-  const [newCreator, setNewCreator] = useState("");
+interface RoleCreatorProps {
+  creators: AddressDocWithID[];
+  isLoadingUsers: boolean;
+}
 
-  const creators = useMemo(() => {
-    return (rolesDoc as { creators?: string[] } | null)?.creators || [];
-  }, [rolesDoc]);
+export default function RoleCreator({ creators, isLoadingUsers }: RoleCreatorProps) {
+  const [newCreator, setNewCreator] = useState("");
 
   const newCreatorFormatted = useMemo(() => {
     return checkAddress(newCreator);
@@ -90,23 +51,10 @@ export default function RoleCreator() {
       return;
     }
 
-    if (!rolesDoc) {
-      alert("Data not fully loaded");
-      return;
-    }
-
-    await updateRoles({
-      creators: uniq([...creators, newCreatorFormatted]),
-    });
-
     setNewCreator("");
   };
 
-  const handleRemoveCreator = async (address: string) => {
-    await updateRoles({
-      creators: creators.filter((a) => a !== address),
-    });
-  };
+  const handleRemoveCreator = async (address: AddressDocWithID) => {};
 
   return (
     <div className="admin-role-creator">
@@ -114,7 +62,12 @@ export default function RoleCreator() {
 
       <div className="creator-list">
         {creators.map((creator) => (
-          <CreatorRow key={creator} address={creator} onRemoveCreator={handleRemoveCreator} />
+          <CreatorRow
+            key={creator.id}
+            address={creator}
+            onRemoveCreator={handleRemoveCreator}
+            isLoadingUsers={isLoadingUsers}
+          />
         ))}
       </div>
 
