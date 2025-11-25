@@ -1,0 +1,40 @@
+@import '../../../../app/assets/scss/vars';
+
+main.admin-members {
+  position: relative;
+  padding-bottom: 150px;
+  padding-top: 120px;
+  overflow: hidden;
+
+  .admin-title {
+    margin: 0;
+  }
+
+  .subtitle {
+    font-family: var(--font-mono);
+    text-decoration: underline;
+  }
+
+  .member-grid {
+    margin-top: 30px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: var(--margin);
+    display: grid;
+
+    >* {
+      min-width: 0;
+    }
+
+    @include smaller-than(1250px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include smaller-than(900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include smaller-than(600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
