@@ -3,7 +3,6 @@
 import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import SessionCard from "@/components/admin/SessionCard/SessionCard";
 import { useGetSessions } from "@/hooks/query/query-hooks/use-get-sessions";
-import { SessionDocWithID } from "@/types/database";
 import Link from "next/link";
 
 import "./Sessions.scss";
@@ -12,7 +11,8 @@ export default function Sessions() {
   const { data: sessions, isPending: isPendingSessions } = useGetSessions();
 
   return (
-    <OnlyAdmins className="admin-sessions">
+    // TODO: Add OnlyAdmins component
+    <main className="admin-sessions">
       <div className="contained">
         <h4 className="admin-title">Manage Sessions</h4>
         <div className="subtitle">
@@ -29,6 +29,6 @@ export default function Sessions() {
           </div>
         )}
       </div>
-    </OnlyAdmins>
+    </main>
   );
 }
