@@ -1,0 +1,17 @@
+@import '../../../app/assets/scss/vars';
+
+.admin-member-tags {
+  text-transform: initial;
+
+  .area-label {
+    margin: 0;
+  }
+
+  .btn {
+    filter: invert(1);
+  }
+
+  .button-area {
+    text-align: center;
+  }
+}
