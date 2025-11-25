@@ -186,3 +186,7 @@ export function formatProjectId(projectId: ShortUniqueId): string {
 export function getCurrentTimestampInMilliseconds(): number {
   return Date.now();
 }
+
+export function isBodyEmpty(body: unknown): boolean {
+  return body === undefined || body === null || Object.keys(body).length === 0;
+}

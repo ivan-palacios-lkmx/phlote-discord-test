@@ -1,11 +1,18 @@
 import { adminDb } from "@/lib/firebase-admin";
 import { SessionDetails } from "@/types/api";
-import { ActivityDocWithID, SessionDoc, VersionDetails, VersionDocWithID } from "@/types/database";
+import {
+  ActivityDocWithID,
+  SessionDoc,
+  SessionDocWithID,
+  VersionDetails,
+  VersionDocWithID,
+} from "@/types/database";
 import { ACTIVITY_COLLECTION, SESSIONS_COLLECTION } from "@/utils/constants";
 import { SESSION_VERSIONS_COLLECTION } from "@/utils/constants";
 import {
   getDocumentDataFromQuerySnapshot,
   getIDAndDocumentDataFromDocumentSnapshot,
+  getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { formatProjectId } from "@/utils/functions";
 import { DocumentReference, Transaction } from "firebase-admin/firestore";
@@ -15,9 +22,9 @@ import ShortUniqueId from "short-unique-id";
 import { AudioService } from "./audio-service";
 
 export class SessionService {
-  static async getSessions(): Promise<SessionDoc[]> {
+  static async getSessions(): Promise<SessionDocWithID[]> {
     const sessionsSnapshot = await adminDb.collection(SESSIONS_COLLECTION).get();
-    return getDocumentDataFromQuerySnapshot<SessionDoc>(sessionsSnapshot);
+    return getIDAndDocumentDataFromQuerySnapshot<SessionDocWithID>(sessionsSnapshot);
   }
 
   static async getSession(sessionID: string): Promise<SessionDoc | null> {

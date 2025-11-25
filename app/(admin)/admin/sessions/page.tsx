@@ -2,20 +2,14 @@
 
 import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import SessionCard from "@/components/admin/SessionCard/SessionCard";
-import { useClientCollection } from "@/hooks/sessions/useClientCollection";
-import { db } from "@/lib/firebase";
-import { collection, query } from "firebase/firestore";
+import { useGetSessions } from "@/hooks/query/query-hooks/use-get-sessions";
+import { SessionDocWithID } from "@/types/database";
 import Link from "next/link";
-import { useMemo } from "react";
 
 import "./Sessions.scss";
 
 export default function Sessions() {
-  const sessionQ = useMemo(() => {
-    return query(collection(db, "sessions"));
-  }, []);
-
-  const { data: sessions, pending } = useClientCollection(sessionQ);
+  const { data: sessions, isPending: isPendingSessions } = useGetSessions();
 
   return (
     <OnlyAdmins className="admin-sessions">
@@ -25,11 +19,11 @@ export default function Sessions() {
           <Link href="/admin">Back to admin</Link>
         </div>
 
-        {pending ? (
+        {isPendingSessions ? (
           <div>Loading sessions...</div>
         ) : (
           <div className="session-grid">
-            {sessions.map((session) => (
+            {sessions?.map((session) => (
               <SessionCard key={session.id} session={session} />
             ))}
           </div>

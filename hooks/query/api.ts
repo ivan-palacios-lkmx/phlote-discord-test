@@ -2,10 +2,18 @@ import {
   AudioAction,
   AudioProcessingStatusResponse,
   AuthResponse,
+  SettingsPatch,
   SubmitAudioResponse,
 } from "@/types/api";
 import { ContactDocWithID, SettingsDoc, TagCategory } from "@/types/database";
-import { AddressDoc, AddressDocWithID, SessionDoc, VersionDoc } from "@/types/database";
+import {
+  AddressDoc,
+  AddressDocWithID,
+  SessionDoc,
+  SessionDocWithID,
+  VersionDoc,
+  VersionDocWithID,
+} from "@/types/database";
 import { WriteResult } from "firebase-admin/firestore";
 
 import apiClient from "./axios";
@@ -46,7 +54,17 @@ class Api {
     }
   }
 
-  static async getSessions(): Promise<SessionDoc[]> {
+  static async patchSettings(patch: SettingsPatch): Promise<SettingsDoc> {
+    try {
+      const response = await apiClient.patch(ENDPOINTS.GET_SETTINGS, patch);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      throw error;
+    }
+  }
+
+  static async getSessions(): Promise<SessionDocWithID[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.SESSIONS);
       return response.data;
@@ -84,7 +102,7 @@ class Api {
     }
   }
 
-  static async getSessionVersions(sessionID: string): Promise<VersionDoc[]> {
+  static async getSessionVersions(sessionID: string): Promise<VersionDocWithID[]> {
     try {
       const response = await apiClient.get(
         ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + sessionID,
@@ -111,6 +129,22 @@ class Api {
   static async getAddressesInfo(): Promise<AddressDoc[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.ADDRESS);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+      throw error;
+    }
+  }
+
+  static async getAddresses(
+    visibility?: "public" | "private",
+  ): Promise<{ addresses: AddressDocWithID[]; totalCount: number }> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.ADDRESS, {
+        params: {
+          visibility: visibility || undefined,
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Error fetching addresses:", error);
@@ -208,7 +242,7 @@ class Api {
     }
   }
 
-  static async getTags(category: "member" | "session"): Promise<TagCategory[] | undefined> {
+  static async getTags(category: "member" | "session"): Promise<TagCategory[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.TAGS, {
         params: {

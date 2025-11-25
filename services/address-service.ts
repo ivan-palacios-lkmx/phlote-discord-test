@@ -13,14 +13,14 @@ import {
   PRIVATE_COLLECTION,
 } from "@/utils/constants";
 import {
-  getDocumentDataFromQuerySnapshot,
   getIDAndDocumentDataFromDocumentSnapshot,
+  getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { InfuraProvider, Provider } from "ethers";
 import { DocumentSnapshot, WriteResult } from "firebase-admin/firestore";
 
 export class AddressService {
-  static async getAddresses(visibility?: "public" | "private"): Promise<AddressDoc[]> {
+  static async getAddresses(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
     const onlyPublic = visibility === "public";
     const onlyPrivate = visibility === "private";
 
@@ -29,7 +29,7 @@ export class AddressService {
         .collection(ADDRESSES_COLLECTION)
         .where("isPublic", "==", true)
         .get();
-      return getDocumentDataFromQuerySnapshot<AddressDoc>(addressesSnapshot);
+      return getIDAndDocumentDataFromQuerySnapshot<AddressDocWithID>(addressesSnapshot);
     }
 
     if (onlyPrivate) {
@@ -37,11 +37,11 @@ export class AddressService {
         .collection(ADDRESSES_COLLECTION)
         .where("isPublic", "==", false)
         .get();
-      return getDocumentDataFromQuerySnapshot<AddressDoc>(addressesSnapshot);
+      return getIDAndDocumentDataFromQuerySnapshot<AddressDocWithID>(addressesSnapshot);
     }
 
     const addressesSnapshot = await adminDb.collection(ADDRESSES_COLLECTION).get();
-    return getDocumentDataFromQuerySnapshot<AddressDoc>(addressesSnapshot);
+    return getIDAndDocumentDataFromQuerySnapshot<AddressDocWithID>(addressesSnapshot);
   }
 
   static async updateAddress(
@@ -65,27 +65,26 @@ export class AddressService {
 
   static async getAddressesAndTotalCount(
     visibility?: "public" | "private",
-  ): Promise<{ addresses: AddressDoc[]; totalCount: number }> {
+  ): Promise<{ addresses: AddressDocWithID[]; totalCount: number }> {
     const addresses = await this.getAddresses(visibility);
     const onlyPublic = visibility === "public";
     const onlyPrivate = visibility === "private";
-    const totalCount = addresses.length;
 
     if (onlyPublic) {
       return {
         addresses: addresses.filter((address) => address.isPublic === true),
-        totalCount,
+        totalCount: addresses.filter((address) => address.isPublic === true).length,
       };
     }
 
     if (onlyPrivate) {
       return {
         addresses: addresses.filter((address) => address.isPublic === false),
-        totalCount,
+        totalCount: addresses.filter((address) => address.isPublic === false).length,
       };
     }
 
-    return { addresses, totalCount };
+    return { addresses, totalCount: addresses.length };
   }
 
   static async getSingleAddress(

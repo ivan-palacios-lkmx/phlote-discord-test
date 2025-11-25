@@ -2,6 +2,7 @@
 
 import CloseIcon from "@/components/svg/close.svg";
 import DragIcon from "@/components/svg/drag.svg";
+import { TagCategory } from "@/types/database";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -9,14 +10,9 @@ import { useEffect, useMemo, useState } from "react";
 
 import "./GroupTagEditor.scss";
 
-interface Category {
-  name: string;
-  options: string[];
-}
-
 interface GroupTagEditorProps {
-  group: Category[];
-  onSaved?: (data: Category[]) => void;
+  group: TagCategory[];
+  onSaved?: (data: TagCategory[]) => void;
 }
 
 function DraggableCategoryRow({
@@ -25,7 +21,7 @@ function DraggableCategoryRow({
   onSelect,
   onRemove,
 }: {
-  category: Category;
+  category: TagCategory;
   isActive: boolean;
   onSelect: () => void;
   onRemove: () => void;
@@ -87,7 +83,7 @@ function DraggableOptionRow({ option, onRemove }: { option: string; onRemove: ()
 }
 
 export default function GroupTagEditor({ group, onSaved }: GroupTagEditorProps) {
-  const [editableCategories, setEditableCategories] = useState<Category[]>([]);
+  const [editableCategories, setEditableCategories] = useState<TagCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [newGroupName, setNewGroupName] = useState("");
   const [newOptionName, setNewOptionName] = useState("");
