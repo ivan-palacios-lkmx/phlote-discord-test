@@ -11,6 +11,18 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "i.seadn.io",
       },
+      {
+        protocol: "https",
+        hostname: "ipfs.io",
+      },
+      {
+        protocol: "https",
+        hostname: "lookagain.mypinata.cloud",
+      },
+      {
+        protocol: "https",
+        hostname: "gateway.ipfs.io",
+      },
     ],
   },
   // Turbopack configuration (Next.js 15+)
