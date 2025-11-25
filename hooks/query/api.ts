@@ -112,7 +112,7 @@ class Api {
     }
   }
 
-  static async getVersion(versionID: string): Promise<VersionDoc | null> {
+  static async getVersion(versionID: string): Promise<VersionDocWithID | null> {
     try {
       const response = await apiClient.get(
         ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + versionID,

@@ -5,7 +5,7 @@ import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
 import { useFbEndpoints } from "@/hooks/useFbEndpoints";
-import { VersionDoc } from "@/types/database";
+import { VersionDocWithID } from "@/types/database";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -13,7 +13,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./VersionPlayer.scss";
 
 interface VersionPlayerProps {
-  versionData: VersionDoc;
+  versionData: VersionDocWithID;
 }
 
 export default function VersionPlayer({ versionData }: VersionPlayerProps) {
