@@ -16,11 +16,11 @@ export async function GET(request: NextRequest) {
     const visibility = searchParams.get("visibility") as "public" | "private" | undefined;
     const role = searchParams.get("role") as "admin" | "creator" | "member" | undefined;
 
-    if (!visibilitySchema.safeParse(visibility).success) {
+    if (visibility && !visibilitySchema.safeParse(visibility).success) {
       return NextResponse.json({ error: "Invalid visibility parameter" }, { status: 400 });
     }
 
-    if (!roleSchema.safeParse(role).success) {
+    if (role && !roleSchema.safeParse(role).success) {
       return NextResponse.json({ error: "Invalid role parameter" }, { status: 400 });
     }
 

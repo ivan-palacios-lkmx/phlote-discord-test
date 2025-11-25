@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "gateway.ipfs.io",
       },
+      {
+        protocol: "https",
+        hostname: "api.zora.co",
+      },
     ],
   },
   // Turbopack configuration (Next.js 15+)
