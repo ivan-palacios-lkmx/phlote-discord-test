@@ -2,6 +2,7 @@ import {
   AudioAction,
   AudioProcessingStatusResponse,
   AuthResponse,
+  SettingsPatch,
   SubmitAudioResponse,
 } from "@/types/api";
 import { ContactDocWithID, SettingsDoc, TagCategory } from "@/types/database";
@@ -48,6 +49,16 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error fetching settings:", error);
+      throw error;
+    }
+  }
+
+  static async patchSettings(patch: SettingsPatch): Promise<SettingsDoc> {
+    try {
+      const response = await apiClient.patch(ENDPOINTS.GET_SETTINGS, patch);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating settings:", error);
       throw error;
     }
   }
