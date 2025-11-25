@@ -8,7 +8,6 @@ export function useGetAddressInfo(
   includePrivate: boolean = false,
   enabled: boolean = true,
 ) {
-
   const isValidAddress = !!address && address.trim() !== "";
 
   return useQuery({
