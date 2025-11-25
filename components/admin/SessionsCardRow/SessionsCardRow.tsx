@@ -3,21 +3,11 @@
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { db } from "@/lib/firebase";
+import { VersionDocWithID } from "@/types/database";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useMemo } from "react";
 
 import "./SessionsCardRow.scss";
-
-interface Version {
-  id?: string;
-  creator?: string;
-  versionIndex?: number;
-  [key: string]: unknown;
-}
-
-interface SessionsCardRowProps {
-  version: Version | null | undefined;
-}
 
 function AvatarFromAddress({ address, className }: { address: string; className?: string }) {
   const { data: addressInfo } = useGetAddressInfo(address, false, !!address);
@@ -28,7 +18,9 @@ function AvatarFromAddress({ address, className }: { address: string; className?
 
   return <Web3Avatar avatar={addressInfo.avatar} className={`avatar ${className || ""}`} />;
 }
-
+interface SessionsCardRowProps {
+  version: VersionDocWithID;
+}
 export default function SessionsCardRow({ version }: SessionsCardRowProps) {
   const formattedVersion = useMemo(() => {
     if (!version?.versionIndex) return "";

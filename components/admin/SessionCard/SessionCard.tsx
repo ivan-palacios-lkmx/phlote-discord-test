@@ -1,11 +1,8 @@
 "use client";
 
 import SessionsCardRow from "@/components/admin/SessionsCardRow/SessionsCardRow";
-import { useClientCollection } from "@/hooks/sessions/useClientCollection";
-import { db } from "@/lib/firebase";
+import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
 import { SessionDocWithID } from "@/types/database";
-import { collection, doc, orderBy, query, runTransaction, where } from "firebase/firestore";
-import { useMemo } from "react";
 
 import "./SessionCard.scss";
 
@@ -14,46 +11,30 @@ interface SessionCardProps {
 }
 
 export default function SessionCard({ session }: SessionCardProps) {
-  const versionQ = useMemo(() => {
-    if (!session?.id) return null;
+  const {
+    data: versions,
+    isPending: isPendingVersions,
+    isError: isErrorVersions,
+  } = useGetVersions({ sessionId: session?.id || "" });
 
-    return query(
-      collection(db, "session-versions"),
-      where("sessionID", "==", session.id),
-      orderBy("created", "desc"),
-    );
-  }, [session?.id]);
-
-  const { data: versions } = useClientCollection(versionQ);
-
-  const onDelete = async () => {
-    if (!session?.id) return;
-
-    await runTransaction(db, async (transaction) => {
-      await Promise.all(
-        versions.map((version) => transaction.delete(doc(db, `session-versions/${version.id}`))),
-      );
-
-      await transaction.delete(doc(db, `sessions/${session.id}`));
-    });
-  };
-
-  if (!session) {
-    return null;
-  }
+  const onDelete = async () => {};
 
   return (
     <div className="session-card">
       <div className="card-header">
-        <h6 className="card-header-title">{session.name || ""}</h6>
+        <h6 className="card-header-title">{session?.name || ""}</h6>
         <button onClick={onDelete} className="btn delete-session" type="button">
           Delete Session
         </button>
       </div>
       <div className="card-version-list">
-        {versions.map((version) => (
-          <SessionsCardRow key={version.id} version={version} />
-        ))}
+        {isPendingVersions ? (
+          <div className="loading">Loading...</div>
+        ) : isErrorVersions ? (
+          <div className="error">Error loading versions</div>
+        ) : (
+          versions.map((version) => <SessionsCardRow key={version.id} version={version} />)
+        )}
       </div>
     </div>
   );
