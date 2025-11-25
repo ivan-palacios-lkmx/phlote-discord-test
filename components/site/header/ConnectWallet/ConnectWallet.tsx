@@ -12,6 +12,8 @@ import { useEffect, useRef } from "react";
 
 import "./ConnectWallet.scss";
 
+const  NOT_INCLUDE_PRIVATE_INFO = false;
+
 export default function ConnectWallet() {
   const { user, ready, authenticated } = usePrivy();
   const walletAddress = user?.wallet?.address;
@@ -21,7 +23,7 @@ export default function ConnectWallet() {
     data: addressInfo,
     isPending: isAddressInfoPending,
     isError: isAddressInfoError,
-  } = useGetAddressInfo(walletAddress!, !!walletAddress);
+  } = useGetAddressInfo(walletAddress || "", NOT_INCLUDE_PRIVATE_INFO, !!walletAddress);
 
   const { mutate: auth } = useAuth();
   const router = useRouter();

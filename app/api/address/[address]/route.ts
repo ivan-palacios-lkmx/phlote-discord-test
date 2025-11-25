@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { address: string } },
+  { params }: { params: Promise<{ address: string }> },
 ): Promise<NextResponse> {
   try {
     const searchParams = request.nextUrl.searchParams;
 
     const includePrivate = searchParams.get("include") === "private";
 
-    const address = params.address;
+    const { address } = await params;
 
     if (!addressSchema.safeParse(address).success) {
       return NextResponse.json({ error: "Invalid address format" }, { status: 400 });

@@ -8,6 +8,9 @@ export function useGetAddressInfo(
   includePrivate: boolean = false,
   enabled: boolean = true,
 ) {
+
+  const isValidAddress = !!address && address.trim() !== "";
+
   return useQuery({
     queryKey: ["addressInfo", address],
     queryFn: async (): Promise<ClientAddressInfo | ClientAddressInfoWithPrivate> => {
@@ -19,6 +22,6 @@ export function useGetAddressInfo(
         title: AddressClientService.getAddressTitle(addressInfo),
       };
     },
-    enabled: enabled,
+    enabled: enabled && isValidAddress,
   });
 }
