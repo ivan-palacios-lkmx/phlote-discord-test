@@ -135,6 +135,22 @@ class Api {
     }
   }
 
+  static async getAddresses(
+    visibility?: "public" | "private",
+  ): Promise<{ addresses: AddressDoc[]; totalCount: number }> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.ADDRESS, {
+        params: {
+          visibility: visibility || undefined,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+      throw error;
+    }
+  }
+
   static async getAddressInfo(
     address: string,
     includePrivate: boolean = false,
