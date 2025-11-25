@@ -21,16 +21,12 @@ export default function AdminPage() {
     <main className="admin-index">
       <div className="contained">
         <HelperContent />
-
         <h5 className="admin-title">Configuration</h5>
-
         <div className="controls-grid">
-          <RoleAdmin admins={admins} isLoadingUsers={isPendingMembers} />
-          <RoleCreator creators={creators} isLoadingUsers={isPendingMembers} />
-
+          <RoleAdmin admins={admins || []} isLoadingUsers={isPendingMembers} />
+          <RoleCreator creators={creators || []} isLoadingUsers={isPendingMembers} />
           <SessionTags />
           <MemberTags />
-
           <MembershipContract />
           <StemsPlayerCarousel />
         </div>

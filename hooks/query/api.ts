@@ -137,7 +137,7 @@ class Api {
 
   static async getAddresses(
     visibility?: "public" | "private",
-  ): Promise<{ addresses: AddressDoc[]; totalCount: number }> {
+  ): Promise<{ addresses: AddressDocWithID[]; totalCount: number }> {
     try {
       const response = await apiClient.get(ENDPOINTS.ADDRESS, {
         params: {
