@@ -5,7 +5,13 @@ import {
   SubmitAudioResponse,
 } from "@/types/api";
 import { ContactDocWithID, SettingsDoc, TagCategory } from "@/types/database";
-import { AddressDoc, AddressDocWithID, SessionDoc, VersionDoc } from "@/types/database";
+import {
+  AddressDoc,
+  AddressDocWithID,
+  SessionDoc,
+  VersionDoc,
+  VersionDocWithID,
+} from "@/types/database";
 import { WriteResult } from "firebase-admin/firestore";
 
 import apiClient from "./axios";
@@ -84,7 +90,7 @@ class Api {
     }
   }
 
-  static async getSessionVersions(sessionID: string): Promise<VersionDoc[]> {
+  static async getSessionVersions(sessionID: string): Promise<VersionDocWithID[]> {
     try {
       const response = await apiClient.get(
         ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + sessionID,
