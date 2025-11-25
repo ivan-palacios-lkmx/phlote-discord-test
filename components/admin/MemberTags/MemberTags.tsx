@@ -1,35 +1,32 @@
 "use client";
 
 import GroupTagEditor from "@/components/admin/GroupTagEditor/GroupTagEditor";
-import { useFbGlobals } from "@/hooks/useFbGlobals";
-import { useMemo } from "react";
+import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
+import { TagCategory } from "@/types/database";
 
 import "./MemberTags.scss";
 
-interface Category {
-  name: string;
-  options: string[];
-}
-
 export default function MemberTags() {
-  const { settingsDoc, updateSettings } = useFbGlobals();
+  const {
+    data: availableMemberTags,
+    isPending: isLoadingMemberTags,
+    isError: isErrorMemberTags,
+  } = useGetTags({ category: "member" });
 
-  const dbCategories = useMemo(() => {
-    return (settingsDoc as { availableMemberTags?: Category[] } | null)?.availableMemberTags || [];
-  }, [settingsDoc]);
-
-  const handleSave = async (data: Category[]) => {
-    await updateSettings({
-      availableMemberTags: data,
-    });
-
+  const handleSave = async (data: TagCategory[]) => {
     alert("Member Tags Saved");
   };
 
   return (
     <div className="admin-member-tags">
       <h6 className="area-label">Available Member Tags:</h6>
-      <GroupTagEditor group={dbCategories} onSaved={handleSave} />
+      {isLoadingMemberTags ? (
+        <div className="loading-tags" />
+      ) : isErrorMemberTags ? (
+        <div className="error-tags" />
+      ) : (
+        <GroupTagEditor group={availableMemberTags} onSaved={handleSave} />
+      )}
     </div>
   );
 }
