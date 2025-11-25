@@ -4,25 +4,21 @@ import Form from "@/components/Form/Form";
 import NewVersionForm from "@/components/NewVersionForm/NewVersionForm";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import VersionFormButton from "@/components/VersionFormButton/VersionFormButton";
+import { useCreateSession } from "@/hooks/query/mutations/use-create-session";
 import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { PrismicRichText } from "@prismicio/react";
-import { useState } from "react";
+import { usePrivy } from "@privy-io/react-auth";
 import { z } from "zod";
 
 import "./page.scss";
 
 export default function NewSessionPage() {
   const { settings } = usePrismicio();
-  const [loading, setLoading] = useState(false);
+  const { user } = usePrivy();
+  const { mutate: createSession, isPending } = useCreateSession();
 
-  const handleSubmit = async (formValues: z.infer<typeof newVersionFormSchema>) => {
-    setLoading(true);
-    try {
-      console.log("Create version", formValues);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = (formValues: z.infer<typeof newVersionFormSchema>) => {
+    createSession({ creator: user?.wallet?.address || "", formValues });
   };
 
   return (
@@ -34,7 +30,7 @@ export default function NewSessionPage() {
               <PrismicRichText field={settings.new_session_copy} />
             </div>
 
-            <VersionFormButton type="submit" loading={loading}>
+            <VersionFormButton type="submit" loading={isPending}>
               Create Session
             </VersionFormButton>
           </div>
