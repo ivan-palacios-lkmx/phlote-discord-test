@@ -1,15 +1,15 @@
 import { SessionService } from "@/services/session-service";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { versionId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ versionId: string }> }) {
   try {
-    const versionID = params.versionId;
+    const { versionId } = await params;
 
-    if (!versionID) {
+    if (!versionId) {
       return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
     }
 
-    const version = await SessionService.getVersion(versionID);
+    const version = await SessionService.getVersion(versionId);
 
     if (!version) {
       return NextResponse.json({ error: "Version not found" }, { status: 404 });
