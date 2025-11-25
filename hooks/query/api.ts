@@ -104,9 +104,7 @@ class Api {
 
   static async getSessionVersions(sessionID: string): Promise<VersionDocWithID[]> {
     try {
-      const response = await apiClient.get(
-        ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + sessionID,
-      );
+      const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID + "/versions");
       return response.data;
     } catch (error) {
       console.error("Error fetching session versions:", error);

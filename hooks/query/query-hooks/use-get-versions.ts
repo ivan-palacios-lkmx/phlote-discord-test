@@ -1,13 +1,18 @@
 import Api from "@/hooks/query/api";
 import { useQuery } from "@tanstack/react-query";
 
-export function useGetVersions(sessionID: string, enabled = true) {
+interface UseGetVersionsProps {
+  sessionId: string;
+  enabled?: boolean;
+}
+
+export function useGetVersions({ sessionId, enabled = true }: UseGetVersionsProps) {
   return useQuery({
-    queryKey: ["versions", sessionID],
+    queryKey: ["versions", sessionId],
     queryFn: async () => {
-      const sessionVersions = await Api.getSessionVersions(sessionID);
+      const sessionVersions = await Api.getSessionVersions(sessionId);
       return sessionVersions;
     },
-    enabled: !!sessionID && enabled,
+    enabled: !!sessionId && enabled,
   });
 }
