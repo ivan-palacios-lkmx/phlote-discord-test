@@ -65,6 +65,7 @@ export class AddressService {
 
   static async getAddressesAndTotalCount(
     visibility?: "public" | "private",
+    role?: "admin" | "creator" | "member",
   ): Promise<{ addresses: AddressDocWithID[]; totalCount: number }> {
     const addresses = await this.getAddresses(visibility);
     const onlyPublic = visibility === "public";

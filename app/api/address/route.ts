@@ -14,12 +14,17 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   try {
     const visibility = searchParams.get("visibility") as "public" | "private" | undefined;
+    const role = searchParams.get("role") as "admin" | "creator" | "member" | undefined;
 
     if (!visibilitySchema.safeParse(visibility).success) {
       return NextResponse.json({ error: "Invalid visibility parameter" }, { status: 400 });
     }
 
-    const addressesAndTotalCount = await AddressService.getAddressesAndTotalCount(visibility);
+    if (!roleSchema.safeParse(role).success) {
+      return NextResponse.json({ error: "Invalid role parameter" }, { status: 400 });
+    }
+
+    const addressesAndTotalCount = await AddressService.getAddressesAndTotalCount(visibility, role);
 
     return NextResponse.json(addressesAndTotalCount, { status: 200 });
   } catch (error) {
