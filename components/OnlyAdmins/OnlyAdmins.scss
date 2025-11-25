@@ -1,15 +1,12 @@
 @import '../../app/assets/scss/vars';
 
 main.only-admins {
-  display: flex;
-
   .only-admins-loading {
     margin: auto;
   }
 
   .only-admins-locked {
     text-align: center;
-    margin: auto;
 
     .centered {
       display: inline-block;
@@ -23,9 +20,5 @@ main.only-admins {
     .btn {
       filter: invert(1);
     }
-  }
-
-  .only-admins-revealed {
-    flex: 1;
   }
 }
