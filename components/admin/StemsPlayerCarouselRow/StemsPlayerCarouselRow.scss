@@ -1,0 +1,26 @@
+@import '../../../app/assets/scss/vars';
+
+.admin-stems-player-carousel-row {
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  grid-gap: 10px;
+  display: grid;
+
+  .drag-handle .svg-drag {
+    width: 20px;
+    height: auto;
+  }
+
+  .close {
+    padding: 20px 0;
+  }
+
+  .close .svg-close {
+    width: 20px;
+    height: auto;
+  }
+
+  .stems-version-title {
+    margin: 0;
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import StemsPlayerCarouselRow from "@/components/admin/StemsPlayerCarouselRow/StemsPlayerCarouselRow";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useClientCollection } from "@/hooks/sessions/useClientCollection";
@@ -44,23 +45,6 @@ function AvatarFromAddress({ address, className }: { address: string; className?
   return <Web3Avatar avatar={addressInfo.avatar} className={className} />;
 }
 
-interface StemsPlayerCarouselRowProps {
-  versionID: string;
-  onRemove: (versionID: string) => void;
-}
-
-function StemsPlayerCarouselRow({ versionID, onRemove }: StemsPlayerCarouselRowProps) {
-  // TODO: Implement StemsPlayerCarouselRow component
-  // This component should display version information and allow removal
-  return (
-    <div className="carousel-row">
-      <span>{versionID}</span>
-      <button type="button" className="close" onClick={() => onRemove(versionID)}>
-        Remove
-      </button>
-    </div>
-  );
-}
 
 function DraggableCarouselRow({
   versionID,
