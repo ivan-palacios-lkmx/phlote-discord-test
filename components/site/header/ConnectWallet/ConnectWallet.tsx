@@ -28,11 +28,6 @@ export default function ConnectWallet() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Log addressInfo for debugging
-  useEffect(() => {
-    console.log("addressInfo", addressInfo?.id);
-  }, [addressInfo, isAddressInfoPending, isAddressInfoError, walletAddress]);
-
   useEffect(() => {
     if (!ready) {
       return;
