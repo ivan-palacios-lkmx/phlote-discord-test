@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { AddressClientService } from "@/app/client/services/address-client-service";
 import VersionPlayer from "@/components/VersionPlayer/VersionPlayer";
 import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";
@@ -9,6 +8,8 @@ import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-inf
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
 import { useGetVersion } from "@/hooks/query/query-hooks/use-get-version";
 import { AddressDocWithID } from "@/types/database";
+import { useState } from "react";
+
 import "./Slice.scss";
 
 interface SliceProps {
@@ -37,7 +38,6 @@ export default function Slice({ versionID }: SliceProps) {
   const isPending = isVersionPending || isSessionPending || isCreatorInfoPending;
   const isError = isVersionError || isSessionError || isCreatorInfoError;
 
-  
   if (isPending) {
     return (
       <div className="slice-stems-player-slide">
@@ -69,13 +69,13 @@ export default function Slice({ versionID }: SliceProps) {
       onMouseLeave={() => setIsPointerDown(false)}>
       <div className="padder">
         {version?.creator && <Web3Avatar avatar={avatar} className="background-image" />}
-          <>
-            <div className="session-info">
-              <Web3Avatar avatar={avatar} className="artwork desktop-only" />
-              <SessionDetailTitle session={session} version={version} />
-            </div>
-            <VersionPlayer versionData={version} />
-          </>
+        <>
+          <div className="session-info">
+            <Web3Avatar avatar={avatar} className="artwork desktop-only" />
+            <SessionDetailTitle session={session} version={version} />
+          </div>
+          <VersionPlayer versionData={version} />
+        </>
       </div>
     </div>
   );
