@@ -1,5 +1,57 @@
 @import '../../../app/assets/scss/vars';
 
 .admin-membership-contract {
-  // Styles for MembershipContract component
+  text-transform: initial;
+
+  .area-label {
+    margin: 0;
+  }
+
+  .contract-address {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    display: grid;
+
+    .current-address-link {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      display: block;
+      margin: 20px 0;
+      margin-right: auto;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .remove-button {
+      font-size: 12px;
+    }
+  }
+
+  .set-address {
+    grid-template-columns: 1fr auto;
+    display: grid;
+    margin-top: 10px;
+    border: 1px solid var(--white);
+
+    .add-button {
+      border-left: 1px solid var(--white);
+      padding: 0.5em 2em;
+
+      &:hover {
+        background-color: var(--white);
+        color: var(--black);
+      }
+    }
+
+    .text-input {
+      // background-color: var(--white);
+      padding: 0.5em 0.75em;
+    }
+  }
+
+  .button-area {
+    text-align: center;
+  }
 }
