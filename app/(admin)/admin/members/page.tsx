@@ -1,35 +1,26 @@
 "use client";
 
-import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import MemberCard from "@/components/admin/MemberCard/MemberCard";
-import { useClientCollection } from "@/hooks/sessions/useClientCollection";
-import { db } from "@/lib/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { useGetAddresses } from "@/hooks/query/query-hooks/use-get-addresses";
 import Link from "next/link";
-import { useMemo } from "react";
 
 import "./Members.scss";
 
 export default function Members() {
-  const memberQ = useMemo(() => {
-    return query(collection(db, "addresses"), where("isMember", "==", true));
-  }, []);
-
-  const { data: members, pending } = useClientCollection(memberQ);
-
+  const { data: members, isPending: isPendingMembers } = useGetAddresses();
   return (
-    <OnlyAdmins className="admin-members">
+    <main className="admin-members">
       <div className="contained">
         <h4 className="admin-title">Manage Members</h4>
         <div className="subtitle">
           <Link href="/admin">Back to admin</Link>
         </div>
 
-        {pending ? (
+        {isPendingMembers ? (
           <div>Loading members...</div>
         ) : (
           <div className="member-grid">
-            {members
+            {members?.addresses
               .filter((member) => member.id)
               .map((member) => (
                 <MemberCard key={member.id} member={member} />
@@ -37,6 +28,6 @@ export default function Members() {
           </div>
         )}
       </div>
-    </OnlyAdmins>
+    </main>
   );
 }
