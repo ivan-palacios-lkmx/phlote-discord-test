@@ -1,0 +1,36 @@
+@import '../../../app/assets/scss/vars';
+
+.session-card-row {
+  padding: 10px 0;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  grid-gap: 15px;
+  display: grid;
+
+  .btn.delete-version {
+    border: 1px solid var(--light-red);
+    filter: initial !important;
+    font-size: 11px;
+
+    &:hover {
+      background-color: var(--light-red);
+    }
+  }
+
+  .avatar-area {
+    position: relative;
+    width: 30px;
+
+    .avatar {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+    }
+
+    &::after {
+      padding-bottom: 100%;
+      display: block;
+      content: '';
+    }
+  }
+}
