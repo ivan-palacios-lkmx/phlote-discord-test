@@ -129,6 +129,8 @@ export interface SessionDoc {
   error?: string | boolean;
 }
 
+export interface SessionDocWithID extends WithID, SessionDoc {}
+
 export interface AlgoliaSession extends withObjectID, SessionDoc {}
 
 /**

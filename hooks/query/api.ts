@@ -10,6 +10,7 @@ import {
   AddressDoc,
   AddressDocWithID,
   SessionDoc,
+  SessionDocWithID,
   VersionDoc,
   VersionDocWithID,
 } from "@/types/database";
@@ -63,7 +64,7 @@ class Api {
     }
   }
 
-  static async getSessions(): Promise<SessionDoc[]> {
+  static async getSessions(): Promise<SessionDocWithID[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.SESSIONS);
       return response.data;

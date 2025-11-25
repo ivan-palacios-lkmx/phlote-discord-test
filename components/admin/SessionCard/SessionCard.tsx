@@ -3,19 +3,14 @@
 import SessionsCardRow from "@/components/admin/SessionsCardRow/SessionsCardRow";
 import { useClientCollection } from "@/hooks/sessions/useClientCollection";
 import { db } from "@/lib/firebase";
+import { SessionDocWithID } from "@/types/database";
 import { collection, doc, orderBy, query, runTransaction, where } from "firebase/firestore";
 import { useMemo } from "react";
 
 import "./SessionCard.scss";
 
-interface Session {
-  id?: string;
-  name?: string;
-  [key: string]: unknown;
-}
-
 interface SessionCardProps {
-  session: Session | null | undefined;
+  session: SessionDocWithID | null | undefined;
 }
 
 export default function SessionCard({ session }: SessionCardProps) {
