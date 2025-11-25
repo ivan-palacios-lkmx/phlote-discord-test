@@ -8,7 +8,7 @@ import { collection, query } from "firebase/firestore";
 import Link from "next/link";
 import { useMemo } from "react";
 
-import "./sessions.scss";
+import "./Sessions.scss";
 
 export default function Sessions() {
   const sessionQ = useMemo(() => {
