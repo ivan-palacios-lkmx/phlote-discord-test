@@ -56,6 +56,7 @@ export default function StemsPlayerCarousel() {
   const { data: settings } = useGetSettings();
   const [searchText, setSearchText] = useState("");
   const [selectedSession, setSelectedSession] = useState<AlgoliaSession | null>(null);
+
   // this is working with Algolia, so we dont need to use a query from query client
   const { sessions: searchResults, loadingSessions } = useSessions({
     pageSize: 10,
