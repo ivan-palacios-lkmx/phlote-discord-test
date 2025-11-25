@@ -1,0 +1,42 @@
+@import '../../assets/scss/vars';
+
+main.admin-index {
+  padding-bottom: 150px;
+  padding-top: 120px;
+
+  .controls-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: var(--margin);
+    align-items: flex-start;
+    display: grid;
+    margin-top: 40px;
+  }
+
+  .admin-session-tags,
+  .admin-member-tags,
+  .admin-role-admin,
+  .admin-role-creator,
+  .admin-membership-contract,
+  .admin-stems-player-carousel {
+    border-radius: 5px;
+    background-color: rgba(#fff, 0.15);
+    padding: 20px;
+  }
+
+  .area-label {
+    border-bottom: 1px solid rgba(#fff, 0.15);
+    text-align: center;
+    padding: 0 0.5em 0.5em;
+    display: block;
+  }
+
+  .admin-subtitle,
+  .admin-title {
+    text-align: center;
+    margin: 0;
+  }
+
+  .admin-subtitle {
+    font-family: var(--font-mono);
+  }
+}
