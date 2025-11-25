@@ -12,6 +12,11 @@ export function getIDAndDocumentDataFromDocumentSnapshot<T>(
   return { id: snapshot.id, ...snapshot.data() } as T & { id: string };
 }
 
+export function getIDAndDocumentDataFromQuerySnapshot<T>(
+  snapshot: QuerySnapshot,
+): (T & { id: string })[] {
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() as T) }));
+}
 /**
  * Retrieves all documents from a specified Firestore collection, including their IDs.
  *
