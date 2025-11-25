@@ -59,3 +59,7 @@ export interface SubmitAudioResponse {
   tmpName: string;
   status: AudioProcessingStatus;
 }
+
+export interface SettingsPatch {
+  membershipContracts?: string[];
+}

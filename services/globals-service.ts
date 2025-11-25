@@ -1,4 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
+import { SettingsPatch } from "@/types/api";
 import { SettingsDoc, TagCategory } from "@/types/database";
 import { GLOBAL_COLLECTION, SETTING_DOC_ID } from "@/utils/constants";
 import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queries";
@@ -90,5 +91,26 @@ export class GlobalsService {
 
       transaction.update(docRef, { [categoryToUpdate]: updatedTags });
     });
+  }
+
+  static async patchSettingsData(patch: SettingsPatch): Promise<void> {
+    try {
+      if (patch.membershipContracts) {
+        await this.appendMembershipContracts(patch.membershipContracts);
+        return;
+      }
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      throw error;
+    }
+  }
+
+  private static async appendMembershipContracts(membershipContracts: string[]): Promise<void> {
+    await adminDb
+      .collection(GLOBAL_COLLECTION)
+      .doc(SETTING_DOC_ID)
+      .update({
+        membershipContracts: FieldValue.arrayUnion(...membershipContracts),
+      });
   }
 }
