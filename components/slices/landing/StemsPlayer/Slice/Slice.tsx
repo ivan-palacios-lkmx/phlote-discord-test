@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { AddressClientService } from "@/app/client/services/address-client-service";
 import VersionPlayer from "@/components/VersionPlayer/VersionPlayer";
 import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";
@@ -7,8 +8,7 @@ import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
 import { useGetVersion } from "@/hooks/query/query-hooks/use-get-version";
-import { useState } from "react";
-
+import { AddressDocWithID } from "@/types/database";
 import "./Slice.scss";
 
 interface SliceProps {
@@ -36,7 +36,30 @@ export default function Slice({ versionID }: SliceProps) {
 
   const isPending = isVersionPending || isSessionPending || isCreatorInfoPending;
   const isError = isVersionError || isSessionError || isCreatorInfoError;
-  const avatar = AddressClientService.getAddressAvatar(creatorInfo);
+
+  
+  if (isPending) {
+    return (
+      <div className="slice-stems-player-slide">
+        <div className="padder">
+          <div className="loading">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !version || !session || !creatorInfo) {
+    return (
+      <div className="slice-stems-player-slide">
+        <div className="padder">
+          <div className="error">Error loading session</div>
+        </div>
+      </div>
+    );
+  }
+
+  const avatar = AddressClientService.getAddressAvatar(creatorInfo as AddressDocWithID);
+
   return (
     <div
       className={`slice-stems-player-slide ${isPointerDown ? "is-pointer-down" : ""}`}
@@ -46,11 +69,6 @@ export default function Slice({ versionID }: SliceProps) {
       onMouseLeave={() => setIsPointerDown(false)}>
       <div className="padder">
         {version?.creator && <Web3Avatar avatar={avatar} className="background-image" />}
-        {isError ? (
-          <div className="error">Error loading session</div>
-        ) : isPending ? (
-          <div className="loading">Loading...</div>
-        ) : (
           <>
             <div className="session-info">
               <Web3Avatar avatar={avatar} className="artwork desktop-only" />
@@ -58,7 +76,6 @@ export default function Slice({ versionID }: SliceProps) {
             </div>
             <VersionPlayer versionData={version} />
           </>
-        )}
       </div>
     </div>
   );
