@@ -6,6 +6,7 @@ import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-inf
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
 import useSessions from "@/hooks/useSessions";
+import { AlgoliaSession } from "@/types/database";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -13,15 +14,6 @@ import { format } from "fecha";
 import { useState } from "react";
 
 import "./StemsPlayerCarousel.scss";
-
-interface SessionResult {
-  objectID: string;
-  name?: string;
-  creator?: string;
-  versionCount?: number;
-  collaborators?: string[];
-  [key: string]: unknown;
-}
 
 function AvatarFromAddress({ address, className }: { address: string; className?: string }) {
   const { data: addressInfo } = useGetAddressInfo(address, false, !!address);
@@ -67,7 +59,7 @@ export default function StemsPlayerCarousel() {
     isError: isErrorSettings,
   } = useGetSettings();
   const [searchText, setSearchText] = useState("");
-  const [selectedSession, setSelectedSession] = useState<SessionResult | null>(null);
+  const [selectedSession, setSelectedSession] = useState<AlgoliaSession | null>(null);
   // this is working with Algolia, so we dont need to use a query from query client
   const { sessions: searchResults, loadingSessions } = useSessions({
     pageSize: 10,
@@ -199,7 +191,7 @@ export default function StemsPlayerCarousel() {
             ) : searchResults.length > 0 ? (
               <div className="search-results-preview">
                 {searchResults.map((result) => {
-                  const session = result as SessionResult;
+                  const session = result as unknown as AlgoliaSession;
                   return (
                     <div key={session.objectID} className="result-preview">
                       {session.creator && (

@@ -6,6 +6,10 @@ export interface WithID {
   id: string;
 }
 
+export interface withObjectID extends WithID {
+  objectID: string;
+}
+
 /**
  * The AddressDoc interface defines the schema for address-related user documents.
  *
@@ -124,6 +128,8 @@ export interface SessionDoc {
   /** Error details or a boolean flag for error presence */
   error?: string | boolean;
 }
+
+export interface AlgoliaSession extends withObjectID, SessionDoc {}
 
 /**
  * The Stem interface defines the schema for individual stem audio files.
