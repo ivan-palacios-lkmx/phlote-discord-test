@@ -97,6 +97,7 @@ export class GlobalsService {
     try {
       if (patch.membershipContracts) {
         await this.appendMembershipContracts(patch.membershipContracts);
+        // TODO: Update addresses with the new membership contracts
         return;
       }
     } catch (error) {
