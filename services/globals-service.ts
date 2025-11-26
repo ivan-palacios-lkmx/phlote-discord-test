@@ -6,6 +6,32 @@ import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queri
 import { DocumentSnapshot, FieldValue } from "firebase-admin/firestore";
 
 export class GlobalsService {
+  static async deleteTagCategory(
+    category: TagCategory,
+    categoryType: "member" | "session",
+  ): Promise<void> {
+    try {
+      const settings = await this.getSettingsData();
+      if (!settings) {
+        throw new Error("Settings document does not exist");
+      }
+      const currentCategories =
+        categoryType === "member" ? settings.availableMemberTags : settings.availableSessionTags;
+      const updatedCategories = currentCategories?.filter((c) => c.name !== category.name);
+      const fieldName = categoryType === "member" ? "availableMemberTags" : "availableSessionTags";
+
+      await adminDb
+        .collection(GLOBAL_COLLECTION)
+        .doc(SETTING_DOC_ID)
+        .update({
+          [fieldName]: updatedCategories,
+        });
+    } catch (error) {
+      console.error("Error deleting tag category:", error);
+      throw error;
+    }
+  }
+
   static async createTagCategory(
     category: TagCategory,
     categoryType: "member" | "session",

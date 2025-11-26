@@ -33,3 +33,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { category, categoryType } = body;
+
+    if (!category) {
+      return NextResponse.json({ error: "Missing category" }, { status: 400 });
+    }
+
+    if (!tagCategorySchema.safeParse(category).success) {
+      return NextResponse.json({ error: "Invalid category" }, { status: 400 });
+    }
+
+    await GlobalsService.deleteTagCategory(category, categoryType as "member" | "session");
+
+    return NextResponse.json({ message: "Category deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
