@@ -14,4 +14,5 @@ export const ENDPOINTS = {
   PROCESSING_STATUS: "/status",
   TAGS: "/tags",
   ADMINS: "/admins",
+  CREATORS: "/creators",
 };

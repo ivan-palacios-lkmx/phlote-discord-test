@@ -294,6 +294,18 @@ class Api {
       throw error;
     }
   }
+
+  static async deleteCreator(address: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.delete(ENDPOINTS.CREATORS, {
+        data: { address },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting creator:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;
