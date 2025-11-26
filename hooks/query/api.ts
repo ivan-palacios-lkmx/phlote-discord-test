@@ -306,6 +306,34 @@ class Api {
       throw error;
     }
   }
+
+  static async getAdmins(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.ADMINS, {
+        params: {
+          visibility: visibility || undefined,
+        },
+      });
+      return response.data.admins;
+    } catch (error) {
+      console.error("Error fetching admins:", error);
+      throw error;
+    }
+  }
+
+  static async getCreators(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.CREATORS, {
+        params: {
+          visibility: visibility || undefined,
+        },
+      });
+      return response.data.creators;
+    } catch (error) {
+      console.error("Error fetching creators:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;
