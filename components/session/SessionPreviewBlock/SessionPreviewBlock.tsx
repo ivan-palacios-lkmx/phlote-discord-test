@@ -60,7 +60,7 @@ export default function SessionPreviewBlock({
     [creatorInfo?.avatar, settings?.default_user_image?.url],
   );
 
-  const versionID = useMemo(() => firstVersion?.id, [firstVersion?.id]);
+  const versionID = useMemo(() => firstVersion?.[0]?.id, [firstVersion?.[0]?.id]);
   const bounceHash = useMemo(
     () => firstVersion?.[0]?.bounce as string | undefined,
     [firstVersion?.[0]?.bounce],
