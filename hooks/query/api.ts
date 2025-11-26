@@ -136,11 +136,13 @@ class Api {
 
   static async getAddresses(
     visibility?: "public" | "private",
+    role?: "admin" | "creator" | "member",
   ): Promise<{ addresses: AddressDocWithID[]; totalCount: number }> {
     try {
       const response = await apiClient.get(ENDPOINTS.ADDRESS, {
         params: {
           visibility: visibility || undefined,
+          role: role || undefined,
         },
       });
       return response.data;

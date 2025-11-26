@@ -7,7 +7,7 @@ import Link from "next/link";
 import "./Members.scss";
 
 export default function Members() {
-  const { data: members, isPending: isPendingMembers } = useGetAddresses();
+  const { data: members, isPending: isPendingMembers } = useGetAddresses({ role: "member" });
   return (
     <main className="admin-members">
       <div className="contained">
@@ -20,11 +20,9 @@ export default function Members() {
           <div>Loading members...</div>
         ) : (
           <div className="member-grid">
-            {members?.addresses
-              .filter((member) => member.id)
-              .map((member) => (
-                <MemberCard key={member.id} member={member} />
-              ))}
+            {members?.addresses.map((member) => (
+              <MemberCard key={member.id} member={member} />
+            ))}
           </div>
         )}
       </div>

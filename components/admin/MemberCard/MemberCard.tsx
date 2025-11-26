@@ -7,19 +7,12 @@ import { useClientDoc } from "@/hooks/useClientDoc";
 import { useFbGlobals } from "@/hooks/useFbGlobals";
 import useTags from "@/hooks/useTags";
 import { db } from "@/lib/firebase";
+import { AddressDocWithID } from "@/types/database";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { debounce } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import "./MemberCard.scss";
-
-interface Member {
-  id?: string;
-  isPublic?: boolean;
-  title?: string;
-  tags?: string[];
-  [key: string]: unknown;
-}
 
 interface ContactDoc {
   name?: string;
@@ -30,7 +23,7 @@ interface ContactDoc {
 }
 
 interface MemberCardProps {
-  member: Member | null | undefined;
+  member: AddressDocWithID;
 }
 
 interface AdminToggleProps {
