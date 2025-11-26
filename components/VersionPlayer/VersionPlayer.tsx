@@ -50,8 +50,10 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
       return;
     }
 
-    // Fetch all tracks
-    if (!tracks) {
+    let tracksToUse = tracks;
+
+    // Fetch all tracks if not loaded
+    if (!tracksToUse) {
       try {
         const { bounceSignedUrl: bounce, stemsSignedUrls: stems } = await getVersionAudio({
           versionID: versionData?.id,
@@ -64,6 +66,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
         ];
 
         setTracks(howlTracks);
+        tracksToUse = howlTracks;
 
         // Set duration once on load
         const bounceHowl = howlTracks[0];
@@ -85,17 +88,26 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
       }
     }
 
+    // Validate tracks exist before proceeding
+    if (!tracksToUse) {
+      setLoading(false);
+      return;
+    }
+
     // Pause each track
-    tracks?.forEach((track) => track.pause());
+    tracksToUse.forEach((track) => track.pause());
 
     // Play Current
     if (!playing) {
-      const track = tracks![currentTrack];
-      track.play();
-      track.seek(playhead);
+      const track = tracksToUse[currentTrack];
+      if (track) {
+        track.play();
+        track.seek(playhead);
+        setPlaying(true);
+      }
+    } else {
+      setPlaying(false);
     }
-
-    setPlaying(!playing);
     setLoading(false);
   };
 
@@ -171,7 +183,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     <div className={`version-player ${isSoloed ? "solo" : ""}`} style={playerStyle}>
       {/* Bounce */}
       <div className="bounce">
-        <button className="play-pause" onClick={onPlay}>
+        <button className="play-pause" onClick={onPlay} disabled={loading}>
           {loading ? <LoadingSpinnerIcon /> : playing ? <PauseIcon /> : <PlayIcon />}
         </button>
 
