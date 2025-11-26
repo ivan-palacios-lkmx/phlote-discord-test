@@ -1,5 +1,6 @@
 "use client";
 
+import AdminToggle from "@/components/admin/AdminToggle/AdminToggle";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
@@ -12,21 +13,6 @@ import "./MemberCard.scss";
 
 interface MemberCardProps {
   member: AddressDocWithID;
-}
-
-interface AdminToggleProps {
-  value: boolean;
-  onChange: (value: boolean) => void;
-}
-
-function AdminToggle({ value, onChange }: AdminToggleProps) {
-  // TODO: Implement AdminToggle component
-  return (
-    <label className="admin-toggle">
-      <input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} />
-      <span>{value ? "Public" : "Private"}</span>
-    </label>
-  );
 }
 
 interface MultiselectProps {
@@ -164,7 +150,11 @@ export default function MemberCard({ member }: MemberCardProps) {
   //   setMemberTagsRaw(newTagsRaw);
   // }, [existingMemberTags, memberTags, decodeTag]);
 
-  const handleTagChange = () => {};
+  const handleTagChange = (index: number, newValue: string[]) => {
+    const newTagsRaw = [...memberTagsRaw];
+    newTagsRaw[index] = newValue;
+    setMemberTagsRaw(newTagsRaw);
+  };
 
   const handleSave = async () => {};
 
@@ -185,7 +175,7 @@ export default function MemberCard({ member }: MemberCardProps) {
           </div>
         </div>
         <div className="private-toggle">
-          <AdminToggle value={isPublic} onChange={setIsPublic} />
+          <AdminToggle checked={isPublic} onChange={setIsPublic} />
         </div>
       </div>
 
