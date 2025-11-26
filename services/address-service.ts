@@ -9,17 +9,53 @@ import {
 import {
   ADDRESSES_COLLECTION,
   CONTACT_DOC_ID,
+  GLOBAL_COLLECTION,
   OPEN_SEA_API_URL,
   PRIVATE_COLLECTION,
+  ROLES_DOC_ID,
 } from "@/utils/constants";
 import {
   getIDAndDocumentDataFromDocumentSnapshot,
   getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { InfuraProvider, Provider } from "ethers";
-import { DocumentSnapshot, Query, WriteResult } from "firebase-admin/firestore";
+import { DocumentSnapshot, FieldValue, Query, WriteResult } from "firebase-admin/firestore";
 
 export class AddressService {
+  static async deleteAdminAddress(address: string): Promise<void> {
+    // TODO: Check permissions to delete admin address, idk if this should be done here or in the middleware
+    await this.deleteAddress(address);
+    await this.deleteAddressFromRoles(address, "admins");
+  }
+
+  static async deleteCreatorAddress(address: string): Promise<void> {
+    // TODO: Check permissions to delete creator address, idk if this should be done here or in the middleware
+    await this.deleteAddress(address);
+    await this.deleteAddressFromRoles(address, "creators");
+  }
+
+  static async deleteMemberAddress(address: string): Promise<void> {
+    // TODO: Check permissions to delete member address, idk if this should be done here or in the middleware
+    await this.deleteAddress(address);
+  }
+
+  private static async deleteAddress(address: string): Promise<void> {
+    // TODO: Check if the
+    await adminDb.collection(ADDRESSES_COLLECTION).doc(address).delete();
+  }
+
+  private static async deleteAddressFromRoles(
+    address: string,
+    fromRole: "admins" | "creators",
+  ): Promise<void> {
+    await adminDb
+      .collection(GLOBAL_COLLECTION)
+      .doc(ROLES_DOC_ID)
+      .update({
+        [fromRole]: FieldValue.arrayRemove(address),
+      });
+  }
+
   static async getAddresses(
     visibility?: "public" | "private",
     role?: "admin" | "creator" | "member",

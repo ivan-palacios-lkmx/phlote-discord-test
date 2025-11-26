@@ -25,3 +25,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { address } = body;
+
+    if (!address) {
+      return NextResponse.json({ error: "Address is required" }, { status: 400 });
+    }
+
+    if (!addressSchema.safeParse(address).success) {
+      return NextResponse.json({ error: "Invalid address" }, { status: 400 });
+    }
+
+    await AddressService.deleteAdminAddress(address);
+
+    return NextResponse.json({ message: "Admin address deleted" }, { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

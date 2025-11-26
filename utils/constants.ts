@@ -16,3 +16,4 @@ export const APPLICATION_COLLECTION = "application";
 export const SUBSCRIBERS_COLLECTION = "subscribers";
 export const TEMPORARY_AUDIO_COLLECTION = "tmp-audio";
 export const AUDIO_COLLECTION = "audio";
+export const ROLES_DOC_ID = "roles";
