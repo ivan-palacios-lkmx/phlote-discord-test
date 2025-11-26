@@ -6,6 +6,44 @@ import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queri
 import { DocumentSnapshot, FieldValue } from "firebase-admin/firestore";
 
 export class GlobalsService {
+  static async createTagCategory(
+    category: TagCategory,
+    categoryType: "member" | "session",
+  ): Promise<void> {
+    try {
+      const settings = await this.getSettingsData();
+      if (!settings) {
+        throw new Error("Settings document does not exist");
+      }
+      const newCategory = { ...category, options: [] };
+      const currentCategories =
+        categoryType === "member" ? settings.availableMemberTags : settings.availableSessionTags;
+      const updatedCategories = [...(currentCategories ?? []), newCategory];
+
+      const fieldName = categoryType === "member" ? "availableMemberTags" : "availableSessionTags";
+
+      await adminDb
+        .collection(GLOBAL_COLLECTION)
+        .doc(SETTING_DOC_ID)
+        .update({
+          [fieldName]: updatedCategories,
+        });
+    } catch (error) {
+      console.error("Error creating tag category:", error);
+      throw error;
+    }
+  }
+
+  static async getCategories(): Promise<TagCategory[]> {
+    const settings = await this.getSettingsData();
+    if (!settings) {
+      return [];
+    }
+    const sessionCategories = settings?.availableSessionTags || [];
+    const memberCategories = settings?.availableMemberTags || [];
+    return [...memberCategories, ...sessionCategories];
+  }
+
   static async getSettingsData(): Promise<SettingsDoc | null> {
     const settingsSnapshot = await this.getSettingsSnapshot();
     return getIDAndDocumentDataFromDocumentSnapshot<SettingsDoc>(settingsSnapshot);
