@@ -4,6 +4,7 @@ import {
   AuthResponse,
   SettingsPatch,
   SubmitAudioResponse,
+  VersionAudioResponse,
 } from "@/types/api";
 import { ContactDocWithID, SettingsDoc, TagCategory } from "@/types/database";
 import {
@@ -197,7 +198,7 @@ class Api {
     }
   }
 
-  static async getVersionAudio(versionID: string, action: AudioAction): Promise<string> {
+  static async getVersionAudio(versionID: string, action: AudioAction): Promise<VersionAudioResponse> {
     try {
       const response = await apiClient.get(
         ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + versionID + "/" + ENDPOINTS.AUDIO,

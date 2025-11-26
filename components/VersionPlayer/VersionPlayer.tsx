@@ -4,7 +4,7 @@ import TrackPreview from "@/components/TrackPreview/TrackPreview";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
-import { useFbEndpoints } from "@/hooks/useFbEndpoints";
+import { useGetVersionAudio } from "@/hooks/query/mutations/use-get-version-audio";
 import { VersionDocWithID } from "@/types/database";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
@@ -41,7 +41,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
   const isSoloed = useMemo(() => currentTrack > 0, [currentTrack]);
 
-  const { getVersionStems } = useFbEndpoints();
+  const { mutateAsync: getVersionAudio } = useGetVersionAudio();
 
   const onPlay = async () => {
     setLoading(true);
@@ -53,8 +53,8 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     // Fetch all tracks
     if (!tracks) {
       try {
-        const { bounce, stems } = await getVersionStems({
-          versionID: versionData?.sessionID,
+        const { bounceSignedUrl: bounce, stemsSignedUrls: stems } = await getVersionAudio({
+          versionID: versionData?.id,
         });
 
         // Create Howl instances for each track

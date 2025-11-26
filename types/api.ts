@@ -35,6 +35,11 @@ export interface AuthResponse {
   address: AddressDoc;
 }
 
+export interface VersionAudioResponse {
+  stemsSignedUrls: string[];
+  bounceSignedUrl: string;
+}
+
 export type AudioAction = "play" | "download";
 
 // TODO: Omit from original type
