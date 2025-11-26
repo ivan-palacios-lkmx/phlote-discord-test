@@ -12,5 +12,7 @@ export function useGetAudioWaveTrace(audioId: string, enabled: boolean = true) {
       return text;
     },
     enabled: enabled && !!audioId && audioId !== "",
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60 * 24,
   });
 }

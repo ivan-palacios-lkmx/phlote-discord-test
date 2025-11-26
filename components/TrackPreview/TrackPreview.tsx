@@ -16,19 +16,16 @@ export default function TrackPreview({ hash, className = "", onSeek }: TrackPrev
 
   const { data: waveTrace } = useGetAudioWaveTrace(hash ?? "", !!hash);
 
-  // Handle mouse move
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     setCursorPosition(e.nativeEvent.offsetX);
   };
 
-  // Cursor style
   const cursorStyle = useMemo(() => {
     return {
       left: `${cursorPosition}px`,
     };
   }, [cursorPosition]);
 
-  // Handle track click
   const onTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
     const seekTo = e.nativeEvent.offsetX / target.offsetWidth;
@@ -37,7 +34,6 @@ export default function TrackPreview({ hash, className = "", onSeek }: TrackPrev
     }
   };
 
-  // Handle keyboard events for accessibility
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
