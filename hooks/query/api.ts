@@ -8,6 +8,7 @@ import {
 } from "@/types/api";
 import { ContactDocWithID, SettingsDoc, TagCategory } from "@/types/database";
 import {
+  ActivityDocWithID,
   AddressDoc,
   AddressDocWithID,
   SessionDoc,
@@ -99,6 +100,16 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error fetching session:", error);
+      throw error;
+    }
+  }
+
+  static async getSessionActivity(sessionID: string): Promise<ActivityDocWithID[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID + "/activity");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching session activity:", error);
       throw error;
     }
   }

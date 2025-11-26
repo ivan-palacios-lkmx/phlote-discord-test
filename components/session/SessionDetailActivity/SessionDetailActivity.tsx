@@ -1,7 +1,7 @@
 "use client";
 
 import SessionDetailActivityRow from "@/components/session/SessionDetailActivityRow/SessionDetailActivityRow";
-import { useActivity } from "@/hooks/sessions/useActivity";
+import { useGetSessionActivity } from "@/hooks/query/query-hooks/use-get-session-activity";
 import { useMemo } from "react";
 
 import "./SessionDetailActivity.scss";
@@ -19,7 +19,7 @@ export default function SessionDetailActivity({
   sessionID,
   versions = [],
 }: SessionDetailActivityProps) {
-  const activity = useActivity(sessionID);
+  const { data: activity } = useGetSessionActivity(sessionID || "");
 
   const versionIdMap = useMemo(() => {
     return (versions || []).reduce(
@@ -38,10 +38,10 @@ export default function SessionDetailActivity({
       <div className="activity-box" data-lenis-prevent>
         <div className="activity-title">Activity</div>
         <div className="activity-feed">
-          {activity.map((item) => (
+          {activity?.map((item) => (
             <SessionDetailActivityRow
               key={item.id}
-              created={item.created as { toDate?: () => Date; [key: string]: unknown } | null}
+              created={item.created}
               initiator={(item.initiator as string) || ""}
               type={(item.type as string) || ""}
               formattedIndex={versionIdMap[(item.versionID as string) || ""] || ""}
