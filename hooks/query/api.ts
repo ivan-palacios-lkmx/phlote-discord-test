@@ -334,6 +334,47 @@ class Api {
       throw error;
     }
   }
+
+  static async getCategories(): Promise<TagCategory[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.TAG_CATEGORIES);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      throw error;
+    }
+  }
+
+  static async createTagCategory(
+    category: TagCategory,
+    categoryType: "member" | "session",
+  ): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.TAG_CATEGORIES, {
+        category,
+        categoryType,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating tag category:", error);
+      throw error;
+    }
+  }
+
+  static async deleteTagCategory(
+    category: TagCategory,
+    categoryType: "member" | "session",
+  ): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.delete(ENDPOINTS.TAG_CATEGORIES, {
+        data: { category, categoryType },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting tag category:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;
