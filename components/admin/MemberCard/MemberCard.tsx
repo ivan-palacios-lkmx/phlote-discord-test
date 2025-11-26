@@ -1,5 +1,7 @@
 "use client";
 
+import Form from "@/components/Form/Form";
+import { Input } from "@/components/Form/Input";
 import AdminToggle from "@/components/admin/AdminToggle/AdminToggle";
 import MultiSelect from "@/components/admin/MultiSelect/MultiSelect";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
@@ -7,10 +9,14 @@ import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { usePatchAddress } from "@/hooks/query/mutations/use-patch-address";
 import { useUpdatePrivateAddress } from "@/hooks/query/mutations/use-update-private-address";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
+import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { AddressDocWithID, ContactDocWithID, TagCategory } from "@/types/database";
+import { memberCardSchema } from "@/utils/zod-schemas";
 import kebabCase from "lodash/kebabCase";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { z } from "zod";
 
 import "./MemberCard.scss";
 
@@ -38,57 +44,35 @@ function UsernameFromAddress({ address }: { address: string }) {
   return <Web3Username username={addressInfo.username} />;
 }
 
-export default function MemberCard({ member }: MemberCardProps) {
-  const [isPublic, setIsPublic] = useState(false);
-  const [name, setName] = useState("");
-  const [title, setTitle] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [email, setEmail] = useState("");
-  const [memberTagsRaw, setMemberTagsRaw] = useState<string[][]>([]);
+interface MemberCardFormProps extends MemberCardProps {
+  memberTagsRaw: string[][];
+  setMemberTagsRaw: React.Dispatch<React.SetStateAction<string[][]>>;
+  memberTags: TagCategory[];
+}
 
-  const { data: settingsDoc } = useGetSettings();
+function MemberCardForm({
+  member,
+  memberTagsRaw,
+  setMemberTagsRaw,
+  memberTags,
+}: MemberCardFormProps) {
+  const { watch, reset } = useFormContext<z.infer<typeof memberCardSchema>>();
+  const isPublic = watch("isPublic") || false;
 
-  const memberTags = useMemo<TagCategory[]>(() => {
-    return (settingsDoc?.availableMemberTags as TagCategory[] | undefined) || [];
-  }, [settingsDoc]);
+  const { data: addressInfo } = useGetAddressInfo(member.id, false, !!member.id);
+  const { data: privateInfo } = useGetAddressPrivateInfo(member.id, !!member.id);
 
-  const { mutate: patchAddress } = usePatchAddress();
-  const { mutate: updatePrivateAddress } = useUpdatePrivateAddress();
-
-  const encodeTag = (cat: string, value: string): string => {
-    const cleanCat = kebabCase(String(cat).trim());
-    const cleanVal = kebabCase(String(value).trim());
-    return `${cleanCat}:${cleanVal}`;
-  };
-
-  const memberTagsFormatted = useMemo(() => {
-    return memberTags.reduce((agg, group, i) => {
-      const cat = group.name;
-      (memberTagsRaw[i] || []).forEach((tag) => {
-        agg.push(encodeTag(cat, tag));
+  useEffect(() => {
+    if (addressInfo && privateInfo) {
+      reset({
+        isPublic: !!addressInfo.isPublic,
+        name: privateInfo.name || "",
+        title: addressInfo.title || "",
+        twitterHandle: privateInfo.twitterHandle || "",
+        email: privateInfo.email || "",
       });
-      return agg;
-    }, [] as string[]);
-  }, [memberTags, memberTagsRaw]);
-
-  // const existingMemberTags = useMemo(() => {
-  //   return (settingsDoc && member?.tags) || [];
-  // }, [settingsDoc, member?.tags]);
-
-  // TODO: this tag decoding and expiration logic should be implemented without the useTags hook
-  // useEffect(() => {
-  //   if (!memberTags.length) return;
-
-  //   const newTagsRaw = memberTags.map(() => [] as string[]);
-  //   (existingMemberTags as string[]).forEach((tag) => {
-  //     const { name: tagName, value: tagValue } = decodeTag(tag);
-  //     const groupIdx = memberTags.findIndex((group) => group.name === tagName);
-  //     if (groupIdx >= 0 && newTagsRaw[groupIdx]) {
-  //       newTagsRaw[groupIdx].push(tagValue);
-  //     }
-  //   });
-  //   setMemberTagsRaw(newTagsRaw);
-  // }, [existingMemberTags, memberTags, decodeTag]);
+    }
+  }, [addressInfo, privateInfo, reset]);
 
   const handleTagChange = (index: number, newValue: string[]) => {
     const newTagsRaw = [...memberTagsRaw];
@@ -96,40 +80,8 @@ export default function MemberCard({ member }: MemberCardProps) {
     setMemberTagsRaw(newTagsRaw);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const address = member.id;
-
-    patchAddress(
-      {
-        address,
-        title: title || undefined,
-        tags: memberTagsFormatted.length > 0 ? memberTagsFormatted : undefined,
-        visibility: isPublic ? "public" : "private",
-      },
-      {
-        onSuccess: () => {
-          if (name || twitter || email) {
-            const contact: ContactDocWithID = {
-              id: address,
-              name: name || undefined,
-              twitterHandle: twitter || undefined,
-              email: email || undefined,
-            };
-            updatePrivateAddress({ address, contact });
-          }
-        },
-      },
-    );
-  };
-
-  if (!member?.id) {
-    return null;
-  }
-
   return (
-    <form onSubmit={handleSave} className="member-card">
+    <>
       <div className="member-row">
         <div className="user">
           <AvatarFromAddress address={member.id} />
@@ -141,47 +93,28 @@ export default function MemberCard({ member }: MemberCardProps) {
           </div>
         </div>
         <div className="private-toggle">
-          <AdminToggle checked={isPublic} onChange={setIsPublic} />
+          <AdminToggleWithForm />
         </div>
       </div>
 
       <div className="inputs">
         <label className="label">Name</label>
-        <input
-          placeholder="John Doe"
-          className="text-inpt"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <Input name="name" placeholder="John Doe" className="text-inpt" type="text" />
 
         <label className="label">Title</label>
-        <input
-          placeholder="Songwriter"
-          className="text-inpt"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <Input name="title" placeholder="Songwriter" className="text-inpt" type="text" />
 
         <label className="label">Twitter</label>
-        <input
+        <Input
+          name="twitterHandle"
           placeholder="@handle"
           pattern="^@(\w){1,15}$"
           className="text-inpt"
           type="text"
-          value={twitter}
-          onChange={(e) => setTwitter(e.target.value)}
         />
 
         <label className="label">Email</label>
-        <input
-          placeholder="name@domain.com"
-          className="text-inpt"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <Input name="email" placeholder="name@domain.com" className="text-inpt" type="email" />
 
         {memberTags.map((tag, i) => (
           <div key={i} className="tag-select">
@@ -201,6 +134,123 @@ export default function MemberCard({ member }: MemberCardProps) {
           Save
         </button>
       </div>
-    </form>
+    </>
+  );
+}
+
+function AdminToggleWithForm() {
+  const { watch, setValue } = useFormContext<z.infer<typeof memberCardSchema>>();
+  const isPublic = watch("isPublic") || false;
+
+  return <AdminToggle checked={isPublic} onChange={(value) => setValue("isPublic", value)} />;
+}
+
+export default function MemberCard({ member }: MemberCardProps) {
+  const [memberTagsRaw, setMemberTagsRaw] = useState<string[][]>([]);
+
+  const { data: settingsDoc } = useGetSettings();
+  const { data: addressInfo } = useGetAddressInfo(member.id, false, !!member.id);
+
+  const memberTags = useMemo<TagCategory[]>(() => {
+    return (settingsDoc?.availableMemberTags as TagCategory[] | undefined) || [];
+  }, [settingsDoc]);
+
+  const encodeTag = (cat: string, value: string): string => {
+    const cleanCat = kebabCase(String(cat).trim());
+    const cleanVal = kebabCase(String(value).trim());
+    return `${cleanCat}:${cleanVal}`;
+  };
+
+  const decodeTag = (tag: string): { name: string; value: string } => {
+    const parts = tag.split(":");
+    if (parts.length !== 2) return { name: "", value: "" };
+    return { name: parts[0], value: parts[1] };
+  };
+
+  const memberTagsFormatted = useMemo(() => {
+    return memberTags.reduce((agg, group, i) => {
+      const cat = group.name;
+      (memberTagsRaw[i] || []).forEach((tag) => {
+        agg.push(encodeTag(cat, tag));
+      });
+      return agg;
+    }, [] as string[]);
+  }, [memberTags, memberTagsRaw]);
+
+  useEffect(() => {
+    if (!memberTags.length || !addressInfo?.tags) return;
+
+    const newTagsRaw = memberTags.map(() => [] as string[]);
+    (addressInfo.tags as string[]).forEach((tag) => {
+      const { name: tagName, value: tagValue } = decodeTag(tag);
+      const groupIdx = memberTags.findIndex((group) => kebabCase(group.name) === tagName);
+      if (groupIdx >= 0 && newTagsRaw[groupIdx]) {
+        const originalValue = memberTags[groupIdx].options?.find(
+          (opt) => kebabCase(opt) === tagValue,
+        );
+        if (originalValue) {
+          newTagsRaw[groupIdx].push(originalValue);
+        }
+      }
+    });
+    setMemberTagsRaw(newTagsRaw);
+  }, [addressInfo?.tags, memberTags]);
+
+  const { mutate: patchAddress } = usePatchAddress();
+  const { mutate: updatePrivateAddress } = useUpdatePrivateAddress();
+
+  const handleSave = (formValues: z.infer<typeof memberCardSchema>) => {
+    const address = member.id;
+
+    patchAddress(
+      {
+        address,
+        title: formValues.title || undefined,
+        tags: memberTagsFormatted.length > 0 ? memberTagsFormatted : undefined,
+        visibility: formValues.isPublic ? "public" : "private",
+      },
+      {
+        onSuccess: () => {
+          if (formValues.name || formValues.twitterHandle || formValues.email) {
+            const contact: ContactDocWithID = {
+              id: address,
+              name: formValues.name || undefined,
+              twitterHandle: formValues.twitterHandle || undefined,
+              email: formValues.email || undefined,
+            };
+            updatePrivateAddress({ address, contact });
+          }
+        },
+      },
+    );
+  };
+
+  const defaultValues = useMemo(() => {
+    return {
+      isPublic: false,
+      name: "",
+      title: "",
+      twitterHandle: "",
+      email: "",
+    };
+  }, []);
+
+  if (!member?.id) {
+    return null;
+  }
+
+  return (
+    <Form
+      schema={memberCardSchema}
+      handleSubmit={handleSave}
+      className="member-card"
+      defaultValues={defaultValues}>
+      <MemberCardForm
+        member={member}
+        memberTagsRaw={memberTagsRaw}
+        setMemberTagsRaw={setMemberTagsRaw}
+        memberTags={memberTags}
+      />
+    </Form>
   );
 }

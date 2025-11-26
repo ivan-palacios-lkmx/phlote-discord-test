@@ -8,15 +8,16 @@ interface FormProps<Schema extends z.ZodType<any, any, any>> {
   schema: Schema;
   handleSubmit: (formValues: z.infer<Schema>) => void;
   className?: string;
+  defaultValues?: Partial<z.infer<Schema>>;
 }
 
 const Form = forwardRef<HTMLFormElement, FormProps<any>>(function Form<
   Schema extends z.ZodType<any, any, any>,
 >(
-  { children, schema, handleSubmit, className }: FormProps<Schema>,
+  { children, schema, handleSubmit, className, defaultValues }: FormProps<Schema>,
   ref: React.Ref<HTMLFormElement>,
 ) {
-  const { form, onSubmit } = useZodForm(schema, handleSubmit);
+  const { form, onSubmit } = useZodForm(schema, handleSubmit, defaultValues);
   return (
     <FormProvider {...form}>
       <form ref={ref} onSubmit={onSubmit} className={className}>

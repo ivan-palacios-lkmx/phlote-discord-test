@@ -12,6 +12,7 @@ const twitterHandle = z.string().optional();
 const discordHandle = z.string().optional();
 const discordUserID = z.string().optional();
 const dmChannel = z.string().optional();
+const title = z.string().optional();
 
 export const contactSchema = z.object({
   name,
@@ -20,6 +21,14 @@ export const contactSchema = z.object({
   discordHandle,
   discordUserID,
   dmChannel,
+});
+
+export const memberCardSchema = z.object({
+  isPublic: z.boolean().optional(),
+  name,
+  title,
+  twitterHandle,
+  email,
 });
 
 const audioAction = z.enum(["play", "download"]);
@@ -43,7 +52,6 @@ export const createAddressSchema = z.object({
 const role = z.enum(["admin", "creator", "member"]);
 export const roleSchema = role;
 
-const title = z.string().optional();
 export const titleSchema = title;
 
 const tags = z.array(z.string()).optional();
