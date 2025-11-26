@@ -9,11 +9,6 @@ import { useMemo } from "react";
 
 import "./SessionDetailActivityRow.scss";
 
-const typeActionMap: Record<string, string> = {
-  PLAY: "Played",
-  DOWNLOAD: "Downloaded",
-};
-
 interface SessionDetailActivityRowProps {
   created?:
     | {
@@ -26,7 +21,7 @@ interface SessionDetailActivityRowProps {
     | Date
     | null;
   initiator?: string;
-  type?: string;
+  type?: "PLAY" | "DOWNLOAD" | "";
   formattedIndex?: string;
 }
 
@@ -70,8 +65,6 @@ export default function SessionDetailActivityRow({
     return format(date, "MM/DD hh:mmA");
   }, [created]);
 
-  const actionType = useMemo(() => typeActionMap[type] || "", [type]);
-
   return (
     <div className="session-detail-activity-row">
       <div className="date-time">{dateTime}</div>
@@ -79,7 +72,7 @@ export default function SessionDetailActivityRow({
         <Link href={initiatorLink} className="initiator">
           <Web3Username username={addressInfo?.username || ""} />
         </Link>
-        <span className="type">{actionType}</span>
+        <span className="type">{type}</span>
       </div>
       <div className="version-index">{formattedIndex}</div>
     </div>

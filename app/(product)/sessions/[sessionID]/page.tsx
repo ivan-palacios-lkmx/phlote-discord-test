@@ -104,7 +104,7 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
           </div>
         ) : (
           <div className="contained" key="c">
-            <SessionBreadcrumb name={session?.name || ""} />
+            <SessionBreadcrumb name={session?.name} />
 
             <div className="session-detail-layout">
               <div className="session-artwork" ref={artworkRef}>
