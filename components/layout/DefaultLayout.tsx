@@ -2,12 +2,14 @@
 
 import "@/app/layout.scss";
 import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
-import PrismicioProvider, { type PrismicSettings } from "@/components/PrismicioProvider";
+import PrismicioProvider from "@/components/PrismicioProvider";
 import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
 import ProductFooter from "@/components/site/footer/ProductFooter/ProductFooter";
 import MarketingHeader from "@/components/site/header/MarketingHeader/MarketingHeader";
 import ProductHeader from "@/components/site/header/ProductHeader/ProductHeader";
+import { HeaderTranslateProvider } from "@/hooks/useHeaderTranslate";
 import { useLenis } from "@/hooks/useLenis";
+import { type PrismicSettings } from "@/types/client";
 import kebabCase from "lodash/kebabCase";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -134,20 +136,22 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
 
   return (
     <PrismicioProvider settings={settings}>
-      <div className={classes} style={styles}>
-        {/* Header */}
+      <HeaderTranslateProvider>
+        <div className={classes} style={styles}>
+          {/* Header */}
 
-        {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
+          {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
 
-        {/* Page */}
-        {children}
+          {/* Page */}
+          {children}
 
-        {/* Footer */}
-        {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
+          {/* Footer */}
+          {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
 
-        {/* Overlay User Profile */}
-        <OverlayProfileWrapper />
-      </div>
+          {/* Overlay User Profile */}
+          <OverlayProfileWrapper />
+        </div>
+      </HeaderTranslateProvider>
     </PrismicioProvider>
   );
 }
