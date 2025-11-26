@@ -27,6 +27,11 @@ export class AddressService {
     return admins;
   }
 
+  static async getCreators(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
+    const creators = await this.getAddresses(visibility, "creator");
+    return creators;
+  }
+
   static async deleteAdminAddress(address: string): Promise<void> {
     // TODO: Check permissions to delete admin address, idk if this should be done here or in the middleware
     await this.deleteAddress(address);
