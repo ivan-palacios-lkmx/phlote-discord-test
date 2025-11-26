@@ -17,30 +17,30 @@ import {
   getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { InfuraProvider, Provider } from "ethers";
-import { DocumentSnapshot, WriteResult } from "firebase-admin/firestore";
+import { DocumentSnapshot, Query, WriteResult } from "firebase-admin/firestore";
 
 export class AddressService {
-  static async getAddresses(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
-    const onlyPublic = visibility === "public";
-    const onlyPrivate = visibility === "private";
+  static async getAddresses(
+    visibility?: "public" | "private",
+    role?: "admin" | "creator" | "member",
+  ): Promise<AddressDocWithID[]> {
+    let query: Query = adminDb.collection(ADDRESSES_COLLECTION);
 
-    if (onlyPublic) {
-      const addressesSnapshot = await adminDb
-        .collection(ADDRESSES_COLLECTION)
-        .where("isPublic", "==", true)
-        .get();
-      return getIDAndDocumentDataFromQuerySnapshot<AddressDocWithID>(addressesSnapshot);
+    if (visibility === "public") {
+      query = query.where("isPublic", "==", true);
+    } else if (visibility === "private") {
+      query = query.where("isPublic", "==", false);
     }
 
-    if (onlyPrivate) {
-      const addressesSnapshot = await adminDb
-        .collection(ADDRESSES_COLLECTION)
-        .where("isPublic", "==", false)
-        .get();
-      return getIDAndDocumentDataFromQuerySnapshot<AddressDocWithID>(addressesSnapshot);
+    if (role === "admin") {
+      query = query.where("isAdmin", "==", true);
+    } else if (role === "creator") {
+      query = query.where("isCreator", "==", true);
+    } else if (role === "member") {
+      query = query.where("isMember", "==", true);
     }
 
-    const addressesSnapshot = await adminDb.collection(ADDRESSES_COLLECTION).get();
+    const addressesSnapshot = await query.get();
     return getIDAndDocumentDataFromQuerySnapshot<AddressDocWithID>(addressesSnapshot);
   }
 
@@ -67,24 +67,7 @@ export class AddressService {
     visibility?: "public" | "private",
     role?: "admin" | "creator" | "member",
   ): Promise<{ addresses: AddressDocWithID[]; totalCount: number }> {
-    const addresses = await this.getAddresses(visibility);
-    const onlyPublic = visibility === "public";
-    const onlyPrivate = visibility === "private";
-
-    if (onlyPublic) {
-      return {
-        addresses: addresses.filter((address) => address.isPublic === true),
-        totalCount: addresses.filter((address) => address.isPublic === true).length,
-      };
-    }
-
-    if (onlyPrivate) {
-      return {
-        addresses: addresses.filter((address) => address.isPublic === false),
-        totalCount: addresses.filter((address) => address.isPublic === false).length,
-      };
-    }
-
+    const addresses = await this.getAddresses(visibility, role);
     return { addresses, totalCount: addresses.length };
   }
 
