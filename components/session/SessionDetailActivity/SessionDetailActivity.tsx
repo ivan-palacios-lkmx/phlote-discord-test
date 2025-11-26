@@ -2,17 +2,14 @@
 
 import SessionDetailActivityRow from "@/components/session/SessionDetailActivityRow/SessionDetailActivityRow";
 import { useGetSessionActivity } from "@/hooks/query/query-hooks/use-get-session-activity";
+import { VersionDocWithID } from "@/types/database";
 import { useMemo } from "react";
 
 import "./SessionDetailActivity.scss";
 
 interface SessionDetailActivityProps {
   sessionID?: string;
-  versions?: Array<{
-    id?: string;
-    versionIndex?: number;
-    [key: string]: unknown;
-  }>;
+  versions?: VersionDocWithID[];
 }
 
 export default function SessionDetailActivity({

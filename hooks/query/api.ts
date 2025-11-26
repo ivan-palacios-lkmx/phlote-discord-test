@@ -94,7 +94,7 @@ class Api {
     }
   }
 
-  static async getSession(sessionID: string): Promise<SessionDoc> {
+  static async getSession(sessionID: string): Promise<SessionDocWithID> {
     try {
       const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID);
       return response.data;

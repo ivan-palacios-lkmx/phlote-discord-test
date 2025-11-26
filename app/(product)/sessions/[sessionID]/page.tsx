@@ -13,8 +13,6 @@ import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
-import type { Session, Version } from "@/types/client";
-import { SessionDocWithID } from "@/types/database";
 import { notFound, useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
 
@@ -31,33 +29,25 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
   const searchParams = useSearchParams();
   const artworkRef = useRef<HTMLDivElement>(null);
 
+  const versionFromSearchParams = searchParams.get("v");
   const { data: versions } = useGetVersions({
     sessionId: sessionID,
     enabled: !!sessionID,
   });
 
-  const versionIdx = useMemo(() => {
-    const v = searchParams.get("v");
-    return v ? parseInt(v, 10) : 0;
-  }, [searchParams]);
+  const versionIndex = versionFromSearchParams ? parseInt(versionFromSearchParams, 10) : 0;
 
   const activeVersion = useMemo(() => {
-    if (!versionIdx) {
+    if (!versionIndex) {
       return versions?.length && versions.length > 0 ? versions[versions.length - 1] : null;
     }
-    return versions?.find((v) => v.versionIndex === versionIdx) || null;
-  }, [versionIdx, versions]);
+    return versions?.find((v) => v.versionIndex === versionIndex) || null;
+  }, [versionIndex, versions]);
 
-  const versionDataLoading = useMemo(() => !activeVersion, [activeVersion]);
-  const versionIsProcessing = useMemo(() => {
-    return !!(activeVersion?.sessionID && !activeVersion?.versionIndex);
-  }, [activeVersion]);
-
-  const creator = useMemo(() => activeVersion?.creator, [activeVersion?.creator]);
-  const { data: creatorInfo } = useGetAddressInfo(creator || "", !!creator);
-  const creatorHasAvatar = useMemo(() => {
-    return !!(creatorInfo?.zora?.profileImageURL || creatorInfo?.openSea?.profileImageURL);
-  }, [creatorInfo]);
+  const { data: creatorInfo } = useGetAddressInfo(
+    activeVersion?.creator || "",
+    !!activeVersion?.creator,
+  );
 
   useEffect(() => {
     if (!artworkRef.current) return;
@@ -95,38 +85,18 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
     return null;
   }
 
-  const sessionWithId: SessionDocWithID = {
-    ...session,
-    id: sessionID,
-  };
-
   return (
     <main>
       <div className="session-detail">
         <div className="bg-area">
-          {creatorHasAvatar && creator ? (
-            <Web3Avatar
-              className="background fade-enter-active"
-              avatar={
-                creatorInfo?.zora?.profileImageURL ||
-                creatorInfo?.openSea?.profileImageURL ||
-                "/images/phlote-poster.jpg"
-              }
-              key={creator}
-            />
-          ) : (
-            <div className="default-background fade-enter-active" key="default" />
-          )}
+          <Web3Avatar
+            className="background fade-enter-active"
+            avatar={creatorInfo?.avatar || ""}
+            key={activeVersion?.creator || ""}
+          />
         </div>
 
-        {versionIsProcessing ? (
-          <div className="contained processing-versions" key="a">
-            <div className="centered">
-              <h6 className="label">Processing</h6>
-              <LoadingSpinnerIcon />
-            </div>
-          </div>
-        ) : versionDataLoading ? (
+        {isPending ? (
           <div className="contained loading-versions" key="b">
             <div className="centered">
               <LoadingSpinnerIcon />
@@ -134,43 +104,30 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
           </div>
         ) : (
           <div className="contained" key="c">
-            <SessionBreadcrumb name={(sessionWithId?.name as string) || ""} />
+            <SessionBreadcrumb name={session?.name || ""} />
 
             <div className="session-detail-layout">
               <div className="session-artwork" ref={artworkRef}>
-                {creator && (
+                {activeVersion?.creator && (
                   <Web3Avatar
                     className="session-artwork-image"
-                    avatar={
-                      creatorInfo?.zora?.profileImageURL ||
-                      creatorInfo?.openSea?.profileImageURL ||
-                      "/images/phlote-poster.jpg"
-                    }
-                    key={creator}
+                    avatar={creatorInfo?.avatar || ""}
+                    key={activeVersion?.creator || ""}
                   />
                 )}
               </div>
 
               {activeVersion && <SessionDetailTitle session={session} version={activeVersion} />}
 
-              <SessionDetailActivity
-                sessionID={sessionWithId.id}
-                versions={versions as unknown as Version[]}
-              />
+              <SessionDetailActivity sessionID={session.id} versions={versions} />
 
-              <SessionDetailMeta
-                session={sessionWithId as unknown as Session}
-                version={activeVersion ? (activeVersion as unknown as Version) : undefined}
-              />
+              <SessionDetailMeta session={session} version={activeVersion || undefined} />
 
               {activeVersion && (
-                <SessionDetailNewVersion
-                  sessionID={sessionWithId.id}
-                  versionID={activeVersion.id}
-                />
+                <SessionDetailNewVersion sessionID={session.id} versionID={activeVersion.id} />
               )}
 
-              {activeVersion && <SessionDetailPlayer version={activeVersion} key={versionIdx} />}
+              {activeVersion && <SessionDetailPlayer version={activeVersion} key={versionIndex} />}
 
               {activeVersion && (
                 <SessionDetailVersions versions={versions} activeVersionID={activeVersion.id} />

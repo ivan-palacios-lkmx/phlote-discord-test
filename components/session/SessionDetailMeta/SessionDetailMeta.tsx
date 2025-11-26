@@ -4,16 +4,15 @@ import AvatarStack from "@/components/AvatarStack/AvatarStack";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useDownloadAudio } from "@/hooks/useDownloadAudio";
-import { Version } from "@/types/client";
-import { Session } from "@/types/client";
+import { SessionDocWithID, VersionDocWithID } from "@/types/database";
 import { usePrivy } from "@privy-io/react-auth";
 import { useMemo } from "react";
 
 import "./SessionDetailMeta.scss";
 
 interface SessionDetailMetaProps {
-  session?: Session;
-  version?: Version;
+  session?: SessionDocWithID;
+  version?: VersionDocWithID;
 }
 
 export default function SessionDetailMeta({ session, version }: SessionDetailMetaProps) {
@@ -29,7 +28,7 @@ export default function SessionDetailMeta({ session, version }: SessionDetailMet
   const discordGuildID = process.env.NEXT_PUBLIC_DISCORD_GUILD_ID || "";
 
   const discordLink = useMemo(() => {
-    const channel = session?.discordChannel;
+    const channel = session?.disc;
     if (channel && discordGuildID) {
       return `https://discord.com/channels/${discordGuildID}/${channel}`;
     }
