@@ -282,6 +282,18 @@ class Api {
       throw error;
     }
   }
+
+  static async deleteAdmin(address: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.delete(ENDPOINTS.ADMINS, {
+        data: { address },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting admin:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;

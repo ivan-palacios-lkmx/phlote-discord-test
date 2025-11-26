@@ -13,4 +13,5 @@ export const ENDPOINTS = {
   AUDIO: "/audio",
   PROCESSING_STATUS: "/status",
   TAGS: "/tags",
+  ADMINS: "/admins",
 };

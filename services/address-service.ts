@@ -40,7 +40,6 @@ export class AddressService {
   }
 
   private static async deleteAddress(address: string): Promise<void> {
-    // TODO: Check if the
     await adminDb.collection(ADDRESSES_COLLECTION).doc(address).delete();
   }
 
