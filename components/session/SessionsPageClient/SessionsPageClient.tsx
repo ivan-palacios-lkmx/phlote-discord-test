@@ -19,7 +19,7 @@ import { useMemo } from "react";
 interface SessionsPageClientProps {
   prismicPage?: {
     data?: {
-      header_copy?: unknown;
+      header_copy?: React.ReactNode;
     } | null;
   } | null;
 }
@@ -93,7 +93,7 @@ export default function SessionsPageClient({ prismicPage }: SessionsPageClientPr
           {/* Results Header */}
           <div className="sessions-results-header">
             <SessionsResultsFilters resultCount={totalResults} />
-            <SessionsResultsSorting sessionCollaborators={sessionCollaborators} />
+            <SessionsResultsSorting />
           </div>
 
           {/* Loading */}
