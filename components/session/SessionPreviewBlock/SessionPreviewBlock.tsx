@@ -11,6 +11,7 @@ import PauseIcon from "@/components/svg/pause.svg";
 import PlayIcon from "@/components/svg/play.svg";
 import SvgIconStem from "@/components/svg/stem.svg";
 import SvgIconVersion from "@/components/svg/version.svg";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetWaveTrace } from "@/hooks/query/query-hooks/use-get-wave-trace";
 import { useFirstVersion } from "@/hooks/sessions/useFirstVersion";
 import useAudio from "@/hooks/useAudio";
@@ -43,6 +44,7 @@ export default function SessionPreviewBlock({
   versionCount = 0,
   downloadCount = 0,
 }: SessionPreviewBlockProps) {
+  const { data: creatorInfo } = useGetAddressInfo(creator || "", false, !!creator);
   const elRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
   // TODO: Remove this once we have a real ready state
@@ -53,8 +55,8 @@ export default function SessionPreviewBlock({
 
   // Session image
   const sessionImage = useMemo(
-    () => settings?.default_user_image?.url || "",
-    [settings?.default_user_image?.url],
+    () => creatorInfo?.avatar || settings?.default_user_image?.url || "",
+    [creatorInfo?.avatar, settings?.default_user_image?.url],
   );
 
   // Get first version data
