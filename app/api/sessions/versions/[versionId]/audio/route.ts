@@ -24,12 +24,17 @@ export async function GET(request: NextRequest, { params }: { params: { versionI
       return NextResponse.json({ error: "Version bounce not found" }, { status: 404 });
     }
 
-
     const stemsHashes = version.stems.map((stem) => stem.id);
 
-    const stemsSignedUrls = await AudioService.getStemsSignedUrls(stemsHashes, action as AudioAction);
+    const stemsSignedUrls = await AudioService.getStemsSignedUrls(
+      stemsHashes,
+      action as AudioAction,
+    );
 
-    const bounceSignedUrl = await AudioService.getBounceSignedUrl(version.bounce, action as AudioAction);
+    const bounceSignedUrl = await AudioService.getBounceSignedUrl(
+      version.bounce,
+      action as AudioAction,
+    );
 
     return NextResponse.json({ stemsSignedUrls, bounceSignedUrl }, { status: 200 });
   } catch (error) {

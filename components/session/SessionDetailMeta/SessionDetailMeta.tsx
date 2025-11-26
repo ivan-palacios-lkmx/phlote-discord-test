@@ -2,7 +2,9 @@
 
 import AvatarStack from "@/components/AvatarStack/AvatarStack";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
+import { useGetVersionAudio } from "@/hooks/query/mutations/use-get-version-audio";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
+import { useDownloadAudio } from "@/hooks/useDownloadAudio";
 import { useFbEndpoints } from "@/hooks/useFbEndpoints";
 import { Version } from "@/types/client";
 import { Session } from "@/types/client";
@@ -18,8 +20,8 @@ interface SessionDetailMetaProps {
 
 export default function SessionDetailMeta({ session, version }: SessionDetailMetaProps) {
   const { user, authenticated } = usePrivy();
-  const [isDownloading, setIsDownloading] = useState(false);
 
+  const { downloadAudio, progress, error, isDownloading } = useDownloadAudio();
   // Get wallet address
 
   // Get account info to check if user is creator
@@ -33,8 +35,6 @@ export default function SessionDetailMeta({ session, version }: SessionDetailMet
     const isCreator = accountInfo.isAdmin || accountInfo.isCreator;
     return isCreator;
   }, [authenticated, accountInfo]);
-
-  const { downloadStemsZip, stemDlProgress } = useFbEndpoints();
 
   const versionIndex = useMemo(() => {
     const index = version?.versionIndex || 0;
@@ -69,70 +69,58 @@ export default function SessionDetailMeta({ session, version }: SessionDetailMet
     return "";
   }, [session?.discordChannel, discordGuildID]);
 
-  const onDownload = async () => {
-    if (!version?.id) return;
-    setIsDownloading(true);
-    try {
-      await downloadStemsZip({ versionID: version.id });
-    } catch (error) {
-      console.error("Error downloading stems:", error);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
 
-  return (
-    <div className="session-detail-meta">
-      {/* Stats */}
-      <div className="session-stats">
-        <div className="stats-title">({versionIndex})</div>
-        <div className="stats-row">
-          <span>({downloadCount}) Downloads</span>
-        </div>
-        <div className="stats-row">
-          <span>({playCount}) Plays</span>
-        </div>
-        {session?.versionCount && (
+    return (
+      <div className="session-detail-meta">
+        {/* Stats */}
+        <div className="session-stats">
+          <div className="stats-title">({versionIndex})</div>
           <div className="stats-row">
-            <span>({session.versionCount}) Versions</span>
+            <span>({downloadCount}) Downloads</span>
+          </div>
+          <div className="stats-row">
+            <span>({playCount}) Plays</span>
+          </div>
+          {session?.versionCount && (
+            <div className="stats-row">
+              <span>({session.versionCount}) Versions</span>
+            </div>
+          )}
+        </div>
+
+        {/* Stems */}
+        <div className="session-stems">
+          <div className="stems-title">({stemCount}) Stems</div>
+          <button onClick={() => downloadAudio(version?.id || "")} className="download-stems btn">
+            <span>Download Stems</span>
+            {isDownloading && (
+              <div className="download-progress fade-enter-active">
+                <div className="prog-bar">
+                  <span className="p" style={{ width: `${progress * 100}%` }} />
+                </div>
+              </div>
+            )}
+          </button>
+        </div>
+
+        {/* Collaborators */}
+        <div className="session-collaborators">
+          <div className="collaborators-title">({collabCount}) Collaborators</div>
+          <div key={versionIndex} className="collaborator-avatars fade-enter-active">
+            <AvatarStack addresses={collaborators} isLink />
+          </div>
+        </div>
+
+        {/* Discord */}
+        {isCreator && (
+          <div className="session-discord">
+            <div className="discord-title">({messageCount}) Messages</div>
+            {discordLink && (
+              <ADiv href={discordLink} className="join-conversation button btn">
+                Join the Conversation
+              </ADiv>
+            )}
           </div>
         )}
       </div>
-
-      {/* Stems */}
-      <div className="session-stems">
-        <div className="stems-title">({stemCount}) Stems</div>
-        <button onClick={onDownload} className="download-stems btn">
-          <span>Download Stems</span>
-          {isDownloading && (
-            <div className="download-progress fade-enter-active">
-              <div className="prog-bar">
-                <span className="p" style={{ width: `${stemDlProgress * 100}%` }} />
-              </div>
-            </div>
-          )}
-        </button>
-      </div>
-
-      {/* Collaborators */}
-      <div className="session-collaborators">
-        <div className="collaborators-title">({collabCount}) Collaborators</div>
-        <div key={versionIndex} className="collaborator-avatars fade-enter-active">
-          <AvatarStack addresses={collaborators} isLink />
-        </div>
-      </div>
-
-      {/* Discord */}
-      {isCreator && (
-        <div className="session-discord">
-          <div className="discord-title">({messageCount}) Messages</div>
-          {discordLink && (
-            <ADiv href={discordLink} className="join-conversation button btn">
-              Join the Conversation
-            </ADiv>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+    );
