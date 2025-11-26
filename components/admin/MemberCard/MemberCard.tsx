@@ -5,9 +5,9 @@ import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
-import useTags from "@/hooks/useTags";
-import { AddressDocWithID } from "@/types/database";
-import { useState } from "react";
+import { AddressDocWithID, TagCategory } from "@/types/database";
+import { useMemo, useState } from "react";
+import Select, { MultiValue } from "react-select";
 
 import "./MemberCard.scss";
 
@@ -19,73 +19,36 @@ interface MultiselectProps {
   value: string[];
   options: string[];
   onChange: (value: string[]) => void;
-  multiple?: boolean;
-  searchable?: boolean;
   closeOnSelect?: boolean;
 }
 
-function Multiselect({
-  value,
-  options,
-  onChange,
-  multiple = true,
-  closeOnSelect = false,
-}: MultiselectProps) {
-  // TODO: Implement Multiselect component (or use a library like react-select)
-  const [isOpen, setIsOpen] = useState(false);
+function Multiselect({ value, options, onChange, closeOnSelect = false }: MultiselectProps) {
+  const selectOptions = useMemo(
+    () => options.map((opt) => ({ value: opt, label: opt })),
+    [options],
+  );
 
-  const toggleOption = (option: string) => {
-    if (multiple) {
-      if (value.includes(option)) {
-        onChange(value.filter((v) => v !== option));
-      } else {
-        onChange([...value, option]);
-      }
-    } else {
-      onChange([option]);
-      if (closeOnSelect) {
-        setIsOpen(false);
-      }
-    }
+  const selectedOptions = useMemo(
+    () => selectOptions.filter((opt) => value.includes(opt.value)),
+    [selectOptions, value],
+  );
+
+  const handleChange = (newValue: MultiValue<{ value: string; label: string }>) => {
+    onChange(newValue.map((opt) => opt.value));
   };
 
   return (
-    <div className="multiselect">
-      <div className="multiselect__tags" onClick={() => setIsOpen(!isOpen)}>
-        {value.length > 0 ? (
-          <div className="multiselect__tags-wrap">
-            {value.map((v) => (
-              <span key={v} className="multiselect__tag">
-                {v}
-                <i
-                  className="multiselect__tag-icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onChange(value.filter((item) => item !== v));
-                  }}>
-                  ×
-                </i>
-              </span>
-            ))}
-          </div>
-        ) : (
-          <span className="multiselect__placeholder">Select options</span>
-        )}
-        <div className="multiselect__select">▼</div>
-      </div>
-      {isOpen && (
-        <div className="multiselect__content">
-          {options.map((option) => (
-            <div
-              key={option}
-              className={`multiselect__option ${value.includes(option) ? "multiselect__option--selected" : ""}`}
-              onClick={() => toggleOption(option)}>
-              {option}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <Select
+      isMulti
+      options={selectOptions}
+      value={selectedOptions}
+      onChange={handleChange}
+      closeMenuOnSelect={closeOnSelect}
+      isSearchable={false}
+      isClearable={false}
+      className="multiselect"
+      classNamePrefix="multiselect"
+    />
   );
 }
 
@@ -117,9 +80,11 @@ export default function MemberCard({ member }: MemberCardProps) {
   const [email, setEmail] = useState("");
   const [memberTagsRaw, setMemberTagsRaw] = useState<string[][]>([]);
 
-  const { memberTags } = useTags();
-
   const { data: settingsDoc } = useGetSettings();
+
+  const memberTags = useMemo<TagCategory[]>(() => {
+    return (settingsDoc?.availableMemberTags as TagCategory[] | undefined) || [];
+  }, [settingsDoc]);
 
   // const memberTagsFormatted = useMemo(() => {
   //   return memberTags.reduce((agg, group, i) => {
@@ -224,8 +189,6 @@ export default function MemberCard({ member }: MemberCardProps) {
               value={memberTagsRaw[i] || []}
               options={tag.options || []}
               onChange={(newValue) => handleTagChange(i, newValue)}
-              multiple
-              searchable={false}
               closeOnSelect={false}
             />
           </div>
