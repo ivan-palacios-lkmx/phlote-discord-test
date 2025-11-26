@@ -237,9 +237,7 @@ class Api {
     temporaryAudioFileName: string,
   ): Promise<AudioProcessingStatusResponse> {
     try {
-      const response = await apiClient.get(
-        ENDPOINTS.AUDIO + "/" + temporaryAudioFileName + ENDPOINTS.PROCESSING_STATUS,
-      );
+      const response = await apiClient.get(ENDPOINTS.AUDIO + "/status/" + temporaryAudioFileName);
       return response.data;
     } catch (error) {
       console.error("Error fetching audio processing status:", error);
@@ -257,6 +255,16 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error submitting audio:", error);
+      throw error;
+    }
+  }
+
+  static async getAudioWaveTrace(audioId: string): Promise<string | undefined> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.AUDIO + "/wavetrace/" + audioId);
+      return response.data.audio;
+    } catch (error) {
+      console.error("Error fetching audio wave trace:", error);
       throw error;
     }
   }

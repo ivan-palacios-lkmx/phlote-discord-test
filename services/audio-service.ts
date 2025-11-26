@@ -1,9 +1,9 @@
 import firebase, { adminDb } from "@/lib/firebase-admin";
 import { AudioAction, AudioProcessingStatus } from "@/types/api";
-import { Stem, VersionDoc } from "@/types/database";
+import { AudioDoc, Stem, VersionDoc } from "@/types/database";
 import { TemporaryAudioDoc } from "@/types/database";
 import { SIGNED_URL_EXPIRATION_TIME_IN_MS, TEMPORARY_AUDIO_COLLECTION } from "@/utils/constants";
-import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queries";
+import { AUDIO_COLLECTION } from "@/utils/constants";
 import { getDocumentDataFromCollectionById } from "@/utils/firebase-queries";
 import { getCurrentTimestampInMilliseconds } from "@/utils/functions";
 import { FileMetadata, File as GCSFile } from "@google-cloud/storage";
@@ -19,6 +19,11 @@ import { Readable } from "stream";
 import { WaveFile } from "wavefile";
 
 export class AudioService {
+  static async getAudioWaveTrace(audioId: string): Promise<string | undefined> {
+    const audio = await getDocumentDataFromCollectionById<AudioDoc>(AUDIO_COLLECTION, audioId);
+    return audio?.waveTrace;
+  }
+
   static getStemsHashesFromVersion(version: VersionDoc): string[] {
     return version.stems.map((stem: { id: string }) => stem.id);
   }

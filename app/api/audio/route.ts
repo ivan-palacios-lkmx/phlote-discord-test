@@ -28,3 +28,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const hash = searchParams.get("hash");
+
+    if (!hash) {
+      return NextResponse.json({ error: "Hash is required" }, { status: 400 });
+    }
+
+    const audio = await AudioService.getAudio(hash);
+
+    return NextResponse.json({ audio }, { status: 200 });
+  } catch (error) {
+    console.error("Error getting audio:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

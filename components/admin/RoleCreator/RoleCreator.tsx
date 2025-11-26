@@ -23,11 +23,13 @@ function CreatorRow({
     address?.openSea?.profileImageURL ||
     address?.zora?.profileImageURL ||
     "/images/phlote-poster.jpg";
+
   const creatorUsername =
     address?.ens?.name ||
     address?.openSea?.osUsername ||
     address?.zora?.zoraUsername ||
     transformToShortAddress(address?.id);
+
   return (
     <div className="creator-row">
       {isLoadingUsers ? (
