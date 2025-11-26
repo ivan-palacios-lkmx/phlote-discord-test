@@ -123,6 +123,10 @@ export interface SessionDoc {
   shouldGenerateImage?: boolean;
   /** Flag indicating if a Discord notification should be created */
   createDiscord?: boolean;
+  /** Discord channel ID */
+  discordChannel?: string;
+  /** Total number of Discord messages */
+  discordMessageCount?: number;
   /** Number of errors that occurred for this session */
   errorCount?: number;
   /** Error details or a boolean flag for error presence */
