@@ -203,12 +203,28 @@ class Api {
   ): Promise<WriteResult> {
     try {
       const response = await apiClient.put(
-        ENDPOINTS.ADDRESS + ENDPOINTS.PRIVATE_ADDRESS_INFO + "/" + address,
+        ENDPOINTS.ADDRESS + "/" + address + ENDPOINTS.PRIVATE_ADDRESS_INFO,
         contact,
       );
       return response.data;
     } catch (error) {
       console.error("Error updating private address data:", error);
+      throw error;
+    }
+  }
+
+  static async patchAddress(data: {
+    address: string;
+    role?: string;
+    title?: string;
+    tags?: string[];
+    visibility?: "public" | "private";
+  }): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.patch(ENDPOINTS.ADDRESS, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error patching address:", error);
       throw error;
     }
   }
