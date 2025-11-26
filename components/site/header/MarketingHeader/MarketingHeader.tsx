@@ -6,10 +6,12 @@ import Logo from "@/components/svg/logo.svg";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
 import { useLenis } from "@/hooks/useLenis";
 import Link from "next/link";
-import { animate, smooth } from "popmotion";
+import { physics, transform } from "popmotion";
 import { useEffect, useRef, useState } from "react";
 
 import "./MarketingHeader.scss";
+
+const { smooth } = transform;
 
 function HamburgerIcon() {
   return (
@@ -29,8 +31,8 @@ export default function MarketingHeader() {
 
   const [wordmarkTranslate, setWordmarkTranslate] = useState(0);
   const [logoTranslate, setLogoTranslate] = useState(0);
-  const logoAnimationRef = useRef<{ stop: () => void } | null>(null);
-  const currentValueRef = useRef(-0.00001);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const logoPhysicsRef = useRef<any | null>(null);
 
   useEffect(() => {
     if (!lenis) return;
@@ -38,49 +40,23 @@ export default function MarketingHeader() {
     const headerTranslate = 0; // TODO: implement useHeaderTranslate if needed
     const smoothTransform = smooth(100);
 
-    const startLogoAnimation = () => {
-      if (logoAnimationRef.current) {
-        logoAnimationRef.current.stop();
-      }
-
-      logoAnimationRef.current = animate({
-        from: currentValueRef.current,
-        to: 0,
-        type: "spring",
-        stiffness: 20,
-        damping: 0.2,
-        restSpeed: 0.01,
-        restDelta: 0.01,
-        onUpdate: (v: number) => {
-          currentValueRef.current = v;
-          const smoothedValue = headerTranslate === 0 ? smoothTransform(v) : 0;
-          setLogoTranslate(smoothedValue * -10);
-        },
+    logoPhysicsRef.current = physics({
+      from: -0.00001,
+      to: 0,
+      springStrength: 20,
+      velocity: 0,
+      friction: 0.2,
+      restSpeed: -1,
+    })
+      .pipe((v: number) => (headerTranslate === 0 ? v : 0), smoothTransform)
+      .start((v: number) => {
+        setLogoTranslate(v * -10);
       });
-    };
-
-    startLogoAnimation();
 
     const scrollHandler = (e: { animatedScroll: number; velocity: number }) => {
       setWordmarkTranslate(e.animatedScroll);
-      // Apply velocity as acceleration by restarting animation with new velocity
-      if (logoAnimationRef.current) {
-        logoAnimationRef.current.stop();
-        logoAnimationRef.current = animate({
-          from: currentValueRef.current,
-          to: 0,
-          type: "spring",
-          stiffness: 20,
-          damping: 0.2,
-          restSpeed: 0.01,
-          restDelta: 0.01,
-          velocity: e.velocity * 3,
-          onUpdate: (v: number) => {
-            currentValueRef.current = v;
-            const smoothedValue = headerTranslate === 0 ? smoothTransform(v) : 0;
-            setLogoTranslate(smoothedValue * -10);
-          },
-        });
+      if (logoPhysicsRef.current) {
+        logoPhysicsRef.current.setAcceleration(e.velocity * 3);
       }
     };
 
@@ -88,8 +64,8 @@ export default function MarketingHeader() {
 
     return () => {
       lenis.off("scroll", scrollHandler);
-      if (logoAnimationRef.current) {
-        logoAnimationRef.current.stop();
+      if (logoPhysicsRef.current) {
+        logoPhysicsRef.current.stop();
       }
     };
   }, [lenis]);
