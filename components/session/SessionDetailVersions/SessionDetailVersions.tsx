@@ -1,14 +1,14 @@
 "use client";
 
 import SessionDetailVersionsRow from "@/components/session/SessionDetailVersionsRow/SessionDetailVersionsRow";
-import type { Version } from "@/types/client";
+import { VersionDocWithID } from "@/types/database";
 import { last, reverse, uniq } from "lodash";
 import { useMemo } from "react";
 
 import "./SessionDetailVersions.scss";
 
 interface SessionDetailVersionsProps {
-  versions?: Version[];
+  versions?: VersionDocWithID[];
   activeVersionID?: string;
 }
 
@@ -56,6 +56,7 @@ export default function SessionDetailVersions({
         <SessionDetailVersionsRow
           key={version.id}
           {...version}
+          creator={version.creator}
           active={activeVersionID === version.id}
           included={lineage.includes(version.id)}
           withinRange={(version.versionIndex ?? 0) <= activeVersionIndex}

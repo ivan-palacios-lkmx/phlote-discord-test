@@ -79,7 +79,7 @@ export default function SessionsPageClient({ prismicPage }: SessionsPageClientPr
   };
 
   return (
-    <OnlyMembers className="sessions">
+    <main className="sessions">
       <div className="sessions">
         {prismicPage?.data?.header_copy && (
           <div className="header-copy design-grid">
@@ -140,6 +140,6 @@ export default function SessionsPageClient({ prismicPage }: SessionsPageClientPr
           )}
         </div>
       </div>
-    </OnlyMembers>
+    </main>
   );
 }

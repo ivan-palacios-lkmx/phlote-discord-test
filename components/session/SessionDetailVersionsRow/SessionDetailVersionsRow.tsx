@@ -3,6 +3,7 @@
 import ChevronIcon from "@/components/svg/chevron.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
@@ -30,6 +31,7 @@ export default function SessionDetailVersionsRow({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const { data: addressInfo } = useGetAddressInfo(creator || "", false, !!creator);
   // Build classes
   const classes = useMemo(() => {
     return [
@@ -47,9 +49,6 @@ export default function SessionDetailVersionsRow({
     return `V_${String(versionIndex).padStart(3, "0")}`;
   }, [versionIndex]);
 
-  // Creator address
-  const creatorAddress = useMemo(() => creator, [creator]);
-
   // Build link URL
   const linkTo = useMemo(() => {
     const current = new URLSearchParams(searchParams.toString());
@@ -65,14 +64,17 @@ export default function SessionDetailVersionsRow({
         <div className="block-info">
           <div className="block-title">{formattedIndex}</div>
           <div className="block-info-row">
-            <Web3Username address={creatorAddress} />
+            <Web3Username username={addressInfo?.username || ""} />
           </div>
           <div className="block-info-row">
             <span>{downloadCount} Downloads</span>
           </div>
         </div>
         <div className="block-creator">
-          <Web3Avatar className="creator-avatar" address={creatorAddress} />
+          <Web3Avatar
+            className="creator-avatar"
+            avatar={addressInfo?.avatar || "/images/phlote-poster.jpg"}
+          />
         </div>
       </Link>
     </div>
