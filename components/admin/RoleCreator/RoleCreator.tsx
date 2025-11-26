@@ -1,8 +1,10 @@
 "use client";
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
+import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { AddressDocWithID } from "@/types/database";
 import checkAddress from "@/utils/checkAddress";
+import { transformToShortAddress } from "@/utils/functions";
 import { useMemo, useState } from "react";
 
 import "./RoleCreator.scss";
@@ -21,9 +23,21 @@ function CreatorRow({
     address?.openSea?.profileImageURL ||
     address?.zora?.profileImageURL ||
     "/images/phlote-poster.jpg";
+  const creatorUsername =
+    address?.ens?.name ||
+    address?.openSea?.osUsername ||
+    address?.zora?.zoraUsername ||
+    transformToShortAddress(address?.id);
   return (
     <div className="creator-row">
-      {isLoadingUsers ? <div className="web3-avatar" /> : <Web3Avatar avatar={creatorAvatar} />}
+      {isLoadingUsers ? (
+        <div className="web3-avatar" />
+      ) : (
+        <>
+          <Web3Avatar avatar={creatorAvatar} />
+          <Web3Username username={creatorUsername} />
+        </>
+      )}
       <button className="remove-creator" onClick={() => onRemoveCreator(address)}>
         Remove
       </button>
