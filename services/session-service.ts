@@ -32,12 +32,18 @@ export class SessionService {
     return getIDAndDocumentDataFromDocumentSnapshot<SessionDoc>(sessionDoc) || null;
   }
 
-  static async getSessionVersions(sessionID: string): Promise<VersionDocWithID[]> {
-    const versionsSnapshot = await adminDb
+  static async getSessionVersions(sessionID: string, index?: number): Promise<VersionDocWithID[]> {
+    let query = adminDb
       .collection(SESSION_VERSIONS_COLLECTION)
       .where("sessionID", "==", sessionID)
-      .get();
-    return getDocumentDataFromQuerySnapshot<VersionDocWithID>(versionsSnapshot);
+      .orderBy("created", "asc");
+
+    if (index !== undefined) {
+      query = query.offset(index).limit(1);
+    }
+
+    const versionsSnapshot = await query.get();
+    return getIDAndDocumentDataFromQuerySnapshot<VersionDocWithID>(versionsSnapshot);
   }
 
   // Versions Logic

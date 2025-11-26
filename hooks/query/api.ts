@@ -103,9 +103,13 @@ class Api {
     }
   }
 
-  static async getSessionVersions(sessionID: string): Promise<VersionDocWithID[]> {
+  static async getSessionVersions(sessionID: string, index?: number): Promise<VersionDocWithID[]> {
     try {
-      const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID + "/versions");
+      const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID + "/versions", {
+        params: {
+          index: index || undefined,
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Error fetching session versions:", error);
@@ -198,7 +202,10 @@ class Api {
     }
   }
 
-  static async getVersionAudio(versionID: string, action: AudioAction): Promise<VersionAudioResponse> {
+  static async getVersionAudio(
+    versionID: string,
+    action: AudioAction,
+  ): Promise<VersionAudioResponse> {
     try {
       const response = await apiClient.get(
         ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + versionID + "/" + ENDPOINTS.AUDIO,

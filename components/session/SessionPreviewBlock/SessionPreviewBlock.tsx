@@ -12,6 +12,7 @@ import PlayIcon from "@/components/svg/play.svg";
 import SvgIconStem from "@/components/svg/stem.svg";
 import SvgIconVersion from "@/components/svg/version.svg";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
+import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
 import { useGetWaveTrace } from "@/hooks/query/query-hooks/use-get-wave-trace";
 import { useFirstVersion } from "@/hooks/sessions/useFirstVersion";
 import useAudio from "@/hooks/useAudio";
@@ -45,6 +46,11 @@ export default function SessionPreviewBlock({
   downloadCount = 0,
 }: SessionPreviewBlockProps) {
   const { data: creatorInfo } = useGetAddressInfo(creator || "", false, !!creator);
+  const { data: firstVersion } = useGetVersions({
+    sessionId: objectID,
+    enabled: !!objectID,
+    index: 0,
+  });
   const elRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
   // TODO: Remove this once we have a real ready state
@@ -59,16 +65,14 @@ export default function SessionPreviewBlock({
     [creatorInfo?.avatar, settings?.default_user_image?.url],
   );
 
-  // Get first version data
-  const firstVersion = useFirstVersion(objectID);
   const versionID = useMemo(() => firstVersion?.id, [firstVersion?.id]);
   const bounceHash = useMemo(
-    () => firstVersion?.bounce as string | undefined,
-    [firstVersion?.bounce],
+    () => firstVersion?.[0]?.bounce as string | undefined,
+    [firstVersion?.[0]?.bounce],
   );
   const stemCount = useMemo(
-    () => (firstVersion?.stems as string[])?.length || 0,
-    [firstVersion?.stems],
+    () => (firstVersion?.[0]?.stems as string[])?.length || 0,
+    [firstVersion?.[0]?.stems],
   );
 
   // Audio hook
@@ -102,16 +106,16 @@ export default function SessionPreviewBlock({
 
   // Tags processing
   const otherTags = useMemo(() => {
-    const tagsArray = Array.isArray(firstVersion?.tags) ? firstVersion.tags : [];
+    const tagsArray = Array.isArray(firstVersion?.[0]?.tags) ? firstVersion[0].tags : [];
     const versionTags = tagsArray
       .filter((t: string) => !t.includes("needs:"))
       .map((t: string) => String(t).split(":")[1]);
-    const bpm = firstVersion?.bpm ? `${firstVersion.bpm}BPM` : "";
+    const bpm = firstVersion?.[0]?.bpm ? `${firstVersion[0].bpm}BPM` : "";
     return [bpm, ...versionTags].filter(Boolean);
   }, [firstVersion]);
 
   const needsTags = useMemo(() => {
-    const tagsArray = Array.isArray(firstVersion?.tags) ? firstVersion.tags : [];
+    const tagsArray = Array.isArray(firstVersion?.[0]?.tags) ? firstVersion[0].tags : [];
     return tagsArray
       .filter((t: string) => t.includes("needs:"))
       .map((t: string) => {
