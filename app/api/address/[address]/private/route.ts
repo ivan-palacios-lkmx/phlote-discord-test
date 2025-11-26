@@ -1,5 +1,5 @@
 import { AddressService } from "@/services/address-service";
-import { addressSchema, contactSchema } from "@/utils/zod-schemas";
+import { addressSchema, contactSchema, visibilitySchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -27,13 +27,25 @@ export async function PUT(
 ): Promise<NextResponse> {
   try {
     const address = params.address;
-    const contact = await request.json();
+    const body = await request.json();
+    const { contact, visibility } = body;
 
-    if (!contactSchema.safeParse(contact).success) {
+    if (contact && !contactSchema.safeParse(contact).success) {
       return NextResponse.json({ error: "Invalid contact format" }, { status: 400 });
     }
 
-    await AddressService.updatePrivateAddressData(address, contact);
+    if (visibility && !visibilitySchema.safeParse(visibility).success) {
+      return NextResponse.json({ error: "Invalid visibility format" }, { status: 400 });
+    }
+
+    if (contact) {
+      await AddressService.updatePrivateAddressData(address, contact);
+    }
+
+    if (visibility) {
+      await AddressService.updateAddressVisibility(address, visibility);
+    }
+
     return NextResponse.json({ message: "Contact updated" }, { status: 200 });
   } catch (error) {
     console.error("Error updating address private data:", error);

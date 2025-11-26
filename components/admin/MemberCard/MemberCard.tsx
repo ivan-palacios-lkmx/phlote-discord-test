@@ -207,7 +207,7 @@ export default function MemberCard({ member }: MemberCardProps) {
         address,
         title: formValues.title || undefined,
         tags: memberTagsFormatted.length > 0 ? memberTagsFormatted : undefined,
-        visibility: formValues.isPublic ? "public" : "private",
+        visibility: (formValues.isPublic ? "public" : "private") as "public" | "private",
       },
       {
         onSuccess: () => {
