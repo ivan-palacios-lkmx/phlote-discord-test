@@ -2,7 +2,6 @@
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
-import { useDeleteCreator } from "@/hooks/query/mutations/use-delete-creator";
 import { AddressDocWithID } from "@/types/database";
 import checkAddress from "@/utils/checkAddress";
 import { transformToShortAddress } from "@/utils/functions";
@@ -51,11 +50,15 @@ function CreatorRow({
 interface RoleCreatorProps {
   creators: AddressDocWithID[];
   isLoadingUsers: boolean;
+  onRemoveCreator: (address: AddressDocWithID) => void;
 }
 
-export default function RoleCreator({ creators, isLoadingUsers }: RoleCreatorProps) {
+export default function RoleCreator({
+  creators,
+  isLoadingUsers,
+  onRemoveCreator,
+}: RoleCreatorProps) {
   const [newCreator, setNewCreator] = useState("");
-  const { mutate: deleteCreator } = useDeleteCreator();
   const newCreatorFormatted = useMemo(() => {
     return checkAddress(newCreator);
   }, [newCreator]);
@@ -71,8 +74,8 @@ export default function RoleCreator({ creators, isLoadingUsers }: RoleCreatorPro
     setNewCreator("");
   };
 
-  const handleRemoveCreator = async (address: AddressDocWithID) => {
-    deleteCreator({ address: address.id });
+  const handleRemoveCreatorClick = (address: AddressDocWithID) => {
+    onRemoveCreator(address);
   };
 
   return (
@@ -84,7 +87,7 @@ export default function RoleCreator({ creators, isLoadingUsers }: RoleCreatorPro
           <CreatorRow
             key={creator.id}
             address={creator}
-            onRemoveCreator={handleRemoveCreator}
+            onRemoveCreator={handleRemoveCreatorClick}
             isLoadingUsers={isLoadingUsers}
           />
         ))}
