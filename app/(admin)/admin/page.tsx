@@ -7,6 +7,7 @@ import RoleAdmin from "@/components/admin/RoleAdmin/RoleAdmin";
 import RoleCreator from "@/components/admin/RoleCreator/RoleCreator";
 import SessionTags from "@/components/admin/SessionTags/SessionTags";
 import StemsPlayerCarousel from "@/components/admin/StemsPlayerCarousel/StemsPlayerCarousel";
+import { useDeleteAdmin } from "@/hooks/query/mutations/use-delete-admin";
 import { useDeleteCreator } from "@/hooks/query/mutations/use-delete-creator";
 import { useGetAdmins } from "@/hooks/query/query-hooks/use-get-admins";
 import { useGetCreators } from "@/hooks/query/query-hooks/use-get-creators";
@@ -19,7 +20,22 @@ export default function AdminPage() {
   const queryClient = useQueryClient();
   const { data: admins, isPending: isPendingAdmins } = useGetAdmins();
   const { data: creators, isPending: isPendingCreators } = useGetCreators();
+  const { mutate: deleteAdmin } = useDeleteAdmin();
   const { mutate: deleteCreator } = useDeleteCreator();
+
+  const handleRemoveAdmin = (address: AddressDocWithID) => {
+    deleteAdmin(
+      { address: address.id },
+      {
+        onSuccess: () => {
+          queryClient.setQueriesData<AddressDocWithID[]>({ queryKey: ["admins"] }, (oldData) => {
+            if (!oldData) return oldData;
+            return oldData.filter((admin) => admin.id !== address.id);
+          });
+        },
+      },
+    );
+  };
 
   const handleRemoveCreator = (address: AddressDocWithID) => {
     deleteCreator(
@@ -41,7 +57,11 @@ export default function AdminPage() {
         <HelperContent />
         <h5 className="admin-title">Configuration</h5>
         <div className="controls-grid">
-          <RoleAdmin admins={admins || []} isLoadingUsers={isPendingAdmins} />
+          <RoleAdmin
+            admins={admins || []}
+            isLoadingUsers={isPendingAdmins}
+            onRemoveAdmin={handleRemoveAdmin}
+          />
           <RoleCreator
             creators={creators || []}
             isLoadingUsers={isPendingCreators}
