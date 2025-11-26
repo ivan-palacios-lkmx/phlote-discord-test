@@ -1,55 +1,18 @@
 "use client";
 
 import AdminToggle from "@/components/admin/AdminToggle/AdminToggle";
+import MultiSelect from "@/components/admin/MultiSelect/MultiSelect";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { AddressDocWithID, TagCategory } from "@/types/database";
 import { useMemo, useState } from "react";
-import Select, { MultiValue } from "react-select";
 
 import "./MemberCard.scss";
 
 interface MemberCardProps {
   member: AddressDocWithID;
-}
-
-interface MultiselectProps {
-  value: string[];
-  options: string[];
-  onChange: (value: string[]) => void;
-  closeOnSelect?: boolean;
-}
-
-function Multiselect({ value, options, onChange, closeOnSelect = false }: MultiselectProps) {
-  const selectOptions = useMemo(
-    () => options.map((opt) => ({ value: opt, label: opt })),
-    [options],
-  );
-
-  const selectedOptions = useMemo(
-    () => selectOptions.filter((opt) => value.includes(opt.value)),
-    [selectOptions, value],
-  );
-
-  const handleChange = (newValue: MultiValue<{ value: string; label: string }>) => {
-    onChange(newValue.map((opt) => opt.value));
-  };
-
-  return (
-    <Select
-      isMulti
-      options={selectOptions}
-      value={selectedOptions}
-      onChange={handleChange}
-      closeMenuOnSelect={closeOnSelect}
-      isSearchable={false}
-      isClearable={false}
-      className="multiselect"
-      classNamePrefix="multiselect"
-    />
-  );
 }
 
 function AvatarFromAddress({ address, className }: { address: string; className?: string }) {
@@ -185,7 +148,7 @@ export default function MemberCard({ member }: MemberCardProps) {
         {memberTags.map((tag, i) => (
           <div key={i} className="tag-select">
             <label className="label">{tag.name}</label>
-            <Multiselect
+            <MultiSelect
               value={memberTagsRaw[i] || []}
               options={tag.options || []}
               onChange={(newValue) => handleTagChange(i, newValue)}

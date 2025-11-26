@@ -62,44 +62,6 @@
     .tag-select {
       grid-column: span 2;
 
-      .multiselect {
-        font-family: var(--font-mono);
-      }
-
-      .multiselect__tags {
-        padding: 0.2em 1em;
-        min-height: 20px;
-        font-size: 12px;
-      }
-
-      .multiselect__placeholder {
-        margin-bottom: 4px;
-      }
-
-      .multiselect__select {
-        height: 27px;
-      }
-
-      .multiselect__option {
-        padding: 0.2em 1em;
-        min-height: 20px;
-        font-size: 12px;
-      }
-
-      .multiselect__tag-icon::after {
-        color: var(--white);
-      }
-
-      .multiselect__tag,
-      .multiselect__option--highlight {
-        background: rgba(#000, 0.8);
-      }
-
-      .multiselect__option--selected::after,
-      .multiselect__option--highlight::after {
-        display: none;
-      }
-
       .label {
         text-align: left;
         display: block;
