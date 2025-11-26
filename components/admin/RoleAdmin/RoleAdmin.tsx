@@ -1,8 +1,10 @@
 "use client";
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
+import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { AddressDoc, AddressDocWithID } from "@/types/database";
 import checkAddress from "@/utils/checkAddress";
+import { transformToShortAddress } from "@/utils/functions";
 import { useMemo, useState } from "react";
 
 import "./RoleAdmin.scss";
@@ -12,7 +14,7 @@ function AdminRow({
   onRemoveAdmin,
   isLoadingUsers,
 }: {
-  address: AddressDoc;
+  address: AddressDocWithID;
   onRemoveAdmin: (address: AddressDoc) => void;
   isLoadingUsers: boolean;
 }) {
@@ -21,9 +23,21 @@ function AdminRow({
     address?.openSea?.profileImageURL ||
     address?.zora?.profileImageURL ||
     "/images/phlote-poster.jpg";
+  const adminUsername =
+    address?.ens?.name ||
+    address?.openSea?.osUsername ||
+    address?.zora?.zoraUsername ||
+    transformToShortAddress(address?.id);
   return (
     <div className="admin-row">
-      {isLoadingUsers ? <div className="web3-avatar" /> : <Web3Avatar avatar={adminAvatar} />}
+      {isLoadingUsers ? (
+        <div className="web3-avatar" />
+      ) : (
+        <>
+          <Web3Avatar avatar={adminAvatar} />
+          <Web3Username username={adminUsername} />
+        </>
+      )}
       <button className="remove-admin" onClick={() => onRemoveAdmin(address)}>
         Remove
       </button>

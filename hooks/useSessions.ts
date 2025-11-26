@@ -1,5 +1,6 @@
 import useAlgolia from "@/hooks/useAlgolia";
 import useSessionFilters from "@/hooks/useSessionFilters";
+import { AlgoliaSession } from "@/types/database";
 import { CACHE_MAX_ITEMS, CACHE_TTL_IN_MS } from "@/utils/constants";
 import { quickHash } from "@/utils/functions";
 import { debounce } from "lodash";
@@ -30,7 +31,7 @@ interface Session {
 }
 
 interface UseSessionsReturn {
-  sessions: Session[];
+  sessions: AlgoliaSession[];
   loadingSessions: boolean;
   totalResults: number;
   totalPages: number;
