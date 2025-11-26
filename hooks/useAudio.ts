@@ -5,6 +5,8 @@ import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { useGetVersionAudio } from "./query/mutations/use-get-version-audio";
+
 // Global state for tracks and currentPlaying
 // Using module-level state to share across components
 const globalTracks: Howl[] = [];
@@ -30,7 +32,7 @@ let globalCurrentPlaying: number | null = null;
  * ```
  */
 export default function useAudio(versionID: string | null | undefined) {
-  const { getVersionStems } = useFbEndpoints();
+  const { mutateAsync: getVersionAudio } = useGetVersionAudio();
   const pathname = usePathname();
 
   const [src, setSrc] = useState<string | null>(null);
@@ -55,7 +57,7 @@ export default function useAudio(versionID: string | null | undefined) {
   // Fetch audio src from version (bounce)
   const fetchSrc = async (vid: string) => {
     try {
-      const { bounce } = await getVersionStems({
+      const { bounceSignedUrl: bounce } = await getVersionAudio({
         versionID: vid,
       });
       setSrc(bounce);

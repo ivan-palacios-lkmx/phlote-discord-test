@@ -24,12 +24,14 @@ export async function GET(request: NextRequest, { params }: { params: { versionI
       return NextResponse.json({ error: "Version bounce not found" }, { status: 404 });
     }
 
-    const bounceSignedUrl = await AudioService.getBounceSignedUrl(
-      version.bounce,
-      action as AudioAction,
-    );
 
-    return NextResponse.json({ bounceSignedUrl }, { status: 200 });
+    const stemsHashes = version.stems.map((stem) => stem.id);
+
+    const stemsSignedUrls = await AudioService.getStemsSignedUrls(stemsHashes, action as AudioAction);
+
+    const bounceSignedUrl = await AudioService.getBounceSignedUrl(version.bounce, action as AudioAction);
+
+    return NextResponse.json({ stemsSignedUrls, bounceSignedUrl }, { status: 200 });
   } catch (error) {
     console.error("Error getting audio:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
