@@ -22,6 +22,11 @@ import { InfuraProvider, Provider } from "ethers";
 import { DocumentSnapshot, FieldValue, Query, WriteResult } from "firebase-admin/firestore";
 
 export class AddressService {
+  static async getAdmins(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
+    const admins = await this.getAddresses(visibility, "admin");
+    return admins;
+  }
+
   static async deleteAdminAddress(address: string): Promise<void> {
     // TODO: Check permissions to delete admin address, idk if this should be done here or in the middleware
     await this.deleteAddress(address);

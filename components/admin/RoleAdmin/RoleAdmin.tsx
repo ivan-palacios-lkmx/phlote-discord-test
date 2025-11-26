@@ -2,7 +2,8 @@
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
-import { AddressDoc, AddressDocWithID } from "@/types/database";
+import { useDeleteAdmin } from "@/hooks/query/mutations/use-delete-admin";
+import { AddressDocWithID } from "@/types/database";
 import checkAddress from "@/utils/checkAddress";
 import { transformToShortAddress } from "@/utils/functions";
 import { useMemo, useState } from "react";
@@ -15,7 +16,7 @@ function AdminRow({
   isLoadingUsers,
 }: {
   address: AddressDocWithID;
-  onRemoveAdmin: (address: AddressDoc) => void;
+  onRemoveAdmin: (address: AddressDocWithID) => void;
   isLoadingUsers: boolean;
 }) {
   const adminAvatar =
@@ -52,6 +53,7 @@ interface RoleAdminProps {
 
 export default function RoleAdmin({ admins, isLoadingUsers }: RoleAdminProps) {
   const [newAdmin, setNewAdmin] = useState("");
+  const { mutate: deleteAdmin } = useDeleteAdmin();
 
   const newAdminFormatted = useMemo(() => {
     return checkAddress(newAdmin);
@@ -68,7 +70,9 @@ export default function RoleAdmin({ admins, isLoadingUsers }: RoleAdminProps) {
     setNewAdmin("");
   };
 
-  const handleRemoveAdmin = async (address: AddressDoc) => {};
+  const handleRemoveAdmin = async (address: AddressDocWithID) => {
+    deleteAdmin({ address: address.id });
+  };
 
   return (
     <div className="admin-role-admin">
