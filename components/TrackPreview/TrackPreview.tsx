@@ -1,9 +1,7 @@
 "use client";
 
-import { useClientDoc } from "@/hooks/useClientDoc";
-import { db } from "@/lib/firebase";
-import { doc } from "firebase/firestore";
-import { useEffect, useMemo, useState } from "react";
+import { useGetAudioWaveTrace } from "@/hooks/query/query-hooks/use-get-audio-wave-trace";
+import { useMemo, useState } from "react";
 
 import "./TrackPreview.scss";
 
@@ -14,35 +12,9 @@ interface TrackPreviewProps {
 }
 
 export default function TrackPreview({ hash, className = "", onSeek }: TrackPreviewProps) {
-  const [waveTrace, setWaveTrace] = useState<string | null>(null);
   const [cursorPosition, setCursorPosition] = useState(0);
 
-  // Create audio document reference
-  const audioDocRef = useMemo(() => {
-    return hash ? doc(db, `audio/${hash}`) : null;
-  }, [hash]);
-
-  // Get audio document
-  const audioDoc = useClientDoc(audioDocRef);
-
-  // Fetch waveTrace SVG when audioDoc changes
-  useEffect(() => {
-    if (audioDoc?.waveTrace) {
-      const fetchWaveTrace = async () => {
-        try {
-          const res = await fetch(audioDoc.waveTrace as string);
-          const text = await res.text();
-          setWaveTrace(text);
-        } catch (error) {
-          console.error("Error fetching waveTrace:", error);
-          setWaveTrace(null);
-        }
-      };
-      fetchWaveTrace();
-    } else {
-      setWaveTrace(null);
-    }
-  }, [audioDoc?.waveTrace]);
+  const { data: waveTrace } = useGetAudioWaveTrace(hash ?? "", !!hash);
 
   // Handle mouse move
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {

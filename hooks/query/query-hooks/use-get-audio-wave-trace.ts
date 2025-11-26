@@ -5,10 +5,12 @@ export function useGetAudioWaveTrace(audioId: string, enabled: boolean = true) {
   return useQuery({
     queryKey: ["audioWaveTrace", audioId],
     queryFn: async () => {
-      const audio = await Api.getAudioWaveTrace(audioId);
-      console.log("Audio wave trace:", audio);
-      return audio;
+      const waveTraceUrl = await Api.getAudioWaveTrace(audioId);
+      if (!waveTraceUrl) return null;
+      const res = await fetch(waveTraceUrl);
+      const text = await res.text();
+      return text;
     },
-    enabled,
+    enabled: enabled && !!audioId && audioId !== "",
   });
 }
