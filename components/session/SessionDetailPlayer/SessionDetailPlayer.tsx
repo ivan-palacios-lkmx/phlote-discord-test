@@ -1,12 +1,12 @@
 "use client";
 
 import VersionPlayer from "@/components/VersionPlayer/VersionPlayer";
-import type { Version } from "@/types/client";
+import { VersionDocWithID } from "@/types/database";
 
 import "./SessionDetailPlayer.scss";
 
 interface SessionDetailPlayerProps {
-  version?: Version | null;
+  version: VersionDocWithID;
 }
 
 export default function SessionDetailPlayer({ version }: SessionDetailPlayerProps) {

@@ -170,18 +170,10 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
                 />
               )}
 
-              {activeVersion && (
-                <SessionDetailPlayer
-                  version={activeVersion as unknown as Version}
-                  key={versionIdx}
-                />
-              )}
+              {activeVersion && <SessionDetailPlayer version={activeVersion} key={versionIdx} />}
 
               {activeVersion && (
-                <SessionDetailVersions
-                  versions={versions as unknown as Version[]}
-                  activeVersionID={activeVersion.id}
-                />
+                <SessionDetailVersions versions={versions} activeVersionID={activeVersion.id} />
               )}
             </div>
           </div>
