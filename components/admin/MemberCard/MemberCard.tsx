@@ -3,24 +3,12 @@
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
-import { useClientDoc } from "@/hooks/useClientDoc";
-import { useFbGlobals } from "@/hooks/useFbGlobals";
+import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import useTags from "@/hooks/useTags";
-import { db } from "@/lib/firebase";
 import { AddressDocWithID } from "@/types/database";
-import { Timestamp, doc, setDoc } from "firebase/firestore";
-import { debounce } from "lodash";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 
 import "./MemberCard.scss";
-
-interface ContactDoc {
-  name?: string;
-  twitterHandle?: string;
-  email?: string;
-  updated?: Timestamp;
-  [key: string]: unknown;
-}
 
 interface MemberCardProps {
   member: AddressDocWithID;
@@ -136,7 +124,6 @@ function UsernameFromAddress({ address }: { address: string }) {
 }
 
 export default function MemberCard({ member }: MemberCardProps) {
-  const [saving, setSaving] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
@@ -144,122 +131,42 @@ export default function MemberCard({ member }: MemberCardProps) {
   const [email, setEmail] = useState("");
   const [memberTagsRaw, setMemberTagsRaw] = useState<string[][]>([]);
 
-  const { memberTags, encodeTag, decodeTag } = useTags();
-  const { settingsDoc } = useFbGlobals();
+  const { memberTags } = useTags();
 
-  const docRef = useMemo(() => {
-    return member?.id ? doc(db, `addresses/${member.id}`) : null;
-  }, [member?.id]);
+  const { data: settingsDoc } = useGetSettings();
 
-  const contactDocRef = useMemo(() => {
-    return member?.id ? doc(db, `addresses/${member.id}/private/contact`) : null;
-  }, [member?.id]);
+  // const memberTagsFormatted = useMemo(() => {
+  //   return memberTags.reduce((agg, group, i) => {
+  //     const cat = group.name;
+  //     (memberTagsRaw[i] || []).forEach((tag) => {
+  //       agg.push(encodeTag(cat, tag));
+  //     });
+  //     return agg;
+  //   }, [] as string[]);
+  // }, [memberTags, memberTagsRaw, encodeTag]);
 
-  const contactDoc = useClientDoc(contactDocRef);
+  // const existingMemberTags = useMemo(() => {
+  //   return (settingsDoc && member?.tags) || [];
+  // }, [settingsDoc, member?.tags]);
 
-  useEffect(() => {
-    if (memberTags.length > 0) {
-      setMemberTagsRaw(memberTags.map(() => []));
-    }
-  }, [memberTags]);
+  // TODO: this tag decoding and expiration logic should be implemented without the useTags hook
+  // useEffect(() => {
+  //   if (!memberTags.length) return;
 
-  const memberTagsFormatted = useMemo(() => {
-    return memberTags.reduce((agg, group, i) => {
-      const cat = group.name;
-      (memberTagsRaw[i] || []).forEach((tag) => {
-        agg.push(encodeTag(cat, tag));
-      });
-      return agg;
-    }, [] as string[]);
-  }, [memberTags, memberTagsRaw, encodeTag]);
+  //   const newTagsRaw = memberTags.map(() => [] as string[]);
+  //   (existingMemberTags as string[]).forEach((tag) => {
+  //     const { name: tagName, value: tagValue } = decodeTag(tag);
+  //     const groupIdx = memberTags.findIndex((group) => group.name === tagName);
+  //     if (groupIdx >= 0 && newTagsRaw[groupIdx]) {
+  //       newTagsRaw[groupIdx].push(tagValue);
+  //     }
+  //   });
+  //   setMemberTagsRaw(newTagsRaw);
+  // }, [existingMemberTags, memberTags, decodeTag]);
 
-  const existingMemberTags = useMemo(() => {
-    return (settingsDoc && member?.tags) || [];
-  }, [settingsDoc, member?.tags]);
+  const handleTagChange = () => {};
 
-  useEffect(() => {
-    if (!memberTags.length) return;
-
-    const newTagsRaw = memberTags.map(() => [] as string[]);
-    (existingMemberTags as string[]).forEach((tag) => {
-      const { name: tagName, value: tagValue } = decodeTag(tag);
-      const groupIdx = memberTags.findIndex((group) => group.name === tagName);
-      if (groupIdx >= 0 && newTagsRaw[groupIdx]) {
-        newTagsRaw[groupIdx].push(tagValue);
-      }
-    });
-    setMemberTagsRaw(newTagsRaw);
-  }, [existingMemberTags, memberTags, decodeTag]);
-
-  const serverDataHash = useMemo(() => {
-    return JSON.stringify(member) + JSON.stringify(contactDoc);
-  }, [member, contactDoc]);
-
-  const update = async (
-    publicUpdates: Record<string, unknown> | null,
-    privateUpdates: Record<string, unknown> | null,
-  ) => {
-    if (!member?.id) return false;
-
-    setSaving(true);
-    try {
-      if (publicUpdates) {
-        await setDoc(docRef!, { ...publicUpdates, updated: Timestamp.now() }, { merge: true });
-      }
-
-      if (privateUpdates) {
-        await setDoc(
-          contactDocRef!,
-          { ...privateUpdates, updated: Timestamp.now() },
-          { merge: true },
-        );
-      }
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const debouncedUpdate = useRef(
-    debounce(async (publicUpdates: Record<string, unknown> | null) => {
-      await update(publicUpdates, null);
-    }, 1000),
-  ).current;
-
-  useEffect(() => {
-    if (member?.isPublic !== isPublic) {
-      debouncedUpdate({ isPublic });
-    }
-  }, [isPublic, member?.isPublic, debouncedUpdate]);
-
-  useEffect(() => {
-    setIsPublic(!!member?.isPublic);
-    setName((contactDoc as ContactDoc | null)?.name || "");
-    setTitle(member?.title || "");
-    setTwitter((contactDoc as ContactDoc | null)?.twitterHandle || "");
-    setEmail((contactDoc as ContactDoc | null)?.email || "");
-  }, [serverDataHash, member, contactDoc]);
-
-  const handleTagChange = (index: number, newValue: string[]) => {
-    const newTagsRaw = [...memberTagsRaw];
-    newTagsRaw[index] = newValue;
-    setMemberTagsRaw(newTagsRaw);
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await update(
-      {
-        isPublic,
-        title: title || "",
-        tags: memberTagsFormatted,
-      },
-      {
-        name: name || "",
-        twitterHandle: twitter || "",
-        email: email || "",
-      },
-    );
-  };
+  const handleSave = async () => {};
 
   if (!member?.id) {
     return null;
@@ -336,7 +243,7 @@ export default function MemberCard({ member }: MemberCardProps) {
       </div>
 
       <div className="cta-row">
-        <button className="btn" type="submit" disabled={saving}>
+        <button className="btn" type="submit" disabled={false}>
           Save
         </button>
       </div>
