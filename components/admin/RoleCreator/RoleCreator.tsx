@@ -2,6 +2,7 @@
 
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
+import { useDeleteCreator } from "@/hooks/query/mutations/use-delete-creator";
 import { AddressDocWithID } from "@/types/database";
 import checkAddress from "@/utils/checkAddress";
 import { transformToShortAddress } from "@/utils/functions";
@@ -54,7 +55,7 @@ interface RoleCreatorProps {
 
 export default function RoleCreator({ creators, isLoadingUsers }: RoleCreatorProps) {
   const [newCreator, setNewCreator] = useState("");
-
+  const { mutate: deleteCreator } = useDeleteCreator();
   const newCreatorFormatted = useMemo(() => {
     return checkAddress(newCreator);
   }, [newCreator]);
@@ -70,7 +71,9 @@ export default function RoleCreator({ creators, isLoadingUsers }: RoleCreatorPro
     setNewCreator("");
   };
 
-  const handleRemoveCreator = async (address: AddressDocWithID) => {};
+  const handleRemoveCreator = async (address: AddressDocWithID) => {
+    deleteCreator({ address: address.id });
+  };
 
   return (
     <div className="admin-role-creator">
