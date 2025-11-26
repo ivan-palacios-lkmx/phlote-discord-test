@@ -4,9 +4,12 @@ import AdminToggle from "@/components/admin/AdminToggle/AdminToggle";
 import MultiSelect from "@/components/admin/MultiSelect/MultiSelect";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
+import { usePatchAddress } from "@/hooks/query/mutations/use-patch-address";
+import { useUpdatePrivateAddress } from "@/hooks/query/mutations/use-update-private-address";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
-import { AddressDocWithID, TagCategory } from "@/types/database";
+import { AddressDocWithID, ContactDocWithID, TagCategory } from "@/types/database";
+import kebabCase from "lodash/kebabCase";
 import { useMemo, useState } from "react";
 
 import "./MemberCard.scss";
@@ -49,15 +52,24 @@ export default function MemberCard({ member }: MemberCardProps) {
     return (settingsDoc?.availableMemberTags as TagCategory[] | undefined) || [];
   }, [settingsDoc]);
 
-  // const memberTagsFormatted = useMemo(() => {
-  //   return memberTags.reduce((agg, group, i) => {
-  //     const cat = group.name;
-  //     (memberTagsRaw[i] || []).forEach((tag) => {
-  //       agg.push(encodeTag(cat, tag));
-  //     });
-  //     return agg;
-  //   }, [] as string[]);
-  // }, [memberTags, memberTagsRaw, encodeTag]);
+  const { mutate: patchAddress } = usePatchAddress();
+  const { mutate: updatePrivateAddress } = useUpdatePrivateAddress();
+
+  const encodeTag = (cat: string, value: string): string => {
+    const cleanCat = kebabCase(String(cat).trim());
+    const cleanVal = kebabCase(String(value).trim());
+    return `${cleanCat}:${cleanVal}`;
+  };
+
+  const memberTagsFormatted = useMemo(() => {
+    return memberTags.reduce((agg, group, i) => {
+      const cat = group.name;
+      (memberTagsRaw[i] || []).forEach((tag) => {
+        agg.push(encodeTag(cat, tag));
+      });
+      return agg;
+    }, [] as string[]);
+  }, [memberTags, memberTagsRaw]);
 
   // const existingMemberTags = useMemo(() => {
   //   return (settingsDoc && member?.tags) || [];
@@ -84,7 +96,33 @@ export default function MemberCard({ member }: MemberCardProps) {
     setMemberTagsRaw(newTagsRaw);
   };
 
-  const handleSave = async () => {};
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const address = member.id;
+
+    patchAddress(
+      {
+        address,
+        title: title || undefined,
+        tags: memberTagsFormatted.length > 0 ? memberTagsFormatted : undefined,
+        visibility: isPublic ? "public" : "private",
+      },
+      {
+        onSuccess: () => {
+          if (name || twitter || email) {
+            const contact: ContactDocWithID = {
+              id: address,
+              name: name || undefined,
+              twitterHandle: twitter || undefined,
+              email: email || undefined,
+            };
+            updatePrivateAddress({ address, contact });
+          }
+        },
+      },
+    );
+  };
 
   if (!member?.id) {
     return null;
