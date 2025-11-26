@@ -4,10 +4,11 @@ import { usePrismicio } from "@/components/PrismicioProvider";
 import ConnectWallet from "@/components/site/header/ConnectWallet/ConnectWallet";
 import Logo from "@/components/svg/logo.svg";
 import WordmarkSvg from "@/components/svg/woodmark.svg";
+import { useHeaderTranslate } from "@/hooks/useHeaderTranslate";
 import { useLenis } from "@/hooks/useLenis";
 import Link from "next/link";
 import { physics, transform } from "popmotion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import "./MarketingHeader.scss";
 
@@ -33,11 +34,14 @@ export default function MarketingHeader() {
   const [logoTranslate, setLogoTranslate] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const logoPhysicsRef = useRef<any | null>(null);
+  const headerTranslateRef = useRef(0);
+
+  const headerTranslate = useHeaderTranslate();
+  headerTranslateRef.current = headerTranslate;
 
   useEffect(() => {
     if (!lenis) return;
 
-    const headerTranslate = 0; // TODO: implement useHeaderTranslate if needed
     const smoothTransform = smooth(100);
 
     logoPhysicsRef.current = physics({
@@ -48,7 +52,7 @@ export default function MarketingHeader() {
       friction: 0.2,
       restSpeed: -1,
     })
-      .pipe((v: number) => (headerTranslate === 0 ? v : 0), smoothTransform)
+      .pipe((v: number) => (headerTranslateRef.current === 0 ? v : 0), smoothTransform)
       .start((v: number) => {
         setLogoTranslate(v * -10);
       });
@@ -70,16 +74,23 @@ export default function MarketingHeader() {
     };
   }, [lenis]);
 
-  const wordmarkStyle = {
-    transform: `translateY(-${wordmarkTranslate}px)`,
-  };
+  const wordmarkStyle = useMemo(
+    () => ({ transform: `translateY(-${wordmarkTranslate}px)` }),
+    [wordmarkTranslate],
+  );
 
-  const logoStyle = {
-    transform: `translateY(${logoTranslate}px)`,
-  };
+  const logoStyle = useMemo(
+    () => ({ transform: `translateY(${logoTranslate}px)` }),
+    [logoTranslate],
+  );
+
+  const headerStyle = useMemo(
+    () => ({ transform: `translateY(-${headerTranslate}px)` }),
+    [headerTranslate],
+  );
 
   return (
-    <header className="site-marketing-header">
+    <header className="site-marketing-header" style={headerStyle}>
       <Link href="/" className="home-link">
         <Logo className="svg-logo" id="headerLogo" style={logoStyle} />
         <WordmarkSvg className="svg-wordmark" style={wordmarkStyle} />

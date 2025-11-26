@@ -8,23 +8,21 @@ import { useAuth } from "@/hooks/query/mutations/use-auth";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 
 import "./ConnectWallet.scss";
 
-const  NOT_INCLUDE_PRIVATE_INFO = false;
+const NOT_INCLUDE_PRIVATE_INFO = false;
 
-export default function ConnectWallet() {
+const ConnectWallet = memo(function ConnectWallet() {
   const { user, ready, authenticated } = usePrivy();
   const walletAddress = user?.wallet?.address;
   const hasAuthenticatedRef = useRef(false);
-
   const {
     data: addressInfo,
     isPending: isAddressInfoPending,
     isError: isAddressInfoError,
   } = useGetAddressInfo(walletAddress || "", NOT_INCLUDE_PRIVATE_INFO, !!walletAddress);
-
   const { mutate: auth } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -98,4 +96,6 @@ export default function ConnectWallet() {
       )}
     </button>
   );
-}
+});
+
+export default ConnectWallet;

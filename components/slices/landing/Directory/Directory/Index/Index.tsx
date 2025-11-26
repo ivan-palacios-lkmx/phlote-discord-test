@@ -9,6 +9,7 @@ import FilterTagGroup from "@/components/slices/landing/Directory/Directory/Filt
 import Member from "@/components/slices/landing/Directory/Directory/Member/Member";
 import SortMenu from "@/components/slices/landing/Directory/Directory/SortMenu/SortMenu";
 import useMembers from "@/hooks/useMembers";
+import usePushHeader from "@/hooks/usePushHeader";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
@@ -29,6 +30,8 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
   const headerRef = useRef<HTMLDivElement>(null);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  usePushHeader(headerRef);
 
   function onPageClick(page: number) {
     const current = new URLSearchParams(searchParams.toString());
