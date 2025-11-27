@@ -90,7 +90,6 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
     const newLower = parseInt(e.target.value, 10);
     if (newLower <= upper) {
       setLower(newLower);
-      onChange({ min: newLower, max: upper });
     }
   };
 
@@ -99,8 +98,11 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
     const newUpper = parseInt(e.target.value, 10);
     if (newUpper >= lower) {
       setUpper(newUpper);
-      onChange({ min: lower, max: newUpper });
     }
+  };
+
+  const handleRelease = () => {
+    onChange({ min: lower, max: upper });
   };
 
   return (
@@ -112,6 +114,8 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
         value={lower}
         onChange={handleLowerChange}
         className="lower default-styling"
+        onMouseUp={handleRelease}
+        onTouchEnd={handleRelease}
       />
       <input
         type="range"
@@ -120,6 +124,8 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
         value={upper}
         onChange={handleUpperChange}
         className="upper default-styling"
+        onMouseUp={handleRelease}
+        onTouchEnd={handleRelease}
       />
 
       <div className="track">
