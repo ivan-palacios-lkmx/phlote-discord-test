@@ -47,8 +47,7 @@ export default function DraggableTrack({
       </TrackUpload>
 
       <button
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={() => {
           onRemoveTrack(track.name);
         }}
         type="button"
