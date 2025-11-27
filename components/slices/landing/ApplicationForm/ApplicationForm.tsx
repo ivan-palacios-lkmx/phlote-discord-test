@@ -41,7 +41,6 @@ export default function ApplicationForm({
         schema={applicationFormSchema}
         handleSubmit={handleSubmit}
         className={isCreatorApplicationCreated ? "success" : ""}>
-        {/* Left Fields */}
         <div className="left">
           <label>
             <span>First Name*</span>
@@ -102,7 +101,6 @@ export default function ApplicationForm({
           </label>
         </div>
 
-        {/* Right Fields */}
         <div className="right">
           <label>
             <span>Link to Your Work</span>

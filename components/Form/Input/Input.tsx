@@ -14,10 +14,10 @@ export function Input({ name, ...props }: InputProps) {
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <div className="input-container">
+        <>
           <input {...props} {...field} />
           {fieldState.error && <p className="input-error">{fieldState.error.message}</p>}
-        </div>
+        </>
       )}
     />
   );
