@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@/components/Form/Form";
-import NewProjectForm from "@/components/NewVersionForm/NewVersionForm";
+import NewProjectForm from "@/components/NewProjectForm/NewProjectForm";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import VersionFormButton from "@/components/VersionFormButton/VersionFormButton";
 import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";

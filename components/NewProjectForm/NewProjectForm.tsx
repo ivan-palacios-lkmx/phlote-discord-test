@@ -18,21 +18,21 @@ import React, { useState } from "react";
 import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
 import { z } from "zod";
 
-import "./NewVersionForm.scss";
+import "./NewProjectForm.scss";
 
 interface NewProjectFormProps {
+  type: "version" | "session";
   exampleLink?: string;
   parentName?: string;
-  mustSelectStarter?: boolean;
   possibleStarterIds?: string[];
   versionLabels?: string[];
   sessionTags?: { name: string; options: string[] }[];
 }
 
 export default function NewProjectForm({
+  type = "version",
   exampleLink,
   parentName,
-  mustSelectStarter = false,
   possibleStarterIds = [],
   versionLabels = [],
 }: NewProjectFormProps) {
@@ -90,14 +90,16 @@ export default function NewProjectForm({
     <Form schema={newVersionFormSchema} handleSubmit={handleSubmit}>
       <div className="title-area">
         <div className="entry">
-          <PrismicRichText field={settings.new_session_copy} />
+          <PrismicRichText
+            field={type === "version" ? settings.new_version_copy : settings.new_session_copy}
+          />
         </div>
 
         <VersionFormButton
           type="submit"
           loading={isPending}
           disabled={!isFormTotallyFilled(formValues)}>
-          Create Session
+          {type === "version" ? "Create Version" : "Create Session"}
         </VersionFormButton>
       </div>
       <div className="new-version-form">
@@ -138,7 +140,7 @@ export default function NewProjectForm({
           <div className="text-fields">
             <div className="field">
               <div className="label-wrap">
-                <label htmlFor="name">Session Name</label>
+                <label htmlFor="name">{type === "version" ? "Version Name" : "Session Name"}</label>
                 {!parentName && (
                   <button onClick={generateName} type="button">
                     Name It For Me!
@@ -185,7 +187,7 @@ export default function NewProjectForm({
           {/* Tag Selection */}
           <div className="tag-selection">
             {/* Versions */}
-            {mustSelectStarter && (
+            {type === "version" && (
               <div className="tag-wrap">
                 <h6>
                   <span>Version Used</span>

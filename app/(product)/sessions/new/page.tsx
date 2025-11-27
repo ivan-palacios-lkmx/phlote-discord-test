@@ -1,6 +1,6 @@
 "use client";
 
-import NewProjectForm from "@/components/NewVersionForm/NewVersionForm";
+import NewProjectForm from "@/components/NewProjectForm/NewProjectForm";
 
 import "./page.scss";
 
