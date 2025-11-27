@@ -6,7 +6,7 @@ import Paginate from "@/components/paginate/Paginate";
 import SessionPreviewBlock from "@/components/session/SessionPreviewBlock/SessionPreviewBlock";
 import SessionsResultsFilters from "@/components/session/SessionsResultsFilters/SessionsResultsFilters";
 import SessionsResultsSorting from "@/components/session/SessionsResultsSorting/SessionsResultsSorting";
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import useSessions from "@/hooks/useSessions";
 import { PrismicRichText } from "@prismicio/react";

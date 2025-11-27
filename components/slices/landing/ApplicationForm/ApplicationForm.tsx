@@ -4,7 +4,7 @@ import Form from "@/components/Form/Form";
 import { Input } from "@/components/Form/Input";
 import { Textarea } from "@/components/Form/Textarea";
 import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { useCreateCreatorApplication } from "@/hooks/query/mutations/use-create-creator-application";
 import type { ApplicationFormSlice } from "@/types/client";
 import { applicationFormSchema } from "@/utils/zod-schemas";
