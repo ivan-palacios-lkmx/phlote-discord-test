@@ -46,6 +46,11 @@ export default function NewVersionForm({
 
   const [generatedName, setGeneratedName] = useState("");
 
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({
+    name: "",
+    bpm: "",
+  });
+
   function generateName() {
     const generatedName = uniqueNamesGenerator({
       dictionaries: [adjectives, animals],
@@ -55,6 +60,12 @@ export default function NewVersionForm({
 
     setGeneratedName(generatedName);
   }
+
+  function isFormTotallyFilled(formValues: Record<string, unknown>) {
+    const requiredFields = [formValues.name, formValues.bpm];
+    return requiredFields.every((value) => value !== "" && value !== null && value !== undefined);
+  }
+
   const { user } = usePrivy();
 
   const { mutate: createSession, isPending } = useCreateSession();
@@ -76,7 +87,10 @@ export default function NewVersionForm({
           <PrismicRichText field={settings.new_session_copy} />
         </div>
 
-        <VersionFormButton type="submit" loading={isPending}>
+        <VersionFormButton
+          type="submit"
+          loading={isPending}
+          disabled={!isFormTotallyFilled(formValues)}>
           Create Session
         </VersionFormButton>
       </div>
@@ -134,6 +148,7 @@ export default function NewVersionForm({
                 disabled={!!parentName}
                 resetValue={generatedName}
                 defaultValue={generatedName}
+                onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               />
             </div>
 
@@ -146,6 +161,7 @@ export default function NewVersionForm({
                 type="number"
                 placeholder="ex. 175"
                 min="1"
+                onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               />
             </div>
 
