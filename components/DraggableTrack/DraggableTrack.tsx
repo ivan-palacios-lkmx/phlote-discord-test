@@ -5,6 +5,7 @@ import CloseIcon from "@/components/icons/Close";
 import DragIcon from "@/components/icons/Drag";
 import { AudioProcessingStatus } from "@/types/api";
 import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface DraggableTrackProps {
   track: Track;
@@ -19,9 +20,14 @@ export default function DraggableTrack({
   onRemoveTrack,
   isUploading,
 }: DraggableTrackProps) {
-  const { attributes, listeners, setNodeRef } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: track.name,
   });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const hasError = status === "failed";
 
@@ -33,6 +39,7 @@ export default function DraggableTrack({
       className={`uploaded-track ${hasError ? "has-error" : ""}`}
       onClick={(e) => e.stopPropagation()}
       ref={setNodeRef}
+      style={style}
       {...attributes}>
       <button type="button" className="drag" {...listeners}>
         <DragIcon />
