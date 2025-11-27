@@ -4,7 +4,7 @@ import DraggableTrack from "@/components/DraggableTrack/DraggableTrack";
 import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { useCheckMultipleAudioStatus } from "@/hooks/query/query-hooks/use-check-multiple-audio-status";
 import { AudioProcessingStatus, AudioProcessingStatusResponse } from "@/types/api";
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -107,6 +107,25 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     onDrop,
   });
 
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    setTracks((items) => {
+      const oldIndex = items.findIndex((track) => track.name === active.id);
+      const newIndex = items.findIndex((track) => track.name === over.id);
+
+      const newTracks = [...items];
+      const [removed] = newTracks.splice(oldIndex, 1);
+      newTracks.splice(newIndex, 0, removed);
+
+      return newTracks;
+    });
+  }
+
   // TODO: See how to sync field.value with tracks.
   return (
     <Controller
@@ -114,7 +133,7 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
       name={name}
       render={({ field, fieldState }) => (
         <>
-          <DndContext>
+          <DndContext onDragEnd={handleDragEnd}>
             <div
               className={`multi-track-upload ${isDragActive ? "hovered" : ""} ${
                 tracks.length ? "has-files" : ""
