@@ -33,9 +33,8 @@ export default function DraggableTrack({
       className={`uploaded-track ${hasError ? "has-error" : ""}`}
       onClick={(e) => e.stopPropagation()}
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}>
-      <button type="button" className="drag">
+      {...attributes}>
+      <button type="button" className="drag" {...listeners}>
         <DragIcon />
       </button>
       <TrackUpload name={track.name} isUploading={isUploading} isProcessing={isProcessing}>
@@ -47,7 +46,13 @@ export default function DraggableTrack({
         )}
       </TrackUpload>
 
-      <button onClick={() => onRemoveTrack(track.name)} type="button" className="close">
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          onRemoveTrack(track.name);
+        }}
+        type="button"
+        className="close">
         <CloseIcon />
       </button>
     </div>
