@@ -1,9 +1,9 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import Woodmark from "@/components/icons/Woodmark";
 import NewsletterForm from "@/components/site/footer/NewsletterForm/NewsletterForm";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
-import WordmarkSvg from "@/components/svg/woodmark.svg";
 
 import "./ProductFooter.scss";
 
@@ -15,7 +15,7 @@ export default function ProductFooter() {
 
   return (
     <footer className="site-product-footer design-grid">
-      <WordmarkSvg className="svg-wordmark" />
+      <Woodmark />
 
       <div className="newsletter-form desktop-only">
         <NewsletterForm />

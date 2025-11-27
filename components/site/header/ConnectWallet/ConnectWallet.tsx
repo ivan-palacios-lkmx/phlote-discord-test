@@ -1,7 +1,7 @@
 "use client";
 
+import ProfileIcon from "@/components/icons/Profile";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import ProfileIcon from "@/components/svg/profile.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useAuth } from "@/hooks/query/mutations/use-auth";

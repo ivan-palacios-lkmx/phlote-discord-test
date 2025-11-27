@@ -1,0 +1,17 @@
+const Arrow = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      {...props}
+      className={`svg-arrow-right ${props.className || ""}`}
+      viewBox="0 0 22 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M9.97 2.488L11.818 0.597999L21.52 10.3L11.818 20.002L9.97 18.112L16.48 11.602H0.562V8.998H16.48L9.97 2.488Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export default Arrow;

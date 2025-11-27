@@ -1,5 +1,5 @@
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import ProgressRingIcon from "@/components/svg/progress_ring.svg";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
+import ProgressRingIcon from "@/components/icons/ProgressRing";
 
 interface TrackUploadProps {
   name: string;

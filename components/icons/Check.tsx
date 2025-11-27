@@ -1,0 +1,19 @@
+import React from "react";
+
+const Check = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      {...props}
+      className={`svg-check ${props.className || ""}`}
+      viewBox="0 0 6 6"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M5.07125 0.5L2.25 3.54395L0.9285 2.22526L0 3.20316L2.25 5.5L6 1.47763L5.07125 0.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export default Check;

@@ -1,9 +1,9 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import Woodmark from "@/components/icons/Woodmark";
 import ConnectWallet from "@/components/site/header/ConnectWallet/ConnectWallet";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
-import WordmarkSvg from "@/components/svg/woodmark.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,7 +17,7 @@ export default function ProductHeader() {
   return (
     <header className="site-product-header">
       <Link href="/" className="home-link">
-        <WordmarkSvg />
+        <Woodmark />
       </Link>
 
       <nav>

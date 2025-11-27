@@ -1,4 +1,4 @@
-import PlayIcon from "@/components/svg/play.svg";
+import PlayIcon from "@/components/icons/Play";
 
 export default function Mixer() {
   return (
