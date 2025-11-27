@@ -62,8 +62,14 @@ export default function NewVersionForm({
   }
 
   function isFormTotallyFilled(formValues: Record<string, unknown>) {
-    const requiredFields = [formValues.name, formValues.bpm];
-    return requiredFields.every((value) => value !== "" && value !== null && value !== undefined);
+    const name = formValues.name;
+    const bpm = formValues.bpm;
+
+    const hasName = name !== "" && name !== null && name !== undefined;
+    const hasBpm =
+      bpm !== "" && bpm !== null && bpm !== undefined && !isNaN(Number(bpm)) && Number(bpm) > 0;
+
+    return hasName && hasBpm;
   }
 
   const { user } = usePrivy();
