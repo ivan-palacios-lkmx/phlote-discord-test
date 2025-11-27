@@ -8,7 +8,7 @@ export default function NewSessionPage() {
   return (
     <main className="new-session">
       <div className="contained">
-        <NewProjectForm />
+        <NewProjectForm type="session" />
       </div>
     </main>
   );
