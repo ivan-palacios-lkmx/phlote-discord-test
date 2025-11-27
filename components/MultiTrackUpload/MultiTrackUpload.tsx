@@ -37,7 +37,9 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
   }
 
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
+
   const [tracks, setTracks] = useState<Track[]>([]);
+
   const [tempFileNames, setTempFileNames] = useState<string[]>([]);
   const areaRef = useRef<HTMLDivElement>(null);
 
