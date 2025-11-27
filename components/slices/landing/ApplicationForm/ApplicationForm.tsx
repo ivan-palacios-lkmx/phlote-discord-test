@@ -197,9 +197,7 @@ export default function ApplicationForm({
 
           <div className="upload">
             <label>Upload Your Music*</label>
-            <MultiTrackUpload name="tracks" value={tracks} onChange={setTracks}>
-              <span>Drop Tracks (.wav or .mp3)</span>
-            </MultiTrackUpload>
+            <MultiTrackUpload name="tracks" />
           </div>
         </div>
 
