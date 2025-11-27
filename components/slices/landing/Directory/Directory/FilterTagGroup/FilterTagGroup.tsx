@@ -1,5 +1,7 @@
 "use client";
 
+import FilterTagRow from "@/components/slices/landing/Directory/Directory/FilterTagRow/FilterTagRow";
+
 import "./FilterTagGroup.scss";
 
 interface FilterTagGroupProps {
@@ -19,15 +21,8 @@ export default function FilterTagGroup({
     <div className="filter-tag-group">
       <h6>{name}</h6>
       <div className="tags">
-        {/* TODO: Implement filter tag buttons */}
         {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            className={`filter-tag-button ${selectedValues.includes(option) ? "active" : ""}`}
-            onClick={() => onToggle("tags", option)}>
-            {option}
-          </button>
+          <FilterTagRow key={option} category={name} value={option} />
         ))}
       </div>
     </div>
