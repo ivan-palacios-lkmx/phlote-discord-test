@@ -5,28 +5,18 @@ import { Input } from "@/components/Form/Input";
 import { Textarea } from "@/components/Form/Textarea";
 import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import { db } from "@/lib/firebase";
+import { useCreateCreatorApplication } from "@/hooks/query/mutations/use-create-creator-application";
 import type { ApplicationFormSlice } from "@/types/client";
 import { applicationFormSchema } from "@/utils/zod-schemas";
 import type { SliceComponentProps } from "@prismicio/react";
-import { addDoc, collection } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 
 import "./ApplicationForm.scss";
 
-interface Track {
-  id: string;
-  name: string;
-  error?: string;
-}
-
 export default function ApplicationForm({
   slice: _slice, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: SliceComponentProps<ApplicationFormSlice>) {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,67 +24,53 @@ export default function ApplicationForm({
   const [info, setInfo] = useState("");
   const [workLink, setWorkLink] = useState("");
   const [ethAddress, setEthAddress] = useState("");
-  const [tracks, setTracks] = useState<Track[]>([]);
-
-  const hasErrors = useMemo(() => tracks.some((t) => !!t.error), [tracks]);
+  const [multiTrackUploadHasFiles, setMultiTrackUploadHasFiles] = useState(false);
+  const [multiTrackUploadHasError, setMultiTrackUploadHasError] = useState(false);
+  const {
+    mutate: createCreatorApplication,
+    error: createCreatorApplicationError,
+    isPending: isCreatingCreatorApplication,
+    isSuccess: isCreatorApplicationCreated,
+  } = useCreateCreatorApplication();
 
   const canSubmit = useMemo(
-    () => firstName && lastName && email && city && ethAddress && tracks.length > 0 && !hasErrors,
-    [firstName, lastName, email, city, ethAddress, tracks.length, hasErrors],
+    () =>
+      firstName &&
+      lastName &&
+      email &&
+      city &&
+      ethAddress &&
+      multiTrackUploadHasFiles &&
+      !multiTrackUploadHasError,
+    [
+      firstName,
+      lastName,
+      email,
+      city,
+      ethAddress,
+      multiTrackUploadHasFiles,
+      multiTrackUploadHasError,
+    ],
   );
-
-  const applicationsRef = useMemo(() => collection(db, "applications"), []);
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (hasErrors) {
-        throw new Error("Please resolve any errors in tracks");
-      }
-
-      if (!canSubmit) {
-        throw new Error("Please fill out all required fields");
-      }
-
-      if (!tracks.length) {
-        throw new Error("Please provide at least one example of your work");
-      }
-
-      const formData = {
-        created: new Date(),
-        firstName,
-        lastName,
-        email,
-        city,
-        info,
-        workLink,
-        ethAddress,
-        tracks: tracks.map((t) => ({ name: t.name, id: t.id })),
-      };
-
-      await addDoc(applicationsRef, formData);
-      setSuccess(true);
-    } catch (err) {
-      console.error(err);
-      setError(err instanceof Error ? err.message : "Error submitting application");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   function handleSubmit(formValues: z.infer<typeof applicationFormSchema>) {
     console.log(formValues);
+    createCreatorApplication({
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      city: formValues.city,
+      info: formValues.info,
+      ethAddress: formValues.ethAddress,
+      tracks: formValues.tracks,
+    });
   }
   return (
     <section className="slice-application-form contained">
       <Form
         schema={applicationFormSchema}
         handleSubmit={handleSubmit}
-        className={success ? "success" : ""}>
+        className={isCreatorApplicationCreated ? "success" : ""}>
         {/* Left Fields */}
         <div className="left">
           <label>
@@ -107,7 +83,7 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
-              disabled={success}
+              disabled={isCreatorApplicationCreated}
             />
           </label>
 
@@ -121,7 +97,7 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
-              disabled={success}
+              disabled={isCreatorApplicationCreated}
             />
           </label>
 
@@ -135,7 +111,7 @@ export default function ApplicationForm({
               type="email"
               maxLength={100}
               required
-              disabled={success}
+              disabled={isCreatorApplicationCreated}
             />
           </label>
 
@@ -149,7 +125,7 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
-              disabled={success}
+              disabled={isCreatorApplicationCreated}
             />
           </label>
 
@@ -161,7 +137,7 @@ export default function ApplicationForm({
               onChange={(e) => setInfo(e.target.value)}
               id="info"
               maxLength={500}
-              disabled={success}
+              disabled={isCreatorApplicationCreated}
             />
           </label>
         </div>
@@ -177,7 +153,7 @@ export default function ApplicationForm({
               placeholder="https://my-portfolio.com"
               type="url"
               maxLength={100}
-              disabled={success}
+              disabled={isCreatorApplicationCreated}
             />
           </label>
 
@@ -191,7 +167,7 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
-              disabled={success}
+              disabled={isCreatorApplicationCreated}
             />
           </label>
 
@@ -203,15 +179,17 @@ export default function ApplicationForm({
 
         <div className="button-row">
           <button className="btn" type="submit" disabled={!canSubmit}>
-            {loading ? (
+            {isCreatingCreatorApplication ? (
               <LoadingSpinnerIcon className="loading-spinner" />
-            ) : success ? (
+            ) : isCreatorApplicationCreated ? (
               <span>Thank You</span>
             ) : (
               <span>Submit</span>
             )}
           </button>
-          {error && <p className="error">{error}</p>}
+          {createCreatorApplicationError && (
+            <p className="error">{createCreatorApplicationError.message}</p>
+          )}
         </div>
       </Form>
     </section>

@@ -176,10 +176,12 @@ const tracks = z.array(
   }),
 );
 
+const applicationEmail = z.string().email().min(1, "Email is required");
+
 export const applicationFormSchema = z.object({
   firstName,
   lastName,
-  email,
+  email: applicationEmail,
   city,
   info,
   workLink,
