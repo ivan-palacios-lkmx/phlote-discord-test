@@ -1,5 +1,5 @@
 import useZodForm from "@/hooks/form/use-zod-form";
-import { FormProvider } from "react-hook-form";
+import { DefaultValues, FormProvider } from "react-hook-form";
 import z from "zod";
 
 // TODO: remove any
@@ -9,6 +9,7 @@ interface FormProps<Schema extends z.ZodObject<any>> {
   schema: Schema;
   handleSubmit: (formValues: z.infer<Schema>) => void;
   className?: string;
+  defaultValues?: DefaultValues<z.infer<Schema>>;
 }
 
 // TODO: remove any
@@ -18,8 +19,9 @@ export default function Form<Schema extends z.ZodObject<any>>({
   schema,
   handleSubmit,
   className,
+  defaultValues,
 }: FormProps<Schema>) {
-  const { form, onSubmit } = useZodForm(schema, handleSubmit);
+  const { form, onSubmit } = useZodForm(schema, handleSubmit, defaultValues);
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} className={className}>
