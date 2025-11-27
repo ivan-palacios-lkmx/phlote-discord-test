@@ -16,5 +16,6 @@ export const ENDPOINTS = {
   TAG_CATEGORIES: "/tags/categories",
   ADMINS: "/admins",
   CREATORS: "/creators",
+  CREATOR_APPLICATIONS: "/creator-applications",
   NEWSLETTER: "/newsletter",
 };

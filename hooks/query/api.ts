@@ -401,6 +401,25 @@ class Api {
       throw error;
     }
   }
+
+  static async createCreatorApplication(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    city: string;
+    info?: string;
+    workLink?: string;
+    ethAddress: string;
+    tracks: Array<{ name: string; id: string }>;
+  }): Promise<{ applicationId: string }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.CREATOR_APPLICATIONS, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating creator application:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;
