@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@/components/Form/Form";
-import { Input } from "@/components/Form/Input";
+import { Input } from "@/components/Form/Input/Input";
 import { Textarea } from "@/components/Form/Textarea";
 import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";

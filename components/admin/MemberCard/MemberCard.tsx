@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@/components/Form/Form";
-import { Input } from "@/components/Form/Input";
+import { Input } from "@/components/Form/Input/Input";
 import AdminToggle from "@/components/admin/AdminToggle/AdminToggle";
 import MultiSelect from "@/components/admin/MultiSelect/MultiSelect";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";

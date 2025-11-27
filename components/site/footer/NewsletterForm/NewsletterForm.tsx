@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@/components/Form/Form";
-import { Input } from "@/components/Form/Input";
+import { Input } from "@/components/Form/Input/Input";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { useSubscribeNewsletter } from "@/hooks/query/mutations/use-subscribe-newsletter";
