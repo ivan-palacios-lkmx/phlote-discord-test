@@ -9,6 +9,7 @@ import { useCreateCreatorApplication } from "@/hooks/query/mutations/use-create-
 import type { ApplicationFormSlice } from "@/types/client";
 import { applicationFormSchema } from "@/utils/zod-schemas";
 import type { SliceComponentProps } from "@prismicio/react";
+import { useState } from "react";
 import { z } from "zod";
 
 import "./ApplicationForm.scss";
@@ -22,6 +23,28 @@ export default function ApplicationForm({
     isPending: isCreatingCreatorApplication,
     isSuccess: isCreatorApplicationCreated,
   } = useCreateCreatorApplication();
+
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    city: "",
+    info: "",
+    ethAddress: "",
+    tracks: [],
+    workLink: "",
+  });
+
+  function isFormTotallyFilled(formValues: Record<string, unknown>) {
+    const requiredFields = [
+      formValues.firstName,
+      formValues.lastName,
+      formValues.email,
+      formValues.city,
+      formValues.ethAddress,
+    ];
+    return requiredFields.every((value) => value !== "" && value !== null && value !== undefined);
+  }
 
   function handleSubmit(formValues: z.infer<typeof applicationFormSchema>) {
     console.log(formValues);
@@ -46,6 +69,7 @@ export default function ApplicationForm({
             <span>First Name*</span>
             <Input
               name="firstName"
+              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               placeholder="John"
               type="text"
               maxLength={100}
@@ -62,6 +86,7 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
+              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -74,6 +99,7 @@ export default function ApplicationForm({
               type="email"
               maxLength={100}
               required
+              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -85,6 +111,7 @@ export default function ApplicationForm({
               placeholder="Los Angeles"
               type="text"
               maxLength={100}
+              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               required
               disabled={isCreatorApplicationCreated}
             />
@@ -96,6 +123,7 @@ export default function ApplicationForm({
               name="info"
               id="info"
               maxLength={500}
+              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -109,6 +137,7 @@ export default function ApplicationForm({
               placeholder="https://my-portfolio.com"
               type="url"
               maxLength={100}
+              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -121,6 +150,7 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
+              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -132,7 +162,7 @@ export default function ApplicationForm({
         </div>
 
         <div className="button-row">
-          <button className="btn" type="submit">
+          <button className="btn" type="submit" disabled={!isFormTotallyFilled(formValues)}>
             {isCreatingCreatorApplication ? (
               <LoadingSpinnerIcon className="loading-spinner" />
             ) : isCreatorApplicationCreated ? (
