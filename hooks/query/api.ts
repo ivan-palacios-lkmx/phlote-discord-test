@@ -261,12 +261,21 @@ class Api {
     }
   }
 
-  static async submitAudio(audioFile: File): Promise<SubmitAudioResponse> {
+  static async submitAudio(
+    audioFile: File,
+    onUploadProgress?: (progress: number) => void,
+  ): Promise<SubmitAudioResponse> {
     try {
       const formData = new FormData();
       formData.append("audio", audioFile);
       const response = await apiClient.post(ENDPOINTS.AUDIO, formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          if (onUploadProgress && progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            onUploadProgress(percentCompleted);
+          }
+        },
       });
       return response.data;
     } catch (error) {
