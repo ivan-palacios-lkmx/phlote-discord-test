@@ -7,10 +7,11 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   onWatch?: (formValues: Record<string, unknown>) => void;
   defaultValue?: string;
+  shouldResetValue?: boolean;
 }
 
-export function Input({ name, onWatch, defaultValue, ...props }: InputProps) {
-  const { control } = useFormContext();
+export function Input({ name, onWatch, defaultValue, shouldResetValue, ...props }: InputProps) {
+  const { control, reset } = useFormContext();
 
   const value = useWatch({ control, name });
   const onWatchRef = useRef(onWatch);
@@ -20,6 +21,12 @@ export function Input({ name, onWatch, defaultValue, ...props }: InputProps) {
       onWatchRef.current({ [name]: value });
     }
   }, [value, name]);
+
+  useEffect(() => {
+    if (shouldResetValue) {
+      reset({ [name]: "" });
+    }
+  }, [shouldResetValue, name, reset]);
 
   return (
     <Controller
