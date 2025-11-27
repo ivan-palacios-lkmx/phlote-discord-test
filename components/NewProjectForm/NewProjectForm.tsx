@@ -9,8 +9,14 @@ import SingleTrackUpload from "@/components/SingleTrackUpload/SingleTrackUpload"
 import TagGroup from "@/components/TagGroup/TagGroup";
 import Tooltip from "@/components/Tooltip/Tooltip";
 import VersionFormButton from "@/components/VersionFormButton/VersionFormButton";
+import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";
+import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useCreateSession } from "@/hooks/query/mutations/use-create-session";
+import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
+import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
 import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
+import { useGetVersion } from "@/hooks/query/query-hooks/use-get-version";
+import { SessionDoc, VersionDoc } from "@/types/database";
 import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { PrismicRichText } from "@prismicio/react";
 import { usePrivy } from "@privy-io/react-auth";
@@ -22,6 +28,8 @@ import "./NewProjectForm.scss";
 
 interface NewProjectFormProps {
   type: "version" | "session";
+  sessionID?: string;
+  versionID?: string;
   exampleLink?: string;
   parentName?: string;
   possibleStarterIds?: string[];
@@ -31,10 +39,12 @@ interface NewProjectFormProps {
 
 export default function NewProjectForm({
   type = "version",
+  sessionID,
   exampleLink,
   parentName,
   possibleStarterIds = [],
   versionLabels = [],
+  versionID,
 }: NewProjectFormProps) {
   const {
     data: sessionTags,
@@ -43,6 +53,13 @@ export default function NewProjectForm({
   } = useGetTags({
     category: "session",
   });
+
+  const { data: session } = useGetSession(sessionID || "", !!sessionID);
+  const { data: version } = useGetVersion(versionID || "", !!versionID);
+  const { data: creatorInfo } = useGetAddressInfo(
+    session?.creator || "",
+    type === "version" && !!sessionID,
+  );
 
   const [generatedName, setGeneratedName] = useState("");
 
@@ -99,7 +116,7 @@ export default function NewProjectForm({
           type="submit"
           loading={isPending}
           disabled={!isFormTotallyFilled(formValues)}>
-          {type === "version" ? "Create Version" : "Create Session"}
+          {type === "version" ? "Create New Version" : "Create Session"}
         </VersionFormButton>
       </div>
       <div className="new-version-form">
