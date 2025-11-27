@@ -4,46 +4,36 @@ import Form from "@/components/Form/Form";
 import { Input } from "@/components/Form/Input";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import { db } from "@/lib/firebase";
+import { useSubscribeNewsletter } from "@/hooks/query/mutations/use-subscribe-newsletter";
 import { newsletterFormSchema } from "@/utils/zod-schemas";
-import { doc, setDoc } from "firebase/firestore";
-import { useMemo, useState } from "react";
 import { z } from "zod";
 
 import "./NewsletterForm.scss";
 
 export default function NewsletterForm() {
   const { settings } = usePrismicio();
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const {
+    mutate: subscribeNewsletter,
+    isPending: loading,
+    isSuccess: success,
+  } = useSubscribeNewsletter();
 
-  const placeholder = useMemo(
-    () => (settings.newsletter_placeholder_text as string) || "Email Address",
-    [settings.newsletter_placeholder_text],
-  );
+  const placeholder = settings.newsletter_placeholder_text?.text || "Email Address";
 
-  const submitText = useMemo(
-    () => (settings.newsletter_submit_text as string) || "Submit",
-    [settings.newsletter_submit_text],
-  );
+  const submitText = settings.newsletter_submit_text?.text || "Submit";
 
-  const handleSubmit = async (formValues: z.infer<typeof newsletterFormSchema>) => {
-    setLoading(true);
-
-    try {
-      const formattedEmail = String(formValues.email).toLowerCase();
-      await setDoc(doc(db, `subscribers/${formattedEmail}`), {
-        created: new Date(),
-        email: formattedEmail,
-      });
-
-      setSuccess(true);
-    } catch (err) {
-      console.error(err);
-      setSuccess(true);
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = (formValues: z.infer<typeof newsletterFormSchema>) => {
+    subscribeNewsletter(
+      { email: formValues.email },
+      {
+        onSuccess: () => {
+          // Success is handled by isSuccess from the mutation
+        },
+        onError: () => {
+          // Error handling if needed
+        },
+      },
+    );
   };
 
   return (
