@@ -8,6 +8,7 @@ import FilterTagGroup from "@/components/slices/landing/Directory/Directory/Filt
 import SortMenu from "@/components/slices/landing/Directory/Directory/SortMenu/SortMenu";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
+import { useGetMultipleAddressInfo } from "@/hooks/query/query-hooks/use-get-multiple-address-info";
 import useMembers from "@/hooks/useMembers";
 import useSessionFilters from "@/hooks/useSessionFilters";
 import useTags from "@/hooks/useTags";
@@ -78,6 +79,22 @@ export default function SessionsResultsSorting() {
   const collaborators = useMemo(() => {
     return members.map((m) => m.objectID as string);
   }, [members]);
+
+  const collaboratorQueries = useGetMultipleAddressInfo({
+    addresses: collaborators,
+    includePrivate: false,
+    enabled: collaborators.length > 0,
+  });
+
+  const collaboratorMap = useMemo(() => {
+    return collaborators.map((address, index) => {
+      return {
+        address,
+        username: collaboratorQueries[index]?.data?.username,
+        avatar: collaboratorQueries[index]?.data?.avatar,
+      };
+    });
+  }, [collaborators, collaboratorQueries]);
 
   // Handle search input
   const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,10 +184,13 @@ export default function SessionsResultsSorting() {
         {/* Collaborators */}
         <div className="collaborators">
           <h6>Creators</h6>
-          {collaborators.map((address) => (
-            <FilterCategoryRow key={address} slug="collaborators" value={address}>
-              <Web3Avatar address={address} />
-              <Web3Username address={address} />
+          {collaboratorMap.map((collaborator) => (
+            <FilterCategoryRow
+              key={collaborator.address}
+              slug="collaborators"
+              value={collaborator.address}>
+              <Web3Avatar avatar={collaborator.avatar} />
+              <Web3Username username={collaborator.username} />
             </FilterCategoryRow>
           ))}
         </div>
