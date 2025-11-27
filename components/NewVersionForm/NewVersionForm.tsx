@@ -52,9 +52,9 @@ export default function NewVersionForm({
     setValue("name", generatedName);
   }
 
-  const encodeTag = (category: string, option: string) => {
+  function encodeTag(category: string, option: string) {
     return `${category}:${option}`;
-  };
+  }
 
   return (
     <div className="new-version-form">
@@ -171,14 +171,14 @@ export default function NewVersionForm({
               ) : isErrorSessionTags ? (
                 <div>Error loading session tags</div>
               ) : (
-                sessionTags?.map((cat, i) => (
+                sessionTags?.map((Category, i) => (
                   <div key={i}>
-                    <h6>{cat.name}</h6>
-                    {cat.name && cat.options?.length && (
+                    <h6>{Category.name}</h6>
+                    {Category.name && Category.options?.length && (
                       <TagGroup
                         name={`catModels.${i}`}
-                        values={cat.options.map((v) => encodeTag(cat.name, v))}
-                        labels={cat.options}
+                        values={Category.options.map((option) => encodeTag(Category.name, option))}
+                        labels={Category.options}
                       />
                     )}
                   </div>
