@@ -1,0 +1,13 @@
+.svg-progress-ring {
+  pointer-events: none;
+  transform: rotate(90deg);
+
+  #bg {
+    stroke: rgba(255, 255, 255, 0.3);
+  }
+
+  #circle {
+    stroke-dasharray: var(--circle-length);
+    stroke-dashoffset: var(--circle-progress);
+  }
+}
