@@ -391,6 +391,16 @@ class Api {
       throw error;
     }
   }
+
+  static async subscribeNewsletter(email: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.NEWSLETTER, { email });
+      return response.data;
+    } catch (error) {
+      console.error("Error subscribing to newsletter:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;
