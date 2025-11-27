@@ -5,15 +5,12 @@ import { Input } from "@/components/Form/Input";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import { db } from "@/lib/firebase";
+import { newsletterFormSchema } from "@/utils/zod-schemas";
 import { doc, setDoc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 
 import "./NewsletterForm.scss";
-
-const newsletterFormSchema = z.object({
-  email: z.string().email(),
-});
 
 export default function NewsletterForm() {
   const { settings } = usePrismicio();

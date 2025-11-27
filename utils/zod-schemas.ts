@@ -157,3 +157,8 @@ export const newVersionFormSchema = z.object({
   stems: newVersionStems,
   bounce: newVersionBounce,
 });
+
+const newsletterEmail = z.string().email();
+export const newsletterFormSchema = z.object({
+  email: newsletterEmail,
+});
