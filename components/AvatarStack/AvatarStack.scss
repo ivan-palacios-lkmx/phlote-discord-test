@@ -1,3 +1,5 @@
+@import '../../app/assets/scss/vars';
+
 .avatar-stack {
   display: inline-flex;
   flex-direction: row-reverse;
@@ -25,6 +27,7 @@
     border-radius: 100%;
     position: relative;
     overflow: hidden;
+
 
     &:last-child {
       margin-left: 0;
