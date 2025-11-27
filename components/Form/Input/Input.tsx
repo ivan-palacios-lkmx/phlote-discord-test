@@ -6,9 +6,10 @@ import "./Input.scss";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   onWatch?: (formValues: Record<string, unknown>) => void;
+  defaultValue?: string;
 }
 
-export function Input({ name, onWatch, ...props }: InputProps) {
+export function Input({ name, onWatch, defaultValue, ...props }: InputProps) {
   const { control } = useFormContext();
 
   const value = useWatch({ control, name });
@@ -24,7 +25,7 @@ export function Input({ name, onWatch, ...props }: InputProps) {
     <Controller
       control={control}
       name={name}
-      defaultValue=""
+      defaultValue={defaultValue ?? ""}
       render={({ field, fieldState }) => (
         <>
           <input {...props} {...field} value={field.value ?? ""} />
