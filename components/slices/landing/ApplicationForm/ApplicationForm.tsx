@@ -1,12 +1,17 @@
 "use client";
 
+import Form from "@/components/Form/Form";
+import { Input } from "@/components/Form/Input";
+import { Textarea } from "@/components/Form/Textarea";
+import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
-import MultiTrackUpload from "@/components/slices/landing/MultiTrackUpload/MultiTrackUpload";
 import { db } from "@/lib/firebase";
 import type { ApplicationFormSlice } from "@/types/client";
+import { applicationFormSchema } from "@/utils/zod-schemas";
 import type { SliceComponentProps } from "@prismicio/react";
 import { addDoc, collection } from "firebase/firestore";
 import { useMemo, useState } from "react";
+import { z } from "zod";
 
 import "./ApplicationForm.scss";
 
@@ -34,14 +39,7 @@ export default function ApplicationForm({
   const hasErrors = useMemo(() => tracks.some((t) => !!t.error), [tracks]);
 
   const canSubmit = useMemo(
-    () =>
-      firstName &&
-      lastName &&
-      email &&
-      city &&
-      ethAddress &&
-      tracks.length > 0 &&
-      !hasErrors,
+    () => firstName && lastName && email && city && ethAddress && tracks.length > 0 && !hasErrors,
     [firstName, lastName, email, city, ethAddress, tracks.length, hasErrors],
   );
 
@@ -88,14 +86,21 @@ export default function ApplicationForm({
     }
   };
 
+  function handleSubmit(formValues: z.infer<typeof applicationFormSchema>) {
+    console.log(formValues);
+  }
   return (
     <section className="slice-application-form contained">
-      <form className={success ? "success" : ""} onSubmit={onSubmit}>
+      <Form
+        schema={applicationFormSchema}
+        handleSubmit={handleSubmit}
+        className={success ? "success" : ""}>
         {/* Left Fields */}
         <div className="left">
           <label>
             <span>First Name*</span>
-            <input
+            <Input
+              name="firstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="John"
@@ -108,7 +113,8 @@ export default function ApplicationForm({
 
           <label>
             <span>Last Name*</span>
-            <input
+            <Input
+              name="lastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Doe"
@@ -121,7 +127,8 @@ export default function ApplicationForm({
 
           <label>
             <span>Email Address*</span>
-            <input
+            <Input
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
@@ -134,7 +141,8 @@ export default function ApplicationForm({
 
           <label>
             <span>City*</span>
-            <input
+            <Input
+              name="city"
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Los Angeles"
@@ -147,7 +155,8 @@ export default function ApplicationForm({
 
           <label className="info">
             <span>Additional Information</span>
-            <textarea
+            <Textarea
+              name="info"
               value={info}
               onChange={(e) => setInfo(e.target.value)}
               id="info"
@@ -161,7 +170,8 @@ export default function ApplicationForm({
         <div className="right">
           <label>
             <span>Link to Your Work</span>
-            <input
+            <Input
+              name="workLink"
               value={workLink}
               onChange={(e) => setWorkLink(e.target.value)}
               placeholder="https://my-portfolio.com"
@@ -173,7 +183,8 @@ export default function ApplicationForm({
 
           <label>
             <span>Wallet Address / ENS*</span>
-            <input
+            <Input
+              name="ethAddress"
               value={ethAddress}
               onChange={(e) => setEthAddress(e.target.value)}
               placeholder="phlote.eth"
@@ -186,7 +197,7 @@ export default function ApplicationForm({
 
           <div className="upload">
             <label>Upload Your Music*</label>
-            <MultiTrackUpload value={tracks} onChange={setTracks}>
+            <MultiTrackUpload name="tracks" value={tracks} onChange={setTracks}>
               <span>Drop Tracks (.wav or .mp3)</span>
             </MultiTrackUpload>
           </div>
@@ -204,7 +215,7 @@ export default function ApplicationForm({
           </button>
           {error && <p className="error">{error}</p>}
         </div>
-      </form>
+      </Form>
     </section>
   );
 }
