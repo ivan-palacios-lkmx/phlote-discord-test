@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import "./MultiRangeSlider.scss";
@@ -47,6 +48,20 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
     return () => {
       window.removeEventListener("resize", updateWidth);
       resizeObserver.disconnect();
+    };
+  }, []);
+
+  // Update the debounced function if onChange changes (but keep the same instance)
+  useEffect(() => {
+    debouncedOnChangeRef.current = debounce((newValue: { min: number; max: number }) => {
+      onChange(newValue);
+    }, 200);
+  }, [onChange]);
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedOnChangeRef.current.cancel();
     };
   }, []);
 
@@ -101,8 +116,16 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
     }
   };
 
+  // Debounced onChange handler - use useRef to keep it stable even if onChange changes
+  const debouncedOnChangeRef = useRef(
+    debounce((newValue: { min: number; max: number }) => {
+      onChange(newValue);
+    }, 200),
+  );
+
+  // Handle mouse/touch release - no need for useCallback
   const handleRelease = () => {
-    onChange({ min: lower, max: upper });
+    debouncedOnChangeRef.current({ min: lower, max: upper });
   };
 
   return (
