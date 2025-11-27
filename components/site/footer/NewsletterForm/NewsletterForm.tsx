@@ -23,17 +23,7 @@ export default function NewsletterForm() {
   const submitText = settings.newsletter_submit_text?.text || "Submit";
 
   const handleSubmit = (formValues: z.infer<typeof newsletterFormSchema>) => {
-    subscribeNewsletter(
-      { email: formValues.email },
-      {
-        onSuccess: () => {
-          // Success is handled by isSuccess from the mutation
-        },
-        onError: () => {
-          // Error handling if needed
-        },
-      },
-    );
+    subscribeNewsletter({ email: formValues.email });
   };
 
   return (
