@@ -1,8 +1,8 @@
 import { Track } from "@/components/MultiTrackUpload/MultiTrackUpload";
 import Tooltip from "@/components/Tooltip/Tooltip";
 import TrackUpload from "@/components/TrackUpload/TrackUpload";
-import CloseIcon from "@/components/svg/close.svg";
-import DragIcon from "@/components/svg/drag.svg";
+import CloseIcon from "@/components/icons/Close";
+import DragIcon from "@/components/icons/Drag";
 import { AudioProcessingStatus } from "@/types/api";
 import { useSortable } from "@dnd-kit/sortable";
 

@@ -1,8 +1,8 @@
 "use client";
 
+import CloseIcon from "@/components/icons/Close";
 import VirtualMemberCount from "@/components/slices/landing/Directory/Directory/VirtualMemberCount/VirtualMemberCount";
 import VirtualSessionCount from "@/components/slices/landing/Directory/Directory/VirtualSessionCount/VirtualSessionCount";
-import CloseIcon from "@/components/svg/close.svg";
 import without from "lodash/without";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";

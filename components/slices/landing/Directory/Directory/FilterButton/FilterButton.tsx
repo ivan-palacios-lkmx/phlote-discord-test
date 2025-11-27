@@ -1,6 +1,6 @@
 "use client";
 
-import CloseIcon from "@/components/svg/close.svg";
+import CloseIcon from "@/components/icons/Close";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 

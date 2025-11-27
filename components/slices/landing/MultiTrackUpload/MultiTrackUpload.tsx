@@ -1,9 +1,9 @@
 "use client";
 
+import CloseIcon from "@/components/icons/Close";
+import DragIcon from "@/components/icons/Drag";
 import Tooltip from "@/components/slices/landing/Tooltip";
 import TrackUpload from "@/components/slices/landing/TrackUpload";
-import CloseIcon from "@/components/svg/close.svg";
-import DragIcon from "@/components/svg/drag.svg";
 import { kebabCase, startCase } from "lodash";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 

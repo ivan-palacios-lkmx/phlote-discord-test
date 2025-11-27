@@ -1,6 +1,6 @@
 "use client";
 
-import ChevronIcon from "@/components/svg/chevron.svg";
+import Chevron from "@/components/icons/Chevron";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
@@ -58,7 +58,7 @@ export default function SessionDetailVersionsRow({
 
   return (
     <div className={classes}>
-      <ChevronIcon className="arrow" />
+      <Chevron className="arrow" />
       <div className="headless-arrow" />
       <Link href={linkTo} className="version-block">
         <div className="block-info">

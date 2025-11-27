@@ -1,6 +1,6 @@
 "use client";
 
-import CloseIcon from "@/components/svg/close.svg";
+import CloseIcon from "@/components/icons/Close";
 import _get from "lodash/get";
 import React, { useMemo } from "react";
 import { useFormContext } from "react-hook-form";

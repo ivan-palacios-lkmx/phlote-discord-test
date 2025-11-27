@@ -1,9 +1,9 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import Logo from "@/components/icons/Logo";
+import WoodmarkIcon from "@/components/icons/Woodmark";
 import ConnectWallet from "@/components/site/header/ConnectWallet/ConnectWallet";
-import Logo from "@/components/svg/logo.svg";
-import WordmarkSvg from "@/components/svg/woodmark.svg";
 import { useHeaderTranslate } from "@/hooks/useHeaderTranslate";
 import { useLenis } from "@/hooks/useLenis";
 import Link from "next/link";
@@ -93,7 +93,7 @@ export default function MarketingHeader() {
     <header className="site-marketing-header" style={headerStyle}>
       <Link href="/" className="home-link">
         <Logo className="svg-logo" id="headerLogo" style={logoStyle} />
-        <WordmarkSvg className="svg-wordmark" style={wordmarkStyle} />
+        <WoodmarkIcon className="svg-wordmark" style={wordmarkStyle} />
       </Link>
 
       <p className="home-copy desktop-only">{settings.home_copy}</p>
