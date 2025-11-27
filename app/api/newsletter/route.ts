@@ -1,3 +1,4 @@
+import { NewsletterService } from "@/services/newsletter-service";
 import { newsletterFormSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,6 +9,8 @@ export async function POST(request: NextRequest) {
     if (!newsletterFormSchema.safeParse(body).success) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
+
+    await NewsletterService.addSubscriber(body.email);
 
     return NextResponse.json({ message: "Received" }, { status: 200 });
   } catch (error) {
