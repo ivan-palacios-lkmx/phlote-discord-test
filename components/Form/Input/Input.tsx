@@ -1,6 +1,8 @@
 import { InputHTMLAttributes } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
+import "./Input.scss";
+
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
 }
@@ -11,7 +13,12 @@ export function Input({ name, ...props }: InputProps) {
     <Controller
       control={control}
       name={name}
-      render={({ field }) => <input {...props} {...field} />}
+      render={({ field, fieldState }) => (
+        <div className="input-container">
+          <input {...props} {...field} />
+          {fieldState.error && <p className="input-error">{fieldState.error.message}</p>}
+        </div>
+      )}
     />
   );
 }
