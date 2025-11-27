@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@/components/Form/Form";
-import NewVersionForm from "@/components/NewVersionForm/NewVersionForm";
+import NewProjectForm from "@/components/NewVersionForm/NewVersionForm";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import VersionFormButton from "@/components/VersionFormButton/VersionFormButton";
 import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";
@@ -54,7 +54,7 @@ export default function NewVersionPage() {
             <VersionFormButton type="submit">Create Version</VersionFormButton>
           </div>
 
-          <NewVersionForm />
+          <NewProjectForm />
         </Form>
       </div>
     </main>

@@ -20,7 +20,7 @@ import { z } from "zod";
 
 import "./NewVersionForm.scss";
 
-interface NewVersionFormProps {
+interface NewProjectFormProps {
   exampleLink?: string;
   parentName?: string;
   mustSelectStarter?: boolean;
@@ -29,13 +29,13 @@ interface NewVersionFormProps {
   sessionTags?: { name: string; options: string[] }[];
 }
 
-export default function NewVersionForm({
+export default function NewProjectForm({
   exampleLink,
   parentName,
   mustSelectStarter = false,
   possibleStarterIds = [],
   versionLabels = [],
-}: NewVersionFormProps) {
+}: NewProjectFormProps) {
   const {
     data: sessionTags,
     isLoading: isLoadingSessionTags,
