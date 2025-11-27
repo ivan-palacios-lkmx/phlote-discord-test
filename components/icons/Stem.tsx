@@ -9,7 +9,7 @@ const Stem = (props: React.SVGProps<SVGSVGElement>) => {
       <path
         d="M9.5 5L0.5 5M7.92871 7.5L2.07157 7.5M7.92871 2.5L2.07157 2.5"
         stroke="currentColor"
-        stroke-width="1.2"
+        strokeWidth="1.2"
       />
     </svg>
   );

@@ -15,34 +15,34 @@ const Vocals = (props: React.SVGProps<SVGSVGElement>) => {
       <path
         d="M1.85254 10H6.7793"
         stroke="currentColor"
-        stroke-width="0.752891"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="0.752891"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M4.28418 9.88733V8.6479C4.28418 8.6479 7.66164 8.85916 7.66164 6"
         stroke="currentColor"
-        stroke-width="0.752891"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="0.752891"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M4.28418 8.6479C4.28418 8.6479 7.66164 8.85916 7.66164 6"
         stroke="currentColor"
-        stroke-width="0.752891"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="0.752891"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M4.37746 8.6479C4.37746 8.6479 1 8.85916 1 6"
         stroke="currentColor"
-        stroke-width="0.752891"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="0.752891"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

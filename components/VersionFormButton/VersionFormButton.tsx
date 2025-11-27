@@ -1,6 +1,6 @@
 "use client";
 
-import ArrowIcon from "@/components/svg/arrow.svg";
+import Arrow from "@/components/icons/Arrow";
 import LoadingSpinner from "@/components/svg/loading_spinner.svg";
 import React from "react";
 
@@ -24,7 +24,7 @@ export default function VersionFormButton({
       {...props}>
       <span>{children}</span>
 
-      {loading ? <LoadingSpinner /> : <ArrowIcon />}
+      {loading ? <LoadingSpinner /> : <Arrow />}
     </button>
   );
 }

@@ -13,11 +13,11 @@ const Version = (props: React.SVGProps<SVGSVGElement>) => {
         height="6"
         rx="0.5"
         stroke="currentColor"
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M2 1.5H6V2.5H7V1.5C7 0.947715 6.55228 0.5 6 0.5H2C1.44772 0.5 1 0.947715 1 1.5V6.5C1 7.05228 1.44772 7.5 2 7.5H3V6.5H2L2 1.5Z"
         fill="currentColor"
       />
