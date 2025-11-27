@@ -1,8 +1,8 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import Woodmark from "@/components/icons/Woodmark";
 import NewsletterForm from "@/components/site/footer/NewsletterForm/NewsletterForm";
-import SvgWordmark from "@/components/svg/woodmark.svg";
 import { PrismicRichText } from "@prismicio/react";
 import { useMemo } from "react";
 
@@ -17,7 +17,7 @@ export default function MarketingFooter(): JSX.Element {
 
   return (
     <footer className="site-marketing-footer">
-      <SvgWordmark />
+      <Woodmark />
 
       {footerCopy ? (
         <div className="entry">
