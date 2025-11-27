@@ -23,9 +23,10 @@ export function Input({ name, onWatch, ...props }: InputProps) {
     <Controller
       control={control}
       name={name}
+      defaultValue=""
       render={({ field, fieldState }) => (
         <>
-          <input {...props} {...field} />
+          <input {...props} {...field} value={field.value ?? ""} />
           {fieldState.error && <p className="input-error">{fieldState.error.message}</p>}
         </>
       )}

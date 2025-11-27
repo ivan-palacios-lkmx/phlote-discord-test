@@ -20,7 +20,8 @@ export function Textarea({ name, onWatch, ...props }: TextareaProps) {
     <Controller
       control={control}
       name={name}
-      render={({ field }) => <textarea {...props} {...field} />}
+      defaultValue=""
+      render={({ field }) => <textarea {...props} {...field} value={field.value ?? ""} />}
     />
   );
 }
