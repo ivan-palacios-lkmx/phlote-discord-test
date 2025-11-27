@@ -167,6 +167,10 @@ export interface PrismicSettings {
   newsletter_placeholder_text?: NewsletterPlaceholderText;
   newsletter_submit_text?: NewsletterSubmitText;
   new_session_copy?: RichTextField;
+  new_version_copy?: RichTextField;
+  bounce_tooltip?: string;
+  stems_tooltip?: string;
+  versions_tooltip?: string;
 }
 
 interface OGImage {
