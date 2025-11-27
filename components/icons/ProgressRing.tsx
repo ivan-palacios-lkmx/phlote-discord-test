@@ -56,15 +56,15 @@ const ProgressRing = ({ progress = 0, ...props }: ProgressRingProps) => {
 
   return (
     <svg
+      {...props}
       ref={containerRef}
-      className="svg-progress-ring"
+      className={`svg-progress-ring ${props.className || ""}`}
       width="30"
       height="30"
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={styles}
-      {...props}>
+      style={styles}>
       <circle id="bg" cx="50" cy="50" r="40" strokeWidth="4" />
       <circle
         id="circle"
