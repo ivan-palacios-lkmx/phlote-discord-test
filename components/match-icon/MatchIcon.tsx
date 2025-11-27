@@ -1,9 +1,9 @@
 "use client";
 
-import MasterIcon from "@/components/svg/master.svg";
-import MixIcon from "@/components/svg/mix_icon.svg";
-import ProductionIcon from "@/components/svg/production.svg";
-import VocalsIcon from "@/components/svg/vocals.svg";
+import MasterIcon from "@/components/icons/Master";
+import MixIcon from "@/components/icons/MixIcon";
+import ProductionIcon from "@/components/icons/Production";
+import VocalsIcon from "@/components/icons/Vocals";
 import { useMemo } from "react";
 
 import "./MatchIcon.scss";

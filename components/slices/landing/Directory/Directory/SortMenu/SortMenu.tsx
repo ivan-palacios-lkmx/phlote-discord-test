@@ -1,7 +1,7 @@
 "use client";
 
-import CheckIcon from "@/components/svg/check.svg";
-import ChevronIcon from "@/components/svg/chevron.svg";
+import Check from "@/components/icons/Check";
+import Chevron from "@/components/icons/Chevron";
 import { useEffect, useRef, useState } from "react";
 
 import "./SortMenu.scss";
@@ -41,7 +41,7 @@ export default function SortMenu({ value, onChange, options }: SortMenuProps) {
     <div className={`sort-menu ${optionsOpen ? "open" : ""}`} ref={containerRef}>
       <button type="button" onClick={() => setOptionsOpen(!optionsOpen)}>
         <span>{value}</span>
-        <ChevronIcon className="svg-chevron" />
+        <Chevron />
       </button>
 
       <div className={`option-wrap ${optionsOpen ? "open" : ""}`}>
@@ -58,7 +58,7 @@ export default function SortMenu({ value, onChange, options }: SortMenuProps) {
               />
               <label htmlFor={`sortOption${i}`} className={value === option ? "active" : ""}>
                 {/* TODO: Add check icon, when we solve the width and height issues with the icon */}
-                <CheckIcon className="svg-check" />
+                <Check />
                 <span>{option}</span>
               </label>
             </li>

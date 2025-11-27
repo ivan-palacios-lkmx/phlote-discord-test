@@ -1,11 +1,11 @@
 "use client";
 
 import MultiRangeSlider from "@/components/MultiRangeSlider/MultiRangeSlider";
+import SearchIcon from "@/components/icons/Search";
 import FilterCategoryRow from "@/components/slices/landing/Directory/Directory/FilterCategoryRow/FilterCategoryRow";
 import FilterMenu from "@/components/slices/landing/Directory/Directory/FilterMenu/FilterMenu";
 import FilterTagGroup from "@/components/slices/landing/Directory/Directory/FilterTagGroup/FilterTagGroup";
 import SortMenu from "@/components/slices/landing/Directory/Directory/SortMenu/SortMenu";
-import SearchIcon from "@/components/svg/search.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import useMembers from "@/hooks/useMembers";

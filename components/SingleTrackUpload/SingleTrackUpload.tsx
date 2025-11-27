@@ -2,7 +2,7 @@
 
 import Tooltip from "@/components/Tooltip/Tooltip";
 import TrackUpload from "@/components/TrackUpload/TrackUpload";
-import CloseIcon from "@/components/svg/close.svg";
+import CloseIcon from "@/components/icons/Close";
 import { type AudioUploadValue, useSingleTrackUpload } from "@/hooks/use-single-track-upload";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";

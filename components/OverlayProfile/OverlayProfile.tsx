@@ -6,7 +6,7 @@ import Created from "@/components/OverlayProfile/Created/Created";
 import EditContact from "@/components/OverlayProfile/EditContact/EditContact";
 import SessionsLink from "@/components/OverlayProfile/SessionsLink/SessionsLink";
 import Vanity from "@/components/OverlayProfile/Vanity/Vanity";
-import CloseIcon from "@/components/svg/close.svg";
+import CloseIcon from "@/components/icons/Close";
 import { useUpdatePrivateAddress } from "@/hooks/query/mutations/use-update-private-address";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";

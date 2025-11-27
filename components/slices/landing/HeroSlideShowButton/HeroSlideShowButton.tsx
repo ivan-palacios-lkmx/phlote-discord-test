@@ -1,8 +1,8 @@
 "use client";
 
 import ProgressiveMedia from "@/components/Prismic/ProgressiveMedia/ProgressiveMedia";
+import PlayIcon from "@/components/icons/Play";
 import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview/HeroTrackPreview";
-import PlayIcon from "@/components/svg/play.svg";
 import { HeroSlideShowSlide } from "@/types/client";
 
 import "./HeroSlideShowButton.scss";

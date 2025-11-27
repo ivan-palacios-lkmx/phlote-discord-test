@@ -1,8 +1,8 @@
 "use client";
 
-import DiscordIcon from "@/components/svg/discord.svg";
-import MailIcon from "@/components/svg/mail.svg";
-import TwitterIcon from "@/components/svg/twitter.svg";
+import DiscordIcon from "@/components/icons/Discord";
+import MailIcon from "@/components/icons/Mail";
+import TwitterIcon from "@/components/icons/Twitter";
 import { useMemo } from "react";
 
 import "./Contact.scss";

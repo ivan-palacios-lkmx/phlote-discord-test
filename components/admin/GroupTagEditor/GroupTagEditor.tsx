@@ -1,7 +1,7 @@
 "use client";
 
-import CloseIcon from "@/components/svg/close.svg";
-import DragIcon from "@/components/svg/drag.svg";
+import Close from "@/components/icons/Close";
+import DragIcon from "@/components/icons/Drag";
 import { TagCategory } from "@/types/database";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -49,7 +49,7 @@ function DraggableCategoryRow({
         Edit Options
       </button>
       <button type="button" className="close" onClick={onRemove}>
-        <CloseIcon />
+        <Close />
       </button>
     </div>
   );
@@ -76,7 +76,7 @@ function DraggableOptionRow({ option, onRemove }: { option: string; onRemove: ()
       </button>
       {option}
       <button type="button" className="close" onClick={onRemove}>
-        <CloseIcon />
+        <Close />
       </button>
     </div>
   );

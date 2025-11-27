@@ -1,4 +1,4 @@
-import TooltipIcon from "@/components/svg/tooltip.svg";
+import TooltipIcon from "@/components/icons/Tooltip";
 import { useRef, useState } from "react";
 
 import "./Tooltip.scss";

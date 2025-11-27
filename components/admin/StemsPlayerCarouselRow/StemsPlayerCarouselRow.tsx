@@ -1,7 +1,7 @@
 "use client";
 
-import CloseIcon from "@/components/svg/close.svg";
-import DragIcon from "@/components/svg/drag.svg";
+import CloseIcon from "@/components/icons/Close";
+import DragIcon from "@/components/icons/Drag";
 import { useClientDoc } from "@/hooks/useClientDoc";
 import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
