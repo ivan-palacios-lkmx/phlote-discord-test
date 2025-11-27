@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useEffect } from "react";
+import { InputHTMLAttributes, useEffect, useRef } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import "./Input.scss";
@@ -12,12 +12,13 @@ export function Input({ name, onWatch, ...props }: InputProps) {
   const { control } = useFormContext();
 
   const value = useWatch({ control, name });
+  const onWatchRef = useRef(onWatch);
 
   useEffect(() => {
-    if (onWatch) {
-      onWatch({ [name]: value });
+    if (onWatchRef.current) {
+      onWatchRef.current({ [name]: value });
     }
-  }, [value, name, onWatch]);
+  }, [value, name]);
 
   return (
     <Controller

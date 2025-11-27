@@ -1,4 +1,4 @@
-import { TextareaHTMLAttributes, useEffect } from "react";
+import { TextareaHTMLAttributes, useEffect, useRef } from "react";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -9,12 +9,13 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 export function Textarea({ name, onWatch, ...props }: TextareaProps) {
   const { control } = useFormContext();
   const value = useWatch({ control, name });
+  const onWatchRef = useRef(onWatch);
 
   useEffect(() => {
-    if (onWatch) {
-      onWatch({ [name]: value });
+    if (onWatchRef.current) {
+      onWatchRef.current({ [name]: value });
     }
-  }, [value, name, onWatch]);
+  }, [value, name]);
 
   return (
     <Controller
