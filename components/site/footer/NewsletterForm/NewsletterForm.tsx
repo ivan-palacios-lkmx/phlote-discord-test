@@ -1,19 +1,24 @@
 "use client";
 
+import Form from "@/components/Form/Form";
+import { Input } from "@/components/Form/Input";
 import { usePrismicio } from "@/components/PrismicioProvider";
 import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import { db } from "@/lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { useMemo, useState } from "react";
+import { z } from "zod";
 
 import "./NewsletterForm.scss";
 
+const newsletterFormSchema = z.object({
+  email: z.string().email(),
+});
+
 export default function NewsletterForm() {
   const { settings } = usePrismicio();
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const placeholder = useMemo(
     () => (settings.newsletter_placeholder_text as string) || "Email Address",
@@ -25,14 +30,11 @@ export default function NewsletterForm() {
     [settings.newsletter_submit_text],
   );
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async (formValues: z.infer<typeof newsletterFormSchema>) => {
     setLoading(true);
-    setError(null);
 
     try {
-      const formattedEmail = String(email).toLowerCase();
+      const formattedEmail = String(formValues.email).toLowerCase();
       await setDoc(doc(db, `subscribers/${formattedEmail}`), {
         created: new Date(),
         email: formattedEmail,
@@ -41,34 +43,31 @@ export default function NewsletterForm() {
       setSuccess(true);
     } catch (err) {
       console.error(err);
-      setSuccess(true); // Show success even on error (as per template)
+      setSuccess(true);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form className="newsletter-form" onSubmit={onSubmit}>
+    <Form
+      schema={newsletterFormSchema}
+      handleSubmit={handleSubmit}
+      className="newsletter-form"
+      defaultValues={{ email: "" }}>
       <div className="border">
         {success ? (
           <span>Thank you</span>
         ) : loading ? (
           <LoadingSpinnerIcon className="loading-spinner" />
         ) : (
-          <input
-            className="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            required
-            placeholder={placeholder}
-          />
+          <Input name="email" className="email" type="email" placeholder={placeholder} />
         )}
       </div>
 
       <button className="btn mono" type="submit" disabled={loading || success}>
         {submitText}
       </button>
-    </form>
+    </Form>
   );
 }
