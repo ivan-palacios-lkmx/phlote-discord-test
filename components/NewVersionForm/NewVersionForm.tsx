@@ -52,8 +52,8 @@ export default function NewVersionForm({
     setValue("name", generatedName);
   }
 
-  function encodeTag(category: string, option: string) {
-    return `${category}:${option}`;
+  function encodeTag(categoryName: string, option: string) {
+    return `${categoryName}:${option}`;
   }
 
   return (
