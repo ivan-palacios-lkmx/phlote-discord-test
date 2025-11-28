@@ -6,12 +6,12 @@ export const addressSchema = address;
 const visibility = z.enum(["public", "private"]).optional();
 export const visibilitySchema = visibility;
 
-const name = z.string().optional();
+const name = z.string().nullable().optional();
 const email = z.string().email().optional();
-const twitterHandle = z.string().optional();
-const discordHandle = z.string().optional();
-const discordUserID = z.string().optional();
-const dmChannel = z.string().optional();
+const twitterHandle = z.string().nullable().optional();
+const discordHandle = z.string().nullable().optional();
+const discordUserID = z.string().nullable().optional();
+const dmChannel = z.string().nullable().optional();
 const title = z.string().optional();
 
 export const contactSchema = z.object({

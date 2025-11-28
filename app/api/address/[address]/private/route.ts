@@ -34,7 +34,7 @@ export async function PUT(
       return NextResponse.json({ error: "Invalid contact format" }, { status: 400 });
     }
 
-    await AddressService.updatePrivateAddressData(address, name, twitterHandle, email);
+    await AddressService.patchPrivateAddressData(address, name, twitterHandle, email);
 
     return NextResponse.json({ message: "Contact updated" }, { status: 200 });
   } catch (error) {

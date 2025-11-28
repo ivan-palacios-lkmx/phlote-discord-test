@@ -93,11 +93,11 @@ export default function MemberCard({ member }: MemberCardProps) {
       {
         onSuccess: () => {
           if (formValues.name || formValues.twitterHandle || formValues.email) {
-            const contact: ContactDocWithID = {
+            const contact = {
               id: address,
-              name: formValues.name || undefined,
-              twitterHandle: formValues.twitterHandle || undefined,
-              email: formValues.email || undefined,
+              name: formValues.name || null,
+              twitterHandle: formValues.twitterHandle || null,
+              email: formValues.email || null,
             };
             updatePrivateAddress({ address, contact });
           }

@@ -250,19 +250,25 @@ export class AddressService {
     return getIDAndDocumentDataFromDocumentSnapshot<AddressDocWithID>(publicAddressDoc);
   }
 
-  static async updatePrivateAddressData(
+  static async patchPrivateAddressData(
     address: string,
-    name: string | undefined,
-    twitterHandle: string | undefined,
-    email: string | undefined,
+    name?: string,
+    twitterHandle?: string,
+    email?: string,
   ): Promise<WriteResult> {
-    const privateAddressDoc = await adminDb
+    const updateData: Record<string, unknown> = {
+      updated: FieldValue.serverTimestamp(),
+    };
+    if (name !== undefined) updateData.name = name;
+    if (twitterHandle !== undefined) updateData.twitterHandle = twitterHandle;
+    if (email !== undefined) updateData.email = email;
+    const result = await adminDb
       .collection(ADDRESSES_COLLECTION)
       .doc(address)
       .collection(PRIVATE_COLLECTION)
       .doc(CONTACT_DOC_ID)
-      .set({ name, twitterHandle, email, updated: new Date() });
-    return privateAddressDoc;
+      .set(updateData, { merge: true });
+    return result;
   }
 
   static async getRawAddressSnapshot(

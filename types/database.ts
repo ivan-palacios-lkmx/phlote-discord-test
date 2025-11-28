@@ -249,17 +249,17 @@ export interface SettingsDoc {
  */
 export interface ContactDoc {
   /** Full name of the contact */
-  name?: string;
+  name?: string | null;
   /** Email address */
-  email?: string;
+  email?: string | null;
   /** Twitter/X username handle */
-  twitterHandle?: string;
+  twitterHandle?: string | null;
   /** Discord user ID */
-  discordUserID?: string;
+  discordUserID?: string | null;
   /** Discord username handle */
-  discordHandle?: string;
+  discordHandle?: string | null;
   /** Discord DM channel ID */
-  dmChannel?: string;
+  dmChannel?: string | null;
   /** Date the contact information was last updated */
   updated?: Timestamp | Date;
 }
