@@ -192,3 +192,7 @@ export const applicationFormSchema = z.object({
 export const addAdminSchema = z.object({
   address: addressSchema,
 });
+
+export const addCreatorSchema = z.object({
+  address: addressSchema,
+});

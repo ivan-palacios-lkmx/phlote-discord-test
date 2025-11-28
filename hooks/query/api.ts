@@ -330,6 +330,18 @@ class Api {
     }
   }
 
+  static async createCreator(
+    address: string,
+  ): Promise<{ message?: string; creator?: WriteResult }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.CREATORS, { address });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating creator:", error);
+      throw error;
+    }
+  }
+
   static async deleteCreator(address: string): Promise<{ message: string }> {
     try {
       const response = await apiClient.delete(ENDPOINTS.CREATORS, {

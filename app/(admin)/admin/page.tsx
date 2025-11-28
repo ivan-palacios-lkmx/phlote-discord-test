@@ -8,12 +8,13 @@ import RoleCreator from "@/components/admin/RoleCreator/RoleCreator";
 import SessionTags from "@/components/admin/SessionTags/SessionTags";
 import StemsPlayerCarousel from "@/components/admin/StemsPlayerCarousel/StemsPlayerCarousel";
 import { useCreateAdmin } from "@/hooks/query/mutations/use-create-admin";
+import { useCreateCreator } from "@/hooks/query/mutations/use-create-creator";
 import { useDeleteAdmin } from "@/hooks/query/mutations/use-delete-admin";
 import { useDeleteCreator } from "@/hooks/query/mutations/use-delete-creator";
 import { useGetAdmins } from "@/hooks/query/query-hooks/use-get-admins";
 import { useGetCreators } from "@/hooks/query/query-hooks/use-get-creators";
 import { AddressDocWithID } from "@/types/database";
-import { addAdminSchema } from "@/utils/zod-schemas";
+import { addAdminSchema, addCreatorSchema } from "@/utils/zod-schemas";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 
@@ -26,6 +27,7 @@ export default function AdminPage() {
   const { mutate: deleteAdmin } = useDeleteAdmin();
   const { mutate: deleteCreator } = useDeleteCreator();
   const { mutate: addAdmin } = useCreateAdmin();
+  const { mutate: addCreator } = useCreateCreator();
   const handleRemoveAdmin = (address: AddressDocWithID) => {
     deleteAdmin(
       { address: address.id },
@@ -65,6 +67,17 @@ export default function AdminPage() {
     });
   }
 
+  function handleAddCreator(formValues: z.infer<typeof addCreatorSchema>) {
+    addCreator(formValues, {
+      onSuccess: () => {
+        queryClient.setQueriesData<AddressDocWithID[]>({ queryKey: ["creators"] }, (oldData) => {
+          if (!oldData) return oldData;
+          return [...oldData, { id: formValues.address, address: formValues.address }];
+        });
+      },
+    });
+  }
+
   return (
     <main className="admin-index">
       <div className="contained">
@@ -81,6 +94,7 @@ export default function AdminPage() {
             creators={creators || []}
             isLoadingUsers={isPendingCreators}
             onRemoveCreator={handleRemoveCreator}
+            onAddCreator={handleAddCreator}
           />
           <SessionTags />
           <MemberTags />

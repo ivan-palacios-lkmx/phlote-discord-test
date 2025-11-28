@@ -1,11 +1,13 @@
 "use client";
 
+import Form from "@/components/Form/Form";
+import { Input } from "@/components/Form/Input/Input";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { AddressDocWithID } from "@/types/database";
-import checkAddress from "@/utils/checkAddress";
 import { transformToShortAddress } from "@/utils/functions";
-import { useMemo, useState } from "react";
+import { addCreatorSchema } from "@/utils/zod-schemas";
+import { z } from "zod";
 
 import "./RoleCreator.scss";
 
@@ -51,29 +53,15 @@ interface RoleCreatorProps {
   creators: AddressDocWithID[];
   isLoadingUsers: boolean;
   onRemoveCreator: (address: AddressDocWithID) => void;
+  onAddCreator: (formValues: z.infer<typeof addCreatorSchema>) => void;
 }
 
 export default function RoleCreator({
   creators,
   isLoadingUsers,
   onRemoveCreator,
+  onAddCreator,
 }: RoleCreatorProps) {
-  const [newCreator, setNewCreator] = useState("");
-  const newCreatorFormatted = useMemo(() => {
-    return checkAddress(newCreator);
-  }, [newCreator]);
-
-  const handleAddCreator = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!newCreatorFormatted) {
-      alert("No valid address to add");
-      return;
-    }
-
-    setNewCreator("");
-  };
-
   const handleRemoveCreatorClick = (address: AddressDocWithID) => {
     onRemoveCreator(address);
   };
@@ -93,18 +81,12 @@ export default function RoleCreator({
         ))}
       </div>
 
-      <form onSubmit={handleAddCreator} className="add-creator">
-        <input
-          type="text"
-          className="text-input"
-          placeholder="0xABC123..."
-          value={newCreator}
-          onChange={(e) => setNewCreator(e.target.value)}
-        />
+      <Form schema={addCreatorSchema} handleSubmit={onAddCreator} className="add-creator">
+        <Input name="address" type="text" className="text-input" placeholder="0xABC123..." />
         <button className="add-button" type="submit">
           Add
         </button>
-      </form>
+      </Form>
     </div>
   );
 }
