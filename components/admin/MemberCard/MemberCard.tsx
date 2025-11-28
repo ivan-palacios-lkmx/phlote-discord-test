@@ -172,9 +172,8 @@ export default function MemberCard({ member }: MemberCardProps) {
           <div key={i} className="tag-select">
             <label className="label">{tag.name}</label>
             <MultiSelect
-              value={memberTagsRaw[i] || []}
+              name={`memberTags[${i}]`}
               options={tag.options || []}
-              onChange={(newValue) => handleTagChange(i, newValue)}
               closeOnSelect={false}
             />
           </div>
