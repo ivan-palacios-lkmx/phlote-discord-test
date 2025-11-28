@@ -1,5 +1,6 @@
 import { AddressService } from "@/services/address-service";
 import { addressSchema, visibilitySchema } from "@/utils/zod-schemas";
+import { getAddress } from "ethers/address";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -33,12 +34,28 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (!addressSchema.safeParse(address).success) {
       return NextResponse.json({ error: "Invalid address" }, { status: 400 });
     }
+    const formattedAddress = getAddress(address);
+    if (!formattedAddress) {
+      return NextResponse.json({ error: "Invalid address" }, { status: 400 });
+    }
+    const addressAlreadyExists = await AddressService.getSingleAddress(formattedAddress, false);
 
-    const addressAvatar = await AddressService.getAvatarFromExternalSources(address);
+    if (addressAlreadyExists) {
+      AddressService.updateAddressRole(formattedAddress, "creator");
+      return NextResponse.json({ message: "Address updated as creator" }, { status: 204 });
+    }
 
-    const creator = await AddressService.createAddress(address, false, addressAvatar, true, false);
+    const addressAvatar = await AddressService.getAvatarFromExternalSources(formattedAddress);
 
-    return NextResponse.json({ creator }, { status: 200 });
+    const creator = await AddressService.createAddress(
+      formattedAddress,
+      false,
+      addressAvatar,
+      true,
+      false,
+    );
+
+    return NextResponse.json({ creator }, { status: 201 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
