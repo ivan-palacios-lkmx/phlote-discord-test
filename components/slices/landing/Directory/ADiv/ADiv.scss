@@ -1,9 +1,12 @@
-@import '../../../../../app/assets/scss/vars';
+@import '@/app/assets/scss/vars';
 
-.a-div {
-  @include standard-button;
-  display: inline-block;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
+.link-wrap {
+  margin-top: 10px;
+
+  .a-div,
+  button {
+    font-family: var(--font-mono);
+    text-decoration: underline;
+    text-transform: uppercase;
+  }
 }

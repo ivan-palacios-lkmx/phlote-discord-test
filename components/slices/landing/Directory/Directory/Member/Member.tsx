@@ -7,10 +7,12 @@ import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
 import CopyButton from "@/components/slices/landing/Directory/CopyButton";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
+import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";
+import useTags from "@/hooks/useTags";
 import type { AlgoliaAddress } from "@/types/database";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import "./Member.scss";
 
@@ -26,11 +28,13 @@ interface ActiveFilter {
   name: string;
 }
 
-export default function Member({ address, activeFilters: activeFilters, style }: MemberProps) {
+const Member = memo(function Member({ address, activeFilters: activeFilters, style }: MemberProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isIntersected, setIsIntersected] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const { data: addressPrivateInfo } = useGetAddressPrivateInfo(address.objectID, address.isPublic);
 
   // Intersection Observer
   useEffect(() => {
@@ -54,10 +58,10 @@ export default function Member({ address, activeFilters: activeFilters, style }:
   // Tags - TODO: Implement useFbGlobals and useTags hooks
   // const { settingsDoc } = useFbGlobals();
   // const { decodeTag } = useTags();
-  const tags: string[] = [];
-  if (address?.isAdmin) tags.push("Admin");
-  else if (address?.isCreator) tags.push("Creator");
-  // TODO: Add tag decoding logic
+  const { decodeTag } = useTags();
+  const tags: string[] = address?.tags?.map((tag) => decodeTag(tag).value) || [];
+  if (address?.isAdmin) tags.unshift("Admin");
+  else if (address?.isCreator) tags.unshift("Creator");
 
   // Contact info - Firebase commented out
   // const contactDocRef =
@@ -67,7 +71,10 @@ export default function Member({ address, activeFilters: activeFilters, style }:
   // Placeholder values until Firebase is enabled
   // const contactDoc = null;
   // const twitterHandle = undefined; // contactDoc?.twitterHandle as string | undefined;
-  const twitterLink = undefined; // twitterHandle ? `https://x.com/${twitterHandle.replace(/^@/, "")}` : undefined;
+
+  const twitterLink = addressPrivateInfo?.twitterHandle
+    ? `https://x.com/${addressPrivateInfo.twitterHandle.replace(/^@/, "")}`
+    : undefined;
 
   // Create member link
   const linkTo =
@@ -188,10 +195,16 @@ export default function Member({ address, activeFilters: activeFilters, style }:
 
       {/* Contact */}
       <div className="link-wrap">
-        {address.discordHandle && <CopyButton copyText={address.discordHandle}>Discord</CopyButton>}
+        {addressPrivateInfo?.discordHandle && (
+          <CopyButton copyText={addressPrivateInfo.discordHandle}>Discord</CopyButton>
+        )}
         {twitterLink && <ADiv href={twitterLink}>Twitter</ADiv>}
-        {address.email && <ADiv href={`mailto:${address.email}`}>Email</ADiv>}
+        {addressPrivateInfo?.email && (
+          <ADiv href={`mailto:${addressPrivateInfo.email}`}>Email</ADiv>
+        )}
       </div>
     </div>
   );
-}
+});
+
+export default Member;

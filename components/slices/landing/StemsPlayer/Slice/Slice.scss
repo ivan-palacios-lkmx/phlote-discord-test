@@ -1,5 +1,6 @@
 @import '../../../../../app/assets/scss/vars';
 
+
 .slice-stems-player-slide {
   background-color: var(--black);
   box-shadow: 0px 14px 50px 0px rgba(#000, 0.8);
@@ -23,7 +24,6 @@
     opacity: 0.5;
     height: 100%;
     width: 100%;
-    z-index: -1;
   }
 
   .padder {

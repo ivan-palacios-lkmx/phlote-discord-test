@@ -65,9 +65,5 @@ export default function ADiv({
   }
 
   const Component = replaceWith;
-  return (
-    <Component className={`a-div ${className}`.trim()}>
-      {children}
-    </Component>
-  );
+  return <Component className={`a-div ${className}`.trim()}>{children}</Component>;
 }

@@ -73,6 +73,12 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
     ];
   }, [types, tags]);
 
+  const memberStyles = useMemo(() => {
+    return members.map((_, i) => ({
+      transitionDelay: `${(i % 4) * 200}ms`,
+    }));
+  }, [members]);
+
   // Remove filter
   const removeFilter = (slug: string, value: string) => {
     const current = new URLSearchParams(searchParams.toString());
@@ -187,11 +193,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
         <ul className="member-grid ul-reset">
           {members.map((member, i) => (
             <li key={member.objectID || i}>
-              <Member
-                address={member}
-                activeFilters={activeFilters}
-                style={{ transitionDelay: `${(i % 4) * 200}ms` }}
-              />
+              <Member address={member} activeFilters={activeFilters} style={memberStyles[i]} />
             </li>
           ))}
         </ul>
