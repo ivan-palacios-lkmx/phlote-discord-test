@@ -15,7 +15,6 @@ import { AddressDocWithID, ContactDocWithID, TagCategory } from "@/types/databas
 import { memberCardSchema } from "@/utils/zod-schemas";
 import kebabCase from "lodash/kebabCase";
 import { useEffect, useMemo, useState } from "react";
-import { useFormContext } from "react-hook-form";
 import { z } from "zod";
 
 import "./MemberCard.scss";
@@ -56,23 +55,8 @@ function MemberCardForm({
   setMemberTagsRaw,
   memberTags,
 }: MemberCardFormProps) {
-  const { watch, reset } = useFormContext<z.infer<typeof memberCardSchema>>();
-  const isPublic = watch("isPublic") || false;
-
   const { data: addressInfo } = useGetAddressInfo(member.id, false, !!member.id);
   const { data: privateInfo } = useGetAddressPrivateInfo(member.id, !!member.id);
-
-  useEffect(() => {
-    if (addressInfo && privateInfo) {
-      reset({
-        isPublic: !!addressInfo.isPublic,
-        name: privateInfo.name || "",
-        title: addressInfo.title || "",
-        twitterHandle: privateInfo.twitterHandle || "",
-        email: privateInfo.email || "",
-      });
-    }
-  }, [addressInfo, privateInfo, reset]);
 
   const handleTagChange = (index: number, newValue: string[]) => {
     const newTagsRaw = [...memberTagsRaw];
@@ -89,20 +73,36 @@ function MemberCardForm({
             <h6>
               <UsernameFromAddress address={member.id} />
             </h6>
-            <span className="subtext">{isPublic ? "Public" : "Private"}</span>
+            <span className="subtext">{addressInfo?.isPublic ? "Public" : "Private"}</span>
           </div>
         </div>
         <div className="private-toggle">
-          <AdminToggle name="isPublic" defaultValue={!!addressInfo?.isPublic} />
+          <AdminToggle
+            name="isPublic"
+            defaultValue={!!addressInfo?.isPublic}
+            resetValue={!!addressInfo?.isPublic}
+          />
         </div>
       </div>
 
       <div className="inputs">
         <label className="label">Name</label>
-        <Input name="name" placeholder="John Doe" className="text-inpt" type="text" />
+        <Input
+          name="name"
+          placeholder="John Doe"
+          className="text-inpt"
+          type="text"
+          resetValue={privateInfo?.name || ""}
+        />
 
         <label className="label">Title</label>
-        <Input name="title" placeholder="Songwriter" className="text-inpt" type="text" />
+        <Input
+          name="title"
+          placeholder="Songwriter"
+          className="text-inpt"
+          type="text"
+          resetValue={addressInfo?.title || ""}
+        />
 
         <label className="label">Twitter</label>
         <Input
@@ -111,10 +111,17 @@ function MemberCardForm({
           pattern="^@(\w){1,15}$"
           className="text-inpt"
           type="text"
+          resetValue={privateInfo?.twitterHandle || ""}
         />
 
         <label className="label">Email</label>
-        <Input name="email" placeholder="name@domain.com" className="text-inpt" type="email" />
+        <Input
+          name="email"
+          placeholder="name@domain.com"
+          className="text-inpt"
+          type="email"
+          resetValue={privateInfo?.email || ""}
+        />
 
         {memberTags.map((tag, i) => (
           <div key={i} className="tag-select">

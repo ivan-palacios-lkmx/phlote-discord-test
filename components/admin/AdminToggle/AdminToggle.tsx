@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 import "./AdminToggle.scss";
@@ -7,10 +8,17 @@ import "./AdminToggle.scss";
 interface AdminToggleProps {
   name: string;
   defaultValue: boolean;
+  resetValue?: boolean;
 }
 
-export default function AdminToggle({ name, defaultValue }: AdminToggleProps) {
-  const { control } = useFormContext();
+export default function AdminToggle({ name, defaultValue, resetValue }: AdminToggleProps) {
+  const { control, reset } = useFormContext();
+
+  useEffect(() => {
+    if (resetValue) {
+      reset({ [name]: resetValue });
+    }
+  }, [resetValue, name, reset]);
 
   return (
     <Controller
