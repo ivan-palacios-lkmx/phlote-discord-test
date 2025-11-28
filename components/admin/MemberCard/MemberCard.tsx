@@ -114,12 +114,6 @@ export default function MemberCard({ member }: MemberCardProps) {
     };
   }, [addressInfo, privateInfo]);
 
-  function handleTagChange(index: number, newValue: string[]) {
-    const newTagsRaw = [...memberTagsRaw];
-    newTagsRaw[index] = newValue;
-    setMemberTagsRaw(newTagsRaw);
-  }
-
   if (!member?.id) {
     return null;
   }
