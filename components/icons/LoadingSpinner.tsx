@@ -16,9 +16,9 @@ const LoadingSpinner = (props: React.SVGProps<SVGSVGElement>) => {
         r="40"
         strokeWidth="4"
         stroke="currentColor"
-        stroke-dasharray="62 62"
+        strokeDasharray="62 62"
         fill="none"
-        stroke-linecap="round">
+        strokeLinecap="round">
         <animateTransform
           attributeName="transform"
           type="rotate"
