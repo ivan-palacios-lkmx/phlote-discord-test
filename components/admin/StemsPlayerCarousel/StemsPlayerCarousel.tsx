@@ -81,9 +81,29 @@ export default function StemsPlayerCarousel() {
   const handleCarouselDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (!over || active.id === over.id) {
+    if (!over || active.id === over.id || !stemsCarousel) {
       return;
     }
+
+    const oldIndex = stemsCarousel.findIndex((id) => id === active.id);
+    const newIndex = stemsCarousel.findIndex((id) => id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) {
+      return;
+    }
+
+    const newCarousel = [...stemsCarousel];
+    const [removed] = newCarousel.splice(oldIndex, 1);
+    newCarousel.splice(newIndex, 0, removed);
+
+    updateStemsCarousel(
+      { stemsCarousel: newCarousel },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+        },
+      },
+    );
   };
 
   const onRemoveItem = (itemID: string) => {
