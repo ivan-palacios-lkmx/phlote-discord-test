@@ -93,7 +93,7 @@ function MemberCardForm({
           </div>
         </div>
         <div className="private-toggle">
-          <AdminToggleWithForm />
+          <AdminToggle name="isPublic" defaultValue={!!addressInfo?.isPublic} />
         </div>
       </div>
 
@@ -136,13 +136,6 @@ function MemberCardForm({
       </div>
     </>
   );
-}
-
-function AdminToggleWithForm() {
-  const { watch, setValue } = useFormContext<z.infer<typeof memberCardSchema>>();
-  const isPublic = watch("isPublic") || false;
-
-  return <AdminToggle checked={isPublic} onChange={(value) => setValue("isPublic", value)} />;
 }
 
 export default function MemberCard({ member }: MemberCardProps) {

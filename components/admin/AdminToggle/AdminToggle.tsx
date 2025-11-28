@@ -1,21 +1,31 @@
 "use client";
 
+import { Controller, useFormContext } from "react-hook-form";
+
 import "./AdminToggle.scss";
 
 interface AdminToggleProps {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
+  name: string;
+  defaultValue: boolean;
 }
 
-export default function AdminToggle({ checked, onChange }: AdminToggleProps) {
-  const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(!!e.target.checked);
-  };
+export default function AdminToggle({ name, defaultValue }: AdminToggleProps) {
+  const { control } = useFormContext();
 
   return (
-    <label className="admin-toggle">
-      <input type="checkbox" checked={checked} onChange={handleToggle} />
-      <span className="slider round"></span>
-    </label>
+    <Controller
+      control={control}
+      name={name}
+      defaultValue={defaultValue}
+      render={({ field, fieldState }) => (
+        <>
+          <label className="admin-toggle">
+            <input type="checkbox" checked={field.value} onChange={field.onChange} />
+            <span className="slider round"></span>
+          </label>
+          {fieldState.error && <p className="input-error">{fieldState.error.message}</p>}
+        </>
+      )}
+    />
   );
 }
