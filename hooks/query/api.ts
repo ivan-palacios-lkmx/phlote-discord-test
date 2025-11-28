@@ -308,6 +308,16 @@ class Api {
     }
   }
 
+  static async createAdmin(address: string): Promise<{ message?: string; admin?: WriteResult }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ADMINS, { address });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating admin:", error);
+      throw error;
+    }
+  }
+
   static async deleteAdmin(address: string): Promise<{ message: string }> {
     try {
       const response = await apiClient.delete(ENDPOINTS.ADMINS, {
