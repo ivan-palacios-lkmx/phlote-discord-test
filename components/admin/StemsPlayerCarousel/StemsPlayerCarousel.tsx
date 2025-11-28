@@ -146,7 +146,24 @@ export default function StemsPlayerCarousel() {
   };
 
   const onAddToCarousel = (versionID: string) => {
-    setSelectedSession(null);
+    if (!stemsCarousel) return;
+
+    if (stemsCarousel.includes(versionID)) {
+      setSelectedSession(null);
+      return;
+    }
+
+    const updatedCarousel = [...stemsCarousel, versionID];
+
+    updateStemsCarousel(
+      { stemsCarousel: updatedCarousel },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+          setSelectedSession(null);
+        },
+      },
+    );
   };
 
   return (
