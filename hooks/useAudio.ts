@@ -1,6 +1,5 @@
 "use client";
 
-import { useFbEndpoints } from "@/hooks/useFbEndpoints";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -55,14 +54,16 @@ export default function useAudio(versionID: string | null | undefined) {
   }, [versionID]);
 
   // Fetch audio src from version (bounce)
-  const fetchSrc = async (vid: string) => {
+  const fetchSrc = async (vid: string): Promise<string | null> => {
     try {
       const { bounceSignedUrl: bounce } = await getVersionAudio({
         versionID: vid,
       });
       setSrc(bounce);
+      return bounce;
     } catch (err) {
       console.error("Error fetching audio src:", err);
+      return null;
     }
   };
 
@@ -93,21 +94,29 @@ export default function useAudio(versionID: string | null | undefined) {
   const togglePlay = async () => {
     setLoading(true);
 
-    if (!src && safeID) {
-      await fetchSrc(safeID);
+    // Fetch src if needed and get the value directly
+    let currentSrc = src;
+    if (!currentSrc && safeID) {
+      currentSrc = await fetchSrc(safeID);
+      if (!currentSrc) {
+        setLoading(false);
+        return;
+      }
     }
 
-    if (!trackID && src) {
+    // Create track if needed, using the current src value
+    let currentTrackID = trackID;
+    if (!currentTrackID && currentSrc) {
       const newTrack = new Howl({
-        src: src,
+        src: currentSrc,
       });
       globalTracks.push(newTrack);
       const newTrackID = globalTracks.length - 1;
       setTrackID(newTrackID);
+      currentTrackID = newTrackID;
     }
 
-    const currentTrackID = trackID ?? globalTracks.length - 1;
-    const track = globalTracks[currentTrackID];
+    const track = globalTracks[currentTrackID ?? globalTracks.length - 1];
 
     if (!track) {
       setLoading(false);
@@ -150,7 +159,7 @@ export default function useAudio(versionID: string | null | undefined) {
       if (typeof currentSeek === "number") {
         track.seek(playhead);
       }
-      globalCurrentPlaying = currentTrackID;
+      globalCurrentPlaying = currentTrackID ?? globalTracks.length - 1;
       setPlaying(true);
     } else {
       setPlaying(false);
