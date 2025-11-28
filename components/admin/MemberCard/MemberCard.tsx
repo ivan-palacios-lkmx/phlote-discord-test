@@ -46,6 +46,7 @@ export default function MemberCard({ member }: MemberCardProps) {
     return { name: parts[0], value: parts[1] };
   }
 
+  // this function is used to encode the tags from the frontend format to the backend format
   const memberTagsInBackendFormat = useMemo(() => {
     return memberTags.reduce((agg, group, i) => {
       const categoryName = group.name;
@@ -56,6 +57,7 @@ export default function MemberCard({ member }: MemberCardProps) {
     }, [] as string[]);
   }, [memberTags, memberTagsRaw]);
 
+  // this useEffect is used to decode the tags from the backend format to the frontend format
   useEffect(() => {
     if (!memberTags.length || !addressInfo?.tags) return;
 
