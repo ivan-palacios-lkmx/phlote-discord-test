@@ -66,6 +66,16 @@ class Api {
     }
   }
 
+  static async putSettings(data: { stemsCarousel: string[] }): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.put(ENDPOINTS.GET_SETTINGS, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      throw error;
+    }
+  }
+
   static async getSessions(): Promise<SessionDocWithID[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.SESSIONS);
