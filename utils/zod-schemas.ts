@@ -188,3 +188,7 @@ export const applicationFormSchema = z.object({
   ethAddress,
   tracks,
 });
+
+export const addAdminSchema = z.object({
+  address: addressSchema,
+});

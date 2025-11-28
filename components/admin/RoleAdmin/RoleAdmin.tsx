@@ -1,11 +1,13 @@
 "use client";
 
+import Form from "@/components/Form/Form";
+import { Input } from "@/components/Form/Input/Input";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { AddressDocWithID } from "@/types/database";
-import checkAddress from "@/utils/checkAddress";
 import { transformToShortAddress } from "@/utils/functions";
-import { useMemo, useState } from "react";
+import { addAdminSchema } from "@/utils/zod-schemas";
+import { z } from "zod";
 
 import "./RoleAdmin.scss";
 
@@ -49,24 +51,18 @@ interface RoleAdminProps {
   admins: AddressDocWithID[];
   isLoadingUsers: boolean;
   onRemoveAdmin: (address: AddressDocWithID) => void;
+  onAddAdmin: (formValues: z.infer<typeof addAdminSchema>) => void;
 }
 
-export default function RoleAdmin({ admins, isLoadingUsers, onRemoveAdmin }: RoleAdminProps) {
-  const [newAdmin, setNewAdmin] = useState("");
-  const newAdminFormatted = useMemo(() => {
-    return checkAddress(newAdmin);
-  }, [newAdmin]);
-
-  const handleAddAdmin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!newAdminFormatted) {
-      alert("No valid address to add");
-      return;
-    }
-
-    setNewAdmin("");
-  };
+export default function RoleAdmin({
+  admins,
+  isLoadingUsers,
+  onRemoveAdmin,
+  onAddAdmin,
+}: RoleAdminProps) {
+  function handleAddAdmin(formValues: z.infer<typeof addAdminSchema>) {
+    onAddAdmin(formValues);
+  }
 
   const handleRemoveAdminClick = (address: AddressDocWithID) => {
     onRemoveAdmin(address);
@@ -87,18 +83,12 @@ export default function RoleAdmin({ admins, isLoadingUsers, onRemoveAdmin }: Rol
         ))}
       </div>
 
-      <form onSubmit={handleAddAdmin} className="add-admin">
-        <input
-          type="text"
-          className="text-input"
-          placeholder="0xABC123..."
-          value={newAdmin}
-          onChange={(e) => setNewAdmin(e.target.value)}
-        />
+      <Form schema={addAdminSchema} handleSubmit={handleAddAdmin} className="add-admin">
+        <Input name="address" type="text" className="text-input" placeholder="0xABC123..." />
         <button className="add-button" type="submit">
           Add
         </button>
-      </form>
+      </Form>
     </div>
   );
 }
