@@ -41,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const addressAlreadyExists = await AddressService.getSingleAddress(formattedAddress, false);
 
     if (addressAlreadyExists) {
-      AddressService.updateAddressRole(formattedAddress, "creator");
+      await AddressService.updateAddressRole(formattedAddress, "creator");
       return NextResponse.json({ message: "Address updated as creator" }, { status: 200 });
     }
 
