@@ -36,7 +36,7 @@ export class AddressService {
     // TODO: Check permissions to delete admin address, idk if this should be done here or in the middleware
     try {
       await this.deleteAddressFromRoles(address, "admins");
-      this.removeRoleFromAddress(address, "admin");
+      await this.removeRoleFromAddress(address, "admin");
     } catch (error) {
       console.error("Error deleting admin address:", error);
       throw error;
