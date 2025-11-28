@@ -14,7 +14,7 @@ const LoadingSpinner = (props: React.SVGProps<SVGSVGElement>) => {
         cx="50"
         cy="50"
         r="40"
-        stroke-width="4"
+        strokeWidth="4"
         stroke="currentColor"
         stroke-dasharray="62 62"
         fill="none"
