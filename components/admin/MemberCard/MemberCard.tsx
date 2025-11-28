@@ -26,31 +26,31 @@ interface MemberCardProps {
 export default function MemberCard({ member }: MemberCardProps) {
   const [memberTagsRaw, setMemberTagsRaw] = useState<string[][]>([]);
 
-  const { data: settingsDoc } = useGetSettings();
+  const { data: settings } = useGetSettings();
   const { data: addressInfo } = useGetAddressInfo(member.id, false, !!member.id);
   const { data: privateInfo } = useGetAddressPrivateInfo(member.id, !!member.id);
 
   const memberTags = useMemo<TagCategory[]>(() => {
-    return (settingsDoc?.availableMemberTags as TagCategory[] | undefined) || [];
-  }, [settingsDoc]);
+    return (settings?.availableMemberTags as TagCategory[] | undefined) || [];
+  }, [settings]);
 
-  const encodeTag = (cat: string, value: string): string => {
-    const cleanCat = kebabCase(String(cat).trim());
-    const cleanVal = kebabCase(String(value).trim());
-    return `${cleanCat}:${cleanVal}`;
-  };
+  function encodeTag(category: string, value: string): string {
+    const cleanCategory = kebabCase(String(category).trim());
+    const cleanValue = kebabCase(String(value).trim());
+    return `${cleanCategory}:${cleanValue}`;
+  }
 
-  const decodeTag = (tag: string): { name: string; value: string } => {
+  function decodeTag(tag: string): { name: string; value: string } {
     const parts = tag.split(":");
     if (parts.length !== 2) return { name: "", value: "" };
     return { name: parts[0], value: parts[1] };
-  };
+  }
 
-  const memberTagsFormatted = useMemo(() => {
+  const memberTagsInBackendFormat = useMemo(() => {
     return memberTags.reduce((agg, group, i) => {
-      const cat = group.name;
+      const categoryName = group.name;
       (memberTagsRaw[i] || []).forEach((tag) => {
-        agg.push(encodeTag(cat, tag));
+        agg.push(encodeTag(categoryName, tag));
       });
       return agg;
     }, [] as string[]);
@@ -85,7 +85,7 @@ export default function MemberCard({ member }: MemberCardProps) {
       {
         address,
         title: formValues.title || undefined,
-        tags: memberTagsFormatted.length > 0 ? memberTagsFormatted : undefined,
+        tags: memberTagsInBackendFormat.length > 0 ? memberTagsInBackendFormat : undefined,
         visibility: (formValues.isPublic ? "public" : "private") as "public" | "private",
       },
       {
@@ -114,11 +114,11 @@ export default function MemberCard({ member }: MemberCardProps) {
     };
   }, [addressInfo, privateInfo]);
 
-  const handleTagChange = (index: number, newValue: string[]) => {
+  function handleTagChange(index: number, newValue: string[]) {
     const newTagsRaw = [...memberTagsRaw];
     newTagsRaw[index] = newValue;
     setMemberTagsRaw(newTagsRaw);
-  };
+  }
 
   if (!member?.id) {
     return null;
