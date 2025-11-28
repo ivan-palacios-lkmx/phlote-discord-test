@@ -261,12 +261,21 @@ class Api {
     }
   }
 
-  static async submitAudio(audioFile: File): Promise<SubmitAudioResponse> {
+  static async submitAudio(
+    audioFile: File,
+    onUploadProgress?: (progress: number) => void,
+  ): Promise<SubmitAudioResponse> {
     try {
       const formData = new FormData();
       formData.append("audio", audioFile);
       const response = await apiClient.post(ENDPOINTS.AUDIO, formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          if (onUploadProgress && progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            onUploadProgress(percentCompleted);
+          }
+        },
       });
       return response.data;
     } catch (error) {
@@ -398,6 +407,25 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error subscribing to newsletter:", error);
+      throw error;
+    }
+  }
+
+  static async createCreatorApplication(data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    city: string;
+    info?: string;
+    workLink?: string;
+    ethAddress: string;
+    tracks: Array<{ name: string; id: string }>;
+  }): Promise<{ applicationId: string }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.CREATOR_APPLICATIONS, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating creator application:", error);
       throw error;
     }
   }

@@ -162,3 +162,29 @@ const newsletterEmail = z.string().email();
 export const newsletterFormSchema = z.object({
   email: newsletterEmail,
 });
+
+const firstName = z.string().min(1, "First name is required");
+const lastName = z.string().min(1, "Last name is required");
+const city = z.string().min(1, "City is required");
+const info = z.string().optional();
+const workLink = z.string().optional();
+const ethAddress = addressSchema;
+const tracks = z.array(
+  z.object({
+    name: z.string().min(1, "Name is required"),
+    id: z.string().min(1, "ID is required"),
+  }),
+);
+
+const applicationEmail = z.string().email().min(1, "Email is required");
+
+export const applicationFormSchema = z.object({
+  firstName,
+  lastName,
+  email: applicationEmail,
+  city,
+  info,
+  workLink,
+  ethAddress,
+  tracks,
+});

@@ -3,7 +3,7 @@
 import CloseIcon from "@/components/icons/Close";
 import _get from "lodash/get";
 import React, { useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 import "./TagGroup.scss";
 
@@ -26,7 +26,7 @@ export default function TagGroup({
     throw new Error("TagGroup requires a 'name' prop");
   }
 
-  const { setValue, watch } = useFormContext();
+  const { control, setValue, watch } = useFormContext();
   if (!setValue || !watch) {
     throw new Error("TagGroup must be used within a FormProvider");
   }
@@ -61,24 +61,33 @@ export default function TagGroup({
   };
 
   return (
-    <ul className="tag-group ul-reset">
-      {values.map((value, i) => (
-        <li key={`${name}-${value}`}>
-          <input
-            type={inputType}
-            name={name}
-            value={value}
-            id={`${name}-${value}`}
-            onChange={onInput}
-            required={required}
-            checked={isChecked(value)}
-          />
-          <label htmlFor={`${name}-${value}`}>
-            <span>{labelsText[i]}</span>
-            <CloseIcon />
-          </label>
-        </li>
-      ))}
-    </ul>
+    <Controller
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => (
+        <>
+          <ul className="tag-group ul-reset">
+            {values.map((value, i) => (
+              <li key={`${name}-${value}`}>
+                <input
+                  type={inputType}
+                  name={name}
+                  value={value}
+                  id={`${name}-${value}`}
+                  onChange={onInput}
+                  required={required}
+                  checked={isChecked(value)}
+                />
+                <label htmlFor={`${name}-${value}`}>
+                  <span>{labelsText[i]}</span>
+                  <CloseIcon />
+                </label>
+              </li>
+            ))}
+          </ul>
+          {fieldState.error && <p className="input-error">{fieldState.error.message}</p>}
+        </>
+      )}
+    />
   );
 }

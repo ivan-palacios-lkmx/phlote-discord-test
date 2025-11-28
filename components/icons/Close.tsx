@@ -3,16 +3,14 @@ import React from "react";
 const Close = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
+      className={`svg-close ${props.className || ""}`}
+      width="30"
+      height="31"
+      viewBox="0 0 30 31"
       fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
+      xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.05078 2.85205L27.9508 28.7521" stroke="currentColor" strokeWidth="3" />
+      <path d="M27.9512 2.85205L2.05117 28.7521" stroke="currentColor" strokeWidth="3" />
     </svg>
   );
 };

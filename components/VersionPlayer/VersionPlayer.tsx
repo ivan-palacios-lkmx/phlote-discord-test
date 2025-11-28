@@ -3,7 +3,7 @@
 import TrackPreview from "@/components/TrackPreview/TrackPreview";
 import PauseIcon from "@/components/icons/Pause";
 import PlayIcon from "@/components/icons/Play";
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { useGetVersionAudio } from "@/hooks/query/mutations/use-get-version-audio";
 import { VersionDocWithID } from "@/types/database";
 import { Howl } from "howler";

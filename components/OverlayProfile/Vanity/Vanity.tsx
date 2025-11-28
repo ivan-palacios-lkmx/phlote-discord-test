@@ -1,6 +1,6 @@
 "use client";
 
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 

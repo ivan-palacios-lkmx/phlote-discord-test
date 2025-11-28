@@ -1,6 +1,7 @@
 "use client";
 
 import "@/app/(product)/sessions/[sessionID]/sessionId.scss";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import SessionBreadcrumb from "@/components/session/SessionBreadcrumb/SessionBreadcrumb";
 import SessionDetailActivity from "@/components/session/SessionDetailActivity/SessionDetailActivity";
 import SessionDetailMeta from "@/components/session/SessionDetailMeta/SessionDetailMeta";
@@ -8,7 +9,6 @@ import SessionDetailNewVersion from "@/components/session/SessionDetailNewVersio
 import SessionDetailPlayer from "@/components/session/SessionDetailPlayer/SessionDetailPlayer";
 import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";
 import SessionDetailVersions from "@/components/session/SessionDetailVersions/SessionDetailVersions";
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";

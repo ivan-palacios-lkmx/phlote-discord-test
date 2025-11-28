@@ -1,7 +1,7 @@
 "use client";
 
 import Arrow from "@/components/icons/Arrow";
-import LoadingSpinner from "@/components/svg/loading_spinner.svg";
+import LoadingSpinner from "@/components/icons/LoadingSpinner";
 import React from "react";
 
 import "./VersionFormButton.scss";

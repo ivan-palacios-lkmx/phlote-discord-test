@@ -1,9 +1,9 @@
 "use client";
 
 import Form from "@/components/Form/Form";
-import { Input } from "@/components/Form/Input";
+import { Input } from "@/components/Form/Input/Input";
 import { usePrismicio } from "@/components/PrismicioProvider";
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { useSubscribeNewsletter } from "@/hooks/query/mutations/use-subscribe-newsletter";
 import { newsletterFormSchema } from "@/utils/zod-schemas";
 import { z } from "zod";
@@ -23,17 +23,7 @@ export default function NewsletterForm() {
   const submitText = settings.newsletter_submit_text?.text || "Submit";
 
   const handleSubmit = (formValues: z.infer<typeof newsletterFormSchema>) => {
-    subscribeNewsletter(
-      { email: formValues.email },
-      {
-        onSuccess: () => {
-          // Success is handled by isSuccess from the mutation
-        },
-        onError: () => {
-          // Error handling if needed
-        },
-      },
-    );
+    subscribeNewsletter({ email: formValues.email });
   };
 
   return (

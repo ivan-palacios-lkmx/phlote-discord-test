@@ -1,6 +1,6 @@
 "use client";
 
-import LoadingSpinnerIcon from "@/components/svg/loading_spinner.svg";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
 

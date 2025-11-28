@@ -137,17 +137,16 @@ export interface SessionDocWithID extends WithID, SessionDoc {}
 
 export interface AlgoliaSession extends withObjectID, SessionDoc {}
 
+export interface Track {
+  name: string;
+  id: string;
+}
 /**
  * The Stem interface defines the schema for individual stem audio files.
  *
  * Stems are separate audio tracks that make up a version (e.g., drums, bass, vocals).
  */
-export interface Stem {
-  /** Unique identifier for the stem */
-  id: string;
-  /** Name of the stem (e.g., "Drums", "Bass", "Vocals") */
-  name: string;
-}
+export type Stem = Track;
 
 /**
  * AlgoliaSession extends SessionDoc with an objectID field.
@@ -317,7 +316,7 @@ export interface ApplicationDoc {
   /** Ethereum address of the applicant */
   ethAddress: string;
   /** Tracks of the applicant */
-  tracks: Array<{ name: string; id: string }>;
+  tracks: Array<Track>;
   /** Additional information of the applicant */
   info?: string;
   /** Link to the applicant's portfolio/work */
