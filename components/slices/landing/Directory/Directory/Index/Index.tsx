@@ -10,6 +10,7 @@ import Member from "@/components/slices/landing/Directory/Directory/Member/Membe
 import SortMenu from "@/components/slices/landing/Directory/Directory/SortMenu/SortMenu";
 import useMembers from "@/hooks/useMembers";
 import usePushHeader from "@/hooks/usePushHeader";
+import useTags from "@/hooks/useTags";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 
@@ -29,6 +30,8 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
   const currentPage = parseInt(searchParams.get("page") || "0");
   const headerRef = useRef<HTMLDivElement>(null);
 
+  const { memberTags, decodeTag } = useTags();
+
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   usePushHeader(headerRef);
@@ -38,12 +41,6 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
     current.set("page", page.toString());
     router.push(`${pathname}?${current.toString()}`);
   }
-
-  // TODO: Implement useTags hook for dynamic tags
-  const memberTags = [
-    { name: "Skills", options: ["React", "Vue", "Node.js", "Python"] },
-    { name: "Location", options: ["NYC", "LA", "Chicago", "SF"] },
-  ];
 
   // Get sort value from URL or default to "all"
   const sortValue = useMemo(() => {
@@ -63,9 +60,6 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
     const tagsParam = searchParams.get("tags");
     return tagsParam ? tagsParam.split(",").filter(Boolean) : [];
   }, [searchParams]);
-
-  // TODO: Implement decodeTag
-  const decodeTag = (tag: string) => ({ value: tag });
 
   // Active filters
   const activeFilters = useMemo(() => {
@@ -179,7 +173,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
           <FilterTagGroup
             key={index}
             name={cat.name}
-            options={cat.options}
+            options={cat.options ?? []}
             selectedValues={tags}
             onToggle={toggleFilter}
           />

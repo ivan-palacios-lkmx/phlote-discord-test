@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import "./MultiRangeSlider.scss";
@@ -50,6 +51,20 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
     };
   }, []);
 
+  // Update the debounced function if onChange changes (but keep the same instance)
+  useEffect(() => {
+    debouncedOnChangeRef.current = debounce((newValue: { min: number; max: number }) => {
+      onChange(newValue);
+    }, 200);
+  }, [onChange]);
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedOnChangeRef.current.cancel();
+    };
+  }, []);
+
   // Calculate percentages
   const lowerP = useMemo(() => {
     return (lower - min) / (max - min);
@@ -90,7 +105,6 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
     const newLower = parseInt(e.target.value, 10);
     if (newLower <= upper) {
       setLower(newLower);
-      onChange({ min: newLower, max: upper });
     }
   };
 
@@ -99,8 +113,19 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
     const newUpper = parseInt(e.target.value, 10);
     if (newUpper >= lower) {
       setUpper(newUpper);
-      onChange({ min: lower, max: newUpper });
     }
+  };
+
+  // Debounced onChange handler - use useRef to keep it stable even if onChange changes
+  const debouncedOnChangeRef = useRef(
+    debounce((newValue: { min: number; max: number }) => {
+      onChange(newValue);
+    }, 200),
+  );
+
+  // Handle mouse/touch release - no need for useCallback
+  const handleRelease = () => {
+    debouncedOnChangeRef.current({ min: lower, max: upper });
   };
 
   return (
@@ -112,6 +137,8 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
         value={lower}
         onChange={handleLowerChange}
         className="lower default-styling"
+        onMouseUp={handleRelease}
+        onTouchEnd={handleRelease}
       />
       <input
         type="range"
@@ -120,6 +147,8 @@ export default function MultiRangeSlider({ min, max, value, onChange }: MultiRan
         value={upper}
         onChange={handleUpperChange}
         className="upper default-styling"
+        onMouseUp={handleRelease}
+        onTouchEnd={handleRelease}
       />
 
       <div className="track">
