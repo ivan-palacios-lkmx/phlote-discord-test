@@ -42,6 +42,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
+    const addressAlreadyExists = await AddressService.getSingleAddress(address, false);
+
+    if (addressAlreadyExists) {
+      return NextResponse.json({ message: "Logged in" }, { status: 200 });
+    }
+
     const isAddressMember = await RoleService.isMember(address);
 
     const addressAvatar = await AddressService.getAvatarFromExternalSources(address);
