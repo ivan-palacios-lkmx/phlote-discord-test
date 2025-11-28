@@ -13,7 +13,7 @@ export default function StemsPlayer() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
+    align: "center",
     containScroll: "trimSnaps",
     dragFree: false,
     loop: false,
@@ -39,10 +39,10 @@ export default function StemsPlayer() {
   return (
     <section className="slice-stems-player">
       {shouldMountCarousel ? (
-        <div className="embla" ref={setRefs}>
-          <div className="embla__container">
+        <div className="embla " ref={setRefs}>
+          <div className="embla__container ">
             {settings?.stemsCarousel?.map((versionID, index) => (
-              <div key={versionID || index} className="embla__slide">
+              <div key={versionID || index} className="embla__slide slice-stems-player-slide">
                 <Slice versionID={versionID} />
               </div>
             ))}
