@@ -252,14 +252,16 @@ export class AddressService {
 
   static async updatePrivateAddressData(
     address: string,
-    contact: ContactDocWithID,
+    name: string | undefined,
+    twitterHandle: string | undefined,
+    email: string | undefined,
   ): Promise<WriteResult> {
     const privateAddressDoc = await adminDb
       .collection(ADDRESSES_COLLECTION)
       .doc(address)
       .collection(PRIVATE_COLLECTION)
       .doc(CONTACT_DOC_ID)
-      .set(contact);
+      .set({ name, twitterHandle, email, updated: new Date() });
     return privateAddressDoc;
   }
 

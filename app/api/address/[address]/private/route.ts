@@ -28,23 +28,13 @@ export async function PUT(
   try {
     const address = params.address;
     const body = await request.json();
-    const { contact, visibility } = body;
+    const { name, twitterHandle, email } = body;
 
-    if (contact && !contactSchema.safeParse(contact).success) {
+    if (!contactSchema.safeParse({ name, twitterHandle, email }).success) {
       return NextResponse.json({ error: "Invalid contact format" }, { status: 400 });
     }
 
-    if (visibility && !visibilitySchema.safeParse(visibility).success) {
-      return NextResponse.json({ error: "Invalid visibility format" }, { status: 400 });
-    }
-
-    if (contact) {
-      await AddressService.updatePrivateAddressData(address, contact);
-    }
-
-    if (visibility) {
-      await AddressService.updateAddressVisibility(address, visibility);
-    }
+    await AddressService.updatePrivateAddressData(address, name, twitterHandle, email);
 
     return NextResponse.json({ message: "Contact updated" }, { status: 200 });
   } catch (error) {

@@ -82,7 +82,7 @@ export default function MemberCard({ member }: MemberCardProps) {
 
   function handleSave(formValues: z.infer<typeof memberCardSchema>) {
     const address = member.id;
-
+    // TODO: Fix the tags being passed to the backend
     patchAddress(
       {
         address,
