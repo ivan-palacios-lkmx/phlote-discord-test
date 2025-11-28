@@ -198,3 +198,5 @@ export const addCreatorSchema = z.object({
 });
 
 export const stemsCarouselSchema = z.array(z.string());
+
+export const versionIDSchema = z.string();

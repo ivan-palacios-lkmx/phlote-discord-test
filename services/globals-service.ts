@@ -6,10 +6,36 @@ import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queri
 import { DocumentSnapshot, FieldValue } from "firebase-admin/firestore";
 
 export class GlobalsService {
+  static async addVersionToStemsCarousel(versionID: string): Promise<void> {
+    await adminDb
+      .collection(GLOBAL_COLLECTION)
+      .doc(SETTING_DOC_ID)
+      .update({
+        stemsCarousel: FieldValue.arrayUnion(versionID),
+      });
+  }
+
+  static async getStemsCarousel(): Promise<string[]> {
+    const settings = await this.getSettingsData();
+    if (!settings) {
+      return [];
+    }
+    return settings.stemsCarousel ?? [];
+  }
+
   static async updateStemsCarousel(stemsCarousel: string[]): Promise<void> {
     await adminDb.collection(GLOBAL_COLLECTION).doc(SETTING_DOC_ID).update({
       stemsCarousel: stemsCarousel,
     });
+  }
+
+  static async deleteVersionFromStemsCarousel(versionID: string): Promise<void> {
+    await adminDb
+      .collection(GLOBAL_COLLECTION)
+      .doc(SETTING_DOC_ID)
+      .update({
+        stemsCarousel: FieldValue.arrayRemove(versionID),
+      });
   }
 
   static async deleteTagCategory(
