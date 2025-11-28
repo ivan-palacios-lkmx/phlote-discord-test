@@ -34,14 +34,36 @@ export class AddressService {
 
   static async deleteAdminAddress(address: string): Promise<void> {
     // TODO: Check permissions to delete admin address, idk if this should be done here or in the middleware
-    await this.deleteAddress(address);
-    await this.deleteAddressFromRoles(address, "admins");
+    try {
+      await this.deleteAddressFromRoles(address, "admins");
+      this.removeRoleFromAddress(address, "admin");
+    } catch (error) {
+      console.error("Error deleting admin address:", error);
+      throw error;
+    }
   }
 
   static async deleteCreatorAddress(address: string): Promise<void> {
     // TODO: Check permissions to delete creator address, idk if this should be done here or in the middleware
-    await this.deleteAddress(address);
-    await this.deleteAddressFromRoles(address, "creators");
+    try {
+      await this.deleteAddressFromRoles(address, "creators");
+      await this.removeRoleFromAddress(address, "creator");
+    } catch (error) {
+      console.error("Error deleting creator address:", error);
+      throw error;
+    }
+  }
+
+  private static async removeRoleFromAddress(
+    address: string,
+    role: "admin" | "creator" | "member",
+  ): Promise<void> {
+    await adminDb
+      .collection(ADDRESSES_COLLECTION)
+      .doc(address)
+      .update({
+        [role]: false,
+      });
   }
 
   static async deleteMemberAddress(address: string): Promise<void> {
