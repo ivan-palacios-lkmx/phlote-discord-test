@@ -71,11 +71,30 @@ export default function StemsPlayerCarousel() {
     return `V_${String(idx).padStart(3, "0")}`;
   };
 
-  const formatDate = (date: { toDate: () => Date } | undefined) => {
-    if (!date) return "";
-    const d = date.toDate();
-    if (!d) return "";
-    return format(d, "MM/DD hh:mmA");
+  const formatDate = (created: unknown) => {
+    if (!created) return "";
+
+    let date: Date | null = null;
+
+    if (created instanceof Date) {
+      date = created;
+    } else if (typeof created === "string") {
+      date = new Date(created);
+    } else if (typeof created === "object" && created !== null) {
+      if ("toDate" in created && typeof created.toDate === "function") {
+        date = (created as { toDate: () => Date }).toDate();
+      } else if ("_seconds" in created && typeof created._seconds === "number") {
+        const seconds = created._seconds;
+        const nanoseconds =
+          "_nanoseconds" in created && typeof created._nanoseconds === "number"
+            ? created._nanoseconds
+            : 0;
+        date = new Date(seconds * 1000 + nanoseconds / 1000000);
+      }
+    }
+
+    if (!date || isNaN(date.getTime())) return "";
+    return format(date, "MM/DD hh:mmA");
   };
 
   const handleCarouselDragEnd = (event: DragEndEvent) => {
@@ -181,11 +200,7 @@ export default function StemsPlayerCarousel() {
                         </div>
                         <div className="version-count">
                           <span>Created: </span>
-                          <span>
-                            {version.created
-                              ? formatDate(version.created as unknown as { toDate: () => Date })
-                              : ""}
-                          </span>
+                          <span>{formatDate(version.created)}</span>
                         </div>
                         <div className="collab-count">
                           <span>Stems: </span>
