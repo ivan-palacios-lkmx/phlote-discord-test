@@ -461,6 +461,16 @@ class Api {
       throw error;
     }
   }
+
+  static async getStemsCarousel(): Promise<string[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.STEMS_CAROUSEL);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching stems carousel:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;

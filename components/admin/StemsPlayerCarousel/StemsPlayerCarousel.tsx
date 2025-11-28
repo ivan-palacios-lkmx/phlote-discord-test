@@ -4,6 +4,7 @@ import StemsPlayerCarouselRow from "@/components/admin/StemsPlayerCarouselRow/St
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
+import { useGetStemsCarousel } from "@/hooks/query/query-hooks/use-get-stems-carousel";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
 import useSessions from "@/hooks/useSessions";
 import { AlgoliaSession } from "@/types/database";
@@ -53,7 +54,7 @@ function DraggableCarouselRow({
 }
 
 export default function StemsPlayerCarousel() {
-  const { data: settings } = useGetSettings();
+  const { data: stemsCarousel } = useGetStemsCarousel();
   const [searchText, setSearchText] = useState("");
   const [selectedSession, setSelectedSession] = useState<AlgoliaSession | null>(null);
 
@@ -109,13 +110,13 @@ export default function StemsPlayerCarousel() {
         </p>
       </div>
 
-      {settings?.stemsCarousel && settings.stemsCarousel.length > 0 && (
+      {stemsCarousel && stemsCarousel.length > 0 && (
         <div className="carousel-list-area">
           <div className="carousel-label">Carousel Items:</div>
 
           <DndContext onDragEnd={handleCarouselDragEnd}>
-            <SortableContext items={settings?.stemsCarousel} strategy={verticalListSortingStrategy}>
-              {settings?.stemsCarousel?.map((versionID) => (
+            <SortableContext items={stemsCarousel} strategy={verticalListSortingStrategy}>
+              {stemsCarousel.map((versionID) => (
                 <DraggableCarouselRow
                   key={versionID}
                   versionID={versionID}
