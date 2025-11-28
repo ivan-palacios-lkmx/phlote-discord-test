@@ -35,9 +35,16 @@ export async function POST(request: NextRequest) {
 
     const addressAvatar = await AddressService.getAvatarFromExternalSources(address);
 
-    const admin = await AddressService.createAddress(address, false, addressAvatar, false, true);
+    const addressAlreadyExists = await AddressService.getSingleAddress(address, false);
 
-    return NextResponse.json({ admin }, { status: 200 });
+    if (addressAlreadyExists) {
+      AddressService.updateAddressRole(address, "admin");
+      return NextResponse.json({ message: "Address updated as admin" }, { status: 201 });
+    }
+
+    const newAdmin = await AddressService.createAddress(address, false, addressAvatar, false, true);
+
+    return NextResponse.json({ admin: newAdmin }, { status: 201 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
