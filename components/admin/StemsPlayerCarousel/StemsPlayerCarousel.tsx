@@ -2,6 +2,7 @@
 
 import StemsPlayerCarouselRow from "@/components/admin/StemsPlayerCarouselRow/StemsPlayerCarouselRow";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
+import { useUpdateStemsCarousel } from "@/hooks/query/mutations/use-update-stems-carousel";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetStemsCarousel } from "@/hooks/query/query-hooks/use-get-stems-carousel";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
@@ -10,6 +11,7 @@ import { AlgoliaSession } from "@/types/database";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "fecha";
 import { useState } from "react";
 
@@ -41,19 +43,16 @@ function DraggableCarouselRow({
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onClick={(e) => e.stopPropagation()}>
-      <StemsPlayerCarouselRow versionID={versionID} onRemove={onRemove} />
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <StemsPlayerCarouselRow versionID={versionID} onRemove={onRemove} dragListeners={listeners} />
     </div>
   );
 }
 
 export default function StemsPlayerCarousel() {
   const { data: stemsCarousel } = useGetStemsCarousel();
+  const queryClient = useQueryClient();
+  const { mutate: updateStemsCarousel } = useUpdateStemsCarousel();
   const [searchText, setSearchText] = useState("");
   const [selectedSession, setSelectedSession] = useState<AlgoliaSession | null>(null);
 
@@ -63,10 +62,10 @@ export default function StemsPlayerCarousel() {
     search: searchText || null,
   });
 
-  const { data: availableVersions, isPending: loadingVersions } = useGetVersions(
-    selectedSession?.objectID || "",
-    !!selectedSession?.objectID,
-  );
+  const { data: availableVersions, isPending: loadingVersions } = useGetVersions({
+    sessionId: selectedSession?.objectID || "",
+    enabled: !!selectedSession?.objectID,
+  });
 
   const formatVersionIndex = (idx: number) => {
     return `V_${String(idx).padStart(3, "0")}`;
@@ -87,7 +86,20 @@ export default function StemsPlayerCarousel() {
     }
   };
 
-  const onRemoveItem = (itemID: string) => {};
+  const onRemoveItem = (itemID: string) => {
+    if (!stemsCarousel) return;
+
+    const updatedCarousel = stemsCarousel.filter((id) => id !== itemID);
+
+    updateStemsCarousel(
+      { stemsCarousel: updatedCarousel },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+        },
+      },
+    );
+  };
 
   const onAddSession = (e: React.FormEvent) => {
     e.preventDefault();

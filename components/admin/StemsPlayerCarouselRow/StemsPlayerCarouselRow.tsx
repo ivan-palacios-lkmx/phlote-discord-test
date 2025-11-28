@@ -12,6 +12,7 @@ import "./StemsPlayerCarouselRow.scss";
 interface StemsPlayerCarouselRowProps {
   versionID: string;
   onRemove: (versionID: string) => void;
+  dragListeners?: React.HTMLAttributes<HTMLElement>;
 }
 
 interface VersionDoc {
@@ -30,6 +31,7 @@ interface SessionDoc {
 export default function StemsPlayerCarouselRow({
   versionID,
   onRemove,
+  dragListeners,
 }: StemsPlayerCarouselRowProps) {
   const formatVersionIndex = (idx: number | undefined) => {
     if (idx === undefined) return "";
@@ -50,12 +52,17 @@ export default function StemsPlayerCarouselRow({
 
   return (
     <div className="admin-stems-player-carousel-row">
-      <button type="button" className="drag-handle">
+      <button type="button" className="drag-handle" {...dragListeners}>
         <DragIcon />
       </button>
       <h5 className="stems-version-title">{sessionDoc?.name}</h5>
       <div className="version-number">{formatVersionIndex(versionDoc?.versionIndex)}</div>
-      <button type="button" className="close" onClick={() => onRemove(versionID)}>
+      <button
+        type="button"
+        className="close"
+        onClick={() => {
+          onRemove(versionID);
+        }}>
         <CloseIcon />
       </button>
     </div>
