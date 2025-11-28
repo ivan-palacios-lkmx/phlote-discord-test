@@ -57,6 +57,10 @@ export default function AdminPage() {
   };
 
   function handleAddAdmin(formValues: z.infer<typeof addAdminSchema>) {
+    const isAdmin = admins?.some((admin) => admin.id === formValues.address);
+    if (isAdmin) {
+      return;
+    }
     addAdmin(formValues, {
       onSuccess: () => {
         queryClient.setQueriesData<AddressDocWithID[]>({ queryKey: ["admins"] }, (oldData) => {
@@ -68,6 +72,10 @@ export default function AdminPage() {
   }
 
   function handleAddCreator(formValues: z.infer<typeof addCreatorSchema>) {
+    const isCreator = creators?.some((creator) => creator.id === formValues.address);
+    if (isCreator) {
+      return;
+    }
     addCreator(formValues, {
       onSuccess: () => {
         queryClient.setQueriesData<AddressDocWithID[]>({ queryKey: ["creators"] }, (oldData) => {
