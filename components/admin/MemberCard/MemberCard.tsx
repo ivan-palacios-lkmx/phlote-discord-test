@@ -80,7 +80,7 @@ export default function MemberCard({ member }: MemberCardProps) {
   const { mutate: patchAddress } = usePatchAddress();
   const { mutate: updatePrivateAddress } = useUpdatePrivateAddress();
 
-  const handleSave = (formValues: z.infer<typeof memberCardSchema>) => {
+  function handleSave(formValues: z.infer<typeof memberCardSchema>) {
     const address = member.id;
 
     patchAddress(
@@ -104,7 +104,7 @@ export default function MemberCard({ member }: MemberCardProps) {
         },
       },
     );
-  };
+  }
 
   const resetValues = useMemo(() => {
     return {
