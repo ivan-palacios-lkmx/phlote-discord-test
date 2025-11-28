@@ -3,7 +3,6 @@
 import StemsPlayerCarouselRow from "@/components/admin/StemsPlayerCarouselRow/StemsPlayerCarouselRow";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
-import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { useGetStemsCarousel } from "@/hooks/query/query-hooks/use-get-stems-carousel";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
 import useSessions from "@/hooks/useSessions";
