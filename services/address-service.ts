@@ -307,7 +307,9 @@ export class AddressService {
   ): Promise<WriteResult | null> {
     const addressDoc = await this.getRawAddressSnapshot(address);
     if (!addressDoc) return null;
-    addressDoc.data()!.isPublic = visibility === "public";
-    return addressDoc.ref.set(addressDoc.data()!);
+    return addressDoc.ref.update({
+      isPublic: visibility === "public",
+      updated: new Date(),
+    });
   }
 }
