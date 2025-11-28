@@ -58,11 +58,17 @@ export class AddressService {
     address: string,
     role: "admin" | "creator" | "member",
   ): Promise<void> {
+    const roleFieldMap = {
+      admin: "isAdmin",
+      creator: "isCreator",
+      member: "isMember",
+    } as const;
+
     await adminDb
       .collection(ADDRESSES_COLLECTION)
       .doc(address)
       .update({
-        [role]: false,
+        [roleFieldMap[role]]: false,
       });
   }
 
