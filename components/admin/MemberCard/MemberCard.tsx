@@ -23,108 +23,6 @@ interface MemberCardProps {
   member: AddressDocWithID;
 }
 
-function AvatarFromAddress({ address, className }: { address: string; className?: string }) {
-  const { data: addressInfo } = useGetAddressInfo(address, false, !!address);
-
-  if (!addressInfo?.avatar) {
-    return <div className={`member-avatar ${className || ""}`} />;
-  }
-
-  return <Web3Avatar avatar={addressInfo.avatar} className={`member-avatar ${className || ""}`} />;
-}
-
-function UsernameFromAddress({ address }: { address: string }) {
-  const { data: addressInfo } = useGetAddressInfo(address, false, !!address);
-
-  if (!addressInfo?.username) {
-    return <span>{address}</span>;
-  }
-
-  return <Web3Username username={addressInfo.username} />;
-}
-
-interface MemberCardFormProps extends MemberCardProps {
-  memberTagsRaw: string[][];
-  setMemberTagsRaw: React.Dispatch<React.SetStateAction<string[][]>>;
-  memberTags: TagCategory[];
-  addressInfo?: ReturnType<typeof useGetAddressInfo>["data"];
-}
-
-function MemberCardForm({
-  member,
-  memberTagsRaw,
-  setMemberTagsRaw,
-  memberTags,
-  addressInfo,
-}: MemberCardFormProps) {
-  const handleTagChange = (index: number, newValue: string[]) => {
-    const newTagsRaw = [...memberTagsRaw];
-    newTagsRaw[index] = newValue;
-    setMemberTagsRaw(newTagsRaw);
-  };
-
-  return (
-    <>
-      <div className="member-row">
-        <div className="user">
-          <AvatarFromAddress address={member.id} />
-          <div className="username">
-            <h6>
-              <UsernameFromAddress address={member.id} />
-            </h6>
-            <span className="subtext">{addressInfo?.isPublic ? "Public" : "Private"}</span>
-          </div>
-        </div>
-        <div className="private-toggle">
-          <AdminToggle
-            name="isPublic"
-            defaultValue={!!addressInfo?.isPublic}
-            resetValue={!!addressInfo?.isPublic}
-          />
-        </div>
-      </div>
-
-      <div className="inputs">
-        <label className="label">Name</label>
-        <Input name="name" placeholder="John Doe" className="text-inpt" type="text" />
-
-        <label className="label">Title</label>
-        <Input name="title" placeholder="Songwriter" className="text-inpt" type="text" />
-
-        <label className="label">Twitter</label>
-        <Input
-          name="twitterHandle"
-          placeholder="@handle"
-          pattern="^@(\w){1,15}$"
-          className="text-inpt"
-          type="text"
-        />
-
-        <label className="label">Email</label>
-        <Input name="email" placeholder="name@domain.com" className="text-inpt" type="email" />
-
-        {memberTags.map((tag, i) => (
-          <div key={i} className="tag-select">
-            <label className="label">{tag.name}</label>
-            <MultiSelect
-              value={memberTagsRaw[i] || []}
-              options={tag.options || []}
-              onChange={(newValue) => handleTagChange(i, newValue)}
-              closeOnSelect={false}
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="cta-row">
-        <button className="btn" type="submit" disabled={false}>
-          Save
-        </button>
-      </div>
-    </>
-  );
-}
-
 export default function MemberCard({ member }: MemberCardProps) {
   const [memberTagsRaw, setMemberTagsRaw] = useState<string[][]>([]);
 
@@ -216,6 +114,12 @@ export default function MemberCard({ member }: MemberCardProps) {
     };
   }, [addressInfo, privateInfo]);
 
+  const handleTagChange = (index: number, newValue: string[]) => {
+    const newTagsRaw = [...memberTagsRaw];
+    newTagsRaw[index] = newValue;
+    setMemberTagsRaw(newTagsRaw);
+  };
+
   if (!member?.id) {
     return null;
   }
@@ -226,13 +130,62 @@ export default function MemberCard({ member }: MemberCardProps) {
       handleSubmit={handleSave}
       className="member-card"
       resetValues={resetValues}>
-      <MemberCardForm
-        member={member}
-        memberTagsRaw={memberTagsRaw}
-        setMemberTagsRaw={setMemberTagsRaw}
-        memberTags={memberTags}
-        addressInfo={addressInfo}
-      />
+      <div className="member-row">
+        <div className="user">
+          <Web3Avatar avatar={addressInfo?.avatar || ""} className="member-avatar" />
+          <div className="username">
+            <h6>
+              <Web3Username username={addressInfo?.username || ""} />
+            </h6>
+            <span className="subtext">{addressInfo?.isPublic ? "Public" : "Private"}</span>
+          </div>
+        </div>
+        <div className="private-toggle">
+          <AdminToggle
+            name="isPublic"
+            defaultValue={!!addressInfo?.isPublic}
+            resetValue={!!addressInfo?.isPublic}
+          />
+        </div>
+      </div>
+
+      <div className="inputs">
+        <label className="label">Name</label>
+        <Input name="name" placeholder="John Doe" className="text-inpt" type="text" />
+
+        <label className="label">Title</label>
+        <Input name="title" placeholder="Songwriter" className="text-inpt" type="text" />
+
+        <label className="label">Twitter</label>
+        <Input
+          name="twitterHandle"
+          placeholder="@handle"
+          pattern="^@(\w){1,15}$"
+          className="text-inpt"
+          type="text"
+        />
+
+        <label className="label">Email</label>
+        <Input name="email" placeholder="name@domain.com" className="text-inpt" type="email" />
+
+        {memberTags.map((tag, i) => (
+          <div key={i} className="tag-select">
+            <label className="label">{tag.name}</label>
+            <MultiSelect
+              value={memberTagsRaw[i] || []}
+              options={tag.options || []}
+              onChange={(newValue) => handleTagChange(i, newValue)}
+              closeOnSelect={false}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="cta-row">
+        <button className="btn" type="submit" disabled={false}>
+          Save
+        </button>
+      </div>
     </Form>
   );
 }
