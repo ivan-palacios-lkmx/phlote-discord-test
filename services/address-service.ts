@@ -81,6 +81,18 @@ export class AddressService {
     await adminDb.collection(ADDRESSES_COLLECTION).doc(address).delete();
   }
 
+  private static async addAddressToRoles(
+    address: string,
+    toRole: "admins" | "creators",
+  ): Promise<void> {
+    await adminDb
+      .collection(GLOBAL_COLLECTION)
+      .doc(ROLES_DOC_ID)
+      .update({
+        [toRole]: FieldValue.arrayUnion(address),
+      });
+  }
+
   private static async deleteAddressFromRoles(
     address: string,
     fromRole: "admins" | "creators",
@@ -190,6 +202,14 @@ export class AddressService {
         isAdmin,
         isCreator,
       });
+
+      if (isAdmin) {
+        await this.addAddressToRoles(address, "admins");
+      }
+      if (isCreator) {
+        await this.addAddressToRoles(address, "creators");
+      }
+
       return addressDoc;
     } catch (error) {
       console.error("Error creating address:", error);
@@ -312,15 +332,20 @@ export class AddressService {
     role: "admin" | "creator" | "member",
   ): Promise<WriteResult | null> {
     const addressDoc = await this.getRawAddressSnapshot(address);
-    if (!addressDoc) return null;
+    if (!addressDoc?.exists) return null;
+
+    const updates: Record<string, boolean> = {};
+
     if (role === "admin") {
-      addressDoc.data()!.isAdmin = true;
+      updates.isAdmin = true;
+      await this.addAddressToRoles(address, "admins");
     } else if (role === "creator") {
-      addressDoc.data()!.isCreator = true;
+      updates.isCreator = true;
+      await this.addAddressToRoles(address, "creators");
     } else if (role === "member") {
-      addressDoc.data()!.isMember = true;
+      updates.isMember = true;
     }
-    return addressDoc.ref.set(addressDoc.data()!);
+    return addressDoc.ref.set(updates, { merge: true });
   }
 
   static async updateAddressTitle(address: string, title: string): Promise<WriteResult | null> {
