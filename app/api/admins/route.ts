@@ -1,5 +1,6 @@
 import { AddressService } from "@/services/address-service";
 import { addressSchema, visibilitySchema } from "@/utils/zod-schemas";
+import { getAddress } from "ethers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -33,16 +34,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid address" }, { status: 400 });
     }
 
+    const formattedAddress = getAddress(address);
+
+    if (!formattedAddress) {
+      return NextResponse.json({ error: "Invalid address" }, { status: 400 });
+    }
+
     const addressAvatar = await AddressService.getAvatarFromExternalSources(address);
 
     const addressAlreadyExists = await AddressService.getSingleAddress(address, false);
 
     if (addressAlreadyExists) {
-      AddressService.updateAddressRole(address, "admin");
+      AddressService.updateAddressRole(formattedAddress, "admin");
       return NextResponse.json({ message: "Address updated as admin" }, { status: 201 });
     }
 
-    const newAdmin = await AddressService.createAddress(address, false, addressAvatar, false, true);
+    const newAdmin = await AddressService.createAddress(
+      formattedAddress,
+      false,
+      addressAvatar,
+      false,
+      true,
+    );
 
     return NextResponse.json({ admin: newAdmin }, { status: 201 });
   } catch (error) {
