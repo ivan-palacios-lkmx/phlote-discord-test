@@ -47,6 +47,7 @@ interface MemberCardFormProps extends MemberCardProps {
   memberTagsRaw: string[][];
   setMemberTagsRaw: React.Dispatch<React.SetStateAction<string[][]>>;
   memberTags: TagCategory[];
+  addressInfo?: ReturnType<typeof useGetAddressInfo>["data"];
 }
 
 function MemberCardForm({
@@ -54,10 +55,8 @@ function MemberCardForm({
   memberTagsRaw,
   setMemberTagsRaw,
   memberTags,
+  addressInfo,
 }: MemberCardFormProps) {
-  const { data: addressInfo } = useGetAddressInfo(member.id, false, !!member.id);
-  const { data: privateInfo } = useGetAddressPrivateInfo(member.id, !!member.id);
-
   const handleTagChange = (index: number, newValue: string[]) => {
     const newTagsRaw = [...memberTagsRaw];
     newTagsRaw[index] = newValue;
@@ -87,22 +86,10 @@ function MemberCardForm({
 
       <div className="inputs">
         <label className="label">Name</label>
-        <Input
-          name="name"
-          placeholder="John Doe"
-          className="text-inpt"
-          type="text"
-          resetValue={privateInfo?.name || ""}
-        />
+        <Input name="name" placeholder="John Doe" className="text-inpt" type="text" />
 
         <label className="label">Title</label>
-        <Input
-          name="title"
-          placeholder="Songwriter"
-          className="text-inpt"
-          type="text"
-          resetValue={addressInfo?.title || ""}
-        />
+        <Input name="title" placeholder="Songwriter" className="text-inpt" type="text" />
 
         <label className="label">Twitter</label>
         <Input
@@ -111,17 +98,10 @@ function MemberCardForm({
           pattern="^@(\w){1,15}$"
           className="text-inpt"
           type="text"
-          resetValue={privateInfo?.twitterHandle || ""}
         />
 
         <label className="label">Email</label>
-        <Input
-          name="email"
-          placeholder="name@domain.com"
-          className="text-inpt"
-          type="email"
-          resetValue={privateInfo?.email || ""}
-        />
+        <Input name="email" placeholder="name@domain.com" className="text-inpt" type="email" />
 
         {memberTags.map((tag, i) => (
           <div key={i} className="tag-select">
@@ -150,6 +130,7 @@ export default function MemberCard({ member }: MemberCardProps) {
 
   const { data: settingsDoc } = useGetSettings();
   const { data: addressInfo } = useGetAddressInfo(member.id, false, !!member.id);
+  const { data: privateInfo } = useGetAddressPrivateInfo(member.id, !!member.id);
 
   const memberTags = useMemo<TagCategory[]>(() => {
     return (settingsDoc?.availableMemberTags as TagCategory[] | undefined) || [];
@@ -225,15 +206,15 @@ export default function MemberCard({ member }: MemberCardProps) {
     );
   };
 
-  const defaultValues = useMemo(() => {
+  const resetValues = useMemo(() => {
     return {
-      isPublic: false,
-      name: "",
-      title: "",
-      twitterHandle: "",
-      email: "",
+      isPublic: !!addressInfo?.isPublic,
+      name: privateInfo?.name || "",
+      title: addressInfo?.title || "",
+      twitterHandle: privateInfo?.twitterHandle || "",
+      email: privateInfo?.email || "",
     };
-  }, []);
+  }, [addressInfo, privateInfo]);
 
   if (!member?.id) {
     return null;
@@ -244,12 +225,13 @@ export default function MemberCard({ member }: MemberCardProps) {
       schema={memberCardSchema}
       handleSubmit={handleSave}
       className="member-card"
-      defaultValues={defaultValues}>
+      resetValues={resetValues}>
       <MemberCardForm
         member={member}
         memberTagsRaw={memberTagsRaw}
         setMemberTagsRaw={setMemberTagsRaw}
         memberTags={memberTags}
+        addressInfo={addressInfo}
       />
     </Form>
   );
