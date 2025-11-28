@@ -119,6 +119,17 @@ export default function NewProjectForm({
           {type === "version" ? "Create New Version" : "Create Session"}
         </VersionFormButton>
       </div>
+      {type === "version" && (
+        <div className="session-info">
+          <div className="artwork">
+            <Web3Avatar avatar={creatorInfo?.avatar || ""} />
+          </div>
+
+          <div className="title-wrap">
+            <SessionDetailTitle session={session as SessionDoc} version={version as VersionDoc} />
+          </div>
+        </div>
+      )}
       <div className="new-version-form">
         {/* Upload Area */}
         <div className="uploads">
