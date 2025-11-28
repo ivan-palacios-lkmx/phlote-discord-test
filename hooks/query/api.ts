@@ -471,6 +471,16 @@ class Api {
       throw error;
     }
   }
+
+  static async updateStemsCarousel(stemsCarousel: string[]): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.put(ENDPOINTS.STEMS_CAROUSEL, { stemsCarousel });
+      return response.data;
+    } catch (error) {
+      console.error("Error updating stems carousel:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;
