@@ -196,3 +196,5 @@ export const addAdminSchema = z.object({
 export const addCreatorSchema = z.object({
   address: addressSchema,
 });
+
+export const stemsCarouselSchema = z.array(z.string());

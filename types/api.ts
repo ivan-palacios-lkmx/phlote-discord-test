@@ -67,4 +67,5 @@ export interface SubmitAudioResponse {
 
 export interface SettingsPatch {
   membershipContracts?: string[];
+  stemsCarousel?: string[];
 }

@@ -6,6 +6,12 @@ import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queri
 import { DocumentSnapshot, FieldValue } from "firebase-admin/firestore";
 
 export class GlobalsService {
+  static async updateStemsCarousel(stemsCarousel: string[]): Promise<void> {
+    await adminDb.collection(GLOBAL_COLLECTION).doc(SETTING_DOC_ID).update({
+      stemsCarousel: stemsCarousel,
+    });
+  }
+
   static async deleteTagCategory(
     category: TagCategory,
     categoryType: "member" | "session",
