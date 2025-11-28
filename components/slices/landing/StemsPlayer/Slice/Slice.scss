@@ -2,7 +2,7 @@
 
 
 .slice-stems-player-slide {
-  background-color: rgba(#000, 0.4);
+  background-color: var(--black);
   box-shadow: 0px 14px 50px 0px rgba(#000, 0.8);
   border: 1px solid rgba(#000, 0.35);
   border-radius: 20px;
@@ -24,7 +24,6 @@
     opacity: 0.5;
     height: 100%;
     width: 100%;
-    z-index: -1;
   }
 
   .padder {
