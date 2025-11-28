@@ -42,7 +42,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (addressAlreadyExists) {
       AddressService.updateAddressRole(formattedAddress, "creator");
-      return NextResponse.json({ message: "Address updated as creator" }, { status: 204 });
+      return NextResponse.json({ message: "Address updated as creator" }, { status: 200 });
     }
 
     const addressAvatar = await AddressService.getAvatarFromExternalSources(formattedAddress);
