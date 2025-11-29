@@ -75,7 +75,7 @@ export class AddressService {
       .doc(address)
       .update({
         [roleFieldMap[role]]: false,
-        updated: new Timestamp(Date.now(), 0),
+        updated: new Timestamp(Math.floor(Date.now() / 1000), 0),
       });
   }
 
@@ -159,7 +159,9 @@ export class AddressService {
     address: string,
     role: "admin" | "creator" | "member",
   ): Promise<void> {
-    const updateData: Record<string, unknown> = { updated: new Timestamp(Date.now(), 0) };
+    const updateData: Record<string, unknown> = {
+      updated: new Timestamp(Math.floor(Date.now() / 1000), 0),
+    };
     if (role === "creator") updateData.isCreator = true;
     if (role === "admin") updateData.isAdmin = true;
     if (role === "member") updateData.isMember = true;
