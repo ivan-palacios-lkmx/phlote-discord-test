@@ -6,7 +6,7 @@ import { useHeroSlideShow } from "@/hooks/useHeroSlideShow";
 import useIntersect from "@/hooks/useIntersect";
 import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import "./HeroSlideShow.scss";
 
@@ -21,12 +21,40 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
     toggleMute,
     hash,
     waveTrace,
+    progress,
+    videoRef,
   } = useHeroSlideShow(sliceProps);
 
   const slideButtonsRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLElement>(null);
+  const slideRef = useRef<HTMLDivElement | null>(null);
 
   const videoURL = currentVideoUrl || "";
+
+  useEffect(() => {
+    if (!slideRef.current) return;
+
+    const findVideo = () => {
+      const video = slideRef.current?.querySelector<HTMLVideoElement>("video.media-video");
+      if (video && video !== videoRef.current) {
+        videoRef.current = video;
+      }
+    };
+
+    findVideo();
+
+    const observer = new MutationObserver(findVideo);
+    if (slideRef.current) {
+      observer.observe(slideRef.current, { childList: true, subtree: true });
+    }
+
+    const timeoutId = setTimeout(findVideo, 100);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timeoutId);
+    };
+  }, [currentSlideIndex, videoRef]);
 
   useIntersect(containerRef, (isIntersecting) => {
     if (isIntersecting) {
@@ -36,7 +64,10 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
 
   return (
     <section className="slice-hero-slideshow" ref={containerRef}>
-      <div className="slide hero-enter-active hero-leave-active" key={currentSlideIndex}>
+      <div
+        className="slide hero-enter-active hero-leave-active"
+        key={currentSlideIndex}
+        ref={slideRef}>
         {currentSlide?.image && (
           <ProgressiveMedia
             field={currentSlide.image}
@@ -85,6 +116,7 @@ export default function HeroSlideShow(sliceProps: SliceComponentProps) {
             onClick={() => setCurrentSlideIndex(slideIndex)}
             hash={hash}
             waveTrace={waveTrace}
+            progress={progress}
           />
         ))}
       </div>

@@ -11,12 +11,14 @@ interface HeroTrackPreviewProps {
   hash?: string | null;
   waveTrace?: string | null;
   onSeek?: (seekTo: number) => void;
+  progress?: number;
 }
 
 export default function HeroTrackPreview({
   hash,
   waveTrace: propWaveTrace,
   onSeek,
+  progress = 0,
 }: HeroTrackPreviewProps) {
   const [waveTrace, setWaveTrace] = useState<string | null>(propWaveTrace || null);
   const [cursorPosition, setCursorPosition] = useState(0);
@@ -63,11 +65,18 @@ export default function HeroTrackPreview({
     };
   }, [cursorPosition]);
 
+  const trackStyle = useMemo(() => {
+    return {
+      "--progress": `${(1 - progress) * 100}%`,
+    } as React.CSSProperties & { "--progress": string };
+  }, [progress]);
+
   if (!waveTrace) return null;
 
   return (
     <button
       className="track-preview"
+      style={trackStyle}
       onMouseMove={handleMouseMove}
       onClick={handleClick}
       type="button">
