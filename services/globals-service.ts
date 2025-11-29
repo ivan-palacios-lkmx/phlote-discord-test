@@ -6,12 +6,29 @@ import { getIDAndDocumentDataFromDocumentSnapshot } from "@/utils/firebase-queri
 import { DocumentSnapshot, FieldValue } from "firebase-admin/firestore";
 
 export class GlobalsService {
+  static async removeMembershipContract(contractAddress: string): Promise<void> {
+    await adminDb
+      .collection(GLOBAL_COLLECTION)
+      .doc(SETTING_DOC_ID)
+      .update({
+        membershipContracts: FieldValue.arrayRemove(contractAddress),
+      });
+  }
   static async addVersionToStemsCarousel(versionID: string): Promise<void> {
     await adminDb
       .collection(GLOBAL_COLLECTION)
       .doc(SETTING_DOC_ID)
       .update({
         stemsCarousel: FieldValue.arrayUnion(versionID),
+      });
+  }
+
+  static async addMembershipContract(contractAddress: string): Promise<void> {
+    await adminDb
+      .collection(GLOBAL_COLLECTION)
+      .doc(SETTING_DOC_ID)
+      .update({
+        membershipContracts: FieldValue.arrayUnion(contractAddress),
       });
   }
 
