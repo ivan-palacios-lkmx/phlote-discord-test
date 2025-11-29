@@ -7,9 +7,11 @@ import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingF
 import ProductFooter from "@/components/site/footer/ProductFooter/ProductFooter";
 import MarketingHeader from "@/components/site/header/MarketingHeader/MarketingHeader";
 import ProductHeader from "@/components/site/header/ProductHeader/ProductHeader";
+import { useSyncAddress } from "@/hooks/query/query-hooks/use-sync-address";
 import { HeaderTranslateProvider } from "@/hooks/useHeaderTranslate";
 import { useLenis } from "@/hooks/useLenis";
 import { type PrismicSettings } from "@/types/client";
+import { usePrivy } from "@privy-io/react-auth";
 import kebabCase from "lodash/kebabCase";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -27,6 +29,12 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [windowHeight, setWindowHeight] = useState(0);
+  const { user, ready, authenticated } = usePrivy();
+  const walletAddress = user?.wallet?.address;
+  useSyncAddress({
+    address: walletAddress || "",
+    enabled: ready && authenticated && !!walletAddress,
+  });
 
   // Check if route is marketing (not product)
   // Marketing routes: routes in app/(marketing) - "/" and dynamic routes
