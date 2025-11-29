@@ -19,6 +19,7 @@ interface HeroSlideShowButtonProps {
 export default function HeroSlideShowButton({
   slide,
   active,
+  progress = 0,
   onClick,
   hash,
   waveTrace,
@@ -34,8 +35,8 @@ export default function HeroSlideShowButton({
         {slide.title && <h6>{slide.title}</h6>}
       </div>
       {hash && (
-        <div className="track-preview desktop-only">
-          <HeroTrackPreview hash={hash} waveTrace={waveTrace} />
+        <div className="track desktop-only">
+          <HeroTrackPreview hash={hash} waveTrace={waveTrace} progress={active ? progress : 0} />
         </div>
       )}
     </div>

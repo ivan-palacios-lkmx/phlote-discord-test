@@ -4,6 +4,8 @@
   padding: 100px 0;
   outline: none;
   margin: 0 auto;
+  overflow: hidden;
+
 
 
   .embla {
@@ -27,13 +29,18 @@
     flex: 0 0 auto;
     min-width: 0;
     width: var(--slide-width);
-    height: var(--slide-height);
     margin-right: var(--slide-spacing);
 
     &:last-child {
       margin-right: 0;
     }
 
+  }
+
+
+  .slice-stems-player-slide {
+    width: var(--slide-width);
+    height: var(--slide-height);
   }
 
   @include bp(m) {
