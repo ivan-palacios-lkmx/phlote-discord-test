@@ -481,6 +481,20 @@ class Api {
       throw error;
     }
   }
+
+  static async syncAddress(address: string): Promise<{
+    address: string;
+    isMember: boolean;
+    syncStatus: "updated" | "unchanged";
+  }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.ADDRESS + "/" + address + "/sync");
+      return response.data;
+    } catch (error) {
+      console.error("Error syncing address:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;
