@@ -28,15 +28,21 @@ export async function POST(
     // The cron job will be searching for addresses that have been updated in the last day and are members.
     if (addressWasAMember && !isAddressAMember) {
       await AddressService.removeRoleFromAddress(address, "member");
-      return NextResponse.json({ message: "Address is not a member" }, { status: 200 });
+      return NextResponse.json(
+        { address, isMember: false, syncStatus: "updated" },
+        { status: 200 },
+      );
     }
 
     if (!addressWasAMember && isAddressAMember) {
       await AddressService.addRoleToAddress(address, "member");
-      return NextResponse.json({ message: "Address is now a member" }, { status: 200 });
+      return NextResponse.json({ address, isMember: true, syncStatus: "updated" }, { status: 200 });
     }
 
-    return NextResponse.json({ message: "Address status is unchanged" }, { status: 200 });
+    return NextResponse.json(
+      { address, isMember: addressWasAMember, syncStatus: "unchanged" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Error syncing address:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
