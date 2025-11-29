@@ -24,6 +24,7 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
   const [duration, setDuration] = useState(0);
   const [playhead, setPlayhead] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
 
   const currentSlide = useMemo<HeroSlideShowSlide | undefined>(() => {
     return slides[currentSlideIndex];
@@ -61,18 +62,9 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
   }, [duration, playhead]);
 
   useEffect(() => {
-    let cleanup: (() => void) | undefined;
-
     const setupVideoListeners = () => {
       const video = videoRef.current;
       if (!video) return;
-
-      const handleTimeUpdate = () => {
-        const currentVideo = videoRef.current;
-        if (currentVideo) {
-          setPlayhead(currentVideo.currentTime);
-        }
-      };
 
       const handleLoadedMetadata = () => {
         const currentVideo = videoRef.current;
@@ -81,16 +73,48 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
         }
       };
 
-      video.addEventListener("timeupdate", handleTimeUpdate);
+      const updatePlayhead = () => {
+        const currentVideo = videoRef.current;
+        if (currentVideo && !currentVideo.paused) {
+          setPlayhead(currentVideo.currentTime);
+          animationFrameRef.current = requestAnimationFrame(updatePlayhead);
+        }
+      };
+
+      const handlePlay = () => {
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
+        animationFrameRef.current = requestAnimationFrame(updatePlayhead);
+      };
+
+      const handlePause = () => {
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+          animationFrameRef.current = null;
+        }
+      };
+
+      video.addEventListener("play", handlePlay);
+      video.addEventListener("pause", handlePause);
       video.addEventListener("loadedmetadata", handleLoadedMetadata);
 
       if (video.readyState >= 2) {
         setDuration(video.duration);
       }
 
-      cleanup = () => {
-        video.removeEventListener("timeupdate", handleTimeUpdate);
+      if (!video.paused) {
+        animationFrameRef.current = requestAnimationFrame(updatePlayhead);
+      }
+
+      return () => {
+        video.removeEventListener("play", handlePlay);
+        video.removeEventListener("pause", handlePause);
         video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+          animationFrameRef.current = null;
+        }
       };
     };
 
@@ -99,12 +123,19 @@ export function useHeroSlideShow(sliceProps: SliceComponentProps) {
 
     return () => {
       clearTimeout(timeoutId);
-      cleanup?.();
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
     };
   }, [currentVideoUrl]);
 
   useEffect(() => {
     setPlayhead(0);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
   }, [currentSlideIndex]);
 
   const toggleMute = () => {

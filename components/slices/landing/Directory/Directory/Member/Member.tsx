@@ -92,7 +92,7 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
   const { settings } = usePrismicio();
   const defaultUserImage = settings.default_user_image;
 
-  const username = AddressClientService.getAddressUsername(address);
+  const username = addressPrivateInfo?.name || AddressClientService.getAddressUsername(address);
   return (
     <div
       ref={containerRef}
