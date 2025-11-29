@@ -19,7 +19,13 @@ import {
   getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { InfuraProvider, Provider } from "ethers";
-import { DocumentSnapshot, FieldValue, Query, WriteResult } from "firebase-admin/firestore";
+import {
+  DocumentSnapshot,
+  FieldValue,
+  Query,
+  Timestamp,
+  WriteResult,
+} from "firebase-admin/firestore";
 
 export class AddressService {
   static async getAdmins(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
@@ -54,7 +60,7 @@ export class AddressService {
     }
   }
 
-  private static async removeRoleFromAddress(
+  static async removeRoleFromAddress(
     address: string,
     role: "admin" | "creator" | "member",
   ): Promise<void> {
@@ -69,6 +75,7 @@ export class AddressService {
       .doc(address)
       .update({
         [roleFieldMap[role]]: false,
+        updated: new Timestamp(Date.now(), 0),
       });
   }
 
@@ -131,7 +138,7 @@ export class AddressService {
 
   static async updateAddress(
     address: string,
-    { slug, role }: { slug: string; role: string },
+    { slug, role }: { slug?: string; role?: "admin" | "creator" | "member" },
   ): Promise<WriteResult> {
     let isCreator = false;
     let isAdmin = false;
@@ -146,6 +153,18 @@ export class AddressService {
       isMember,
     });
     return addressDoc;
+  }
+
+  static async addRoleToAddress(
+    address: string,
+    role: "admin" | "creator" | "member",
+  ): Promise<void> {
+    const updateData: Record<string, unknown> = { updated: new Timestamp(Date.now(), 0) };
+    if (role === "creator") updateData.isCreator = true;
+    if (role === "admin") updateData.isAdmin = true;
+    if (role === "member") updateData.isMember = true;
+
+    await adminDb.collection(ADDRESSES_COLLECTION).doc(address).update(updateData);
   }
 
   static async getAddressesAndTotalCount(
