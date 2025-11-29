@@ -23,6 +23,8 @@ export async function POST(
 
     const addressWasAMember = addressDoc.isMember ?? false;
 
+    // Both of this conditions will update the updated timestamp of the address doc, so
+    // the cron job will not run again for this address until the next day.
     if (addressWasAMember && !isAddressAMember) {
       await AddressService.removeRoleFromAddress(address, "member");
       return NextResponse.json({ message: "Address is not a member" }, { status: 200 });
