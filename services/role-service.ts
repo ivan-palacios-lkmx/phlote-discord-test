@@ -9,15 +9,18 @@ export class RoleService {
 
     const provider = new InfuraProvider("mainnet", process.env.INFURA_ID);
 
-    const contractInterface = new Contract(
-      membershipContracts[0],
-      ["function balanceOf(address owner) external view returns (uint256 balance)"],
-      provider,
-    );
-
-    const balance = await contractInterface.balanceOf(address);
-    const isMember = parseInt(balance.toString()) > 0;
-    return isMember;
+    for (const contractAddress of membershipContracts) {
+      const contractInterface = new Contract(
+        contractAddress,
+        ["function balanceOf(address owner) external view returns (uint256 balance)"],
+        provider,
+      );
+      const balance = await contractInterface.balanceOf(address);
+      const isMember = parseInt(balance.toString()) > 0;
+      if (isMember) return true;
+      break;
+    }
+    return false;
   }
 
   private static async getMembershipContracts(): Promise<string[]> {
