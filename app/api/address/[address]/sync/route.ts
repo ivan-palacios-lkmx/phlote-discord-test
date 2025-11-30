@@ -1,4 +1,5 @@
 import { AddressService } from "@/services/address-service";
+import { PrivyService } from "@/services/privy-service";
 import { RoleService } from "@/services/role-service";
 import { addressSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
@@ -28,6 +29,8 @@ export async function POST(
     // The cron job will be searching for addresses that have been updated in the last day and are members.
     if (addressWasAMember && !isAddressAMember) {
       await AddressService.removeRoleFromAddress(address, "member");
+      const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "";
+      await PrivyService.setUserRole(address, privyRole);
       return NextResponse.json(
         { address, isMember: false, syncStatus: "updated" },
         { status: 200 },
@@ -36,6 +39,8 @@ export async function POST(
 
     if (!addressWasAMember && isAddressAMember) {
       await AddressService.addRoleToAddress(address, "member");
+      const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "member";
+      await PrivyService.setUserRole(address, privyRole);
       return NextResponse.json({ address, isMember: true, syncStatus: "updated" }, { status: 200 });
     }
 

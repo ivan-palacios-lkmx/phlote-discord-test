@@ -20,6 +20,7 @@
     "@prismicio/client": "^7.20.3",
     "@prismicio/next": "^2.0.2",
     "@prismicio/react": "^3.2.2",
+    "@privy-io/node": "^0.6.1",
     "@privy-io/react-auth": "^3.8.0",
     "@solana-program/memo": "^0.10.0",
     "@solana-program/system": "^0.10.0",
