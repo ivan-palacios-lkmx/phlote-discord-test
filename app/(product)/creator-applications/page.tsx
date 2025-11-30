@@ -2,13 +2,13 @@
 
 import ApplicationPreviewBlock from "@/components/ApplicationPreviewBlock/ApplicationPreviewBlock";
 import OnlyCreators from "@/components/OnlyCreators/OnlyCreators";
-import type { ApplicationDocWithID } from "@/types/database";
+import { useGetApplications } from "@/hooks/query/query-hooks/use-get-applications";
 
 import "./page.scss";
 
 export default function CreatorApplicationsPage() {
-  const totalResults = 0;
-  const applications: ApplicationDocWithID[] = [];
+  const { data: applications = [], isLoading } = useGetApplications();
+  const totalResults = applications.length;
   const hasNext = false;
   const hasPrev = false;
 
@@ -42,11 +42,15 @@ export default function CreatorApplicationsPage() {
       </div>
 
       <div className="contained">
-        <div className="application-grid">
-          {applications.map((application) => (
-            <ApplicationPreviewBlock key={application.id} application={application} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <div className="application-grid">
+            {applications.map((application) => (
+              <ApplicationPreviewBlock key={application.id} application={application} />
+            ))}
+          </div>
+        )}
       </div>
 
       {totalResults > 12 && (

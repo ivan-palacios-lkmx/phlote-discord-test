@@ -17,6 +17,7 @@ export const ENDPOINTS = {
   ADMINS: "/admins",
   CREATORS: "/creators",
   CREATOR_APPLICATIONS: "/creator-applications",
+  APPLICATIONS: "/applications",
   NEWSLETTER: "/newsletter",
   STEMS_CAROUSEL: "/settings/stems-carousel",
 };

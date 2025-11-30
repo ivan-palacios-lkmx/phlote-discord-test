@@ -11,6 +11,7 @@ import {
   ActivityDocWithID,
   AddressDoc,
   AddressDocWithID,
+  ApplicationDocWithID,
   SessionDoc,
   SessionDocWithID,
   VersionDoc,
@@ -82,6 +83,16 @@ class Api {
       return response.data;
     } catch (error) {
       console.error("Error fetching sessions:", error);
+      throw error;
+    }
+  }
+
+  static async getApplications(): Promise<ApplicationDocWithID[]> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.APPLICATIONS);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching applications:", error);
       throw error;
     }
   }

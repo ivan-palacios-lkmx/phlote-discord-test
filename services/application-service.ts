@@ -1,17 +1,17 @@
 import { adminDb } from "@/lib/firebase-admin";
-import { ApplicationDoc } from "@/types/database";
+import { ApplicationDoc, ApplicationDocWithID } from "@/types/database";
 import { APPLICATION_COLLECTION } from "@/utils/constants";
 import {
-  getDocumentDataFromQuerySnapshot,
   getIDAndDocumentDataFromDocumentSnapshot,
+  getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { applicationFormSchema } from "@/utils/zod-schemas";
 import { z } from "zod";
 
 export class ApplicationService {
-  static async getApplications(): Promise<ApplicationDoc[] | null> {
+  static async getApplications(): Promise<ApplicationDocWithID[]> {
     const applicationsSnapshot = await adminDb.collection(APPLICATION_COLLECTION).get();
-    return getDocumentDataFromQuerySnapshot<ApplicationDoc>(applicationsSnapshot);
+    return getIDAndDocumentDataFromQuerySnapshot<ApplicationDoc>(applicationsSnapshot);
   }
   static async getApplication(id: string): Promise<ApplicationDoc | null> {
     const application = await adminDb.collection(APPLICATION_COLLECTION).doc(id).get();
