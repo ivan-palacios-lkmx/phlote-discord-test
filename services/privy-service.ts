@@ -14,7 +14,7 @@ export class PrivyService {
     this.isInitialized = true;
   }
 
-  static async getUserWithMetadata(
+  static async getPrivyUserWithMetadata(
     privyIdToken: string,
   ): Promise<Record<string, unknown> | undefined> {
     try {
@@ -22,7 +22,7 @@ export class PrivyService {
         await this.initialize();
       }
 
-      const user = await this.getUserByToken(privyIdToken);
+      const user = await this.getPrivyUserByToken(privyIdToken);
       return user?.custom_metadata;
     } catch (error) {
       console.error("Error getting user with metadata or invalid id token:", error);
@@ -30,7 +30,7 @@ export class PrivyService {
     }
   }
 
-  static async getUserByToken(privyIdToken: string): Promise<User | undefined> {
+  static async getPrivyUserByToken(privyIdToken: string): Promise<User | undefined> {
     try {
       if (!this.privyClient) {
         await this.initialize();
@@ -43,7 +43,7 @@ export class PrivyService {
     }
   }
 
-  static async getUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
+  static async getPrivyUserByWalletAddress(walletAddress: string): Promise<User | undefined> {
     try {
       if (!this.privyClient) {
         await this.initialize();
@@ -56,14 +56,37 @@ export class PrivyService {
     }
   }
 
-  static async setPrivyUserRole(privyIdToken: string, role: string): Promise<void> {
+  static async setPrivyUserRoleByToken(privyIdToken: string, role: string): Promise<void> {
     try {
       if (!this.privyClient) {
         await this.initialize();
       }
+      const user = await this.getPrivyUserByToken(privyIdToken);
+      await this.setPrivyUserRoleByUser(user!, role);
+    } catch (error) {
+      console.error("Error setting user role by token:", error);
+      throw error;
+    }
+  }
 
-      const user = await this.getUserByToken(privyIdToken);
-      console.log("user", user);
+  static async setPrivyUserRoleByWalletAddress(walletAddress: string, role: string): Promise<void> {
+    try {
+      if (!this.privyClient) {
+        await this.initialize();
+      }
+      const user = await this.getPrivyUserByWalletAddress(walletAddress);
+      await this.setPrivyUserRoleByUser(user!, role);
+    } catch (error) {
+      console.error("Error setting user role by wallet address:", error);
+      throw error;
+    }
+  }
+
+  static async setPrivyUserRoleByUser(user: User, role: string): Promise<void> {
+    try {
+      if (!this.privyClient) {
+        await this.initialize();
+      }
 
       await this.privyClient?.users().setCustomMetadata(user!.id, { custom_metadata: { role } });
     } catch (error) {
