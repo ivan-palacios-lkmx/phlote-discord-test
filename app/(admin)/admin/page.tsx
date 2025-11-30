@@ -1,5 +1,6 @@
 "use client";
 
+import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import HelperContent from "@/components/admin/HelperContent/HelperContent";
 import MemberTags from "@/components/admin/MemberTags/MemberTags";
 import MembershipContract from "@/components/admin/MembershipContract/MembershipContract";
@@ -87,7 +88,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="admin-index">
+    <OnlyAdmins className="admin-index">
       <div className="contained">
         <HelperContent />
         <h5 className="admin-title">Configuration</h5>
@@ -110,6 +111,6 @@ export default function AdminPage() {
           <StemsPlayerCarousel />
         </div>
       </div>
-    </main>
+    </OnlyAdmins>
   );
 }

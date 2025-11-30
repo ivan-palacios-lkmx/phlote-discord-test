@@ -11,8 +11,7 @@ export default function Sessions() {
   const { data: sessions, isPending: isPendingSessions } = useGetSessions();
 
   return (
-    // TODO: Add OnlyAdmins component
-    <main className="admin-sessions">
+    <OnlyAdmins className="admin-sessions">
       <div className="contained">
         <h4 className="admin-title">Manage Sessions</h4>
         <div className="subtitle">
@@ -29,6 +28,6 @@ export default function Sessions() {
           </div>
         )}
       </div>
-    </main>
+    </OnlyAdmins>
   );
 }
