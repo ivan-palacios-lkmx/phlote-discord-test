@@ -34,7 +34,7 @@ export async function POST(
     if (addressWasAMember && !isAddressAMember) {
       await AddressService.removeRoleFromAddress(address, "member");
       const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "";
-      await PrivyService.setUserRole(privyIdToken!, privyRole);
+      await PrivyService.setPrivyUserRole(privyIdToken!, privyRole);
       return NextResponse.json(
         { address, isMember: false, syncStatus: "updated" },
         { status: 200 },
@@ -44,14 +44,14 @@ export async function POST(
     if (!addressWasAMember && isAddressAMember) {
       await AddressService.addRoleToAddress(address, "member");
       const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "member";
-      await PrivyService.setUserRole(privyIdToken!, privyRole);
+      await PrivyService.setPrivyUserRole(privyIdToken!, privyRole);
       return NextResponse.json({ address, isMember: true, syncStatus: "updated" }, { status: 200 });
     }
 
     const privyUser = await PrivyService.getUserWithMetadata(privyIdToken!);
 
     if (privyUser?.role == null) {
-      await PrivyService.setUserRole(
+      await PrivyService.setPrivyUserRole(
         privyIdToken!,
         addressDoc.isAdmin
           ? "admin"

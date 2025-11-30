@@ -43,7 +43,7 @@ export class PrivyService {
     }
   }
 
-  static async setUserRole(privyIdToken: string, role: string): Promise<void> {
+  static async setPrivyUserRole(privyIdToken: string, role: string): Promise<void> {
     try {
       if (!this.privyClient) {
         await this.initialize();
