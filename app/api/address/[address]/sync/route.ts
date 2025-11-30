@@ -13,7 +13,7 @@ export async function POST(
 
   try {
     const cookiesStore = await cookies();
-    const idToken = cookiesStore.get("idToken")?.value;
+    const privyIdToken = cookiesStore.get("privy-id-token")?.value;
     if (!addressSchema.safeParse(address).success) {
       return NextResponse.json({ error: "Invalid address format" }, { status: 400 });
     }
@@ -34,7 +34,7 @@ export async function POST(
     if (addressWasAMember && !isAddressAMember) {
       await AddressService.removeRoleFromAddress(address, "member");
       const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "";
-      await PrivyService.setUserRole(idToken!, privyRole);
+      await PrivyService.setUserRole(privyIdToken!, privyRole);
       return NextResponse.json(
         { address, isMember: false, syncStatus: "updated" },
         { status: 200 },
@@ -44,15 +44,15 @@ export async function POST(
     if (!addressWasAMember && isAddressAMember) {
       await AddressService.addRoleToAddress(address, "member");
       const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "member";
-      await PrivyService.setUserRole(idToken!, privyRole);
+      await PrivyService.setUserRole(privyIdToken!, privyRole);
       return NextResponse.json({ address, isMember: true, syncStatus: "updated" }, { status: 200 });
     }
 
-    const privyUser = await PrivyService.getUserWithMetadata(address);
+    const privyUser = await PrivyService.getUserWithMetadata(privyIdToken!);
 
     if (privyUser?.role == null) {
       await PrivyService.setUserRole(
-        idToken!,
+        privyIdToken!,
         addressDoc.isAdmin
           ? "admin"
           : addressDoc.isCreator

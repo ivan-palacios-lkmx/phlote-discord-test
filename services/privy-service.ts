@@ -7,20 +7,22 @@ export class PrivyService {
   static async initialize(): Promise<void> {
     if (this.isInitialized) return;
     const privyClient = new PrivyClient({
-      appId: process.env.PRIVY_APP_ID as string,
-      appSecret: process.env.PRIVY_APP_SECRET as string,
+      appId: process.env.NEXT_PUBLIC_PRIVY_APP_ID as string,
+      appSecret: process.env.PRIVY_SECRET as string,
     });
     this.privyClient = privyClient;
     this.isInitialized = true;
   }
 
-  static async getUserWithMetadata(idToken: string): Promise<Record<string, unknown> | undefined> {
+  static async getUserWithMetadata(
+    privyIdToken: string,
+  ): Promise<Record<string, unknown> | undefined> {
     try {
       if (!this.privyClient) {
         await this.initialize();
       }
 
-      const user = await this.privyClient?.users().get({ id_token: idToken });
+      const user = await this.privyClient?.users().get({ id_token: privyIdToken });
       return (user?.custom_metadata as Record<string, unknown>) || undefined;
     } catch (error) {
       console.error("Error getting user with metadata or invalid id token:", error);
