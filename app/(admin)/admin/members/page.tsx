@@ -1,5 +1,6 @@
 "use client";
 
+import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import MemberCard from "@/components/admin/MemberCard/MemberCard";
 import { useGetAddresses } from "@/hooks/query/query-hooks/use-get-addresses";
 import Link from "next/link";
@@ -9,7 +10,7 @@ import "./Members.scss";
 export default function Members() {
   const { data: members, isPending: isPendingMembers } = useGetAddresses({ role: "member" });
   return (
-    <main className="admin-members">
+    <OnlyAdmins className="admin-members">
       <div className="contained">
         <h4 className="admin-title">Manage Members</h4>
         <div className="subtitle">
@@ -26,6 +27,6 @@ export default function Members() {
           </div>
         )}
       </div>
-    </main>
+    </OnlyAdmins>
   );
 }
