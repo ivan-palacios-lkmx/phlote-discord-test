@@ -125,22 +125,12 @@ export const PROTECTED_ROUTES = [
     roles: ["member", "creator", "admin"],
   },
   {
-    path: "/api/sessions/:sessionId",
-    method: "GET",
-    roles: ["member", "creator", "admin"],
-  },
-  {
     path: "/api/sessions/:sessionId/versions",
     method: "GET",
     roles: ["member", "creator", "admin"],
   },
   {
     path: "/api/sessions/versions",
-    method: "GET",
-    roles: ["member", "creator", "admin"],
-  },
-  {
-    path: "/api/sessions/versions/:versionId",
     method: "GET",
     roles: ["member", "creator", "admin"],
   },
