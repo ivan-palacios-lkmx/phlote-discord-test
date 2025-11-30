@@ -1,0 +1,65 @@
+@import '../../app/assets/scss/vars';
+
+.application-preview-block {
+  border: 1px solid rgba(#000, 0.05);
+  background-color: rgba(#000, 0.1);
+  border-radius: 7px;
+
+  .header-row {
+    border-bottom: 1px solid rgba(#000, 0.1);
+    grid-template-columns: 1fr auto;
+    padding: figmaSize(30px);
+    padding-bottom: 15px;
+    grid-gap: 20px;
+    display: grid;
+  }
+
+  .card-body {
+    padding: 20px figmaSize(30px);
+  }
+
+  .notes-fields {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px 10px;
+    display: grid;
+    margin: 5px 0;
+  }
+
+  .date {
+    text-align: right;
+  }
+
+  .fields {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    display: grid;
+    margin: 10px 0;
+
+    >* {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    a {
+      text-decoration: underline;
+    }
+  }
+
+  .name {
+    margin: 0;
+  }
+
+  .tracks {
+    margin-top: 10px;
+  }
+
+  .track-player {
+    margin: 10px 0;
+
+    .track-preview .outline svg .blobs {
+      stroke: var(--black);
+    }
+  }
+}
