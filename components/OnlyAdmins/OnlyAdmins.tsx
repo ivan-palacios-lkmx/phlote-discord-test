@@ -17,6 +17,7 @@ export default function OnlyAdmins({ children, className }: OnlyAdminsProps) {
   const isUserAllowedToViewContent = useMemo(() => {
     return user?.customMetadata?.role === "admin";
   }, [user]);
+
   const { login } = useLogin();
 
   return (
