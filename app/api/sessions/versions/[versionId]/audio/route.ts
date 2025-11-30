@@ -14,26 +14,52 @@ export async function GET(request: NextRequest, { params }: { params: { versionI
 
     const versionID = params.versionId;
 
-    const settings = await GlobalsService.getSettingsData();
+    const action = request.nextUrl.searchParams.get("action");
 
-    if (!settings) {
-      return NextResponse.json({ error: "Settings not found" }, { status: 404 });
+    if (!action || !audioActionSchema.safeParse(action).success) {
+      return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+    }
+    if (!versionID) {
+      return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
     }
 
-    const isVersionPublic = settings.stemsCarousel?.includes(versionID);
+    const settings = await GlobalsService.getSettingsData();
+
+    const isVersionPublic = settings?.stemsCarousel?.includes(versionID);
 
     if (!isVersionPublic && !privyIdToken) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!versionID) {
-      return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
+    const privyUser = await PrivyService.getPrivyUserByToken(privyIdToken!);
+
+    const shouldUserAccessPremiumFeatures =
+      privyUser?.custom_metadata?.role === "member" ||
+      privyUser?.custom_metadata?.role === "creator" ||
+      privyUser?.custom_metadata?.role === "admin";
+
+    if (isVersionPublic) {
+      if (action !== "play" && !shouldUserAccessPremiumFeatures) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      const version = await SessionService.getVersion(versionID);
+      if (!version?.bounce) {
+        return NextResponse.json({ error: "Version bounce not found" }, { status: 404 });
+      }
+      const stemsHashes = version.stems.map((stem) => stem.id);
+      const stemsSignedUrls = await AudioService.getStemsSignedUrls(
+        stemsHashes,
+        action as AudioAction,
+      );
+      const bounceSignedUrl = await AudioService.getBounceSignedUrl(
+        version.bounce,
+        action as AudioAction,
+      );
+      return NextResponse.json({ stemsSignedUrls, bounceSignedUrl }, { status: 200 });
     }
 
-    const action = request.nextUrl.searchParams.get("action");
-
-    if (!action || !audioActionSchema.safeParse(action).success) {
-      return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+    if (!shouldUserAccessPremiumFeatures) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const version = await SessionService.getVersion(versionID);
