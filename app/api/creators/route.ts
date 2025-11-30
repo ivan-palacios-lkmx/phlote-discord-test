@@ -79,7 +79,24 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Invalid address" }, { status: 400 });
     }
 
+    const addressDoc = await AddressService.getSingleAddress(address, false);
+
+    if (!addressDoc) {
+      return NextResponse.json({ error: "Address not found" }, { status: 404 });
+    }
+
     await AddressService.deleteCreatorAddress(address);
+
+    await PrivyService.setPrivyUserRoleByWalletAddress(
+      address,
+      addressDoc.isAdmin
+        ? "admin"
+        : addressDoc.isCreator
+          ? "creator"
+          : addressDoc.isMember
+            ? "member"
+            : "",
+    );
 
     return NextResponse.json({ message: "Creator address deleted" }, { status: 200 });
   } catch (error) {
