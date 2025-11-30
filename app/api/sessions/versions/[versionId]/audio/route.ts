@@ -28,13 +28,7 @@ export async function GET(request: NextRequest, { params }: { params: { versionI
     let isPremiumUser = false;
 
     if (privyIdToken) {
-      try {
-        const privyUser = await PrivyService.getPrivyUserByToken(privyIdToken);
-        const role = privyUser?.custom_metadata?.role as string | undefined;
-        isPremiumUser = ["member", "creator", "admin"].includes(role || "");
-      } catch (error) {
-        console.error("Error fetching privy user:", error);
-      }
+      isPremiumUser = await PrivyService.isUserPremium(privyIdToken);
     }
 
     const isPublicPlay = isVersionPublic && action === "play";

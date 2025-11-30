@@ -94,4 +94,15 @@ export class PrivyService {
       throw error;
     }
   }
+
+  static async isUserPremium(privyIdToken: string): Promise<boolean> {
+    try {
+      const user = await this.getPrivyUserByToken(privyIdToken);
+      const role = user?.custom_metadata?.role as string | undefined;
+      return ["member", "creator", "admin"].includes(role || "");
+    } catch (error) {
+      console.error("Error checking if user is premium:", error);
+      return false;
+    }
+  }
 }
