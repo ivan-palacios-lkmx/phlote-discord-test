@@ -1,3 +1,4 @@
+import { PROTECTED_ROUTES } from "@/constants/protectedRoutes";
 import { PrivyClient } from "@privy-io/node";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -5,14 +6,6 @@ const privyClient = new PrivyClient({
   appId: process.env.NEXT_PUBLIC_PRIVY_APP_ID as string,
   appSecret: process.env.PRIVY_SECRET as string,
 });
-
-const PROTECTED_ROUTES = [
-  {
-    path: "/api/creators",
-    method: "POST",
-    roles: ["admin"],
-  },
-];
 
 export const config = {
   matcher: "/api/:path*",
