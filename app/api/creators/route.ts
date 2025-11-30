@@ -1,4 +1,5 @@
 import { AddressService } from "@/services/address-service";
+import { PrivyService } from "@/services/privy-service";
 import { addressSchema, visibilitySchema } from "@/utils/zod-schemas";
 import { getAddress } from "ethers/address";
 import { NextRequest, NextResponse } from "next/server";
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (addressAlreadyExists) {
       AddressService.updateAddressRole(formattedAddress, "creator");
-
+      await PrivyService.setPrivyUserRoleByWalletAddress(formattedAddress, "creator");
       return NextResponse.json({ message: "Address updated as creator" }, { status: 200 });
     }
 
@@ -55,6 +56,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       true,
       false,
     );
+
+    await PrivyService.setPrivyUserRoleByWalletAddress(formattedAddress, "creator");
 
     return NextResponse.json({ creator }, { status: 201 });
   } catch (error) {
