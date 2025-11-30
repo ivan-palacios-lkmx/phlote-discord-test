@@ -8,7 +8,7 @@ const privyClient = new PrivyClient({
 
 const PROTECTED_ROUTES = [
   {
-    pattern: /^\/api\/creators/,
+    path: "/api/creators",
     method: "POST",
     roles: ["admin"],
   },
@@ -18,11 +18,17 @@ export const config = {
   matcher: "/api/:path*",
 };
 
+function isRouteMatch(routePath: string, requestPath: string): boolean {
+  const pattern = routePath.replace(/\//g, "\\/").replace(/:[a-zA-Z0-9_]+/g, "[^/]+");
+  const regex = new RegExp(`^${pattern}$`);
+  return regex.test(requestPath);
+}
+
 export async function middleware(req: NextRequest) {
   const cookieIdToken = req.cookies.get("privy-id-token");
 
   const protectedRoute = PROTECTED_ROUTES.find(
-    (route) => route.pattern.test(req.nextUrl.pathname) && req.method === route.method,
+    (route) => isRouteMatch(route.path, req.nextUrl.pathname) && req.method === route.method,
   );
 
   if (!protectedRoute) {
