@@ -1,4 +1,5 @@
 import { AddressService } from "@/services/address-service";
+import { PrivyService } from "@/services/privy-service";
 import { addressSchema, visibilitySchema } from "@/utils/zod-schemas";
 import { getAddress } from "ethers";
 import { NextRequest, NextResponse } from "next/server";
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest) {
 
     if (addressAlreadyExists) {
       AddressService.updateAddressRole(formattedAddress, "admin");
+      await PrivyService.setPrivyUserRoleByWalletAddress(formattedAddress, "admin");
       return NextResponse.json({ message: "Address updated as admin" }, { status: 201 });
     }
 
@@ -56,6 +58,8 @@ export async function POST(request: NextRequest) {
       false,
       true,
     );
+
+    await PrivyService.setPrivyUserRoleByWalletAddress(formattedAddress, "admin");
 
     return NextResponse.json({ admin: newAdmin }, { status: 201 });
   } catch (error) {
@@ -77,7 +81,18 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Invalid address" }, { status: 400 });
     }
 
+    const addressDoc = await AddressService.getSingleAddress(address, false);
+
+    if (!addressDoc) {
+      return NextResponse.json({ error: "Address not found" }, { status: 404 });
+    }
+
     await AddressService.deleteAdminAddress(address);
+
+    await PrivyService.setPrivyUserRoleByWalletAddress(
+      address,
+      addressDoc.isCreator ? "creator" : addressDoc.isMember ? "member" : "",
+    );
 
     return NextResponse.json({ message: "Admin address deleted" }, { status: 200 });
   } catch (error) {
