@@ -17,8 +17,6 @@ export default function ApplicationPreviewBlock({
   application,
   date,
   time,
-  tracks = [],
-  trackURLs = [],
 }: ApplicationPreviewBlockProps) {
   return (
     <div className="application-preview-block">
@@ -63,12 +61,12 @@ export default function ApplicationPreviewBlock({
             </div>
           </div>
 
-          {tracks.length > 0 && trackURLs.length > 0 && (
+          {application?.tracks?.length && application?.tracks?.length > 0 && (
             <div className="tracks">
               <div className="track-label">
                 <strong>Example Tracks:</strong>
               </div>
-              {tracks.map((track) => (
+              {application?.tracks?.map((track) => (
                 <div key={track.id} className="track-player">
                   <TrackPreview hash={track.id} />
                 </div>
