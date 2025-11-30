@@ -1,0 +1,31 @@
+@import '../../app/assets/scss/vars';
+
+main.only-creators {
+  display: flex;
+
+  .only-creators-loading {
+    margin: auto;
+  }
+
+  .only-creators-locked {
+    text-align: center;
+    margin: auto;
+
+    .centered {
+      display: inline-block;
+      max-width: 500px;
+    }
+
+    h4 {
+      margin: 10px 0;
+    }
+
+    .btn {
+      filter: invert(1);
+    }
+  }
+
+  .only-creators-revealed {
+    flex: 1;
+  }
+}
