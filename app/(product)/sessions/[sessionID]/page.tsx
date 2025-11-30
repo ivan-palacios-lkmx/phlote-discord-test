@@ -1,6 +1,7 @@
 "use client";
 
 import "@/app/(product)/sessions/[sessionID]/sessionId.scss";
+import OnlyMembers from "@/components/OnlyMembers/OnlyMembers";
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import SessionBreadcrumb from "@/components/session/SessionBreadcrumb/SessionBreadcrumb";
 import SessionDetailActivity from "@/components/session/SessionDetailActivity/SessionDetailActivity";
@@ -86,7 +87,7 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
   }
 
   return (
-    <main>
+    <OnlyMembers>
       <div className="session-detail">
         <div className="bg-area">
           <Web3Avatar
@@ -136,6 +137,6 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
           </div>
         )}
       </div>
-    </main>
+    </OnlyMembers>
   );
 }
