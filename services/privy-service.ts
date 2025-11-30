@@ -14,6 +14,20 @@ export class PrivyService {
     this.isInitialized = true;
   }
 
+  static async getUserWithMetadata(idToken: string): Promise<Record<string, unknown> | undefined> {
+    try {
+      if (!this.privyClient) {
+        await this.initialize();
+      }
+
+      const user = await this.privyClient?.users().get({ id_token: idToken });
+      return (user?.custom_metadata as Record<string, unknown>) || undefined;
+    } catch (error) {
+      console.error("Error getting user with metadata or invalid id token:", error);
+      throw error;
+    }
+  }
+
   static async setUserRole(address: string, role: string): Promise<void> {
     try {
       if (!this.privyClient) {

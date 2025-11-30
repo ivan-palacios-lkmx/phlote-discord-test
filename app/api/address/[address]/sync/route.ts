@@ -2,6 +2,7 @@ import { AddressService } from "@/services/address-service";
 import { PrivyService } from "@/services/privy-service";
 import { RoleService } from "@/services/role-service";
 import { addressSchema } from "@/utils/zod-schemas";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
@@ -9,7 +10,10 @@ export async function POST(
   { params }: { params: Promise<{ address: string }> },
 ) {
   const { address } = await params;
+
   try {
+    const cookiesStore = await cookies();
+    const idToken = cookiesStore.get("idToken")?.value;
     if (!addressSchema.safeParse(address).success) {
       return NextResponse.json({ error: "Invalid address format" }, { status: 400 });
     }
@@ -30,7 +34,7 @@ export async function POST(
     if (addressWasAMember && !isAddressAMember) {
       await AddressService.removeRoleFromAddress(address, "member");
       const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "";
-      await PrivyService.setUserRole(address, privyRole);
+      await PrivyService.setUserRole(idToken!, privyRole);
       return NextResponse.json(
         { address, isMember: false, syncStatus: "updated" },
         { status: 200 },
@@ -40,8 +44,23 @@ export async function POST(
     if (!addressWasAMember && isAddressAMember) {
       await AddressService.addRoleToAddress(address, "member");
       const privyRole = addressDoc.isAdmin ? "admin" : addressDoc.isCreator ? "creator" : "member";
-      await PrivyService.setUserRole(address, privyRole);
+      await PrivyService.setUserRole(idToken!, privyRole);
       return NextResponse.json({ address, isMember: true, syncStatus: "updated" }, { status: 200 });
+    }
+
+    const privyUser = await PrivyService.getUserWithMetadata(address);
+
+    if (privyUser?.role == null) {
+      await PrivyService.setUserRole(
+        idToken!,
+        addressDoc.isAdmin
+          ? "admin"
+          : addressDoc.isCreator
+            ? "creator"
+            : addressDoc.isMember
+              ? "member"
+              : "",
+      );
     }
 
     return NextResponse.json(
