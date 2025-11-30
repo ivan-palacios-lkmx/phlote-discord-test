@@ -23,12 +23,13 @@ export default function OnlyMembers({ children, className }: OnlyMembersProps) {
     );
   }, [user]);
 
-  const onConnect = () => {
+  function handleConnectWallet() {
+    if (!ready) return;
     if (authenticated) {
       logout();
     }
     login();
-  };
+  }
 
   return (
     <main className={`only-members ${className}`}>
@@ -43,7 +44,7 @@ export default function OnlyMembers({ children, className }: OnlyMembersProps) {
           <div className="contained">
             <div className="centered">
               <h4>This content is for members only.</h4>
-              <button onClick={onConnect} className="btn">
+              <button onClick={handleConnectWallet} className="btn">
                 Connect Wallet
               </button>
             </div>

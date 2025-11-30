@@ -10,11 +10,20 @@ interface OnlyCreatorsProps {
   className?: string;
 }
 export default function OnlyCreators({ children, className }: OnlyCreatorsProps) {
-  const { user, ready } = usePrivy();
+  const { user, ready, authenticated, logout } = usePrivy();
   const { login } = useLogin();
   const isUserAllowedToViewContent = useMemo(() => {
     return user?.customMetadata?.role === "creator" || user?.customMetadata?.role === "admin";
   }, [user]);
+
+  function handleConnectWallet() {
+    if (!ready) return;
+    if (authenticated) {
+      logout();
+      return;
+    }
+    login();
+  }
 
   return (
     <main className={`only-creators ${className}`}>
@@ -29,7 +38,7 @@ export default function OnlyCreators({ children, className }: OnlyCreatorsProps)
           <div className="contained">
             <div className="centered">
               <h4>This area is for creators only.</h4>
-              <button onClick={() => login()} className="btn">
+              <button onClick={handleConnectWallet} className="btn">
                 Connect Wallet
               </button>
             </div>
