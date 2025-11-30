@@ -1,4 +1,4 @@
-import { PrivyClient } from "@privy-io/node";
+import { PrivyClient, User } from "@privy-io/node";
 
 export class PrivyService {
   private static isInitialized = false;
@@ -22,21 +22,37 @@ export class PrivyService {
         await this.initialize();
       }
 
-      const user = await this.privyClient?.users().get({ id_token: privyIdToken });
-      return (user?.custom_metadata as Record<string, unknown>) || undefined;
+      const user = await this.getUser(privyIdToken);
+      return user?.custom_metadata;
     } catch (error) {
       console.error("Error getting user with metadata or invalid id token:", error);
       throw error;
     }
   }
 
-  static async setUserRole(address: string, role: string): Promise<void> {
+  static async getUser(privyIdToken: string): Promise<User | undefined> {
+    try {
+      if (!this.privyClient) {
+        await this.initialize();
+      }
+      const user = await this.privyClient?.users().get({ id_token: privyIdToken });
+      return user;
+    } catch (error) {
+      console.error("Error getting user:", error);
+      throw error;
+    }
+  }
+
+  static async setUserRole(privyIdToken: string, role: string): Promise<void> {
     try {
       if (!this.privyClient) {
         await this.initialize();
       }
 
-      await this.privyClient?.users().setCustomMetadata(address, { custom_metadata: { role } });
+      const user = await this.getUser(privyIdToken);
+      console.log("user", user);
+
+      await this.privyClient?.users().setCustomMetadata(user!.id, { custom_metadata: { role } });
     } catch (error) {
       console.error("Error setting user role:", error);
       throw error;
