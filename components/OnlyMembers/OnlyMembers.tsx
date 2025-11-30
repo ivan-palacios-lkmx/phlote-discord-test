@@ -1,8 +1,8 @@
 "use client";
 
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
-import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
+import { useMemo } from "react";
 
 import "./OnlyMembers.scss";
 
@@ -15,14 +15,13 @@ export default function OnlyMembers({ children, className }: OnlyMembersProps) {
   const { login } = useLogin();
   const { authenticated, logout, ready, user } = usePrivy();
 
-  const {
-    data: addressDoc,
-    isPending,
-    isError,
-  } = useGetAddressInfo(user?.wallet?.address || "", !!user?.wallet?.address && authenticated);
-
-  const isMember =
-    authenticated && (addressDoc?.isAdmin || addressDoc?.isCreator || addressDoc?.isMember);
+  const isUserAllowedToViewContent = useMemo(() => {
+    return (
+      user?.customMetadata?.role === "member" ||
+      user?.customMetadata?.role === "creator" ||
+      user?.customMetadata?.role === "admin"
+    );
+  }, [user]);
 
   const onConnect = () => {
     if (authenticated) {
@@ -33,11 +32,11 @@ export default function OnlyMembers({ children, className }: OnlyMembersProps) {
 
   return (
     <main className={`only-members ${className}`}>
-      {(isPending && authenticated) || !ready ? (
+      {!ready ? (
         <div className="only-members-loading">
           <LoadingSpinnerIcon />
         </div>
-      ) : isMember ? (
+      ) : isUserAllowedToViewContent ? (
         <div className="only-members-revealed">{children}</div>
       ) : (
         <div className="only-members-locked">
@@ -47,15 +46,6 @@ export default function OnlyMembers({ children, className }: OnlyMembersProps) {
               <button onClick={onConnect} className="btn">
                 Connect Wallet
               </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {isError && (
-        <div className="only-members-error">
-          <div className="contained">
-            <div className="centered">
-              <h4>Error loading user data.</h4>
             </div>
           </div>
         </div>
