@@ -323,6 +323,8 @@ export interface ApplicationDoc {
   workLink?: string;
 }
 
+export interface ApplicationDocWithID extends WithID, ApplicationDoc {}
+
 export interface SubscriberDoc {
   /** Date the subscriber was created */
   created: Date | string;
