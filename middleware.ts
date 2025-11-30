@@ -8,7 +8,7 @@ const privyClient = new PrivyClient({
 
 const PROTECTED_ROUTES = [
   {
-    path: "/api/creators",
+    pattern: /^\/api\/creators/,
     method: "POST",
     roles: ["admin"],
   },
@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
   const cookieIdToken = req.cookies.get("privy-id-token");
 
   const protectedRoute = PROTECTED_ROUTES.find(
-    (route) => req.nextUrl.pathname.startsWith(route.path) && req.method === route.method,
+    (route) => route.pattern.test(req.nextUrl.pathname) && req.method === route.method,
   );
 
   if (!protectedRoute) {
