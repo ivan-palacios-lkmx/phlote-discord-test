@@ -1,8 +1,8 @@
 "use client";
 
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
-import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
+import { useMemo } from "react";
 
 import "./OnlyAdmins.scss";
 
@@ -12,23 +12,20 @@ interface OnlyAdminsProps {
 }
 
 export default function OnlyAdmins({ children, className }: OnlyAdminsProps) {
-  const { authenticated } = usePrivy();
-  const { user } = usePrivy();
-  const { data: addressDoc, isPending } = useGetAddressInfo(
-    user?.wallet?.address || "",
-    !!user?.wallet?.address && authenticated,
-    !!user?.wallet?.address && authenticated,
-  );
+  const { user, ready } = usePrivy();
 
+  const isUserAllowedToViewContent = useMemo(() => {
+    return user?.customMetadata?.role === "admin";
+  }, [user]);
   const { login } = useLogin();
 
   return (
     <main className={`only-admins ${className || ""}`}>
-      {isPending ? (
+      {!ready ? (
         <div className="only-admins-loading">
           <LoadingSpinnerIcon />
         </div>
-      ) : addressDoc?.isAdmin ? (
+      ) : isUserAllowedToViewContent ? (
         <div className="only-admins-revealed">{children}</div>
       ) : (
         <div className="only-admins-locked">
