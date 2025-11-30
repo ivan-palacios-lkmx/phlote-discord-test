@@ -14,5 +14,9 @@ export default async function SessionsPage() {
     console.error("Error fetching sessions page from Prismic:", error);
   }
 
-  return <SessionsPageClient prismicPage={prismicPage} />;
+  return (
+    <OnlyMembers>
+      <SessionsPageClient prismicPage={prismicPage} />
+    </OnlyMembers>
+  );
 }
