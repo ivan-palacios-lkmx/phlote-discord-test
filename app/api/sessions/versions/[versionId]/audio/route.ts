@@ -1,12 +1,30 @@
 import { AudioService } from "@/services/audio-service";
+import { GlobalsService } from "@/services/globals-service";
+import { PrivyService } from "@/services/privy-service";
 import { SessionService } from "@/services/session-service";
 import { AudioAction } from "@/types/api";
 import { audioActionSchema } from "@/utils/zod-schemas";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest, { params }: { params: { versionId: string } }) {
   try {
+    const cookiesStore = await cookies();
+    const privyIdToken = cookiesStore.get("privy-id-token")?.value;
+
     const versionID = params.versionId;
+
+    const settings = await GlobalsService.getSettingsData();
+
+    if (!settings) {
+      return NextResponse.json({ error: "Settings not found" }, { status: 404 });
+    }
+
+    const isVersionPublic = settings.stemsCarousel?.includes(versionID);
+
+    if (!isVersionPublic && !privyIdToken) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     if (!versionID) {
       return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
