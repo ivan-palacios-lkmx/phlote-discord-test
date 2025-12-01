@@ -97,6 +97,20 @@ class Api {
     }
   }
 
+  static async getApplicationTracks(
+    applicationId: string,
+  ): Promise<{ tracksSignedUrls: string[] }> {
+    try {
+      const response = await apiClient.get(ENDPOINTS.APPLICATION_TRACKS, {
+        params: { applicationId },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching application tracks:", error);
+      throw error;
+    }
+  }
+
   static async createSession(sessionDetails: {
     creator: string;
     name: string;

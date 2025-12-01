@@ -18,6 +18,7 @@ export const ENDPOINTS = {
   CREATORS: "/creators",
   CREATOR_APPLICATIONS: "/creator-applications",
   APPLICATIONS: "/applications",
+  APPLICATION_TRACKS: "/applications/tracks",
   NEWSLETTER: "/newsletter",
   STEMS_CAROUSEL: "/settings/stems-carousel",
 };
