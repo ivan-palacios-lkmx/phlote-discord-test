@@ -1,5 +1,5 @@
 @use '../../../../app/assets/scss/vars' as *;
-@import '../../../../app/assets/scss/easings';
+@use '../../../../app/assets/scss/easings' as *;
 
 .release-block {
   transition: opacity 400ms ease, transform 1.5s $easeOutCirc;
@@ -38,7 +38,7 @@
       grid-gap: 10px;
       display: grid;
 
-      > * {
+      >* {
         min-width: 0;
       }
     }
