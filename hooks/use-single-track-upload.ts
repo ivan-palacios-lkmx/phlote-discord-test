@@ -1,32 +1,32 @@
 import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { useCheckAudioStatus } from "@/hooks/query/query-hooks/use-check-audio-status";
 import { AudioProcessingStatus } from "@/types/api";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-export interface AudioUploadValue {
-  id: string;
-  status: AudioProcessingStatus;
-}
-
 interface UseSingleTrackUploadProps {
-  onChange: (value: AudioUploadValue | undefined) => void;
-  value: AudioUploadValue | undefined;
+  onChange: (value: string | undefined) => void;
+  value: string | undefined;
 }
 
-export function useSingleTrackUpload({ onChange, value }: UseSingleTrackUploadProps) {
+export function useSingleTrackUpload({ onChange }: UseSingleTrackUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<{ title: string; message: string } | null>(null);
   const areaRef = useRef<HTMLDivElement>(null);
 
-  const currentValue = value;
-  const tempFileName = currentValue?.id;
+  const tempFileNameRef = useRef<string | null>(null);
 
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
 
   const { data: audioStatus } = useCheckAudioStatus({
-    temporaryAudioFileName: tempFileName || "",
+    temporaryAudioFileName: tempFileNameRef.current || "",
   });
+
+  useEffect(() => {
+    if (audioStatus && audioStatus.status === "ready" && audioStatus.hash) {
+      onChange(audioStatus.hash);
+    }
+  }, [audioStatus, onChange]);
 
   async function onDrop(acceptedFiles: File[]) {
     if (acceptedFiles.length === 0) return;
@@ -36,14 +36,15 @@ export function useSingleTrackUpload({ onChange, value }: UseSingleTrackUploadPr
     setError(null);
 
     try {
-      const { tmpName, status } = await submitAudio({ audioFile: droppedFile });
-      onChange({ id: tmpName, status });
+      const { tmpName } = await submitAudio({ audioFile: droppedFile });
+      tempFileNameRef.current = tmpName;
     } catch {
       setError({
         title: "error",
         message: "Failed to upload",
       });
       setFile(null);
+      tempFileNameRef.current = null;
       onChange(undefined);
     }
   }
@@ -52,6 +53,7 @@ export function useSingleTrackUpload({ onChange, value }: UseSingleTrackUploadPr
     e.stopPropagation();
     setFile(null);
     setError(null);
+    tempFileNameRef.current = null;
     onChange(undefined);
   };
 
@@ -60,7 +62,7 @@ export function useSingleTrackUpload({ onChange, value }: UseSingleTrackUploadPr
     multiple: false,
   });
 
-  const status: AudioProcessingStatus = audioStatus?.status || currentValue?.status || "pending";
+  const status: AudioProcessingStatus = audioStatus?.status || "pending";
   const isProcessingFile = status === "processing";
   const hasError = status === "failed" || error !== null;
 
