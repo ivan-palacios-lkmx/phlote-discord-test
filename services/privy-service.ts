@@ -105,4 +105,22 @@ export class PrivyService {
       return false;
     }
   }
+
+  static async getWalletAddressFromToken(privyIdToken: string): Promise<string | undefined> {
+    try {
+      const user = await this.getPrivyUserByToken(privyIdToken);
+      if (!user?.linkedAccounts) {
+        return undefined;
+      }
+
+      const walletAccount = user.linkedAccounts.find(
+        (account) => account.type === "wallet",
+      ) as { address: string } | undefined;
+
+      return walletAccount?.address;
+    } catch (error) {
+      console.error("Error getting wallet address from token:", error);
+      return undefined;
+    }
+  }
 }
