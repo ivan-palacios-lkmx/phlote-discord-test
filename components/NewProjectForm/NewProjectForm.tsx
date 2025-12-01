@@ -12,6 +12,7 @@ import VersionFormButton from "@/components/VersionFormButton/VersionFormButton"
 import SessionDetailTitle from "@/components/session/SessionDetailTitle/SessionDetailTitle";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import { useCreateSession } from "@/hooks/query/mutations/use-create-session";
+import { useCreateVersion } from "@/hooks/query/mutations/use-create-version";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
 import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
@@ -61,6 +62,8 @@ export default function NewProjectForm({
     type === "version" && !!sessionID,
   );
 
+  const { mutate: createVersion, isPending: isPendingVersion } = useCreateVersion();
+
   const [generatedName, setGeneratedName] = useState("");
 
   const [formValues, setFormValues] = useState<Record<string, unknown>>({
@@ -100,6 +103,10 @@ export default function NewProjectForm({
   }
 
   function handleSubmit(formValues: z.infer<typeof newVersionFormSchema>) {
+    if (type === "version") {
+      createVersion({ creator: user?.wallet?.address || "", formValues });
+      return;
+    }
     createSession({ creator: user?.wallet?.address || "", formValues });
   }
 
