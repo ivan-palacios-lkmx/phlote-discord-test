@@ -198,3 +198,15 @@ export const addCreatorSchema = z.object({
 export const stemsCarouselSchema = z.array(z.string());
 
 export const versionIDSchema = z.string();
+
+export const discordInteractionSchema = z
+  .object({
+    type: z.number(),
+    data: z
+      .object({
+        name: z.string().optional(),
+      })
+      .optional(),
+    channel_id: z.string().optional(),
+  })
+  .passthrough();
