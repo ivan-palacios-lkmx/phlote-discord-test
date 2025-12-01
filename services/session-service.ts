@@ -54,37 +54,49 @@ export class SessionService {
   static async createVersion(
     sessionID: string,
     versionDetails: VersionDetails,
-    stemsTemporaryFileNames: string[],
-    stemCannonicalNames: string[],
-    bounceTemporaryFileName: string,
   ): Promise<VersionDocWithID | null> {
     try {
-      const versionId = await this.createProjectId("version");
-
-      const stems = await AudioService.getStemsFromTemporaryAudioReferences(
-        stemsTemporaryFileNames,
-        stemCannonicalNames,
-      );
-      const bounce =
-        await AudioService.getBounceFromTemporaryAudioReference(bounceTemporaryFileName);
-
-      if (!stems || !bounce) {
-        throw new Error("Stems or bounce not found");
+      const session = await this.getSession(sessionID);
+      if (!session) {
+        throw new Error("Session not found");
       }
 
+      const versionId = await this.createProjectId("version");
+
       const collaborators = await this.getSessionColaborators(versionDetails);
+
+      const newVersionIndex = (session.versionCount || 0) + 1;
 
       const newVersion: VersionDocWithID = {
         ...versionDetails,
         id: versionId,
-        stems,
-        bounce,
         sessionID,
         collaborators,
         created: FieldValue.serverTimestamp(),
+        versionIndex: newVersionIndex,
+        playCount: 0,
+        downloadCount: 0,
       };
 
-      await this.saveVersionInDatabase(newVersion);
+      const newMinBpm = session.minBpm
+        ? Math.min(session.minBpm, versionDetails.bpm)
+        : versionDetails.bpm;
+      const newMaxBpm = session.maxBpm
+        ? Math.max(session.maxBpm, versionDetails.bpm)
+        : versionDetails.bpm;
+
+      await adminDb.runTransaction(async (transaction) => {
+        const versionRef = adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
+        const sessionRef = adminDb.collection(SESSIONS_COLLECTION).doc(sessionID);
+
+        transaction.set(versionRef, newVersion);
+        transaction.update(sessionRef, {
+          minBpm: newMinBpm,
+          maxBpm: newMaxBpm,
+          versionCount: newVersionIndex,
+          activeLast: FieldValue.serverTimestamp(),
+        });
+      });
 
       return newVersion;
     } catch (error) {

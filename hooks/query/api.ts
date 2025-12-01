@@ -129,6 +129,29 @@ class Api {
     }
   }
 
+  static async createVersion(
+    sessionId: string,
+    versionDetails: {
+      name: string;
+      bounce: string;
+      stems: Array<Stem>;
+      notes?: string;
+      tags?: string[];
+      bpm: number;
+    },
+  ): Promise<VersionDocWithID> {
+    try {
+      const response = await apiClient.post(
+        ENDPOINTS.SESSIONS + "/" + sessionId + ENDPOINTS.VERSIONS,
+        versionDetails,
+      );
+      return response.data.version;
+    } catch (error) {
+      console.error("Error creating version:", error);
+      throw error;
+    }
+  }
+
   static async getSession(sessionID: string): Promise<SessionDocWithID> {
     try {
       const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID);
