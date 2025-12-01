@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     const data = interaction.data;
     const name = data?.name;
     const channel_id = interaction.channel_id;
+    const user = interaction.user || interaction.member?.user;
 
     if (name === "connect") {
       const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
@@ -45,14 +46,29 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Discord token not configured" }, { status: 500 });
       }
 
+      if (!user) {
+        console.error("User not found in interaction");
+        return NextResponse.json({ error: "User not found" }, { status: 400 });
+      }
+
       DiscordService.initialize(token);
+
+      const userInfo = {
+        id: user.id,
+        username: user.username,
+        discriminator: user.discriminator,
+        global_name: user.global_name,
+        avatar: user.avatar,
+      };
+
+      const messageContent = `Connect command received from user:\n**Username:** ${userInfo.username}${userInfo.discriminator ? `#${userInfo.discriminator}` : ""}\n**ID:** ${userInfo.id}\n**Global Name:** ${userInfo.global_name || "N/A"}`;
 
       if (channel_id) {
         try {
-          await DiscordService.sendMessageToChannel(channel_id, "Connect command received.");
+          await DiscordService.sendMessageToChannel(channel_id, messageContent);
           return NextResponse.json({
             type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: { content: "Connect command received." },
+            data: { content: messageContent },
           });
         } catch (error) {
           console.error("Error sending message to Discord:", error);
