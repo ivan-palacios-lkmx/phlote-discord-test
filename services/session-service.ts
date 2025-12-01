@@ -16,9 +16,11 @@ import {
 } from "@/utils/firebase-queries";
 import { formatProjectId } from "@/utils/functions";
 import { DocumentReference, FieldValue, Timestamp, Transaction } from "firebase-admin/firestore";
+import kebabCase from "lodash/kebabCase";
 import ShortUniqueId from "short-unique-id";
 
 import { AudioService } from "./audio-service";
+import { DiscordService } from "./discord-service";
 
 export class SessionService {
   static async getSessions(): Promise<SessionDocWithID[]> {
@@ -204,11 +206,43 @@ export class SessionService {
       this.createVersionDocumentForTransaction(transaction, versionId, sessionId, sessionDetails);
     });
 
-    // TODO: create discord channel for the session
+    await this.createSessionDiscordChannel(sessionId, sessionDetails.name);
+
     return {
       sessionId,
       versionId,
     };
+  }
+
+  static async createSessionDiscordChannel(sessionId: string, sessionName: string) {
+    try {
+      const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
+      const guildId = process.env.DISCORD_GUILD_ID;
+
+      if (!token || !guildId) {
+        console.warn("Discord token or guild ID not configured, skipping channel creation");
+        return;
+      }
+
+      DiscordService.initialize(token);
+
+      const channelName = kebabCase(sessionName);
+      const channel = await DiscordService.createChannel(guildId, channelName);
+
+      await this.updateSessionDiscordChannel(sessionId, channel.id);
+    } catch (error) {
+      console.error("Error creating Discord channel for session:", error);
+      // We don't throw here to avoid failing the session creation if Discord fails
+    }
+  }
+
+  static async updateSessionDiscordChannel(sessionId: string, discordChannelId: string) {
+    try {
+      const sessionRef = await this.getSessionReference(sessionId);
+      await sessionRef.update({ discordChannelId });
+    } catch (error) {
+      console.error("Error updating session with Discord channel ID:", error);
+    }
   }
 
   private static createSessionDocumentForTransaction(

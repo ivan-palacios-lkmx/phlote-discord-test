@@ -103,4 +103,31 @@ export class DiscordService {
 
     return response.json();
   }
+
+  static async createChannel(guildId: string, name: string, type: number = 0) {
+    if (!this.token) {
+      throw new Error("DiscordService not initialized");
+    }
+
+    const response = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bot ${this.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        type,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to create Discord channel in guild ${guildId}: ${response.status} ${response.statusText} - ${errorText}`,
+      );
+    }
+
+    return response.json();
+  }
 }
