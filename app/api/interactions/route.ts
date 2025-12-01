@@ -35,7 +35,6 @@ export async function POST(request: Request) {
 
     const data = interaction.data;
     const name = data?.name;
-    const channel_id = interaction.channel_id;
     const user = interaction.user || interaction.member?.user;
 
     if (name === "connect") {
@@ -53,31 +52,12 @@ export async function POST(request: Request) {
 
       DiscordService.initialize(token);
 
-      const userInfo = {
-        id: user.id,
-        username: user.username,
-        discriminator: user.discriminator,
-        global_name: user.global_name,
-        avatar: user.avatar,
-      };
-
-      const messageContent = `Connect command received from user:\n**Username:** ${userInfo.username}${userInfo.discriminator ? `#${userInfo.discriminator}` : ""}\n**ID:** ${userInfo.id}\n**Global Name:** ${userInfo.global_name || "N/A"}`;
-
-      if (channel_id) {
-        try {
-          await DiscordService.sendMessageToChannel(channel_id, messageContent);
-          return NextResponse.json({
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: { content: messageContent },
-          });
-        } catch (error) {
-          console.error("Error sending message to Discord:", error);
-          return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
-        }
-      } else {
-        console.error("Channel ID missing");
-        return NextResponse.json({ error: "Channel ID missing" }, { status: 400 });
-      }
+      return NextResponse.json({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: "Follow the link in your DMs to verify your identity.",
+        },
+      });
     }
 
     return NextResponse.json({ message: "Unknown command" }, { status: 400 });
