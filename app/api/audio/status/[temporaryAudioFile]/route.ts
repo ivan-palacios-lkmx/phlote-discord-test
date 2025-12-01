@@ -8,9 +8,10 @@ export async function GET(
   try {
     const { temporaryAudioFile } = await params;
 
-    const audioStatus = await AudioService.getAudioProcessingStatus(temporaryAudioFile);
+    const { status, hash } =
+      await AudioService.getAudioProcessingStatusWithHash(temporaryAudioFile);
 
-    return NextResponse.json({ id: temporaryAudioFile, status: audioStatus });
+    return NextResponse.json({ status, hash });
   } catch (error) {
     console.error("Error getting audio processing status:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

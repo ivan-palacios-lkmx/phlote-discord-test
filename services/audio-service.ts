@@ -495,6 +495,23 @@ export class AudioService {
     return temporaryAudioFileData.status;
   }
 
+  static async getAudioProcessingStatusWithHash(
+    audioFilename: string,
+  ): Promise<{ status: AudioProcessingStatus; hash?: string }> {
+    const temporaryAudioFileData = await getDocumentDataFromCollectionById<TemporaryAudioDoc>(
+      TEMPORARY_AUDIO_COLLECTION,
+      audioFilename,
+    );
+
+    if (!temporaryAudioFileData) {
+      throw new Error(`No temporary audio file found for filename: ${audioFilename}`);
+    }
+    return {
+      status: temporaryAudioFileData.status,
+      hash: temporaryAudioFileData.hash || undefined,
+    };
+  }
+
   static async getTrackHashFromTemporaryAudioReference(
     filename: string,
   ): Promise<string | undefined> {
