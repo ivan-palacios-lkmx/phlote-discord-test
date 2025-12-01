@@ -1,12 +1,13 @@
 "use client";
 
 import TrackPlayer from "@/components/TrackPlayer/TrackPlayer";
-import type { ApplicationDoc } from "@/types/database";
+import { useGetApplicationTracks } from "@/hooks/query/query-hooks/use-get-application-tracks";
+import type { ApplicationDocWithID } from "@/types/database";
 
 import "./ApplicationPreviewBlock.scss";
 
 interface ApplicationPreviewBlockProps {
-  application?: ApplicationDoc;
+  application?: ApplicationDocWithID;
   date?: string;
   time?: string;
   tracks?: Array<{ name: string; id: string }>;
@@ -18,6 +19,13 @@ export default function ApplicationPreviewBlock({
   date,
   time,
 }: ApplicationPreviewBlockProps) {
+  const { data: trackURLs } = useGetApplicationTracks({
+    applicationId: application?.id || "",
+    enabled: !!application?.id,
+  });
+
+  const tracksUrls = trackURLs?.tracksSignedUrls || [];
+
   return (
     <div className="application-preview-block">
       <div className="grid-data">
@@ -66,9 +74,9 @@ export default function ApplicationPreviewBlock({
               <div className="track-label">
                 <strong>Example Tracks:</strong>
               </div>
-              {application?.tracks?.map((track) => (
-                <div key={track.id} className="track-player">
-                  <TrackPlayer hash={track.id} />
+              {application?.tracks?.map((track, index) => (
+                <div key={track.id}>
+                  <TrackPlayer hash={track.id} url={tracksUrls[index]} />
                 </div>
               ))}
             </div>
