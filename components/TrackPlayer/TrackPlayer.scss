@@ -1,0 +1,16 @@
+@import '../../app/assets/scss/vars';
+
+.track-player {
+  grid-template-columns: auto 1fr;
+  grid-gap: 5px;
+  display: grid;
+
+  .play-button {
+    text-transform: uppercase;
+    min-width: 50px;
+  }
+
+  .track-preview {
+    pointer-events: none;
+  }
+}

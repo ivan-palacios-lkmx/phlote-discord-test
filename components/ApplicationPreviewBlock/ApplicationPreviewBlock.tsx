@@ -1,6 +1,6 @@
 "use client";
 
-import TrackPreview from "@/components/TrackPreview/TrackPreview";
+import TrackPlayer from "@/components/TrackPlayer/TrackPlayer";
 import type { ApplicationDoc } from "@/types/database";
 
 import "./ApplicationPreviewBlock.scss";
@@ -68,7 +68,7 @@ export default function ApplicationPreviewBlock({
               </div>
               {application?.tracks?.map((track) => (
                 <div key={track.id} className="track-player">
-                  <TrackPreview hash={track.id} />
+                  <TrackPlayer hash={track.id} />
                 </div>
               ))}
             </div>

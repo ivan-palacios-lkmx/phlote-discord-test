@@ -9,9 +9,10 @@ interface TrackPreviewProps {
   hash?: string;
   className?: string;
   onSeek?: (percentage: number) => void;
+  style?: React.CSSProperties;
 }
 
-export default function TrackPreview({ hash, className = "", onSeek }: TrackPreviewProps) {
+export default function TrackPreview({ hash, className = "", onSeek, style }: TrackPreviewProps) {
   const [cursorPosition, setCursorPosition] = useState(0);
 
   const { data: waveTrace } = useGetAudioWaveTrace(hash ?? "", !!hash);
@@ -50,6 +51,7 @@ export default function TrackPreview({ hash, className = "", onSeek }: TrackPrev
       role="button"
       tabIndex={0}
       className={`track-preview ${className}`}
+      style={style}
       onMouseMove={onMouseMove}
       onClick={onTrackClick}
       onKeyDown={onKeyDown}>
