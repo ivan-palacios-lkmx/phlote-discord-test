@@ -1,4 +1,4 @@
-@import '../../../assets/scss/vars';
+@use '../../../assets/scss/vars' as *;
 
 .session-detail {
   background-color: var(--black);

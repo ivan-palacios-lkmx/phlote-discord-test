@@ -1,5 +1,8 @@
 @use 'sass:math';
-@import 'easings';
+@use 'sass:map';
+@use 'sass:meta';
+@forward 'easings';
+@use 'easings' as *;
 
 // mixins
 @mixin fill($position: absolute) {
@@ -114,10 +117,10 @@ $breakpoints: (
 );
 
 @mixin bp($name: 's') {
-  $value: map-get($breakpoints, $name);
+  $value: map.get($breakpoints, $name);
 
-  @if map-has-key($breakpoints, $name) {
-    @media #{inspect(map-get($breakpoints, $name))} {
+  @if map.has-key($breakpoints, $name) {
+    @media #{meta.inspect(map.get($breakpoints, $name))} {
       @content;
     }
   }

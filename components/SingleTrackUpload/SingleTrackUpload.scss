@@ -1,4 +1,4 @@
-@import "../../app/assets/scss/vars";
+@use '../../app/assets/scss/vars' as *;
 
 .single-track-upload {
   border-radius: 7px;

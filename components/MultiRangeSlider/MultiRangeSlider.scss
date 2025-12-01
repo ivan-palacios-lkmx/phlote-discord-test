@@ -1,4 +1,4 @@
-@import '../../app/assets/scss/vars';
+@use '../../app/assets/scss/vars' as *;
 
 .multi-range-slider {
   height: 23px;

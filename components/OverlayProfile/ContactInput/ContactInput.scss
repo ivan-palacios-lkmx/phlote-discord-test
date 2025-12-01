@@ -1,4 +1,4 @@
-@import "../../../app/assets/scss/vars";
+@use '../../../app/assets/scss/vars' as *;
 
 .overlay-profile-contact-input {
   grid-template-columns: 1fr auto;

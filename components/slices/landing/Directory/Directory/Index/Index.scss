@@ -1,4 +1,4 @@
-@import '../../../../../../app/assets/scss/vars';
+@use '../../../../../../app/assets/scss/vars' as *;
 
 .slice-directory {
   padding: 0 var(--margin) 150px;

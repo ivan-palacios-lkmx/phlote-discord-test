@@ -1,4 +1,4 @@
-@import '../../../app/assets/scss/vars';
+@use '../../../app/assets/scss/vars' as *;
 
 .session-detail-activity-row {
   grid-template-columns: auto 1fr auto;

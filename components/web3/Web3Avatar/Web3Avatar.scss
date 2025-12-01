@@ -1,4 +1,4 @@
-@import '../../../app/assets/scss/vars';
+@use '../../../app/assets/scss/vars' as *;
 
 .web3-avatar {
   overflow: hidden;
@@ -13,4 +13,3 @@
     width: 100%;
   }
 }
-

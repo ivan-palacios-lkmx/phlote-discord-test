@@ -1,4 +1,4 @@
-@import '../../../app/assets/scss/vars';
+@use '../../../app/assets/scss/vars' as *;
 
 .session-detail-title {
   border-bottom: 1px solid rgba(#fff, 0.3);

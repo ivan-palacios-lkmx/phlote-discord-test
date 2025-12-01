@@ -1,4 +1,4 @@
-@import '../../../../app/assets/scss/vars';
+@use '../../../../app/assets/scss/vars' as *;
 
 .slice-application-form {
     margin-top: 100px;

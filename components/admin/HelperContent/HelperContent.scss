@@ -1,4 +1,4 @@
-@import '../../../app/assets/scss/vars';
+@use '../../../app/assets/scss/vars' as *;
 
 .admin-helper-content {
   grid-template-columns: repeat(4, 1fr);

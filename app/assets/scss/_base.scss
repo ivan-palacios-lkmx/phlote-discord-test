@@ -1,4 +1,4 @@
-@import 'vars';
+@use 'vars' as *;
 
 body {
     --header-height: 100px;

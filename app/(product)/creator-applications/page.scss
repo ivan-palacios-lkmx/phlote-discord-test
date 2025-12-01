@@ -1,4 +1,4 @@
-@import '../../assets/scss/vars';
+@use '../../assets/scss/vars' as *;
 
 main.creator-applications {
   @include noise-background;

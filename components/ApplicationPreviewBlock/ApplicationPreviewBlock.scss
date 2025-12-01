@@ -1,4 +1,4 @@
-@import '../../app/assets/scss/vars';
+@use '../../app/assets/scss/vars' as *;
 
 .application-preview-block {
   border: 1px solid rgba(#000, 0.05);
