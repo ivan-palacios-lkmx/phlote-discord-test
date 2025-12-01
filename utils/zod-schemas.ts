@@ -60,7 +60,7 @@ export const tagsSchema = tags;
 const bounce = z.string();
 export const bounceSchema = bounce;
 
-const stems = z.array(z.string());
+const stems = z.array(z.object({ name: z.string(), hash: z.string() }));
 export const stemsSchema = stems;
 
 const notes = z.string().optional();

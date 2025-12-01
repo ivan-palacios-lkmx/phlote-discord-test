@@ -15,7 +15,7 @@ import {
   getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { formatProjectId } from "@/utils/functions";
-import { DocumentReference, Transaction } from "firebase-admin/firestore";
+import { DocumentReference, Timestamp, Transaction } from "firebase-admin/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import ShortUniqueId from "short-unique-id";
 
@@ -193,6 +193,7 @@ export class SessionService {
       this.createVersionDocumentForTransaction(transaction, versionId, sessionId, sessionDetails);
     });
 
+    // TODO: create discord channel for the session
     return {
       sessionId,
       versionId,
@@ -206,9 +207,17 @@ export class SessionService {
   ): void {
     const sessionRef = adminDb.collection(SESSIONS_COLLECTION).doc(sessionId);
     transaction.set(sessionRef, {
-      created: new Date(),
+      created: serverTimestamp(),
       creator: sessionDetails.creator,
       name: sessionDetails.name,
+      minBpm: sessionDetails.bpm,
+      maxBpm: sessionDetails.bpm,
+      collaborators: sessionDetails.creator,
+      tags: sessionDetails.tags,
+      playCount: 0,
+      discordMessageCount: 0,
+      activeLast: serverTimestamp(),
+      versionCount: 1,
     });
   }
 
@@ -221,14 +230,18 @@ export class SessionService {
   ): void {
     const versionRef = adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
     transaction.set(versionRef, {
-      created: new Date(),
+      created: serverTimestamp(),
+      collaborators: sessionDetails.creator,
       creator: sessionDetails.creator,
+      downloadCount: 0,
+      playCount: 0,
       sessionID: sessionId,
       bounce: sessionDetails.bounce,
       stems: sessionDetails.stems,
       notes: sessionDetails.notes,
       tags: sessionDetails.tags,
       bpm: sessionDetails.bpm,
+      versionIndex: 1,
     });
   }
 

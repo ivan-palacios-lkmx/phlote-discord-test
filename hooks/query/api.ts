@@ -6,7 +6,7 @@ import {
   SubmitAudioResponse,
   VersionAudioResponse,
 } from "@/types/api";
-import { ContactDocWithID, SettingsDoc, TagCategory } from "@/types/database";
+import { ContactDocWithID, SettingsDoc, Stem, TagCategory } from "@/types/database";
 import {
   ActivityDocWithID,
   AddressDoc,
@@ -115,7 +115,7 @@ class Api {
     creator: string;
     name: string;
     bounce: string;
-    stems: string[];
+    stems: Array<Stem>;
     notes?: string;
     tags?: string[];
     bpm: number;

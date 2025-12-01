@@ -1,4 +1,4 @@
-import type { AddressDoc } from "./database";
+import type { AddressDoc, Stem } from "./database";
 
 export interface VersionStemsResponse {
   bounce: string;
@@ -47,7 +47,7 @@ export interface SessionDetails {
   creator: string;
   name: string;
   bounce: string;
-  stems: string[];
+  stems: Array<Stem>;
   notes: string;
   tags: string[];
   bpm: number;

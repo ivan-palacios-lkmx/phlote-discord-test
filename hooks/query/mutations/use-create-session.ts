@@ -11,21 +11,20 @@ interface CreateSessionProps {
 export function useCreateSession() {
   return useMutation({
     mutationFn: async ({ creator, formValues }: CreateSessionProps) => {
-      const bounceId = formValues.bounce?.id;
-      if (!bounceId) {
+      const bounceHash = formValues.bounce;
+      if (!bounceHash) {
         throw new Error("Bounce is required");
       }
 
-      const stemsIds = formValues.stems?.map((stem) => stem.id) || [];
-      const tags = formValues.catModels
-        ? Object.values(formValues.catModels).filter((tag): tag is string => !!tag)
+      const tags = formValues.versionTags
+        ? formValues.versionTags.flat().filter((tag): tag is string => !!tag)
         : undefined;
 
       const sessionDetails = {
         creator,
         name: formValues.name,
-        bounce: bounceId,
-        stems: stemsIds,
+        bounce: bounceHash,
+        stems: formValues.stems,
         notes: formValues.notes,
         tags,
         bpm: formValues.bpm,
