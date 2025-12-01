@@ -1,6 +1,7 @@
 "use client";
 
 import Form from "@/components/Form/Form";
+import { FormDebug } from "@/components/Form/FormDebug";
 import { Input } from "@/components/Form/Input/Input";
 import { Textarea } from "@/components/Form/Textarea";
 import MultiTrackUpload from "@/components/MultiTrackUpload/MultiTrackUpload";
@@ -57,12 +58,11 @@ export default function NewProjectForm({
 
   const { data: session } = useGetSession(sessionID || "", !!sessionID);
   const { data: version } = useGetVersion(versionID || "", !!versionID);
+  const { mutate: createVersion, isPending: isPendingCreateVersion } = useCreateVersion();
   const { data: creatorInfo } = useGetAddressInfo(
     session?.creator || "",
     type === "version" && !!sessionID,
   );
-
-  const { mutate: createVersion, isPending: isPendingVersion } = useCreateVersion();
 
   const [generatedName, setGeneratedName] = useState("");
 
@@ -104,7 +104,7 @@ export default function NewProjectForm({
 
   function handleSubmit(formValues: z.infer<typeof newVersionFormSchema>) {
     if (type === "version") {
-      createVersion({ creator: user?.wallet?.address || "", formValues });
+      createVersion({ sessionId: sessionID || "", formValues });
       return;
     }
     createSession({ creator: user?.wallet?.address || "", formValues });
@@ -121,7 +121,7 @@ export default function NewProjectForm({
 
         <VersionFormButton
           type="submit"
-          loading={isPending}
+          loading={isPending || isPendingCreateVersion}
           disabled={!isFormTotallyFilled(formValues)}>
           {type === "version" ? "Create New Version" : "Create Session"}
         </VersionFormButton>
@@ -259,7 +259,7 @@ export default function NewProjectForm({
                       <h6>{Category.name}</h6>
                       {Category.name && Category.options?.length && (
                         <TagGroup
-                          name={`catModels.${i}`}
+                          name={`versionTags.${i}`}
                           values={Category.options.map((option) =>
                             encodeTag(Category.name, option),
                           )}

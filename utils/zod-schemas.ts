@@ -83,7 +83,6 @@ export const allowedAudioFileExtensions = z.enum(["audio/wav", "audio/mp3", "aud
 export const allowedAudioFileExtensionsSchema = allowedAudioFileExtensions;
 
 export const versionDetailsSchema = z.object({
-  creator: address,
   name: name,
   bounce: bounce,
   stems: stems,

@@ -109,13 +109,11 @@ export class PrivyService {
   static async getWalletAddressFromToken(privyIdToken: string): Promise<string | undefined> {
     try {
       const user = await this.getPrivyUserByToken(privyIdToken);
-      if (!user?.linkedAccounts) {
+      if (!user) {
         return undefined;
       }
 
-      const walletAccount = user.linkedAccounts.find(
-        (account) => account.type === "wallet",
-      ) as { address: string } | undefined;
+      const walletAccount = user.linked_accounts.find((account) => account.type === "wallet");
 
       return walletAccount?.address;
     } catch (error) {

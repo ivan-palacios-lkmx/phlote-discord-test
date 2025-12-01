@@ -20,12 +20,14 @@ export function useCreateVersion() {
         ? formValues.versionTags.flat().filter((tag): tag is string => !!tag)
         : undefined;
 
+      // TODO: need to remove the id from the stems
       const versionDetails = {
         name: formValues.name,
         bounce: bounceHash,
         stems:
           formValues.stems?.map((stem) => ({
             id: stem.hash,
+            hash: stem.hash,
             name: stem.name,
           })) || [],
         notes: formValues.notes,
