@@ -24,6 +24,16 @@ export async function POST(
       return NextResponse.json({ error: "Address not found" }, { status: 404 });
     }
 
+    // TODO: Check if there is any rate limit for this endpoint
+    const privyRole = addressDoc.isAdmin
+      ? "admin"
+      : addressDoc.isCreator
+        ? "creator"
+        : addressDoc.isMember
+          ? "member"
+          : "";
+    await PrivyService.setPrivyUserRoleByToken(privyIdToken!, privyRole);
+
     const isAddressAMember = await RoleService.isMember(address);
 
     const addressWasAMember = addressDoc.isMember ?? false;
