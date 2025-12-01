@@ -27,6 +27,7 @@ loadEnvFile(resolve(__dirname, "../.env"));
 
 const APPLICATION_ID = process.env.DISCORD_APP_ID;
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+const GUILD_ID = process.env.DISCORD_GUILD_ID;
 
 if (!APPLICATION_ID) {
   console.error("DISCORD_APP_ID is not set in environment variables");
@@ -38,6 +39,12 @@ if (!DISCORD_TOKEN) {
   process.exit(1);
 }
 
+if (!GUILD_ID) {
+  console.error("DISCORD_GUILD_ID is not set in environment variables");
+  console.error("   Guild commands require a server (guild) ID to register.");
+  process.exit(1);
+}
+
 const command = {
   name: "connect",
   description: "Connect your wallet to your Discord account",
@@ -46,10 +53,11 @@ const command = {
 
 async function registerCommand() {
   try {
-    console.log("Registering /connect command...");
+    console.log("Registering /connect command as guild command...");
     console.log(`   Application ID: ${APPLICATION_ID}`);
+    console.log(`   Guild ID: ${GUILD_ID}`);
 
-    const url = `https://discord.com/api/v10/applications/${APPLICATION_ID}/commands`;
+    const url = `https://discord.com/api/v10/applications/${APPLICATION_ID}/guilds/${GUILD_ID}/commands`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -68,8 +76,7 @@ async function registerCommand() {
     console.log("Command registered successfully!");
     console.log("   Command ID:", result.id);
     console.log("   Command name:", result.name);
-    console.log("\nNote: Global commands may take up to 1 hour to appear in Discord.");
-    console.log("   For instant updates, use guild commands instead.");
+    console.log("\nGuild command registered! It should appear instantly in your Discord server.");
   } catch (error) {
     console.error("Error registering command:");
     if (error instanceof Error) {
