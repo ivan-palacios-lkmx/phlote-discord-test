@@ -1,11 +1,5 @@
 import { DiscordService } from "@/services/discord-service";
-import {
-  ButtonStyleTypes,
-  InteractionResponseType,
-  InteractionType,
-  MessageComponentTypes,
-  verifyKey,
-} from "discord-interactions";
+import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -69,58 +63,7 @@ export async function POST(request: Request) {
       // Send DM asynchronously after responding
       (async () => {
         try {
-          const dmChannelResponse = await fetch("https://discord.com/api/v10/users/@me/channels", {
-            method: "POST",
-            headers: {
-              Authorization: `Bot ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              recipient_id: user.id,
-            }),
-          });
-
-          if (!dmChannelResponse.ok) {
-            console.error("Failed to create DM channel");
-            return;
-          }
-
-          const dmChannel = (await dmChannelResponse.json()) as { id: string };
-
-          // TODO: Replace MOCKED_URL with the actual frontend URL
-          const MOCKED_URL = "https://example.com/connect-discord";
-          const url = new URL(MOCKED_URL);
-          url.searchParams.append("id", user.id);
-          url.searchParams.append("username", user.username);
-          url.searchParams.append("dmChannel", dmChannel.id);
-
-          const options = {
-            method: "POST",
-            body: {
-              components: [
-                {
-                  type: MessageComponentTypes.ACTION_ROW,
-                  components: [
-                    {
-                      type: MessageComponentTypes.BUTTON,
-                      label: "Verify",
-                      style: ButtonStyleTypes.LINK,
-                      url: url.toString(),
-                    },
-                  ],
-                },
-              ],
-            },
-          };
-
-          await fetch(`https://discord.com/api/v10/channels/${dmChannel.id}/messages`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bot ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(options.body),
-          });
+          await DiscordService.connectCommand(user);
         } catch (error) {
           console.error("Error sending DM:", error);
         }
