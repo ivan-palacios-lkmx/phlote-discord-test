@@ -179,7 +179,7 @@ export function transformToShortAddress(address: string): string {
   return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 }
 
-export function formatProjectId(projectId: ShortUniqueId): string {
+export function formatProjectId(projectId: string): string {
   return projectId.slice(0, 3) + "-" + projectId.slice(3, 7) + "-" + projectId.slice(7, 10);
 }
 

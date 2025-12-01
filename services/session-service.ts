@@ -15,8 +15,7 @@ import {
   getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { formatProjectId } from "@/utils/functions";
-import { DocumentReference, Timestamp, Transaction } from "firebase-admin/firestore";
-import { serverTimestamp } from "firebase/firestore";
+import { DocumentReference, FieldValue, Timestamp, Transaction } from "firebase-admin/firestore";
 import ShortUniqueId from "short-unique-id";
 
 import { AudioService } from "./audio-service";
@@ -82,7 +81,7 @@ export class SessionService {
         bounce,
         sessionID,
         collaborators,
-        created: serverTimestamp(),
+        created: FieldValue.serverTimestamp(),
       };
 
       await this.saveVersionInDatabase(newVersion);
@@ -207,7 +206,7 @@ export class SessionService {
   ): void {
     const sessionRef = adminDb.collection(SESSIONS_COLLECTION).doc(sessionId);
     transaction.set(sessionRef, {
-      created: serverTimestamp(),
+      created: FieldValue.serverTimestamp(),
       creator: sessionDetails.creator,
       name: sessionDetails.name,
       minBpm: sessionDetails.bpm,
@@ -216,7 +215,7 @@ export class SessionService {
       tags: sessionDetails.tags,
       playCount: 0,
       discordMessageCount: 0,
-      activeLast: serverTimestamp(),
+      activeLast: FieldValue.serverTimestamp(),
       versionCount: 1,
     });
   }
@@ -230,7 +229,7 @@ export class SessionService {
   ): void {
     const versionRef = adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
     transaction.set(versionRef, {
-      created: serverTimestamp(),
+      created: FieldValue.serverTimestamp(),
       collaborators: sessionDetails.creator,
       creator: sessionDetails.creator,
       downloadCount: 0,
@@ -252,11 +251,12 @@ export class SessionService {
       projectType === "session" ? SESSIONS_COLLECTION : SESSION_VERSIONS_COLLECTION;
 
     for (let i = 0; i < MAX_ID_CREATION_ATTEMPTS; i++) {
-      const projectId = new ShortUniqueId({
+      const uid = new ShortUniqueId({
         dictionary: "alpha_lower",
         length: 10,
       });
 
+      const projectId = uid.rnd();
       const formattedProjectId = formatProjectId(projectId);
 
       const projectIdDoc = await adminDb.collection(collection).doc(formattedProjectId).get();
