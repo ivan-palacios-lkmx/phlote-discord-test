@@ -3,12 +3,12 @@
 import DraggableTrack from "@/components/DraggableTrack/DraggableTrack";
 import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { useCheckMultipleAudioStatus } from "@/hooks/query/query-hooks/use-check-multiple-audio-status";
-import { AudioProcessingStatus, AudioProcessingStatusResponse } from "@/types/api";
+import { AudioProcessingStatus } from "@/types/api";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import "./MultiTrackUpload.scss";
 
@@ -36,6 +36,12 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     throw new Error("MultiTrackUpload must be used within a FormProvider");
   }
 
+  const fieldValue = useWatch({ control, name });
+
+  useEffect(() => {
+    console.log(`[MultiTrackUpload] Field "${name}" value:`, fieldValue);
+  }, [fieldValue, name]);
+
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
 
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -47,17 +53,49 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     temporaryAudioFileNames: tempFileNames,
   });
 
-  useEffect(() => {
-    if (audioStatusQueries.length > 0) {
-      const statusResponses = audioStatusQueries
-        .map((query) => query.data)
-        .filter((data): data is AudioProcessingStatusResponse => data !== undefined);
+  const tempFileNameToTrackNameRef = useRef<Map<string, string>>(new Map());
 
-      if (statusResponses.length > 0) {
-        setValue(name, statusResponses);
+  useEffect(() => {
+    tracks.forEach((track) => {
+      if (track.tempFileName) {
+        tempFileNameToTrackNameRef.current.set(track.tempFileName, track.name);
+      }
+    });
+  }, [tracks]);
+
+  const prevStemsRef = useRef<string>("");
+
+  useEffect(() => {
+    if (audioStatusQueries.length > 0 && tempFileNames.length > 0) {
+      const stems = tempFileNames
+        .map((tempFileName, index) => {
+          const statusResponse = audioStatusQueries[index]?.data;
+          const trackName = tempFileNameToTrackNameRef.current.get(tempFileName);
+
+          if (
+            statusResponse &&
+            statusResponse.status === "ready" &&
+            statusResponse.hash &&
+            trackName
+          ) {
+            return {
+              name: trackName,
+              hash: statusResponse.hash,
+            };
+          }
+          return null;
+        })
+        .filter((stem): stem is { name: string; hash: string } => stem !== null);
+
+      if (stems.length > 0) {
+        const stemsKey = JSON.stringify(stems);
+        if (prevStemsRef.current !== stemsKey) {
+          prevStemsRef.current = stemsKey;
+          setValue(name, stems);
+        }
       }
     }
-  }, [audioStatusQueries, setValue, name]);
+  }, [audioStatusQueries, tempFileNames, setValue, name]);
 
   async function onDrop(acceptedFiles: File[]) {
     if (acceptedFiles.length === 0) return;
