@@ -14,13 +14,13 @@ export async function POST(request: Request) {
     }
 
     if (!signature || !timestamp) {
-      console.error("Missing signature headers");
+      console.error("Missing signature headers", { signature, timestamp });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.text();
 
-    const isValidRequest = verifyKey(body, signature, timestamp, publicKey);
+    const isValidRequest = await verifyKey(body, signature, timestamp, publicKey);
 
     if (!isValidRequest) {
       console.error("Invalid request signature");
@@ -39,7 +39,9 @@ export async function POST(request: Request) {
 
     if (name === "connect") {
       const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
+
       if (!token) {
+        console.error("Discord token not configured");
         return NextResponse.json({ error: "Discord token not configured" }, { status: 500 });
       }
 
@@ -57,6 +59,7 @@ export async function POST(request: Request) {
           return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
         }
       } else {
+        console.error("Channel ID missing");
         return NextResponse.json({ error: "Channel ID missing" }, { status: 400 });
       }
     }
