@@ -64,7 +64,7 @@ export class DiscordService {
     const dmChannel = (await dmChannelResponse.json()) as { id: string };
 
     // TODO: Replace MOCKED_URL with the actual frontend URL
-    const MOCKED_URL = "https://example.com/connect-discord";
+    const MOCKED_URL = "https://localhost:3000/connect-discord";
     const url = new URL(MOCKED_URL);
     url.searchParams.append("id", user.id);
     url.searchParams.append("username", user.username);
