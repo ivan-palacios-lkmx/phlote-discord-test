@@ -250,16 +250,27 @@ export class SessionService {
       const versionLink = `${frontendURL}/sessions/${sessionId}?v=${versionIndex}`;
       const postImage = this.getSessionPostImage();
 
-      const embed = {
-        title: sessionName,
-        url: versionLink,
-        image: {
-          url: postImage,
-        },
-      };
-
       await DiscordService.sendMessageToChannel(channelId, "", {
-        embeds: [embed],
+        embeds: [
+          {
+            image: {
+              url: postImage,
+            },
+          },
+        ],
+        components: [
+          {
+            type: 1, // Action Row
+            components: [
+              {
+                type: 2, // Button
+                label: "Listen on Phlote",
+                style: 5, // Link Button
+                url: versionLink,
+              },
+            ],
+          },
+        ],
       });
     } catch (error) {
       console.error("Error sending session creation message to Discord:", error);
