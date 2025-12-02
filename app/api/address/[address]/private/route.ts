@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { address: string } },
 ): Promise<NextResponse> {
   try {
-    const address = params.address;
+    const { address } = await params;
 
     if (!addressSchema.safeParse(address).success) {
       return NextResponse.json({ error: "Invalid address format" }, { status: 400 });
