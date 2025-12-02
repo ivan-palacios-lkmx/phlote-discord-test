@@ -3,8 +3,8 @@
   "crons": [
     {
       "path": "/api/address",
-      "method": "PUT",
-      "schedule": "0 5 * * *"
+      "schedule": "0 5 * * *",
+      "method": "PUT"
     }
   ]
 }
