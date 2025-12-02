@@ -263,9 +263,9 @@ export class SessionService {
             type: 1, // Action Row
             components: [
               {
-                type: 2, // Button
+                type: 2,
                 label: "Listen on Phlote",
-                style: 5, // Link Button
+                style: 5,
                 url: versionLink,
               },
             ],
