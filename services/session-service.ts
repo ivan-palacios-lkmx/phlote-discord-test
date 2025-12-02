@@ -101,6 +101,16 @@ export class SessionService {
         });
       });
 
+      if (session.discordChannelId) {
+        await this.sendVersionCreationMessage(
+          sessionID,
+          session.name,
+          versionDetails.creator,
+          session.discordChannelId,
+          newVersionIndex,
+        );
+      }
+
       return newVersion;
     } catch (error) {
       console.error("Error creating version:", error);
@@ -249,9 +259,22 @@ export class SessionService {
     creator: string,
     channelId: string,
   ) {
+    await this.sendVersionCreationMessage(sessionId, sessionName, creator, channelId, 1);
+  }
+
+  static async sendVersionCreationMessage(
+    sessionId: string,
+    sessionName: string,
+    creator: string,
+    channelId: string,
+    versionIndex: number,
+  ) {
     try {
-      // Assuming version 1 for new sessions
-      const versionIndex = 1;
+      const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
+
+      if (token) {
+        DiscordService.initialize(token);
+      }
 
       // Ensure URL is well-formed
       let baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
