@@ -230,10 +230,47 @@ export class SessionService {
       const channel = await DiscordService.createChannel(guildId, channelName);
 
       await this.updateSessionDiscordChannel(sessionId, channel.id);
+
+      await this.sendSessionCreationMessage(sessionId, sessionName, channel.id);
     } catch (error) {
       console.error("Error creating Discord channel for session:", error);
       // We don't throw here to avoid failing the session creation if Discord fails
     }
+  }
+
+  static async sendSessionCreationMessage(
+    sessionId: string,
+    sessionName: string,
+    channelId: string,
+  ) {
+    try {
+      const frontendURL = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
+      // Assuming version 1 for new sessions
+      const versionIndex = 1;
+      const versionLink = `${frontendURL}/sessions/${sessionId}?v=${versionIndex}`;
+      const postImage = this.getSessionPostImage();
+
+      const embed = {
+        title: sessionName,
+        url: versionLink,
+        image: {
+          url: postImage,
+        },
+      };
+
+      await DiscordService.sendMessageToChannel(channelId, "", {
+        embeds: [embed],
+      });
+    } catch (error) {
+      console.error("Error sending session creation message to Discord:", error);
+    }
+  }
+
+  static getSessionPostImage(): string {
+    // TODO: Implement logic to get the actual session post image
+    // For now, return the default phlote poster image
+    const frontendURL = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
+    return `${frontendURL}/images/phlote-poster.jpg`;
   }
 
   static async updateSessionDiscordChannel(sessionId: string, discordChannelId: string) {
