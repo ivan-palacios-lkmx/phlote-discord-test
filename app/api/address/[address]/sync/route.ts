@@ -26,6 +26,7 @@ export async function POST(
       return NextResponse.json({ error: "Address not found" }, { status: 404 });
     }
 
+    await DiscordService.initialize(process.env.DISCORD_TOKEN!);
     await DiscordService.updateDiscordUserRoles(addressDoc as AddressDocWithPrivateData);
     // TODO: Check if there is any rate limit for this endpoint
     const privyRole = addressDoc.isAdmin
