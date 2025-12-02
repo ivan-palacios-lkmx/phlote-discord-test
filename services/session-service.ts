@@ -1,4 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
+import admin from "@/lib/firebase-admin";
 import { SessionDetails } from "@/types/api";
 import {
   ActivityDocWithID,
@@ -15,10 +16,12 @@ import {
   getIDAndDocumentDataFromQuerySnapshot,
 } from "@/utils/firebase-queries";
 import { formatProjectId } from "@/utils/functions";
-import { DocumentReference, FieldValue, Timestamp, Transaction } from "firebase-admin/firestore";
+import { DocumentReference, FieldValue, Transaction } from "firebase-admin/firestore";
+import kebabCase from "lodash/kebabCase";
+import querystring from "querystring";
 import ShortUniqueId from "short-unique-id";
 
-import { AudioService } from "./audio-service";
+import { DiscordService } from "./discord-service";
 
 export class SessionService {
   static async getSessions(): Promise<SessionDocWithID[]> {
@@ -97,6 +100,16 @@ export class SessionService {
           activeLast: FieldValue.serverTimestamp(),
         });
       });
+
+      if (session.discordChannelId) {
+        await this.sendVersionCreationMessage(
+          sessionID,
+          session.name,
+          versionDetails.creator,
+          session.discordChannelId,
+          newVersionIndex,
+        );
+      }
 
       return newVersion;
     } catch (error) {
@@ -204,11 +217,208 @@ export class SessionService {
       this.createVersionDocumentForTransaction(transaction, versionId, sessionId, sessionDetails);
     });
 
-    // TODO: create discord channel for the session
+    await this.createSessionDiscordChannel(sessionId, sessionDetails.name, sessionDetails.creator);
+
     return {
       sessionId,
       versionId,
     };
+  }
+
+  static async createSessionDiscordChannel(
+    sessionId: string,
+    sessionName: string,
+    creator: string,
+  ) {
+    try {
+      const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
+      const guildId = process.env.DISCORD_GUILD_ID;
+
+      if (!token || !guildId) {
+        console.warn("Discord token or guild ID not configured, skipping channel creation");
+        return;
+      }
+
+      DiscordService.initialize(token);
+
+      const channelName = kebabCase(sessionName);
+      const channel = await DiscordService.createChannel(guildId, channelName);
+
+      await this.updateSessionDiscordChannel(sessionId, channel.id);
+
+      await this.sendSessionCreationMessage(sessionId, sessionName, creator, channel.id);
+    } catch (error) {
+      console.error("Error creating Discord channel for session:", error);
+      // We don't throw here to avoid failing the session creation if Discord fails
+    }
+  }
+
+  static async sendSessionCreationMessage(
+    sessionId: string,
+    sessionName: string,
+    creator: string,
+    channelId: string,
+  ) {
+    await this.sendVersionCreationMessage(sessionId, sessionName, creator, channelId, 1);
+  }
+
+  static async sendVersionCreationMessage(
+    sessionId: string,
+    sessionName: string,
+    creator: string,
+    channelId: string,
+    versionIndex: number,
+  ) {
+    try {
+      const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
+
+      if (token) {
+        DiscordService.initialize(token);
+      }
+
+      // Ensure URL is well-formed
+      let baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
+      if (!baseUrl.startsWith("http")) {
+        baseUrl = `https://${baseUrl}`;
+      }
+
+      const versionLink = `${baseUrl}/sessions/${sessionId}?v=${versionIndex}`;
+      const postImage = await this.getSessionPostImage(sessionId);
+      const formattedVIndex = `V_${String(versionIndex).padStart(3, "0")}`;
+      const creatorName = await this.getAddressName(creator);
+      const content = `New version \`${formattedVIndex}\` created by ${creatorName}`;
+      await DiscordService.sendMessageToChannel(channelId, content, {
+        embeds: [
+          {
+            image: {
+              url: postImage,
+            },
+          },
+        ],
+        components: [
+          {
+            type: 1, // Action Row
+            components: [
+              {
+                type: 2,
+                label: "Listen on Phlote",
+                style: 5,
+                url: versionLink,
+              },
+            ],
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Error sending session creation message to Discord:", error);
+    }
+  }
+
+  static async getSessionPostImage(sessionId: string): Promise<string> {
+    let frontendURL = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
+    if (!frontendURL.startsWith("http")) {
+      frontendURL = `https://${frontendURL}`;
+    }
+
+    const defaultImage = `${frontendURL}/images/phlote-poster.jpg`;
+
+    try {
+      // 1. Check if session already has an ogImage
+      const sessionDoc = await adminDb.collection(SESSIONS_COLLECTION).doc(sessionId).get();
+      if (!sessionDoc.exists) return defaultImage;
+
+      const sessionData = sessionDoc.data();
+      if (sessionData?.ogImage) return sessionData.ogImage;
+
+      // 2. Gather Data
+      const creatorName = await this.getAddressName(sessionData?.creator);
+      const creatorImage = await this.getAddressImage(sessionData?.creator);
+
+      // Get latest version for this session to get bounce hash
+      const versions = await this.getSessionVersions(sessionId);
+      const latestVersion = versions.length > 0 ? versions[versions.length - 1] : null;
+
+      // Ensure collaborators is an array (legacy support)
+      let collaborators = sessionData?.collaborators || [];
+      if (!Array.isArray(collaborators)) {
+        collaborators = [collaborators];
+      }
+      const count = collaborators.length;
+
+      // Limit to first 4 avatars to avoid URL length issues
+      const avatarsToFetch = (collaborators as string[]).slice(0, 4);
+      const avatars = await Promise.all(avatarsToFetch.map((addr) => this.getAddressImage(addr)));
+
+      // 3. Build URL
+      const ogParams = {
+        artist: creatorName,
+        song: sessionData?.name || "",
+        bgImage: creatorImage || defaultImage,
+        avatars: avatars.map((url) => url || defaultImage),
+        count: count,
+        hash: latestVersion?.bounce || "",
+      };
+
+      const publicUrl = `${frontendURL}/api/og?${querystring.stringify(ogParams)}`;
+
+      // 4. Update Session with the dynamic URL
+      // We save this URL so we don't have to re-compute params every time
+      await adminDb.collection(SESSIONS_COLLECTION).doc(sessionId).update({
+        ogImage: publicUrl,
+        imageUpdated: new Date(),
+      });
+
+      return publicUrl;
+    } catch (error) {
+      console.error("Error generating session OG image:", error);
+      return defaultImage;
+    }
+  }
+
+  // Helper methods for OG Image generation
+  private static async getAddressName(address: string | undefined): Promise<string> {
+    if (!address) return "";
+    const db = adminDb;
+    const addressDoc = await db.collection("addresses").doc(address).get();
+
+    if (!addressDoc.exists) {
+      const cleanAddress = address.trim();
+      return `${cleanAddress.substring(0, 6)}...${cleanAddress.substring(cleanAddress.length - 4)}`;
+    }
+
+    const docData = addressDoc.data();
+    const ens = docData?.ens?.name;
+    const zora = docData?.zora?.zoraUsername;
+    const os = docData?.openSea?.osUsername;
+
+    return (
+      ens || os || zora || `${address.substring(0, 6)}...${address.substring(address.length - 4)}`
+    );
+  }
+
+  private static async getAddressImage(address: string | undefined): Promise<string> {
+    if (!address) return "";
+    const db = adminDb;
+    const addressDoc = await db.collection("addresses").doc(address).get();
+
+    if (!addressDoc.exists) return "";
+
+    const docData = addressDoc.data();
+    return (
+      docData?.ensImageURL ||
+      docData?.openSea?.profileImageURL ||
+      docData?.zora?.profileImageURL ||
+      ""
+    );
+  }
+
+  static async updateSessionDiscordChannel(sessionId: string, discordChannelId: string) {
+    try {
+      const sessionRef = await this.getSessionReference(sessionId);
+      await sessionRef.update({ discordChannelId });
+    } catch (error) {
+      console.error("Error updating session with Discord channel ID:", error);
+    }
   }
 
   private static createSessionDocumentForTransaction(
@@ -223,7 +433,7 @@ export class SessionService {
       name: sessionDetails.name,
       minBpm: sessionDetails.bpm,
       maxBpm: sessionDetails.bpm,
-      collaborators: sessionDetails.creator,
+      collaborators: [sessionDetails.creator],
       tags: sessionDetails.tags,
       playCount: 0,
       discordMessageCount: 0,
@@ -242,7 +452,7 @@ export class SessionService {
     const versionRef = adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId);
     transaction.set(versionRef, {
       created: FieldValue.serverTimestamp(),
-      collaborators: sessionDetails.creator,
+      collaborators: [sessionDetails.creator],
       creator: sessionDetails.creator,
       downloadCount: 0,
       playCount: 0,

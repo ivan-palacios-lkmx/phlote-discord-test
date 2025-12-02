@@ -1,6 +1,8 @@
 import { AddressService } from "@/services/address-service";
+import { DiscordService } from "@/services/discord-service";
 import { PrivyService } from "@/services/privy-service";
 import { RoleService } from "@/services/role-service";
+import { AddressDocWithPrivateData } from "@/types/database";
 import { addressSchema } from "@/utils/zod-schemas";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,12 +20,14 @@ export async function POST(
       return NextResponse.json({ error: "Invalid address format" }, { status: 400 });
     }
 
-    const addressDoc = await AddressService.getSingleAddress(address, false);
+    const addressDoc = await AddressService.getSingleAddress(address, true);
 
     if (!addressDoc) {
       return NextResponse.json({ error: "Address not found" }, { status: 404 });
     }
 
+    await DiscordService.initialize(process.env.DISCORD_TOKEN!);
+    await DiscordService.updateDiscordUserRoles(addressDoc as AddressDocWithPrivateData);
     // TODO: Check if there is any rate limit for this endpoint
     const privyRole = addressDoc.isAdmin
       ? "admin"

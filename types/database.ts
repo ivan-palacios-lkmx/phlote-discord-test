@@ -125,6 +125,8 @@ export interface SessionDoc {
   createDiscord?: boolean;
   /** Discord channel ID */
   discordChannel?: string;
+  /** Discord channel ID (actual field used in DB) */
+  discordChannelId?: string;
   /** Total number of Discord messages */
   discordMessageCount?: number;
   /** Number of errors that occurred for this session */

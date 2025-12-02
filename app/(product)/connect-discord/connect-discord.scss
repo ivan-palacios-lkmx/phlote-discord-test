@@ -1,0 +1,17 @@
+.connect-discord {
+  background: var(--black);
+  color: var(--white);
+
+  .contained {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+
+    h3,
+    h5 {
+      margin: 10px 0;
+    }
+  }
+}

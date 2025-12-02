@@ -14,13 +14,13 @@ export async function POST(request: Request) {
     }
 
     if (!signature || !timestamp) {
-      console.error("Missing signature headers");
+      console.error("Missing signature headers", { signature, timestamp });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.text();
 
-    const isValidRequest = verifyKey(body, signature, timestamp, publicKey);
+    const isValidRequest = await verifyKey(body, signature, timestamp, publicKey);
 
     if (!isValidRequest) {
       console.error("Invalid request signature");
@@ -35,30 +35,41 @@ export async function POST(request: Request) {
 
     const data = interaction.data;
     const name = data?.name;
-    const channel_id = interaction.channel_id;
+    const user = interaction.user || interaction.member?.user;
 
     if (name === "connect") {
       const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
+
       if (!token) {
+        console.error("Discord token not configured");
         return NextResponse.json({ error: "Discord token not configured" }, { status: 500 });
+      }
+
+      if (!user) {
+        console.error("User not found in interaction");
+        return NextResponse.json({ error: "User not found" }, { status: 400 });
       }
 
       DiscordService.initialize(token);
 
-      if (channel_id) {
+      // Respond immediately to avoid "application did not respond" error
+      const response = NextResponse.json({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: "Follow the link in your DMs to verify your identity.",
+        },
+      });
+
+      // Send DM asynchronously after responding
+      (async () => {
         try {
-          await DiscordService.sendMessageToChannel(channel_id, "Connect command received.");
-          return NextResponse.json({
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: { content: "Connect command received." },
-          });
+          await DiscordService.connectCommand(user);
         } catch (error) {
-          console.error("Error sending message to Discord:", error);
-          return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
+          console.error("Error sending DM:", error);
         }
-      } else {
-        return NextResponse.json({ error: "Channel ID missing" }, { status: 400 });
-      }
+      })();
+
+      return response;
     }
 
     return NextResponse.json({ message: "Unknown command" }, { status: 400 });

@@ -319,18 +319,24 @@ export class AddressService {
     return getIDAndDocumentDataFromDocumentSnapshot<AddressDocWithID>(publicAddressDoc);
   }
 
-  static async patchPrivateAddressData(
+  static async updatePrivateAddressData(
     address: string,
-    name?: string,
-    twitterHandle?: string,
-    email?: string,
+    name: string | null,
+    twitterHandle: string | null,
+    email: string | null,
+    discordUserID: string | null,
+    discordHandle: string | null,
+    dmChannel: string | null,
   ): Promise<WriteResult> {
-    const updateData: Record<string, unknown> = {
+    const updateData = {
+      name,
+      twitterHandle,
+      email,
+      discordUserID,
+      discordHandle,
+      dmChannel,
       updated: FieldValue.serverTimestamp(),
     };
-    if (name !== undefined) updateData.name = name;
-    if (twitterHandle !== undefined) updateData.twitterHandle = twitterHandle;
-    if (email !== undefined) updateData.email = email;
     const result = await adminDb
       .collection(ADDRESSES_COLLECTION)
       .doc(address)
