@@ -3,9 +3,8 @@
 import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import SessionCard from "@/components/admin/SessionCard/SessionCard";
 import { useDeleteSession } from "@/hooks/query/mutations/use-delete-session";
-import { useDeleteVersion } from "@/hooks/query/mutations/use-delete-version";
 import { useGetSessions } from "@/hooks/query/query-hooks/use-get-sessions";
-import { SessionDocWithID, VersionDocWithID } from "@/types/database";
+import { SessionDocWithID } from "@/types/database";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
@@ -15,7 +14,6 @@ export default function Sessions() {
   const queryClient = useQueryClient();
   const { data: sessions, isPending: isPendingSessions } = useGetSessions();
   const { mutate: deleteSession } = useDeleteSession();
-  const { mutate: deleteVersion } = useDeleteVersion();
   const handleDeleteSession = (sessionId: string) => {
     deleteSession(
       { sessionId },
@@ -29,8 +27,6 @@ export default function Sessions() {
       },
     );
   };
-
-  const handleDeleteVersion = (versionId: string) => {};
 
   return (
     <OnlyAdmins className="admin-sessions">
@@ -49,7 +45,6 @@ export default function Sessions() {
                 key={session.id}
                 session={session}
                 onDeleteSession={() => handleDeleteSession(session.id)}
-                onDeleteVersion={() => handleDeleteVersion(session.id)}
               />
             ))}
           </div>

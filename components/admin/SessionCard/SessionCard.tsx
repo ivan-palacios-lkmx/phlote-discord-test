@@ -1,27 +1,46 @@
 "use client";
 
 import SessionsCardRow from "@/components/admin/SessionsCardRow/SessionsCardRow";
+import { useDeleteVersion } from "@/hooks/query/mutations/use-delete-version";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
-import { SessionDocWithID } from "@/types/database";
+import { SessionDocWithID, VersionDocWithID } from "@/types/database";
+import { useQueryClient } from "@tanstack/react-query";
 
 import "./SessionCard.scss";
 
 interface SessionCardProps {
   session: SessionDocWithID | null | undefined;
   onDeleteSession: (sessionId: string) => void;
-  onDeleteVersion: (versionId: string) => void;
 }
 
-export default function SessionCard({
-  session,
-  onDeleteSession,
-  onDeleteVersion,
-}: SessionCardProps) {
+export default function SessionCard({ session, onDeleteSession }: SessionCardProps) {
+  const queryClient = useQueryClient();
   const {
     data: versions,
     isPending: isPendingVersions,
     isError: isErrorVersions,
   } = useGetVersions({ sessionId: session?.id || "" });
+  const { mutate: deleteVersion } = useDeleteVersion();
+
+  const handleDeleteVersion = (versionId: string) => {
+    deleteVersion(
+      { versionId },
+      {
+        onSuccess: () => {
+          if (session?.id) {
+            queryClient.setQueriesData<VersionDocWithID[]>(
+              { queryKey: ["versions", session.id] },
+              (oldData) => {
+                if (!oldData) return oldData;
+                return oldData.filter((v) => v.id !== versionId);
+              },
+            );
+          }
+          queryClient.invalidateQueries({ queryKey: ["version", versionId] });
+        },
+      },
+    );
+  };
 
   return (
     <div className="session-card">
@@ -44,7 +63,7 @@ export default function SessionCard({
             <SessionsCardRow
               key={version.id}
               version={version}
-              onDeleteVersion={() => onDeleteVersion(version.id)}
+              onDeleteVersion={() => handleDeleteVersion(version.id)}
             />
           ))
         )}
