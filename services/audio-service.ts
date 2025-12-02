@@ -592,28 +592,54 @@ export class AudioService {
     });
   }
 
-  static async validateAudioDurations(bounceHash: string, stemHashes: string[]): Promise<boolean> {
+  static async validateAudioDurations(
+    bounceHash: string,
+    stemHashes: string[],
+  ): Promise<{
+    valid: boolean;
+    invalidStems?: string[];
+    bounceDuration?: number;
+    stemDurations?: { hash: string; duration: number }[];
+  }> {
     try {
       const bounceDuration = await this.getAudioDurationFromHash(bounceHash);
 
       if (!bounceDuration) {
-        return false;
+        return { valid: false };
       }
 
       const stemDurations = await Promise.all(
-        stemHashes.map((hash) => this.getAudioDurationFromHash(hash)),
+        stemHashes.map(async (hash) => {
+          const duration = await this.getAudioDurationFromHash(hash);
+          return { hash, duration };
+        }),
       );
 
-      if (stemDurations.some((duration) => !duration)) {
-        return false;
+      if (stemDurations.some((item) => !item.duration)) {
+        return { valid: false };
       }
 
-      const tolerance = 0;
+      const tolerance = 0.01;
+      const invalidStems: string[] = [];
 
-      return stemDurations.every((duration) => Math.abs(duration! - bounceDuration) < tolerance);
+      stemDurations.forEach(({ hash, duration }) => {
+        if (duration && Math.abs(duration - bounceDuration) >= tolerance) {
+          invalidStems.push(hash);
+        }
+      });
+
+      return {
+        valid: invalidStems.length === 0,
+        invalidStems: invalidStems.length > 0 ? invalidStems : undefined,
+        bounceDuration,
+        stemDurations: stemDurations.map(({ hash, duration }) => ({
+          hash,
+          duration: duration || 0,
+        })),
+      };
     } catch (error) {
       console.error("Error validating audio durations:", error);
-      return false;
+      return { valid: false };
     }
   }
 

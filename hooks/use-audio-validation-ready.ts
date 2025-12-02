@@ -1,5 +1,5 @@
 import { useValidateAudioDuration } from "@/hooks/use-validate-audio-duration";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 export function useAudioValidationReady() {
@@ -41,13 +41,51 @@ export function useAudioValidationReady() {
 
   const isAudioValid = useMemo(() => validationResult?.valid === true, [validationResult?.valid]);
 
-  return {
-    allFilesProcessed: shouldValidate, // Todos tienen hash = todos procesados
-    isProcessing: !shouldValidate && (!!bounceHash || stemHashes.length > 0),
+  const previousErrorsRef = useRef<Map<string, string>>(new Map());
 
+  const stemErrors = useMemo(() => {
+    if (validationResult) {
+      if (validationResult.valid) {
+        previousErrorsRef.current = new Map();
+        return new Map<string, string>();
+      }
+
+      const errorMap = new Map<string, string>();
+      const invalidStems = validationResult.invalidStems || [];
+
+      invalidStems.forEach((hash) => {
+        const stemDuration = validationResult.stemDurations?.find((s) => s.hash === hash)?.duration;
+        const bounceDuration = validationResult.bounceDuration;
+
+        if (stemDuration && bounceDuration) {
+          errorMap.set(
+            hash,
+            `Duration mismatch: stem is ${stemDuration.toFixed(2)}s, bounce is ${bounceDuration.toFixed(2)}s`,
+          );
+        } else {
+          errorMap.set(hash, "Duration does not match bounce duration");
+        }
+      });
+
+      previousErrorsRef.current = errorMap;
+      return errorMap;
+    }
+
+    if (isValidating) {
+      return previousErrorsRef.current;
+    }
+
+    previousErrorsRef.current = new Map();
+    return new Map<string, string>();
+  }, [validationResult, isValidating]);
+
+  return {
+    allFilesProcessed: shouldValidate,
+    isProcessing: !shouldValidate && !!bounceHash && stemHashes.length > 0,
     isAudioValid,
     isValidating,
     validationResult,
+    stemErrors,
 
     bounceHash,
     stemHashes,

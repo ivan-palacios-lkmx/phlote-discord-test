@@ -13,13 +13,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isValid = await AudioService.validateAudioDurations(bounceHash, stemHashes);
+    const result = await AudioService.validateAudioDurations(bounceHash, stemHashes);
 
-    if (isValid) {
+    if (result.valid) {
       return NextResponse.json({ valid: true }, { status: 200 });
     } else {
       return NextResponse.json(
-        { valid: false, error: "Audio durations do not match" },
+        {
+          valid: false,
+          error: "Audio durations do not match",
+          invalidStems: result.invalidStems || [],
+          bounceDuration: result.bounceDuration,
+          stemDurations: result.stemDurations,
+        },
         { status: 400 },
       );
     }

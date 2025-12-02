@@ -80,7 +80,7 @@ export default function NewProjectForm({
   function FormContent() {
     const { control } = useFormContext();
 
-    const { allFilesProcessed, isProcessing, isAudioValid, isValidating } =
+    const { allFilesProcessed, isProcessing, isAudioValid, isValidating, bounceHash } =
       useAudioValidationReady();
 
     const formValues = useWatch({ control });
@@ -93,12 +93,12 @@ export default function NewProjectForm({
       const hasBpm =
         bpm !== "" && bpm !== null && bpm !== undefined && !isNaN(Number(bpm)) && Number(bpm) > 0;
 
-      // Validar audio:
-      // - Si no hay archivos subidos, está bien
-      // - Si hay archivos, todos deben estar procesados Y la validación debe ser exitosa
+      const hasBounce = !!bounceHash;
+
       const hasValidAudio =
-        (!allFilesProcessed && !isProcessing) || // No hay archivos subidos
-        (allFilesProcessed && isAudioValid && !isValidating); // Todos procesados y validación exitosa
+        hasBounce &&
+        ((!allFilesProcessed && !isProcessing) ||
+          (allFilesProcessed && isAudioValid && !isValidating));
 
       return hasName && hasBpm && hasValidAudio;
     }
@@ -114,8 +114,8 @@ export default function NewProjectForm({
 
           <VersionFormButton
             type="submit"
-            loading={isPending || isPendingCreateVersion || isProcessing}
-            disabled={!isFormTotallyFilled() || isProcessing}>
+            loading={isPending || isPendingCreateVersion || isProcessing || isValidating}
+            disabled={!isFormTotallyFilled() || isProcessing || !bounceHash}>
             {type === "version" ? "Create New Version" : "Create Session"}
           </VersionFormButton>
         </div>
@@ -185,7 +185,6 @@ export default function NewProjectForm({
                   placeholder="ex. Old Skool"
                   disabled={!!parentName}
                   resetValue={generatedName}
-                  defaultValue={generatedName}
                 />
               </div>
 
