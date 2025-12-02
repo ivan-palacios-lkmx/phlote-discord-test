@@ -9,16 +9,15 @@ import "./SessionsCardRow.scss";
 
 interface SessionsCardRowProps {
   version: VersionDocWithID;
+  onDeleteVersion: (versionId: string) => void;
 }
-export default function SessionsCardRow({ version }: SessionsCardRowProps) {
+export default function SessionsCardRow({ version, onDeleteVersion }: SessionsCardRowProps) {
   const formattedVersion = useMemo(() => {
     if (!version?.versionIndex) return "";
     return `V_${String(version.versionIndex).padStart(3, "0")}`;
   }, [version?.versionIndex]);
 
   const { data: addressInfo } = useGetAddressInfo(version.creator || "", false, !!version.creator);
-
-  const onDelete = async () => {};
 
   if (!version) {
     return null;
@@ -31,7 +30,10 @@ export default function SessionsCardRow({ version }: SessionsCardRowProps) {
       <div className="avatar-area">{creatorAvatar && <Web3Avatar avatar={creatorAvatar} />}</div>
       <div className="version-name">{formattedVersion}</div>
       <div className="action">
-        <button onClick={onDelete} className="btn mono delete-version" type="button">
+        <button
+          onClick={() => onDeleteVersion(version.id)}
+          className="btn mono delete-version"
+          type="button">
           Delete
         </button>
       </div>

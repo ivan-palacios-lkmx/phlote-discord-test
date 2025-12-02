@@ -8,10 +8,15 @@ import "./SessionCard.scss";
 
 interface SessionCardProps {
   session: SessionDocWithID | null | undefined;
-  onDelete: (sessionId: string) => void;
+  onDeleteSession: (sessionId: string) => void;
+  onDeleteVersion: (versionId: string) => void;
 }
 
-export default function SessionCard({ session, onDelete }: SessionCardProps) {
+export default function SessionCard({
+  session,
+  onDeleteSession,
+  onDeleteVersion,
+}: SessionCardProps) {
   const {
     data: versions,
     isPending: isPendingVersions,
@@ -23,7 +28,7 @@ export default function SessionCard({ session, onDelete }: SessionCardProps) {
       <div className="card-header">
         <h6 className="card-header-title">{session?.name || ""}</h6>
         <button
-          onClick={() => onDelete(session?.id || "")}
+          onClick={() => onDeleteSession(session?.id || "")}
           className="btn delete-session"
           type="button">
           Delete Session
@@ -35,7 +40,13 @@ export default function SessionCard({ session, onDelete }: SessionCardProps) {
         ) : isErrorVersions ? (
           <div className="error">Error loading versions</div>
         ) : (
-          versions.map((version) => <SessionsCardRow key={version.id} version={version} />)
+          versions.map((version) => (
+            <SessionsCardRow
+              key={version.id}
+              version={version}
+              onDeleteVersion={() => onDeleteVersion(version.id)}
+            />
+          ))
         )}
       </div>
     </div>
