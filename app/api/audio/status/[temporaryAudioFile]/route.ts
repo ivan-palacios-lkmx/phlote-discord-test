@@ -12,7 +12,10 @@ export async function GET(
       await AudioService.getAudioProcessingStatusWithHash(temporaryAudioFile);
 
     return NextResponse.json({ status, hash });
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message?.includes("No temporary audio file found")) {
+      return NextResponse.json({ status: "failed", hash: undefined }, { status: 200 });
+    }
     console.error("Error getting audio processing status:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

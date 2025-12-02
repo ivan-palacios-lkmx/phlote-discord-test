@@ -1,73 +1,73 @@
-@use '../../../../app/assets/scss/vars' as *;
+@use "../../../../app/assets/scss/vars" as *;
 
 .multi-track-upload {
-    border-radius: 7px;
-    border: 0.5px dashed rgba(#fff, 0.75);
-    background: rgba(#fff, 0.05);
-    height: 120px;
-    text-align: center;
+  border-radius: 7px;
+  border: 0.5px dashed rgba(#fff, 0.75);
+  background: rgba(#fff, 0.05);
+  height: 120px;
+  text-align: center;
+  font-family: var(--font-mono);
+  overflow: auto;
+  overscroll-behavior: contain;
+  cursor: pointer;
+
+  &.hovered {
+    color: rgba(#fff, 0.35);
+  }
+
+  &.has-files {
+    border: 1px solid rgba(#fff, 0.35);
+    cursor: default;
+  }
+
+  span {
     font-family: var(--font-mono);
-    overflow: auto;
-    overscroll-behavior: contain;
-    cursor: pointer;
+  }
 
-    &.hovered {
-        color: rgba(#fff, 0.35);
+  .uploaded-track {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 3px;
+    border-bottom: 1px solid rgba(#fff, 0.1);
+    padding: 3px 10px;
+
+    &.has-error {
+      color: var(--light-red);
     }
 
-    &.has-files {
-        border: 1px solid rgba(#fff, 0.35);
-        cursor: default;
+    .drag {
+      position: relative;
+      top: -0.1em;
+      cursor: grab;
+
+      &:active {
+        cursor: grabbing;
+      }
     }
 
-    span {
-        font-family: var(--font-mono);
+    .svg-close {
+      height: 0.7em;
+      width: 0.7em;
     }
 
-    .uploaded-track {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 3px;
-        border-bottom: 1px solid rgba(#fff, 0.1);
-        padding: 3px 10px;
-
-        &.has-error {
-            color: var(--light-red);
-        }
-
-        .drag {
-            position: relative;
-            top: -0.1em;
-            cursor: grab;
-
-            &:active {
-                cursor: grabbing;
-            }
-        }
-
-        .svg-close {
-            height: 0.7em;
-            width: 0.7em;
-        }
-
-        .progress {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        &:last-child {
-            border: none;
-        }
+    .progress {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .centered {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
+    &:last-child {
+      border: none;
     }
+  }
+
+  .centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
 }

@@ -3,6 +3,7 @@
 import DraggableTrack from "@/components/DraggableTrack/DraggableTrack";
 import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { useCheckMultipleAudioStatus } from "@/hooks/query/query-hooks/use-check-multiple-audio-status";
+import { useAudioValidationReady } from "@/hooks/use-audio-validation-ready";
 import { AudioProcessingStatus } from "@/types/api";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
@@ -42,12 +43,16 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     console.log(`[MultiTrackUpload] Field "${name}" value:`, fieldValue);
   }, [fieldValue, name]);
 
+  const { stemErrors } = useAudioValidationReady();
+
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
 
   const [tracks, setTracks] = useState<Track[]>([]);
 
   const [tempFileNames, setTempFileNames] = useState<string[]>([]);
   const areaRef = useRef<HTMLDivElement>(null);
+  const hasInitializedFromFieldValue = useRef(false);
+  const lastRemovedTrackRef = useRef<string | null>(null);
 
   const audioStatusQueries = useCheckMultipleAudioStatus({
     temporaryAudioFileNames: tempFileNames,
@@ -62,6 +67,36 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
       }
     });
   }, [tracks]);
+
+  useEffect(() => {
+    if (
+      fieldValue &&
+      Array.isArray(fieldValue) &&
+      fieldValue.length > 0 &&
+      tracks.length === 0 &&
+      !hasInitializedFromFieldValue.current &&
+      !lastRemovedTrackRef.current
+    ) {
+      hasInitializedFromFieldValue.current = true;
+      const reconstructedTracks: Track[] = fieldValue.map(
+        (stem: { name: string; hash: string }) => ({
+          name: stem.name,
+          file: new File([], stem.name),
+          hash: stem.hash,
+          status: "ready",
+        }),
+      );
+      setTracks(reconstructedTracks);
+    }
+
+    if (
+      lastRemovedTrackRef.current &&
+      tracks.length === 0 &&
+      (!fieldValue || fieldValue.length === 0)
+    ) {
+      lastRemovedTrackRef.current = null;
+    }
+  }, [fieldValue, tracks.length]);
 
   const prevStemsRef = useRef<string>("");
 
@@ -130,6 +165,8 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
   }
 
   const onRemoveTrack = (name: string) => {
+    lastRemovedTrackRef.current = name;
+
     setTracks((prevTracks) => {
       const trackToRemove = prevTracks.find((track) => track.name === name);
       if (trackToRemove?.tempFileName) {
@@ -137,7 +174,17 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
           prev.filter((fileName) => fileName !== trackToRemove.tempFileName),
         );
       }
-      return prevTracks.filter((track) => track.name !== name);
+
+      const updatedTracks = prevTracks.filter((track) => track.name !== name);
+
+      if (fieldValue && Array.isArray(fieldValue)) {
+        const updatedFieldValue = fieldValue.filter(
+          (stem: { name?: string; hash?: string }) => stem?.name !== name,
+        );
+        setValue(name, updatedFieldValue);
+      }
+
+      return updatedTracks;
     });
   };
 
@@ -169,7 +216,7 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     <Controller
       control={control}
       name={name}
-      render={({ field, fieldState }) => (
+      render={({ fieldState }) => (
         <>
           <DndContext onDragEnd={handleDragEnd}>
             <div
@@ -196,13 +243,25 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
                     const status: AudioProcessingStatus =
                       queryStatus || (track.status as AudioProcessingStatus) || "pending";
 
+                    const stemHash = fieldValue?.find(
+                      (stem: { name?: string; hash?: string }) => stem?.name === track.name,
+                    )?.hash;
+
+                    const validationError = stemHash ? stemErrors.get(stemHash) : undefined;
+
+                    const hasValidationError = !!validationError;
+                    const finalStatus: AudioProcessingStatus = hasValidationError
+                      ? "failed"
+                      : status;
+
                     return (
                       <DraggableTrack
                         key={track.name + i}
                         track={track}
                         onRemoveTrack={onRemoveTrack}
                         isUploading={isSubmittingAudio || isLoading}
-                        status={status}
+                        status={finalStatus}
+                        validationError={validationError}
                       />
                     );
                   })}

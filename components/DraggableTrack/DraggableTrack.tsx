@@ -12,6 +12,7 @@ interface DraggableTrackProps {
   onRemoveTrack: (name: string) => void;
   status: AudioProcessingStatus;
   isUploading: boolean;
+  validationError?: string;
 }
 
 export default function DraggableTrack({
@@ -19,6 +20,7 @@ export default function DraggableTrack({
   status,
   onRemoveTrack,
   isUploading,
+  validationError,
 }: DraggableTrackProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: track.name,
@@ -33,6 +35,10 @@ export default function DraggableTrack({
 
   const isProcessing = status === "processing";
 
+  const errorMessage = validationError || (hasError ? "error processing track" : undefined);
+
+  console.log("errorMessage", errorMessage);
+
   return (
     <div
       key={track.name}
@@ -45,10 +51,10 @@ export default function DraggableTrack({
         <DragIcon />
       </button>
       <TrackUpload name={track.name} isUploading={isUploading} isProcessing={isProcessing}>
-        {hasError && (
+        {errorMessage && (
           <Tooltip className="error">
             <p className="title">error</p>
-            <p>error processing track</p>
+            <p>{errorMessage}</p>
           </Tooltip>
         )}
       </TrackUpload>

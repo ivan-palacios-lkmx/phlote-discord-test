@@ -1,7 +1,7 @@
 import { useSubmitAudio } from "@/hooks/query/mutations/use-submit-audio";
 import { useCheckAudioStatus } from "@/hooks/query/query-hooks/use-check-audio-status";
 import { AudioProcessingStatus } from "@/types/api";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface UseSingleTrackUploadProps {
@@ -9,12 +9,54 @@ interface UseSingleTrackUploadProps {
   value: string | undefined;
 }
 
-export function useSingleTrackUpload({ onChange }: UseSingleTrackUploadProps) {
-  const [file, setFile] = useState<File | null>(null);
+const STORAGE_KEY = "audio-hash-to-filename";
+
+function getFilenameFromStorage(hash: string): string | null {
+  if (typeof window === "undefined") return null;
+  const stored = sessionStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    const map = JSON.parse(stored);
+    return map[hash] || null;
+  }
+
+  return null;
+}
+
+function saveFilenameToStorage(hash: string, filename: string): void {
+  if (typeof window === "undefined") return;
+  const stored = sessionStorage.getItem(STORAGE_KEY);
+  const map = stored ? JSON.parse(stored) : {};
+  map[hash] = filename;
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+}
+
+export function useSingleTrackUpload({ onChange, value }: UseSingleTrackUploadProps) {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [error, setError] = useState<{ title: string; message: string } | null>(null);
   const areaRef = useRef<HTMLDivElement>(null);
 
   const tempFileNameRef = useRef<string | null>(null);
+  const hasBeenClearedRef = useRef(false);
+
+  const fileFromValue = useMemo(() => {
+    if (hasBeenClearedRef.current) {
+      return null;
+    }
+    if (value && !uploadedFile && !tempFileNameRef.current) {
+      const originalFilename = getFilenameFromStorage(value);
+      const filename = originalFilename || "Bounce (processed)";
+      return new File([], filename);
+    }
+    return null;
+  }, [value, uploadedFile]);
+
+  const file = uploadedFile || fileFromValue;
+
+  useEffect(() => {
+    if (value && hasBeenClearedRef.current) {
+      hasBeenClearedRef.current = false;
+    }
+  }, [value]);
 
   const { mutateAsync: submitAudio, isPending: isSubmittingAudio } = useSubmitAudio();
 
@@ -23,17 +65,19 @@ export function useSingleTrackUpload({ onChange }: UseSingleTrackUploadProps) {
   });
 
   useEffect(() => {
-    if (audioStatus && audioStatus.status === "ready" && audioStatus.hash) {
+    if (audioStatus && audioStatus.status === "ready" && audioStatus.hash && uploadedFile) {
+      saveFilenameToStorage(audioStatus.hash, uploadedFile.name);
       onChange(audioStatus.hash);
     }
-  }, [audioStatus, onChange]);
+  }, [audioStatus, onChange, uploadedFile]);
 
   async function onDrop(acceptedFiles: File[]) {
     if (acceptedFiles.length === 0) return;
 
     const droppedFile = acceptedFiles[0];
-    setFile(droppedFile);
+    setUploadedFile(droppedFile);
     setError(null);
+    hasBeenClearedRef.current = false;
 
     try {
       const { tmpName } = await submitAudio({ audioFile: droppedFile });
@@ -43,7 +87,7 @@ export function useSingleTrackUpload({ onChange }: UseSingleTrackUploadProps) {
         title: "error",
         message: "Failed to upload",
       });
-      setFile(null);
+      setUploadedFile(null);
       tempFileNameRef.current = null;
       onChange(undefined);
     }
@@ -51,9 +95,10 @@ export function useSingleTrackUpload({ onChange }: UseSingleTrackUploadProps) {
 
   const handleFileClear = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setFile(null);
+    setUploadedFile(null);
     setError(null);
     tempFileNameRef.current = null;
+    hasBeenClearedRef.current = true;
     onChange(undefined);
   };
 
@@ -62,7 +107,8 @@ export function useSingleTrackUpload({ onChange }: UseSingleTrackUploadProps) {
     multiple: false,
   });
 
-  const status: AudioProcessingStatus = audioStatus?.status || "pending";
+  const status: AudioProcessingStatus =
+    value && !tempFileNameRef.current ? "ready" : audioStatus?.status || "pending";
   const isProcessingFile = status === "processing";
   const hasError = status === "failed" || error !== null;
 
