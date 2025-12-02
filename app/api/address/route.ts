@@ -119,3 +119,13 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    await AddressService.updateUsersRolesFromLastDay();
+    return NextResponse.json({ message: "Users roles updated successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating users roles:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

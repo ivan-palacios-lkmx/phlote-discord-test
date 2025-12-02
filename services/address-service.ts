@@ -27,7 +27,33 @@ import {
   WriteResult,
 } from "firebase-admin/firestore";
 
+import { RoleService } from "./role-service";
+
 export class AddressService {
+  static async updateUsersRolesFromLastDay(): Promise<void> {
+    const addresses = await this.getAddresses(
+      undefined,
+      undefined,
+      new Date(Date.now() - 24 * 60 * 60 * 1000),
+    );
+    for (const address of addresses) {
+      await this.updateUserRolesFromLastDay(address);
+    }
+  }
+
+  static async updateUserRolesFromLastDay(address: AddressDocWithID): Promise<void> {
+    await this.updateUserMemberRole(address);
+  }
+
+  static async updateUserMemberRole(address: AddressDocWithID): Promise<void> {
+    const isAddressAMember = await RoleService.isMember(address.id);
+    if (isAddressAMember) {
+      await this.addRoleToAddress(address.id, "member");
+    } else {
+      await this.removeRoleFromAddress(address.id, "member");
+    }
+  }
+
   static async getAdmins(visibility?: "public" | "private"): Promise<AddressDocWithID[]> {
     const admins = await this.getAddresses(visibility, "admin");
     return admins;
@@ -115,6 +141,7 @@ export class AddressService {
   static async getAddresses(
     visibility?: "public" | "private",
     role?: "admin" | "creator" | "member",
+    updatedSince?: Date,
   ): Promise<AddressDocWithID[]> {
     let query: Query = adminDb.collection(ADDRESSES_COLLECTION);
 
@@ -130,6 +157,10 @@ export class AddressService {
       query = query.where("isCreator", "==", true);
     } else if (role === "member") {
       query = query.where("isMember", "==", true);
+    }
+
+    if (updatedSince) {
+      query = query.where("updated", ">=", updatedSince);
     }
 
     const addressesSnapshot = await query.get();
