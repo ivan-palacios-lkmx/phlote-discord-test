@@ -26,15 +26,32 @@ export async function PUT(
   { params }: { params: { address: string } },
 ): Promise<NextResponse> {
   try {
-    const address = params.address;
+    const { address } = await params;
     const body = await request.json();
-    const { name, twitterHandle, email } = body;
+    const { name, twitterHandle, email, discordUserID, discordHandle, dmChannel } = body;
 
-    if (!contactSchema.safeParse({ name, twitterHandle, email }).success) {
+    if (
+      !contactSchema.safeParse({
+        name,
+        twitterHandle,
+        email,
+        discordUserID,
+        discordHandle,
+        dmChannel,
+      }).success
+    ) {
       return NextResponse.json({ error: "Invalid contact format" }, { status: 400 });
     }
 
-    await AddressService.patchPrivateAddressData(address, name, twitterHandle, email);
+    await AddressService.updatePrivateAddressData(
+      address,
+      name ?? null,
+      twitterHandle ?? null,
+      email ?? null,
+      discordUserID ?? null,
+      discordHandle ?? null,
+      dmChannel ?? null,
+    );
 
     return NextResponse.json({ message: "Contact updated" }, { status: 200 });
   } catch (error) {
