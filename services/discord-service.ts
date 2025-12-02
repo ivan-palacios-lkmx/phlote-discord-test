@@ -136,6 +136,32 @@ export class DiscordService {
     return response.json();
   }
 
+  static async getChannel(channelId: string) {
+    if (!this.token) {
+      throw new Error("DiscordService not initialized");
+    }
+
+    const response = await fetch(`https://discord.com/api/v10/channels/${channelId}`, {
+      headers: {
+        Authorization: `Bot ${this.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to get Discord channel ${channelId}: ${response.status} ${response.statusText} - ${errorText}`,
+      );
+    }
+
+    return response.json();
+  }
+
+  static async getChannelMessageCount(channelId: string): Promise<number> {
+    const channel = await this.getChannel(channelId);
+    return channel.message_count || 0;
+  }
+
   static async getMember(guildId: string, userId: string) {
     if (!this.token) {
       throw new Error("DiscordService not initialized");
