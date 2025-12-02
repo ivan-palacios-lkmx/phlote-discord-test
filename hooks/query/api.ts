@@ -565,6 +565,37 @@ class Api {
       throw error;
     }
   }
+
+  static async validateAudioDurations(
+    bounceHash: string,
+    stemHashes: string[],
+  ): Promise<{
+    valid: boolean;
+    error?: string;
+    invalidStems?: string[];
+    bounceDuration?: number;
+    stemDurations?: { hash: string; duration: number }[];
+  }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.VERSION_AUDIO_VALIDATE, {
+        bounceHash,
+        stemHashes,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("Error validating audio durations:", error);
+      if (error.response?.status === 400) {
+        return {
+          valid: false,
+          error: error.response.data.error,
+          invalidStems: error.response.data.invalidStems,
+          bounceDuration: error.response.data.bounceDuration,
+          stemDurations: error.response.data.stemDurations,
+        };
+      }
+      throw error;
+    }
+  }
 }
 
 export default Api;

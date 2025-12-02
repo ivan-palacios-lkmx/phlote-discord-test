@@ -11,10 +11,12 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function Input({ name, onWatch, defaultValue, resetValue, ...props }: InputProps) {
-  const { control, reset } = useFormContext();
+  const { control, setValue } = useFormContext();
 
   const value = useWatch({ control, name });
   const onWatchRef = useRef(onWatch);
+  const lastResetValueRef = useRef<string | undefined>(undefined);
+  const initialDefaultValueRef = useRef(defaultValue ?? "");
 
   useEffect(() => {
     if (onWatchRef.current) {
@@ -23,16 +25,17 @@ export function Input({ name, onWatch, defaultValue, resetValue, ...props }: Inp
   }, [value, name]);
 
   useEffect(() => {
-    if (resetValue) {
-      reset({ [name]: resetValue });
+    if (resetValue !== undefined && resetValue !== lastResetValueRef.current) {
+      lastResetValueRef.current = resetValue;
+      setValue(name, resetValue, { shouldDirty: false, shouldValidate: false });
     }
-  }, [resetValue, name, reset]);
+  }, [resetValue, name, setValue]);
 
   return (
     <Controller
       control={control}
       name={name}
-      defaultValue={defaultValue ?? ""}
+      defaultValue={initialDefaultValueRef.current}
       render={({ field, fieldState }) => (
         <>
           <input {...props} {...field} value={field.value ?? ""} />

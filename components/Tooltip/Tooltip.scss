@@ -1,7 +1,10 @@
-@use '../../app/assets/scss/vars' as *;
+@use "../../app/assets/scss/vars" as *;
 
 .tooltip {
+  position: relative;
+  display: inline-block;
   height: 1em;
+  z-index: 1000;
 
   svg {
     margin-left: 5px;
@@ -24,14 +27,31 @@
   }
 
   .content {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
     border-radius: 7px;
     border: 1px solid #808080;
     background: rgba(#000, 0.8);
-    max-width: 250px;
     padding: 20px;
+    width: 500px;
     text-transform: none;
     @include fontSize(12px);
     transition: opacity 100ms 300ms;
+    white-space: normal;
+    pointer-events: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: rgba(#000, 0.8);
+    }
 
     .title {
       font-family: var(--font-mono);
