@@ -95,6 +95,12 @@ export class AudioService {
         created: FieldValue.serverTimestamp(),
       });
 
+      await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).set({
+        status: "processing",
+        hash: "",
+        created: FieldValue.serverTimestamp(),
+      });
+
       const temporaryAudioFile = await this.uploadAudioToStorage(audioPath, audioBuffer);
       // We only start the audio process and we do not await it because we want to return the status immediately
       this.startAudioProcessing(temporaryAudioFile, audioBuffer, audioFilename);
@@ -472,10 +478,14 @@ export class AudioService {
     hash: string,
   ): Promise<void> {
     if (audioFilename) {
-      await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).update({
-        status,
-        hash,
-      });
+      await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).set(
+        {
+          status,
+          hash,
+          updated: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
     }
   }
 
@@ -580,5 +590,56 @@ export class AudioService {
       hash,
       created: FieldValue.serverTimestamp(),
     });
+  }
+
+  static async validateAudioDurations(bounceHash: string, stemHashes: string[]): Promise<boolean> {
+    try {
+      const bounceDuration = await this.getAudioDurationFromHash(bounceHash);
+
+      if (!bounceDuration) {
+        return false;
+      }
+
+      const stemDurations = await Promise.all(
+        stemHashes.map((hash) => this.getAudioDurationFromHash(hash)),
+      );
+
+      if (stemDurations.some((duration) => !duration)) {
+        return false;
+      }
+
+      const tolerance = 0;
+
+      return stemDurations.every((duration) => Math.abs(duration! - bounceDuration) < tolerance);
+    } catch (error) {
+      console.error("Error validating audio durations:", error);
+      return false;
+    }
+  }
+
+  static async getAudioDurationFromHash(hash: string): Promise<number | null> {
+    try {
+      const bucket = this.getBucket();
+      const wavFile = bucket.file(`audio/${hash}/audio.wav`);
+
+      const [exists] = await wavFile.exists();
+      if (!exists) {
+        return null;
+      }
+
+      const [buffer] = await wavFile.download();
+
+      const waveFile = new WaveFile();
+      waveFile.fromBuffer(buffer);
+
+      const sampleRate = waveFile.fmt.sampleRate;
+      const sampleCount = waveFile.data.samples.length / waveFile.fmt.numChannels;
+      const duration = sampleCount / sampleRate;
+
+      return duration;
+    } catch (error) {
+      console.error(`Error getting audio duration for hash ${hash}:`, error);
+      return null;
+    }
   }
 }

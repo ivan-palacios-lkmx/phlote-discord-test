@@ -21,4 +21,5 @@ export const ENDPOINTS = {
   APPLICATION_TRACKS: "/applications/tracks",
   NEWSLETTER: "/newsletter",
   STEMS_CAROUSEL: "/settings/stems-carousel",
+  VERSION_AUDIO_VALIDATE: "/versions/audio/validate",
 };
