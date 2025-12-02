@@ -8,22 +8,24 @@ import "./SessionCard.scss";
 
 interface SessionCardProps {
   session: SessionDocWithID | null | undefined;
+  onDelete: (sessionId: string) => void;
 }
 
-export default function SessionCard({ session }: SessionCardProps) {
+export default function SessionCard({ session, onDelete }: SessionCardProps) {
   const {
     data: versions,
     isPending: isPendingVersions,
     isError: isErrorVersions,
   } = useGetVersions({ sessionId: session?.id || "" });
 
-  const onDelete = async () => {};
-
   return (
     <div className="session-card">
       <div className="card-header">
         <h6 className="card-header-title">{session?.name || ""}</h6>
-        <button onClick={onDelete} className="btn delete-session" type="button">
+        <button
+          onClick={() => onDelete(session?.id || "")}
+          className="btn delete-session"
+          type="button">
           Delete Session
         </button>
       </div>

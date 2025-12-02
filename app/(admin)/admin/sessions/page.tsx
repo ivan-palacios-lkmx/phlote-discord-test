@@ -2,13 +2,31 @@
 
 import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import SessionCard from "@/components/admin/SessionCard/SessionCard";
+import { useDeleteSession } from "@/hooks/query/mutations/use-delete-session";
 import { useGetSessions } from "@/hooks/query/query-hooks/use-get-sessions";
+import { SessionDocWithID } from "@/types/database";
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
 import "./Sessions.scss";
 
 export default function Sessions() {
+  const queryClient = useQueryClient();
   const { data: sessions, isPending: isPendingSessions } = useGetSessions();
+  const { mutate: deleteSession } = useDeleteSession();
+  const handleDeleteSession = (sessionId: string) => {
+    deleteSession(
+      { sessionId },
+      {
+        onSuccess: () => {
+          queryClient.setQueriesData<SessionDocWithID[]>({ queryKey: ["sessions"] }, (oldData) => {
+            if (!oldData) return oldData;
+            return oldData.filter((session) => session.id !== sessionId);
+          });
+        },
+      },
+    );
+  };
 
   return (
     <OnlyAdmins className="admin-sessions">
@@ -23,7 +41,11 @@ export default function Sessions() {
         ) : (
           <div className="session-grid">
             {sessions?.map((session) => (
-              <SessionCard key={session.id} session={session} />
+              <SessionCard
+                key={session.id}
+                session={session}
+                onDelete={() => handleDeleteSession(session.id)}
+              />
             ))}
           </div>
         )}
