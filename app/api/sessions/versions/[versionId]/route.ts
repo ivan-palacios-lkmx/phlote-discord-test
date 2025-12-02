@@ -24,3 +24,23 @@ export async function GET(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ versionId: string }> },
+) {
+  try {
+    const { versionId } = await params;
+
+    if (!versionId) {
+      return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
+    }
+
+    await SessionService.deleteVersion(versionId);
+
+    return NextResponse.json({ message: "Version deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting version:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

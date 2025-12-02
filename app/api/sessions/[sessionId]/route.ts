@@ -50,3 +50,23 @@ export async function PATCH(
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ sessionId: string }> },
+) {
+  try {
+    const { sessionId } = await params;
+
+    if (!sessionId) {
+      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
+    }
+
+    await SessionService.deleteSession(sessionId);
+
+    return NextResponse.json({ message: "Session deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting session:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

@@ -24,6 +24,14 @@ import ShortUniqueId from "short-unique-id";
 import { DiscordService } from "./discord-service";
 
 export class SessionService {
+  static async deleteVersion(versionId: string): Promise<void> {
+    await adminDb.collection(SESSION_VERSIONS_COLLECTION).doc(versionId).delete();
+  }
+
+  static async deleteSession(sessionId: string): Promise<void> {
+    await adminDb.collection(SESSIONS_COLLECTION).doc(sessionId).delete();
+  }
+
   static async getSessions(): Promise<SessionDocWithID[]> {
     const sessionsSnapshot = await adminDb.collection(SESSIONS_COLLECTION).get();
     return getIDAndDocumentDataFromQuerySnapshot<SessionDocWithID>(sessionsSnapshot);
