@@ -198,6 +198,28 @@ class Api {
     }
   }
 
+  static async deleteSession(sessionId: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.delete(ENDPOINTS.SESSIONS + "/" + sessionId);
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting session:", error);
+      throw error;
+    }
+  }
+
+  static async deleteVersion(versionId: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.delete(
+        ENDPOINTS.SESSIONS + "/" + ENDPOINTS.VERSIONS + "/" + versionId,
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting version:", error);
+      throw error;
+    }
+  }
+
   static async getAddressesInfo(): Promise<AddressDoc[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.ADDRESS);
