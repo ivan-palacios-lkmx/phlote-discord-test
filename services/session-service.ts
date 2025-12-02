@@ -207,7 +207,7 @@ export class SessionService {
       this.createVersionDocumentForTransaction(transaction, versionId, sessionId, sessionDetails);
     });
 
-    await this.createSessionDiscordChannel(sessionId, sessionDetails.name);
+    await this.createSessionDiscordChannel(sessionId, sessionDetails.name, sessionDetails.creator);
 
     return {
       sessionId,
@@ -215,7 +215,11 @@ export class SessionService {
     };
   }
 
-  static async createSessionDiscordChannel(sessionId: string, sessionName: string) {
+  static async createSessionDiscordChannel(
+    sessionId: string,
+    sessionName: string,
+    creator: string,
+  ) {
     try {
       const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
       const guildId = process.env.DISCORD_GUILD_ID;
@@ -232,7 +236,7 @@ export class SessionService {
 
       await this.updateSessionDiscordChannel(sessionId, channel.id);
 
-      await this.sendSessionCreationMessage(sessionId, sessionName, channel.id);
+      await this.sendSessionCreationMessage(sessionId, sessionName, creator, channel.id);
     } catch (error) {
       console.error("Error creating Discord channel for session:", error);
       // We don't throw here to avoid failing the session creation if Discord fails
@@ -242,6 +246,7 @@ export class SessionService {
   static async sendSessionCreationMessage(
     sessionId: string,
     sessionName: string,
+    creator: string,
     channelId: string,
   ) {
     try {
@@ -256,8 +261,10 @@ export class SessionService {
 
       const versionLink = `${baseUrl}/sessions/${sessionId}?v=${versionIndex}`;
       const postImage = await this.getSessionPostImage(sessionId);
-
-      await DiscordService.sendMessageToChannel(channelId, "", {
+      const formattedVIndex = `V_${String(versionIndex).padStart(3, "0")}`;
+      const creatorName = await this.getAddressName(creator);
+      const content = `New version \`${formattedVIndex}\` created by ${creatorName}`;
+      await DiscordService.sendMessageToChannel(channelId, content, {
         embeds: [
           {
             image: {
