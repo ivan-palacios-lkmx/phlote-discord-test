@@ -141,7 +141,7 @@ export class AddressService {
   static async getAddresses(
     visibility?: "public" | "private",
     role?: "admin" | "creator" | "member",
-    updatedSince?: Date,
+    updatedBefore?: Date,
   ): Promise<AddressDocWithID[]> {
     let query: Query = adminDb.collection(ADDRESSES_COLLECTION);
 
@@ -159,8 +159,8 @@ export class AddressService {
       query = query.where("isMember", "==", true);
     }
 
-    if (updatedSince) {
-      query = query.where("updated", ">=", updatedSince);
+    if (updatedBefore) {
+      query = query.where("updated", "<=", updatedBefore);
     }
 
     const addressesSnapshot = await query.get();
