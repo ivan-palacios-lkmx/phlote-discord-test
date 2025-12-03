@@ -7,8 +7,6 @@ import React, { Suspense, useEffect, useState } from "react";
 
 import "./page.scss";
 
-export const dynamic = "force-dynamic";
-
 function OgPageContent() {
   const searchParams = useSearchParams();
 

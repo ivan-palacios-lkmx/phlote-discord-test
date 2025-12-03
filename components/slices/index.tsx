@@ -1,20 +1,14 @@
-"use client";
-
 import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
 import type { SliceComponentProps } from "@prismicio/react";
-import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 
 import ApplicationForm from "./landing/ApplicationForm/ApplicationForm";
+import Directory from "./landing/Directory/Directory/Index/Index";
 import Hero from "./landing/Hero/Hero";
 import HeroSlideShow from "./landing/HeroSlideShow/HeroSlideShow";
 import ReleaseCarousel from "./landing/ReleaseCarousel/ReleaseCarousel";
 import SliceContent from "./landing/SliceContent/SliceContent";
 import StemsPlayer from "./landing/StemsPlayer/Index/Index";
-
-const Directory = dynamic(() => import("./landing/Directory/Directory/Index/Index"), {
-  ssr: false,
-});
 
 function DefaultSlice({ slice }: SliceComponentProps) {
   return (
