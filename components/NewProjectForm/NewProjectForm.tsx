@@ -22,6 +22,7 @@ import { SessionDoc, VersionDoc } from "@/types/database";
 import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { PrismicRichText } from "@prismicio/react";
 import { usePrivy } from "@privy-io/react-auth";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
@@ -59,6 +60,7 @@ export default function NewProjectForm({
 
   const { data: session } = useGetSession(sessionID || "", !!sessionID);
   const { data: version } = useGetVersion(versionID || "", !!versionID);
+  const router = useRouter();
   const { mutate: createVersion, isPending: isPendingCreateVersion } = useCreateVersion();
   const { data: creatorInfo } = useGetAddressInfo(
     session?.creator || "",
@@ -283,9 +285,11 @@ export default function NewProjectForm({
   function handleSubmit(formValues: z.infer<typeof newVersionFormSchema>) {
     if (type === "version") {
       createVersion({ sessionId: sessionID || "", formValues });
+      router.push(`/sessions/${sessionID}/versions/${version?.id}`);
       return;
     }
     createSession({ creator: user?.wallet?.address || "", formValues });
+    router.push(`/sessions/${session?.id}`);
   }
 
   return (
