@@ -43,6 +43,8 @@ export default function MarketingHeader() {
     if (!lenis) return;
 
     const smoothTransform = smooth(100);
+    const MAX_VELOCITY = 25;
+    const VELOCITY_MULTIPLIER = 6;
 
     logoPhysicsRef.current = physics({
       from: -0.00001,
@@ -60,7 +62,8 @@ export default function MarketingHeader() {
     const scrollHandler = (e: { animatedScroll: number; velocity: number }) => {
       setWordmarkTranslate(e.animatedScroll);
       if (logoPhysicsRef.current) {
-        logoPhysicsRef.current.setAcceleration(e.velocity * 3);
+        const clampedVelocity = Math.max(-MAX_VELOCITY, Math.min(MAX_VELOCITY, e.velocity));
+        logoPhysicsRef.current.setAcceleration(clampedVelocity * VELOCITY_MULTIPLIER);
       }
     };
 
