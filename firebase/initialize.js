@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const firebase = require("firebase-admin");
-const serviceAccount = require("./service-account.json");
+
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 || "", "base64").toString("utf8"),
+);
 
 if (serviceAccount) {
   const projectID = serviceAccount.project_id;

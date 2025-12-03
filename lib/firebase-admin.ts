@@ -1,5 +1,11 @@
-import serviceAccount from "@/firebase/service-account.json";
 import admin from "firebase-admin";
+
+const SERVICE_ACCOUNT = process.env.FIREBASE_SERVICE_ACCOUNT;
+if (!SERVICE_ACCOUNT) {
+  throw new Error("FIREBASE_SERVICE_ACCOUNT is not set");
+}
+
+const serviceAccount = JSON.parse(Buffer.from(SERVICE_ACCOUNT, "base64").toString("utf8"));
 
 // TODO: Prevent multiple initializations of the admin app
 if (!admin.apps.length) {
