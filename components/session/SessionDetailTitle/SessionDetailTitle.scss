@@ -1,4 +1,4 @@
-@use '../../../app/assets/scss/vars' as *;
+@use "../../../app/assets/scss/vars" as *;
 
 .session-detail-title {
   border-bottom: 1px solid rgba(#fff, 0.3);
@@ -21,7 +21,7 @@
       &::after {
         padding-bottom: 100%;
         display: block;
-        content: '';
+        content: "";
       }
     }
   }

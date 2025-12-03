@@ -1,144 +1,144 @@
-@use '../../../../app/assets/scss/vars' as *;
+@use "../../../../app/assets/scss/vars" as *;
 
 .slice-application-form {
-    margin-top: 100px;
-    margin-bottom: 100px;
+  margin-top: 100px;
+  margin-bottom: 100px;
 
+  form {
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+    gap: 0 30px;
+
+    label {
+      display: block;
+      @include fontSize(18px);
+      line-height: 1;
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid rgba(#000, 0.2);
+      border-radius: 10px;
+      background: var(--white);
+      padding: 20px;
+      text-transform: uppercase;
+      margin-top: 15px;
+      transition: border-color 300ms;
+
+      &:focus {
+        border-color: var(--black);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+
+    textarea {
+      height: 150px;
+      font-family: var(--font-body);
+      resize: none;
+      text-transform: none;
+    }
+
+    .left {
+      grid-template-columns: 1fr 1fr;
+      display: grid;
+      gap: 30px 15px;
+
+      .info {
+        grid-column: span 2;
+      }
+    }
+
+    .right {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+
+      .multi-track-upload {
+        background: rgba(#000, 0.1);
+        border-color: rgba(#000, 0.5);
+        height: 150px;
+        margin-top: 15px;
+        box-sizing: border-box;
+
+        &.has-files {
+          border-color: rgba(#000, 0.35);
+        }
+
+        &.hovered {
+          color: rgba(#000, 0.35);
+        }
+
+        .uploaded-track {
+          border-color: rgba(#000, 0.1);
+        }
+      }
+
+      .svg-progress-ring {
+        #bg {
+          stroke: rgba(#000, 0.35);
+        }
+      }
+    }
+
+    .button-row {
+      grid-column: span 2;
+      text-align: center;
+      margin-top: 150px;
+      position: relative;
+
+      button {
+        padding: 15px;
+        width: 270px;
+        box-sizing: border-box;
+        @include fontSize(26px);
+
+        .loading-spinner {
+          height: 1em;
+          width: 1em;
+        }
+      }
+
+      .error {
+        color: red;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        margin: 0;
+        transform: translate(-50%, -150%);
+      }
+    }
+
+    &.success {
+      .left,
+      .right {
+        opacity: 0.4;
+      }
+
+      .right .multi-track-upload {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .button-row button {
+        pointer-events: none;
+      }
+    }
+  }
+
+  @include bp(m) {
     form {
-        grid-template-columns: 1fr 1fr;
-        display: grid;
-        gap: 0 30px;
+      display: block;
 
-        label {
-            display: block;
-            @include fontSize(18px);
-            line-height: 1;
-            font-weight: 600;
-        }
-
-        input,
-        textarea {
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-            border: 1px solid rgba(#000, 0.2);
-            border-radius: 10px;
-            background: var(--white);
-            padding: 20px;
-            text-transform: uppercase;
-            margin-top: 15px;
-            transition: border-color 300ms;
-
-            &:focus {
-                border-color: var(--black);
-            }
-
-            &:disabled {
-                opacity: 0.5;
-            }
-        }
-
-        textarea {
-            height: 150px;
-            font-family: var(--font-body);
-            resize: none;
-            text-transform: none;
-        }
-
-        .left {
-            grid-template-columns: 1fr 1fr;
-            display: grid;
-            gap: 30px 15px;
-
-            .info {
-                grid-column: span 2;
-            }
-        }
-
-        .right {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-
-            .multi-track-upload {
-                background: rgba(#000, 0.1);
-                border-color: rgba(#000, 0.5);
-                height: 150px;
-                margin-top: 15px;
-                box-sizing: border-box;
-
-                &.has-files {
-                    border-color: rgba(#000, 0.35);
-                }
-
-                &.hovered {
-                    color: rgba(#000, 0.35);
-                }
-
-                .uploaded-track {
-                    border-color: rgba(#000, 0.1);
-                }
-            }
-
-            .svg-progress-ring {
-                #bg {
-                    stroke: rgba(#000, 0.35);
-                }
-            }
-        }
-
-        .button-row {
-            grid-column: span 2;
-            text-align: center;
-            margin-top: 150px;
-            position: relative;
-
-            button {
-                padding: 15px;
-                width: 270px;
-                box-sizing: border-box;
-                @include fontSize(26px);
-
-                .loading-spinner {
-                    height: 1em;
-                    width: 1em;
-                }
-            }
-
-            .error {
-                color: red;
-                position: absolute;
-                left: 50%;
-                top: 0;
-                margin: 0;
-                transform: translate(-50%, -150%);
-            }
-        }
-
-        &.success {
-            .left,
-            .right {
-                opacity: 0.4;
-            }
-
-            .right .multi-track-upload {
-                opacity: 0.5;
-                pointer-events: none;
-            }
-
-            .button-row button {
-                pointer-events: none;
-            }
-        }
+      .left {
+        margin-bottom: 30px;
+      }
     }
-
-    @include bp(m) {
-        form {
-            display: block;
-
-            .left {
-                margin-bottom: 30px;
-            }
-        }
-    }
+  }
 }

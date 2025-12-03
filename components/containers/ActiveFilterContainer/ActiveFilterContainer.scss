@@ -4,8 +4,5 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  mask-image: linear-gradient(90deg,
-      transparent 0,
-      var(--black) 10px 263px,
-      transparent);
+  mask-image: linear-gradient(90deg, transparent 0, var(--black) 10px 263px, transparent);
 }

@@ -1,4 +1,4 @@
-@use '../../../app/assets/scss/vars' as *;
+@use "../../../app/assets/scss/vars" as *;
 
 .session-detail-activity {
   border-bottom: 1px solid rgba(#fff, 0.3);
@@ -9,7 +9,7 @@
     background-image: linear-gradient(rgba(#000, 0.3), rgba(#000, 0) 15px);
     pointer-events: none;
     z-index: 5;
-    content: '';
+    content: "";
     display: block;
     @include fill;
     border-radius: 7px;

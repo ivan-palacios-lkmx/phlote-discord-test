@@ -1,4 +1,4 @@
-@use '../../../app/assets/scss/vars' as *;
+@use "../../../app/assets/scss/vars" as *;
 
 .session-preview-block {
   --progress: 85%;
@@ -9,7 +9,9 @@
   align-items: center;
   display: grid;
   position: relative;
-  transition: background 500ms, color 500ms;
+  transition:
+    background 500ms,
+    color 500ms;
   cursor: pointer;
   @include fade-on-ready;
 
@@ -115,7 +117,7 @@
       gap: 3px 10px;
       font-weight: 600;
 
-      >span {
+      > span {
         display: flex;
         align-items: center;
         gap: 0.3em;
@@ -202,7 +204,7 @@
       }
     }
 
-    .preview-attributes .attribute-wrap>span svg {
+    .preview-attributes .attribute-wrap > span svg {
       color: var(--black);
     }
 

@@ -1,4 +1,4 @@
-@use '../../../../app/assets/scss/vars' as *;
+@use "../../../../app/assets/scss/vars" as *;
 
 .slideshow-button {
   grid-template-columns: 100px 150px 300px;
@@ -10,7 +10,9 @@
   border: 1px solid rgba(#fff, 0.2);
   padding: 10px;
   text-transform: uppercase;
-  transition: background 2s, border-color 2s;
+  transition:
+    background 2s,
+    border-color 2s;
   cursor: pointer;
 
   &.active {
@@ -22,7 +24,7 @@
     position: relative;
     padding-bottom: 56%;
 
-    >* {
+    > * {
       @include fill;
       display: flex;
       align-items: center;

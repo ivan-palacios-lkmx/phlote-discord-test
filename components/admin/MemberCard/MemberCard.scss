@@ -1,4 +1,4 @@
-@use '../../../app/assets/scss/vars' as *;
+@use "../../../app/assets/scss/vars" as *;
 
 .member-card {
   background-color: rgba(#fff, 0.15);
@@ -33,7 +33,7 @@
     }
 
     .member-avatar::after {
-      content: '';
+      content: "";
       display: block;
       padding-bottom: 100%;
     }

@@ -1,4 +1,4 @@
-@use '../../app/assets/scss/vars' as *;
+@use "../../app/assets/scss/vars" as *;
 
 .new-version-form {
   border-radius: 7px;
@@ -115,7 +115,7 @@
     grid-template-rows: auto 1fr;
     display: grid;
 
-    >h6 {
+    > h6 {
       margin: 0 0 15px;
       line-height: 1;
       display: flex;

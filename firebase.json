@@ -5,12 +5,7 @@
   "functions": {
     "source": "firebase",
     "codebase": "default",
-    "ignore": [
-      "node_modules",
-      ".git",
-      "firebase-debug.log",
-      "firebase-debug.*.log"
-    ]
+    "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"]
   },
   "emulators": {
     "auth": {

@@ -2,11 +2,11 @@
 
 import "@/app/(product)/sessions/sessions.scss";
 import OnlyMembers from "@/components/OnlyMembers/OnlyMembers";
+import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import Paginate from "@/components/paginate/Paginate";
 import SessionPreviewBlock from "@/components/session/SessionPreviewBlock/SessionPreviewBlock";
 import SessionsResultsFilters from "@/components/session/SessionsResultsFilters/SessionsResultsFilters";
 import SessionsResultsSorting from "@/components/session/SessionsResultsSorting/SessionsResultsSorting";
-import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import useSessions from "@/hooks/useSessions";
 import { PrismicRichText } from "@prismicio/react";

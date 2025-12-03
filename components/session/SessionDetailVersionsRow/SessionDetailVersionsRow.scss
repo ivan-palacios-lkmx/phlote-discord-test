@@ -1,4 +1,4 @@
-@use '../../../app/assets/scss/vars' as *;
+@use "../../../app/assets/scss/vars" as *;
 
 .session-detail-versions-row {
   padding-bottom: 10px;
@@ -28,10 +28,12 @@
   &::before,
   &::after {
     background-color: var(--white);
-    transition: top 300ms $authenticMotion, bottom 300ms $authenticMotion;
+    transition:
+      top 300ms $authenticMotion,
+      bottom 300ms $authenticMotion;
     position: absolute;
     display: block;
-    content: '';
+    content: "";
     width: 1px;
     left: 0;
   }
@@ -85,7 +87,9 @@
   }
 
   .version-block {
-    transition: border 200ms, width 300ms $authenticMotion;
+    transition:
+      border 200ms,
+      width 300ms $authenticMotion;
     grid-template-columns: 1fr figmaSize(50px);
     display: grid;
     background-color: rgba(#fff, 0.1);
@@ -119,7 +123,7 @@
     &::after {
       padding-bottom: 100%;
       display: block;
-      content: '';
+      content: "";
     }
   }
 

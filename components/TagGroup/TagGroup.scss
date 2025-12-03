@@ -1,4 +1,4 @@
-@use '../../app/assets/scss/vars' as *;
+@use "../../app/assets/scss/vars" as *;
 
 .tag-group {
   display: flex;
@@ -22,7 +22,9 @@
     line-height: 1;
     text-transform: uppercase;
     cursor: pointer;
-    transition: background 300ms ease, color 300ms ease;
+    transition:
+      background 300ms ease,
+      color 300ms ease;
 
     &:not(:disabled):hover {
       background: var(--white);
@@ -42,7 +44,7 @@
     height: 0px;
   }
 
-  input:checked+label {
+  input:checked + label {
     background: var(--white);
     color: var(--black);
 

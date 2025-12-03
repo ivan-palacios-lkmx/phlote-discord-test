@@ -1,5 +1,4 @@
-@use '../../../../../app/assets/scss/vars' as *;
-
+@use "../../../../../app/assets/scss/vars" as *;
 
 .slice-stems-player-slide {
   background-color: var(--black);
@@ -35,7 +34,7 @@
     position: relative;
 
     &::after {
-      content: '';
+      content: "";
       padding-bottom: 100%;
       display: block;
     }

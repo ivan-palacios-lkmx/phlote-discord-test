@@ -1,39 +1,39 @@
-@use '@/app/assets/scss/vars' as *;
+@use "@/app/assets/scss/vars" as *;
 
 .filter-tag-row {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+
+  .filter-tag-button {
+    @include standard-button;
+    display: inline-flex;
     align-items: center;
-    margin-bottom: 4px;
+    gap: 5px;
+    padding: 0.4em 0.75em;
+    white-space: nowrap;
+    border-color: rgba(#fff, 0.5);
 
-    .filter-tag-button {
-        @include standard-button;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 0.4em 0.75em;
-        white-space: nowrap;
-        border-color: rgba(#fff, 0.5);
-
-        span {
-            position: relative;
-            bottom: -1.25px;
-            @include fontSize(10px);
-        }
-
-        svg {
-            display: none;
-            width: 0.75em;
-            height: 0.75em;
-        }
-
-        &.active {
-            background: var(--white);
-            color: var(--black);
-
-            svg {
-                display: block;
-            }
-        }
+    span {
+      position: relative;
+      bottom: -1.25px;
+      @include fontSize(10px);
     }
+
+    svg {
+      display: none;
+      width: 0.75em;
+      height: 0.75em;
+    }
+
+    &.active {
+      background: var(--white);
+      color: var(--black);
+
+      svg {
+        display: block;
+      }
+    }
+  }
 }
