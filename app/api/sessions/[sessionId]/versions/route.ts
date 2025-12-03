@@ -5,7 +5,10 @@ import { versionDetailsSchema } from "@/utils/zod-schemas";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { sessionId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ sessionId: string }> },
+) {
   const { sessionId } = await params;
   const searchParams = request.nextUrl.searchParams;
   const index = searchParams.get("index");
@@ -19,7 +22,10 @@ export async function GET(request: NextRequest, { params }: { params: { sessionI
   return NextResponse.json(versions);
 }
 
-export async function POST(request: NextRequest, { params }: { params: { sessionId: string } }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ sessionId: string }> },
+) {
   try {
     const { sessionId } = await params;
     const body = await request.json();

@@ -189,8 +189,8 @@ export default function SessionsResultsSorting() {
               key={collaborator.address}
               slug="collaborators"
               value={collaborator.address}>
-              <Web3Avatar avatar={collaborator.avatar} />
-              <Web3Username username={collaborator.username} />
+              <Web3Avatar avatar={collaborator.avatar || ""} />
+              <Web3Username username={collaborator.username || ""} />
             </FilterCategoryRow>
           ))}
         </div>

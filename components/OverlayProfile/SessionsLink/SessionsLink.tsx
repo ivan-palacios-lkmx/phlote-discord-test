@@ -5,7 +5,7 @@ import { useLogout } from "@privy-io/react-auth";
 import { signOut as firebaseSignOut } from "firebase/auth";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 
 import "./SessionsLink.scss";
 
@@ -14,7 +14,7 @@ interface SessionsLinkProps {
   onClose?: () => void;
 }
 
-export default function SessionsLink({ profileID, onClose }: SessionsLinkProps) {
+function SessionsLinkContent({ profileID, onClose }: SessionsLinkProps) {
   const { logout } = useLogout();
   const searchParams = useSearchParams();
 
@@ -45,5 +45,13 @@ export default function SessionsLink({ profileID, onClose }: SessionsLinkProps) 
         Disconnect
       </button>
     </div>
+  );
+}
+
+export default function SessionsLink({ profileID, onClose }: SessionsLinkProps) {
+  return (
+    <Suspense fallback={null}>
+      <SessionsLinkContent profileID={profileID} onClose={onClose} />
+    </Suspense>
   );
 }

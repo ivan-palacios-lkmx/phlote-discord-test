@@ -1,6 +1,11 @@
 "use client";
 
-import { useConnectWallet, usePrivy } from "@privy-io/react-auth";
+import {
+  LinkedAccountWithMetadata,
+  WalletWithMetadata,
+  useConnectWallet,
+  usePrivy,
+} from "@privy-io/react-auth";
 import { useState } from "react";
 
 /**
@@ -60,9 +65,12 @@ export default function PrivyUserDebug() {
       {user.linkedAccounts && (
         <div className="mb-4">
           <p className="font-bold">Email from Linked Accounts:</p>
-          {user.linkedAccounts.find((acc: any) => acc.type === "email") ? (
+          {user.linkedAccounts.find((acc: LinkedAccountWithMetadata) => acc.type === "email") ? (
             <div className="p-2 bg-white rounded text-sm">
-              {(user.linkedAccounts.find((acc: any) => acc.type === "email") as any)?.address}
+              {
+                user.linkedAccounts.find((acc: LinkedAccountWithMetadata) => acc.type === "email")
+                  ?.address
+              }
             </div>
           ) : (
             <p className="text-sm text-gray-500">No email linked</p>
@@ -74,10 +82,11 @@ export default function PrivyUserDebug() {
       {user.linkedAccounts && (
         <div className="mb-4">
           <p className="font-bold">Wallets from Linked Accounts:</p>
-          {user.linkedAccounts.filter((acc: any) => acc.type === "wallet").length > 0 ? (
+          {user.linkedAccounts.filter((acc: LinkedAccountWithMetadata) => acc.type === "wallet")
+            .length > 0 ? (
             user.linkedAccounts
-              .filter((acc: any) => acc.type === "wallet")
-              .map((wallet: any, i: number) => (
+              .filter((acc: LinkedAccountWithMetadata) => acc.type === "wallet")
+              .map((wallet: WalletWithMetadata, i: number) => (
                 <div key={i} className="p-2 bg-white rounded text-sm break-all">
                   {wallet.address}
                 </div>
@@ -90,7 +99,8 @@ export default function PrivyUserDebug() {
 
       {/* Link Wallet Button */}
       {user.linkedAccounts &&
-        user.linkedAccounts.filter((acc: any) => acc.type === "wallet").length === 0 && (
+        user.linkedAccounts.filter((acc: LinkedAccountWithMetadata) => acc.type === "wallet")
+          .length === 0 && (
           <div className="mb-4 p-3 bg-yellow-50 rounded border border-yellow-200">
             <p className="font-bold text-yellow-900 mb-2">No wallet linked yet</p>
             <p className="text-sm text-yellow-700 mb-3">

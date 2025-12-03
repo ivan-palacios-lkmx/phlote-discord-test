@@ -7,9 +7,12 @@ import { audioActionSchema } from "@/utils/zod-schemas";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { versionId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ versionId: string }> },
+) {
   try {
-    const { versionId: versionID } = params;
+    const { versionId: versionID } = await params;
     const action = request.nextUrl.searchParams.get("action");
 
     if (!action || !audioActionSchema.safeParse(action).success) {

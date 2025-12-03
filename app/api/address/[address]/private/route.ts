@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { address: string } },
+  { params }: { params: Promise<{ address: string }> },
 ): Promise<NextResponse> {
   try {
     const { address } = await params;
@@ -23,7 +23,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { address: string } },
+  { params }: { params: Promise<{ address: string }> },
 ): Promise<NextResponse> {
   try {
     const { address } = await params;

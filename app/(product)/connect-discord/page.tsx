@@ -5,11 +5,11 @@ import { useUpdatePrivateAddress } from "@/hooks/query/mutations/use-update-priv
 import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";
 import { usePrivy } from "@privy-io/react-auth";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 import "./connect-discord.scss";
 
-export default function ConnectDiscordPage() {
+function ConnectDiscordContent() {
   const { user } = usePrivy();
   const searchParams = useSearchParams();
   const walletAddress = user?.wallet?.address || "";
@@ -46,5 +46,13 @@ export default function ConnectDiscordPage() {
         <h5>Your Discord has been connected</h5>
       </div>
     </OnlyMembers>
+  );
+}
+
+export default function ConnectDiscordPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConnectDiscordContent />
+    </Suspense>
   );
 }

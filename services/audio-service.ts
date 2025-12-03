@@ -398,7 +398,10 @@ export class AudioService {
 
   static makeWaveData(wav: WaveFile, waveformResolution: number = 1200): string[] {
     const allChannels = wav.getSamples();
-    const channelSamples = allChannels[0] || [];
+    const channelSamples =
+      Array.isArray(allChannels) && Array.isArray(allChannels[0])
+        ? (allChannels[0] as number[])
+        : [];
 
     const totalSamples = channelSamples.length;
     const samplesPerPixel = Math.floor(totalSamples / waveformResolution);
@@ -658,8 +661,16 @@ export class AudioService {
       const waveFile = new WaveFile();
       waveFile.fromBuffer(buffer);
 
-      const sampleRate = waveFile.fmt.sampleRate;
-      const sampleCount = waveFile.data.samples.length / waveFile.fmt.numChannels;
+      const fmt = waveFile.fmt as { sampleRate: number; numChannels: number };
+      const data = waveFile.data as { samples: number[] | number[][] };
+
+      const sampleRate = fmt.sampleRate;
+      const samples = Array.isArray(data.samples)
+        ? Array.isArray(data.samples[0])
+          ? data.samples[0]
+          : data.samples
+        : [];
+      const sampleCount = samples.length / fmt.numChannels;
       const duration = sampleCount / sampleRate;
 
       return duration;

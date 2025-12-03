@@ -13,7 +13,11 @@ export default function NewVersionPage() {
   return (
     <OnlyMembers className="new-version">
       <div className="contained">
-        <NewProjectForm type="version" sessionID={sessionID} versionID={versionID} />
+        <NewProjectForm
+          type="version"
+          sessionID={sessionID as string}
+          versionID={versionID as string}
+        />
       </div>
     </OnlyMembers>
   );

@@ -28,8 +28,8 @@ export default function FilterButton({
       type="button">
       {address && (
         <>
-          <Web3Avatar address={address} />
-          <Web3Username address={address} />
+          <Web3Avatar avatar={address} />
+          <Web3Username username={address} />
         </>
       )}
 

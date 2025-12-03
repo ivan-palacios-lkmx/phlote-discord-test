@@ -7,10 +7,11 @@ import { useGetSessions } from "@/hooks/query/query-hooks/use-get-sessions";
 import { SessionDocWithID } from "@/types/database";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import "./Sessions.scss";
 
-export default function Sessions() {
+export function SessionsContent() {
   const queryClient = useQueryClient();
   const { data: sessions, isPending: isPendingSessions } = useGetSessions();
   const { mutate: deleteSession } = useDeleteSession();
@@ -51,5 +52,13 @@ export default function Sessions() {
         )}
       </div>
     </OnlyAdmins>
+  );
+}
+
+export default function Sessions() {
+  return (
+    <Suspense fallback={null}>
+      <SessionsContent />
+    </Suspense>
   );
 }

@@ -2,6 +2,7 @@ import useAlgolia from "@/hooks/useAlgolia";
 import useMemberFilters from "@/hooks/useMemberFilters";
 import type { AddressDoc, AlgoliaAddress } from "@/types/database";
 import { quickHash } from "@/utils/functions";
+import { SearchIndex } from "algoliasearch";
 import { LRUCache } from "lru-cache";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -26,6 +27,17 @@ interface UseMembersReturn {
   totalResults: number;
   totalPages: number;
   reachedEnd: boolean;
+}
+
+interface AlgoliaIndexes {
+  sessionIndex: SearchIndex | null;
+  sessionsDownloadsDesc: SearchIndex | null;
+  sessionsPlaysDesc: SearchIndex | null;
+  sessionsUpdatedDesc: SearchIndex | null;
+  sessionsVersionsDesc: SearchIndex | null;
+  addressIndex: SearchIndex | null;
+  addressesRecentDesc: SearchIndex | null;
+  addressesActiveDesc: SearchIndex | null;
 }
 
 /**
@@ -53,7 +65,7 @@ export default function useMembers({
   pageSize: pPageSize,
   sort: pSort,
 }: UseMembersOptions = {}): UseMembersReturn {
-  const indexes = useAlgolia();
+  const indexes = useAlgolia() as AlgoliaIndexes;
   const [loadingMembers, setLoadingMembers] = useState(false);
   const [members, setMembers] = useState<AlgoliaAddress[]>([]);
   const [reachedEnd, setReachedEnd] = useState(true);

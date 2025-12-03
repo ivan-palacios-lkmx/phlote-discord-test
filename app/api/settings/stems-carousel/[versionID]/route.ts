@@ -2,7 +2,10 @@ import { GlobalsService } from "@/services/globals-service";
 import { versionIDSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(request: NextRequest, { params }: { params: { versionID: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ versionID: string }> },
+) {
   try {
     const { versionID } = await params;
 

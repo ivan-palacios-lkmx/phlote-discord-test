@@ -32,10 +32,10 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { address: string } },
+  { params }: { params: Promise<{ address: string }> },
 ): Promise<NextResponse> {
   try {
-    const address = params.address;
+    const { address } = await params;
 
     const body = await request.json();
 

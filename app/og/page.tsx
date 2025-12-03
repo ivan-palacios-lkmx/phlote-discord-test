@@ -3,11 +3,13 @@
 import AvatarStack from "@/components/AvatarStack/AvatarStack";
 import TrackPreview from "@/components/TrackPreview/TrackPreview";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 
 import "./page.scss";
 
-export default function OgPage() {
+export const dynamic = "force-dynamic";
+
+function OgPageContent() {
   const searchParams = useSearchParams();
 
   const bgImage = searchParams.get("bgImage") || "/images/default-bg.png";
@@ -77,5 +79,13 @@ export default function OgPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function OgPage() {
+  return (
+    <Suspense fallback={null}>
+      <OgPageContent />
+    </Suspense>
   );
 }

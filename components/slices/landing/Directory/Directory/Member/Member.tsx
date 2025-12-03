@@ -9,7 +9,8 @@ import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";
 import useTags from "@/hooks/useTags";
-import type { AlgoliaAddress } from "@/types/database";
+import type { AddressDocWithID, AlgoliaAddress } from "@/types/database";
+import { ImageField } from "@prismicio/client";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { memo, useEffect, useRef, useState } from "react";
@@ -92,7 +93,9 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
   const { settings } = usePrismicio();
   const defaultUserImage = settings.default_user_image;
 
-  const username = addressPrivateInfo?.name || AddressClientService.getAddressUsername(address);
+  const username =
+    addressPrivateInfo?.name ||
+    AddressClientService.getAddressUsername(address as unknown as AddressDocWithID);
   return (
     <div
       ref={containerRef}
@@ -113,7 +116,7 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
             />
           ) : defaultUserImage ? (
             <div className="prismic-image">
-              <ProgressiveMedia field={defaultUserImage} />
+              <ProgressiveMedia field={defaultUserImage as ImageField} />
             </div>
           ) : null}
 

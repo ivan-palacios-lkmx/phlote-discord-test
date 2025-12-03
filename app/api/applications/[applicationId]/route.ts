@@ -1,11 +1,14 @@
 import { ApplicationService } from "@/services/application-service";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { applicationId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ applicationId: string }> },
+) {
   try {
-    const applicationID = params.applicationId;
+    const { applicationId } = await params;
 
-    const application = await ApplicationService.getApplication(applicationID);
+    const application = await ApplicationService.getApplication(applicationId);
 
     if (!application) {
       return NextResponse.json({ error: "Application not found" }, { status: 404 });

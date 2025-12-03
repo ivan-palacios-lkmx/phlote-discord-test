@@ -14,7 +14,7 @@ function AvatarStack({ addresses }: { addresses: string[] }) {
   return (
     <div className="avatar-stack">
       {addresses.slice(0, 3).map((address, index) => (
-        <Web3Avatar key={index} address={address} className="avatar-img" />
+        <Web3Avatar key={index} avatar={address} className="avatar-img" />
       ))}
       {addresses.length > 3 && (
         <div className="avatar-img avatar-count">+{addresses.length - 3}</div>

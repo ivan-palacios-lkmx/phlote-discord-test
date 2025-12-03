@@ -1,7 +1,6 @@
 "use client";
 
 import "@/app/layout.scss";
-import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
 import PrismicioProvider from "@/components/PrismicioProvider";
 import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
 import ProductFooter from "@/components/site/footer/ProductFooter/ProductFooter";
@@ -13,8 +12,14 @@ import { useLenis } from "@/hooks/useLenis";
 import { type PrismicSettings } from "@/types/client";
 import { usePrivy, useUser } from "@privy-io/react-auth";
 import kebabCase from "lodash/kebabCase";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+
+const OverlayProfileWrapper = dynamic(
+  () => import("@/components/OverlayProfile/OverlayProfileWrapper"),
+  { ssr: false },
+);
 
 interface DefaultLayoutProps {
   children: React.ReactNode;

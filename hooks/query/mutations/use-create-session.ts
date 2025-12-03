@@ -1,4 +1,5 @@
 import Api from "@/hooks/query/api";
+import { Stem } from "@/types/database";
 import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
@@ -30,7 +31,17 @@ export function useCreateSession() {
         bpm: formValues.bpm,
       };
 
-      return await Api.createSession(sessionDetails);
+      return await Api.createSession(
+        sessionDetails as unknown as {
+          creator: string;
+          name: string;
+          bounce: string;
+          stems: Array<Stem>;
+          notes?: string;
+          tags?: string[];
+          bpm: number;
+        },
+      );
     },
   });
 }

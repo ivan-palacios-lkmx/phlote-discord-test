@@ -2,12 +2,12 @@ import { SessionService } from "@/services/session-service";
 import { versionDetailsSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest) {
   try {
-    const sessionID = params.id;
+    const sessionID = request.nextUrl.searchParams.get("id");
 
     if (!sessionID) {
-      return NextResponse.json({ error: "Session does not exist" }, { status: 400 });
+      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
     }
 
     const versions = await SessionService.getSessionVersions(sessionID);
@@ -19,9 +19,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest) {
   try {
-    const sessionID = params.id;
+    const sessionID = request.nextUrl.searchParams.get("id");
 
     const body = await request.json();
     const versionDetails = body;
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     }
 
     if (!sessionID) {
-      return NextResponse.json({ error: "Session does not exist" }, { status: 400 });
+      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
     }
 
     if (!versionDetailsSchema.safeParse(versionDetails).success) {
