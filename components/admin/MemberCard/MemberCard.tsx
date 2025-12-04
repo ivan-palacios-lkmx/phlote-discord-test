@@ -95,9 +95,9 @@ export default function MemberCard({ member }: MemberCardProps) {
           if (formValues.name || formValues.twitterHandle || formValues.email) {
             const contact = {
               id: address,
-              name: formValues.name || null,
-              twitterHandle: formValues.twitterHandle || null,
-              email: formValues.email || null,
+              name: formValues.name?.trim() || null,
+              twitterHandle: formValues.twitterHandle?.trim() || null,
+              email: formValues.email?.trim() || null,
             };
             updatePrivateAddress({ address, contact });
           }

@@ -97,7 +97,17 @@ function OverlayProfileContent() {
   }, [pathname, profileID]);
 
   function setContact(contact: ContactDocWithID) {
-    updatePrivateAddress({ address: profileID!, contact });
+    console.log(contact.email);
+    const formContactInfoWithAnotherFields = {
+      id: profileID!,
+      name: contact.name ?? null,
+      twitterHandle: contact.twitterHandle ?? null,
+      email: contact.email?.trim() || null,
+      discordUserID: contact.discordUserID ?? null,
+      discordHandle: contact.discordHandle ?? null,
+      dmChannel: contact.dmChannel ?? null,
+    };
+    updatePrivateAddress({ address: profileID!, contact: formContactInfoWithAnotherFields });
     if (!profileID) return;
   }
   if (!profileID) return null;
