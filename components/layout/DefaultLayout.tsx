@@ -1,6 +1,7 @@
 "use client";
 
 import "@/app/layout.scss";
+import MobileMenu from "@/components/MobileMenu/MobileMenu";
 import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
 import PrismicioProvider from "@/components/PrismicioProvider";
 import MarketingFooter from "@/components/site/footer/MarketingFooter/MarketingFooter";
@@ -10,6 +11,7 @@ import ProductHeader from "@/components/site/header/ProductHeader/ProductHeader"
 import { useSyncAddress } from "@/hooks/query/query-hooks/use-sync-address";
 import { HeaderTranslateProvider } from "@/hooks/useHeaderTranslate";
 import { useLenis } from "@/hooks/useLenis";
+import { MenuOpenProvider } from "@/hooks/useMenuOpen";
 import { type PrismicSettings } from "@/types/client";
 import { usePrivy, useUser } from "@privy-io/react-auth";
 import kebabCase from "lodash/kebabCase";
@@ -154,20 +156,25 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   return (
     <PrismicioProvider settings={settings}>
       <HeaderTranslateProvider>
-        <div className={classes} style={styles}>
-          {/* Header */}
+        <MenuOpenProvider>
+          <div className={classes} style={styles}>
+            {/* Header */}
 
-          {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
+            {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
 
-          {/* Page */}
-          {children}
+            {/* Page */}
+            {children}
 
-          {/* Footer */}
-          {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
+            {/* Footer */}
+            {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
 
-          {/* Overlay User Profile */}
-          <OverlayProfileWrapper />
-        </div>
+            {/* Mobile Menu */}
+            <MobileMenu />
+
+            {/* Overlay User Profile */}
+            <OverlayProfileWrapper />
+          </div>
+        </MenuOpenProvider>
       </HeaderTranslateProvider>
     </PrismicioProvider>
   );

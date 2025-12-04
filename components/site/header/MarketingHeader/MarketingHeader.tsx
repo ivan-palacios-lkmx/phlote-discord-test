@@ -1,11 +1,13 @@
 "use client";
 
 import { usePrismicio } from "@/components/PrismicioProvider";
+import HamburgerIcon from "@/components/icons/HamburgerIcon/HamburgerIcon";
 import Logo from "@/components/icons/Logo";
 import WoodmarkIcon from "@/components/icons/Woodmark";
 import ConnectWallet from "@/components/site/header/ConnectWallet/ConnectWallet";
 import { useHeaderTranslate } from "@/hooks/useHeaderTranslate";
 import { useLenis } from "@/hooks/useLenis";
+import { useMenuOpen } from "@/hooks/useMenuOpen";
 import Link from "next/link";
 import { physics, transform } from "popmotion";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -14,21 +16,12 @@ import "./MarketingHeader.scss";
 
 const { smooth } = transform;
 
-function HamburgerIcon() {
-  return (
-    <button className="flex flex-col gap-1 p-2">
-      <div className="h-0.5 w-6 bg-white"></div>
-      <div className="h-0.5 w-6 bg-white"></div>
-      <div className="h-0.5 w-6 bg-white"></div>
-    </button>
-  );
-}
-
 export default function MarketingHeader() {
   const { settings } = usePrismicio();
   const mainMenu = settings.main_menu || [];
   const lenisRef = useLenis();
   const lenis = lenisRef?.current;
+  const { menuOpen, setMenuOpen } = useMenuOpen();
 
   const [wordmarkTranslate, setWordmarkTranslate] = useState(0);
   const [logoTranslate, setLogoTranslate] = useState(0);
@@ -112,7 +105,7 @@ export default function MarketingHeader() {
 
       <div className="mobile-only nav">
         <ConnectWallet />
-        <HamburgerIcon />
+        <HamburgerIcon active={menuOpen} onToggle={setMenuOpen} />
       </div>
     </header>
   );
