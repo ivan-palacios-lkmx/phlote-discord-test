@@ -29,7 +29,7 @@ export async function POST(
   try {
     const { sessionId } = await params;
     const body = await request.json();
-    const { name, bpm, notes, tags, stems, bounce } = body;
+    const { name, bpm, notes, tags, stems, bounce, sourceVersion } = body;
 
     if (!name || !bpm || !notes || !tags || !stems || !bounce) {
       return NextResponse.json({ error: "Version details are required" }, { status: 400 });
@@ -40,7 +40,10 @@ export async function POST(
       return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
     }
 
-    if (!versionDetailsSchema.safeParse({ name, bpm, notes, tags, stems, bounce }).success) {
+    if (
+      !versionDetailsSchema.safeParse({ name, bpm, notes, tags, stems, bounce, sourceVersion })
+        .success
+    ) {
       console.log("version details are invalid", body);
       return NextResponse.json({ error: "Invalid version details" }, { status: 400 });
     }
@@ -65,6 +68,7 @@ export async function POST(
       tags,
       stems,
       bounce,
+      sourceVersion,
     };
 
     const version = await SessionService.createVersion(sessionId, versionDetails);
