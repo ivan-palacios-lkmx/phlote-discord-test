@@ -288,7 +288,7 @@ export default function NewProjectForm({
         { sessionId: sessionID || "", formValues },
         {
           onSuccess: (data) => {
-            router.push(`/sessions/${sessionID}/versions/${data.id}`);
+            router.push(`/sessions/${sessionID}?v=${data.versionIndex}`);
           },
         },
       );
