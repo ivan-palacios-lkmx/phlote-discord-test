@@ -596,6 +596,16 @@ class Api {
       throw error;
     }
   }
+
+  static async addContract(contractAddress: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.CONTRACTS, { contractAddress });
+      return response.data;
+    } catch (error) {
+      console.error("Error adding contract:", error);
+      throw error;
+    }
+  }
 }
 
 export default Api;

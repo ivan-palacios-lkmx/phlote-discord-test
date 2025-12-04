@@ -30,7 +30,9 @@ export default function MarketingFooter(): JSX.Element {
       <ul className="social-menu ul-reset">
         {socialMenu.map((item, index) => (
           <li key={index}>
-            <a href={item.link as string}>{item.name || "Link"}</a>
+            <a href={item.link as string} target="_blank" rel="noopener noreferrer">
+              {item.name || "Link"}
+            </a>
           </li>
         ))}
       </ul>
@@ -42,7 +44,9 @@ export default function MarketingFooter(): JSX.Element {
           <ul className="ul-reset">
             {secondaryMenu.map((item, index) => (
               <li key={index}>
-                <a href={item.link as string}>{item.name || "Link"}</a>
+                <a href={item.link as string} target="_blank" rel="noopener noreferrer">
+                  {item.name || "Link"}
+                </a>
               </li>
             ))}
           </ul>

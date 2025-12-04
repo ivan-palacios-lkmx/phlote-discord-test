@@ -1,6 +1,6 @@
 "use client";
 
-import { usePatchSettings } from "@/hooks/query/mutations/use-patch-settings";
+import { useAddContract } from "@/hooks/query/mutations/use-add-contract";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { useState } from "react";
 
@@ -9,15 +9,20 @@ import "./MembershipContract.scss";
 export default function MembershipContract() {
   const { data: settings } = useGetSettings();
   const [newAddress, setNewAddress] = useState("");
-  const { mutate: patchSettings } = usePatchSettings();
+  const { mutate: addContract } = useAddContract();
 
-  const handleAddAddress = () => {
-    patchSettings({
-      patch: {
-        membershipContracts: [newAddress],
+  const handleAddAddress = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAddress.trim()) return;
+
+    addContract(
+      { contractAddress: newAddress },
+      {
+        onSuccess: () => {
+          setNewAddress("");
+        },
       },
-    });
-    setNewAddress("");
+    );
   };
 
   const handleRemoveAddress = (address: string) => {
