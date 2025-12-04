@@ -17,6 +17,7 @@ import {
   VersionDoc,
   VersionDocWithID,
 } from "@/types/database";
+import axios from "axios";
 import { WriteResult } from "firebase-admin/firestore";
 
 import apiClient from "./axios";
@@ -365,10 +366,17 @@ class Api {
     onUploadProgress?: (progress: number) => void,
   ): Promise<SubmitAudioResponse> {
     try {
-      const formData = new FormData();
-      formData.append("audio", audioFile);
-      const response = await apiClient.post(ENDPOINTS.AUDIO, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const initResponse = await apiClient.post(ENDPOINTS.AUDIO, {
+        filename: audioFile.name,
+        fileType: audioFile.type,
+      });
+
+      const { uploadUrl, tmpName } = initResponse.data;
+
+      await axios.put(uploadUrl, audioFile, {
+        headers: {
+          "Content-Type": audioFile.type,
+        },
         onUploadProgress: (progressEvent) => {
           if (onUploadProgress && progressEvent.total) {
             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -376,7 +384,8 @@ class Api {
           }
         },
       });
-      return response.data;
+
+      return { tmpName, status: "processing" };
     } catch (error) {
       console.error("Error submitting audio:", error);
       throw error;
