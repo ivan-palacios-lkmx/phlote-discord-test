@@ -22,4 +22,5 @@ export const ENDPOINTS = {
   NEWSLETTER: "/newsletter",
   STEMS_CAROUSEL: "/settings/stems-carousel",
   VERSION_AUDIO_VALIDATE: "/versions/audio/validate",
+  CONTRACTS: "/contracts",
 };
