@@ -1,6 +1,7 @@
 "use client";
 
 import { useAddContract } from "@/hooks/query/mutations/use-add-contract";
+import { useRemoveContract } from "@/hooks/query/mutations/use-remove-contract";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { useState } from "react";
 
@@ -10,6 +11,7 @@ export default function MembershipContract() {
   const { data: settings } = useGetSettings();
   const [newAddress, setNewAddress] = useState("");
   const { mutate: addContract } = useAddContract();
+  const { mutate: removeContract } = useRemoveContract();
 
   const handleAddAddress = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +28,7 @@ export default function MembershipContract() {
   };
 
   const handleRemoveAddress = (address: string) => {
-    console.log("remove address", address);
+    removeContract({ contractAddress: address });
   };
 
   return (

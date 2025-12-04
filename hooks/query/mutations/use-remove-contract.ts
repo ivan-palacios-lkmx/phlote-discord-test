@@ -1,16 +1,16 @@
 import Api from "@/hooks/query/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface AddContractProps {
+interface RemoveContractProps {
   contractAddress: string;
 }
 
-export function useAddContract() {
+export function useRemoveContract() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ contractAddress }: AddContractProps) => {
-      return await Api.addContract(contractAddress);
+    mutationFn: async ({ contractAddress }: RemoveContractProps) => {
+      return await Api.deleteContract(contractAddress);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["settings"] });
