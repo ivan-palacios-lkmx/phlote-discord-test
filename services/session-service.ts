@@ -198,6 +198,21 @@ export class SessionService {
       initiator,
       created: new Date(),
     });
+    if (type === "PLAY") {
+      await adminDb
+        .collection(SESSION_VERSIONS_COLLECTION)
+        .doc(versionID)
+        .update({
+          playCount: FieldValue.increment(1),
+        });
+    } else if (type === "DOWNLOAD") {
+      await adminDb
+        .collection(SESSION_VERSIONS_COLLECTION)
+        .doc(versionID)
+        .update({
+          downloadCount: FieldValue.increment(1),
+        });
+    }
     return activity;
   }
 

@@ -1,4 +1,4 @@
-import { Contract, InfuraProvider } from "ethers";
+import { Contract, InfuraProvider, getAddress } from "ethers";
 
 import { GlobalsService } from "./globals-service";
 
@@ -8,17 +8,22 @@ export class RoleService {
     if (membershipContracts.length === 0) return false;
 
     const provider = new InfuraProvider("mainnet", process.env.INFURA_ID);
+    const normalizedAddress = getAddress(address.toLowerCase());
 
     for (const contractAddress of membershipContracts) {
+      const normalizedContractAddress = getAddress(contractAddress.toLowerCase());
+
       const contractInterface = new Contract(
-        contractAddress,
+        normalizedContractAddress,
         ["function balanceOf(address owner) external view returns (uint256 balance)"],
         provider,
       );
-      const balance = await contractInterface.balanceOf(address);
-      const isMember = parseInt(balance.toString()) > 0;
-      if (isMember) return true;
-      break;
+      const balance = await contractInterface.balanceOf(normalizedAddress);
+      const balanceNumber = parseInt(balance.toString());
+
+      if (balanceNumber > 0) {
+        return true;
+      }
     }
     return false;
   }

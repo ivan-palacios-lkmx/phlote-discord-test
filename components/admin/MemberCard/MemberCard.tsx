@@ -11,16 +11,23 @@ import { useUpdatePrivateAddress } from "@/hooks/query/mutations/use-update-priv
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-address-private-info";
 import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
-import { AddressDocWithID, ContactDocWithID, TagCategory } from "@/types/database";
+import { AddressDocWithID, TagCategory } from "@/types/database";
 import { memberCardSchema } from "@/utils/zod-schemas";
 import kebabCase from "lodash/kebabCase";
 import { useEffect, useMemo, useState } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import "./MemberCard.scss";
 
 interface MemberCardProps {
   member: AddressDocWithID;
+}
+
+function VisibilityText() {
+  const { control } = useFormContext();
+  const isPublic = useWatch({ control, name: "isPublic", defaultValue: false });
+  return <span className="subtext">{isPublic ? "Public" : "Private"}</span>;
 }
 
 export default function MemberCard({ member }: MemberCardProps) {
@@ -133,7 +140,7 @@ export default function MemberCard({ member }: MemberCardProps) {
             <h6>
               <Web3Username username={addressInfo?.username || ""} />
             </h6>
-            <span className="subtext">{addressInfo?.isPublic ? "Public" : "Private"}</span>
+            <VisibilityText />
           </div>
         </div>
         <div className="private-toggle">
