@@ -1,11 +1,11 @@
 "use client";
 
 import GroupTagEditor from "@/components/admin/GroupTagEditor/GroupTagEditor";
-import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
 import { useUpdateTags } from "@/hooks/query/mutations/use-update-tags";
+import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
 import { TagCategory } from "@/types/database";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import "./MemberTags.scss";
 
@@ -52,9 +52,7 @@ export default function MemberTags() {
   return (
     <div className="admin-member-tags">
       <h6 className="area-label">Available Member Tags:</h6>
-      {showSuccess && (
-        <div className="success-message">Member Tags saved</div>
-      )}
+      {showSuccess && <div className="success-message">Member Tags saved</div>}
       {isLoadingMemberTags ? (
         <div className="loading-tags" />
       ) : isErrorMemberTags ? (

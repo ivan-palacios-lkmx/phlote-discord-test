@@ -102,10 +102,7 @@ export async function PUT(request: NextRequest) {
     const { categories, category } = body;
 
     if (!categories || !category) {
-      return NextResponse.json(
-        { error: "Missing categories or category" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Missing categories or category" }, { status: 400 });
     }
 
     if (!updateTagsSchema.safeParse({ categories, category }).success) {
