@@ -32,7 +32,7 @@ export default function Created({ address }: CreatedProps) {
             key={session.objectID}
             objectID={session.objectID}
             name={session.name as string | undefined}
-            created={session.created as number | undefined}
+            created={session.created as unknown as number | undefined}
           />
         ))}
       </div>

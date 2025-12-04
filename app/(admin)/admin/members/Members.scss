@@ -1,4 +1,4 @@
-@use '../../../../app/assets/scss/vars' as *;
+@use "../../../../app/assets/scss/vars" as *;
 
 main.admin-members {
   position: relative;
@@ -21,7 +21,7 @@ main.admin-members {
     grid-gap: var(--margin);
     display: grid;
 
-    >* {
+    > * {
       min-width: 0;
     }
 

@@ -1,4 +1,4 @@
-@use '../../../../app/assets/scss/vars' as *;
+@use "../../../../app/assets/scss/vars" as *;
 
 main.admin-sessions {
   padding-bottom: 150px;
@@ -20,7 +20,7 @@ main.admin-sessions {
     grid-gap: var(--margin);
     display: grid;
 
-    >* {
+    > * {
       min-width: 0;
     }
 

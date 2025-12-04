@@ -66,7 +66,7 @@ export default function SessionPreviewBlock({
     [firstVersion?.[0]?.bounce],
   );
   const stemCount = useMemo(
-    () => (firstVersion?.[0]?.stems as string[])?.length || 0,
+    () => (firstVersion?.[0]?.stems as unknown as string[])?.length || 0,
     [firstVersion?.[0]?.stems],
   );
 

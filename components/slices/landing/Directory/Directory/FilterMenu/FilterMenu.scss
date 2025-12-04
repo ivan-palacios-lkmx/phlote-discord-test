@@ -1,4 +1,4 @@
-@use '../../../../../../app/assets/scss/vars' as *;
+@use "../../../../../../app/assets/scss/vars" as *;
 
 .filter-menu {
   @include fill(fixed);
@@ -34,7 +34,9 @@
         padding: 10px;
         border: 1px solid var(--border-color);
         border-radius: 50%;
-        transition: background 300ms ease, color 300ms ease;
+        transition:
+          background 300ms ease,
+          color 300ms ease;
 
         &:hover {
           background: var(--white);

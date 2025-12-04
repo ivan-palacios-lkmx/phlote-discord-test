@@ -28,7 +28,7 @@ export default function SessionDetailMeta({ session, version }: SessionDetailMet
   const discordGuildID = process.env.NEXT_PUBLIC_DISCORD_GUILD_ID || "";
 
   const discordLink = useMemo(() => {
-    const channel = session?.disc;
+    const channel = session?.discordChannel;
     if (channel && discordGuildID) {
       return `https://discord.com/channels/${discordGuildID}/${channel}`;
     }

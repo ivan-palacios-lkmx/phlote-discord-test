@@ -1,8 +1,8 @@
-@use 'sass:math';
-@use 'sass:map';
-@use 'sass:meta';
-@forward 'easings';
-@use 'easings' as *;
+@use "sass:math";
+@use "sass:map";
+@use "sass:meta";
+@forward "easings";
+@use "easings" as *;
 
 // mixins
 @mixin fill($position: absolute) {
@@ -104,28 +104,31 @@
 // Breakpoints
 // ---------------------------------------------
 $breakpoints: (
-  xl: (min-width: 1100px,
+  xl: (
+    min-width: 1100px,
   ),
-  l: (max-width: 992px,
+  l: (
+    max-width: 992px,
   ),
-  m: (max-width: 840px,
+  m: (
+    max-width: 840px,
   ),
-  s: (max-width: 700px,
+  s: (
+    max-width: 700px,
   ),
-  xs: (max-width: 480px,
+  xs: (
+    max-width: 480px,
   ),
 );
 
-@mixin bp($name: 's') {
+@mixin bp($name: "s") {
   $value: map.get($breakpoints, $name);
 
   @if map.has-key($breakpoints, $name) {
     @media #{meta.inspect(map.get($breakpoints, $name))} {
       @content;
     }
-  }
-
-  @else {
+  } @else {
     @media (max-width: #{$name}) {
       @content;
     }
@@ -133,7 +136,6 @@ $breakpoints: (
 }
 
 @mixin hover {
-
   &:hover,
   &:focus {
     @content;
@@ -152,7 +154,7 @@ $breakpoints: (
   }
 }
 
-@mixin fade-on-ready($class: 'ready', $duration: 400ms) {
+@mixin fade-on-ready($class: "ready", $duration: 400ms) {
   opacity: 0;
   transition: opacity $duration ease;
 
@@ -175,7 +177,9 @@ $breakpoints: (
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: background 300ms ease, color 300ms ease;
+  transition:
+    background 300ms ease,
+    color 300ms ease;
 
   &.mono {
     @include fontSize(12px);
@@ -214,10 +218,10 @@ $breakpoints: (
 
 @mixin noise-background {
   &:before {
-    content: '';
+    content: "";
     display: block;
     @include fill;
-    background: url('/images/loopable-noise.gif') var(--white) 0% 0% / 100px 100px repeat;
+    background: url("/images/loopable-noise.gif") var(--white) 0% 0% / 100px 100px repeat;
     background-size: 100px;
     opacity: 0.15;
     z-index: -1;

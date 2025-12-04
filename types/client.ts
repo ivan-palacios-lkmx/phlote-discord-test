@@ -209,7 +209,7 @@ interface AppMenuItem {
   link?: string;
 }
 
-export interface ClientAddressInfo extends AddressDocWithID {
+export interface ClientAddressInfo extends Omit<AddressDocWithID, "title"> {
   username?: string | null;
   avatar?: string | null;
   title?: string | null;

@@ -13,11 +13,11 @@ import { useGetAddressPrivateInfo } from "@/hooks/query/query-hooks/use-get-addr
 import { ContactDocWithID } from "@/types/database";
 import { usePrivy } from "@privy-io/react-auth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 import "./OverlayProfile.scss";
 
-export default function OverlayProfile() {
+function OverlayProfileContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -97,7 +97,17 @@ export default function OverlayProfile() {
   }, [pathname, profileID]);
 
   function setContact(contact: ContactDocWithID) {
-    updatePrivateAddress({ address: profileID!, contact });
+    console.log(contact.email);
+    const formContactInfoWithAnotherFields = {
+      id: profileID!,
+      name: contact.name ?? null,
+      twitterHandle: contact.twitterHandle ?? null,
+      email: contact.email?.trim() || null,
+      discordUserID: contact.discordUserID ?? null,
+      discordHandle: contact.discordHandle ?? null,
+      dmChannel: contact.dmChannel ?? null,
+    };
+    updatePrivateAddress({ address: profileID!, contact: formContactInfoWithAnotherFields });
     if (!profileID) return;
   }
   if (!profileID) return null;
@@ -119,7 +129,7 @@ export default function OverlayProfile() {
                 discordHandle={addressPrivateInfo?.discordHandle as string | undefined}
                 twitterHandle={addressPrivateInfo?.twitterHandle as string | undefined}
                 email={addressPrivateInfo?.email as string | undefined}
-                onSubmit={setContact}
+                onSubmit={(data) => setContact({ ...data, id: profileID! })}
               />
             )}
             <SessionsLink profileID={profileID} onClose={onClose} />
@@ -139,5 +149,13 @@ export default function OverlayProfile() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function OverlayProfile() {
+  return (
+    <Suspense fallback={null}>
+      <OverlayProfileContent />
+    </Suspense>
   );
 }

@@ -2,15 +2,18 @@ import { SessionService } from "@/services/session-service";
 import { activityTypeSchema, addressSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { versionId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ versionId: string }> },
+) {
   try {
-    const versionID = params.versionId;
+    const { versionId } = await params;
 
-    if (!versionID) {
+    if (!versionId) {
       return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
     }
 
-    const activity = await SessionService.getVersionActivity(versionID);
+    const activity = await SessionService.getVersionActivity(versionId);
 
     return NextResponse.json(activity, { status: 200 });
   } catch (error) {
@@ -21,19 +24,22 @@ export async function GET(request: NextRequest, { params }: { params: { versionI
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { versionId: string; sessionId: string } },
+  { params }: { params: Promise<{ versionId: string }> },
 ) {
   try {
-    const versionID = params.versionId;
-    const sessionID = params.sessionId;
+    const { versionId } = await params;
 
-    if (!versionID) {
+    if (!versionId) {
       return NextResponse.json({ error: "Version ID is required" }, { status: 400 });
     }
 
-    if (!sessionID) {
-      return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
+    const versionDoc = await SessionService.getVersion(versionId);
+
+    if (!versionDoc) {
+      return NextResponse.json({ error: "Version not found" }, { status: 404 });
     }
+
+    const sessionId = versionDoc.sessionID;
 
     const body = await request.json();
 
@@ -52,8 +58,8 @@ export async function POST(
     }
 
     const activity = await SessionService.registerSessionActivity(
-      sessionID,
-      versionID,
+      sessionId,
+      versionId,
       type,
       initiator,
     );

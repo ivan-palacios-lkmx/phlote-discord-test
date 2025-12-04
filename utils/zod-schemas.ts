@@ -7,11 +7,17 @@ const visibility = z.enum(["public", "private"]).optional();
 export const visibilitySchema = visibility;
 
 const name = z.string().nullable().optional();
+export const nameSchema = name;
 const email = z.string().email().optional();
+export const emailSchema = email;
 const twitterHandle = z.string().nullable().optional();
+export const twitterHandleSchema = twitterHandle;
 const discordHandle = z.string().nullable().optional();
+export const discordHandleSchema = discordHandle;
 const discordUserID = z.string().nullable().optional();
+export const discordUserIDSchema = discordUserID;
 const dmChannel = z.string().nullable().optional();
+export const dmChannelSchema = dmChannel;
 const title = z.string().optional();
 
 export const contactSchema = z.object({

@@ -8,7 +8,7 @@ function twMerge(...classes: (string | undefined | null | false)[]): string {
 function tv(config: { base?: string; variants?: { variant?: Record<string, string> } }) {
   return (options?: { variant?: string }) => {
     const base = config.base || "";
-    const variantClass = options?.variant && config.variants?.variant?.[options.variant] || "";
+    const variantClass = (options?.variant && config.variants?.variant?.[options.variant]) || "";
     return twMerge(base, variantClass);
   };
 }

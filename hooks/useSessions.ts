@@ -68,7 +68,7 @@ export default function useSessions({
 }: UseSessionsOptions = {}): UseSessionsReturn {
   const indexes = useAlgolia();
   const [loadingSessions, setLoadingSessions] = useState(false);
-  const [sessions, setSessions] = useState<Session[]>([]);
+  const [sessions, setSessions] = useState<AlgoliaSession[]>([]);
   const [reachedEnd, setReachedEnd] = useState(true);
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -228,7 +228,7 @@ export default function useSessions({
               result = cache.get(qHash)!;
             }
 
-            setSessions(result.hits as Session[]);
+            setSessions(result.hits as AlgoliaSession[]);
             setTotalResults(result.nbHits);
             setTotalPages(result.nbPages);
             setReachedEnd(page >= result.nbPages - 1);

@@ -1,8 +1,10 @@
-@use '../../../../../../app/assets/scss/vars' as *;
+@use "../../../../../../app/assets/scss/vars" as *;
 
 .directory-member {
   text-align: center;
-  transition: opacity 400ms ease, transform 1.5s $easeOutCirc;
+  transition:
+    opacity 400ms ease,
+    transform 1.5s $easeOutCirc;
 
   // Intersect animation
   &:not(.visible) {
@@ -97,7 +99,6 @@
   }
 
   &:not(.public) {
-
     h6,
     h3 {
       opacity: 0.5;

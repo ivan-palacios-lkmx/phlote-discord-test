@@ -1,4 +1,4 @@
-@use '../../assets/scss/vars' as *;
+@use "../../assets/scss/vars" as *;
 
 // TODO: ADD MAIN
 
@@ -37,7 +37,7 @@
     grid-gap: figmaSize(16px);
     display: grid;
 
-    >* {
+    > * {
       min-width: 0;
     }
   }
@@ -81,7 +81,9 @@
         padding: 10px 14px;
         line-height: 110%;
         font-weight: 500;
-        transition: background 300ms, color 300ms;
+        transition:
+          background 300ms,
+          color 300ms;
       }
 
       &.active,

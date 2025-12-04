@@ -4,8 +4,9 @@ import PrivyUserDebug from "@/components/PrivyUserDebug";
 import Button from "@/components/ui/Button";
 import { useLogout, usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 
-export default function ProductPage() {
+function ProductPageContent() {
   const { authenticated, user } = usePrivy();
   const router = useRouter();
   const { logout } = useLogout({
@@ -27,24 +28,6 @@ export default function ProductPage() {
         <PrivyUserDebug />
       </div>
 
-      {authenticated && (
-        <>
-          <p className="text-lg text-gray-600 mb-2">Welcome, {user?.wallet?.address || "User"}</p>
-
-          {isLoading && <p className="text-sm text-gray-500 mb-4">Loading account info...</p>}
-
-          {error && <p className="text-sm text-red-500 mb-4">Error loading account info</p>}
-
-          {accountInfo && (
-            <div className="text-sm text-gray-600 mb-4">
-              <p>
-                Status: <span className="font-bold">{accountInfo.data?.role || "User"}</span>
-              </p>
-            </div>
-          )}
-        </>
-      )}
-
       <p className="text-sm text-gray-500 mb-6">
         This is the product page for authenticated users.
       </p>
@@ -53,5 +36,13 @@ export default function ProductPage() {
         Logout
       </Button>
     </div>
+  );
+}
+
+export default function ProductPage() {
+  return (
+    <Suspense fallback={null}>
+      <ProductPageContent />
+    </Suspense>
   );
 }

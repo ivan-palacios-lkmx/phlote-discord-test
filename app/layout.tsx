@@ -5,6 +5,7 @@ import ReactQueryProvider from "@/components/ReactQueryProvider";
 import DefaultLayout from "@/components/layout/DefaultLayout";
 import { createClient } from "@/prismicio";
 import { repositoryName } from "@/prismicio";
+import type { PrismicSettings } from "@/types/client";
 import { PrismicPreview } from "@prismicio/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -15,11 +16,17 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  fallback: ["system-ui", "arial"],
+  adjustFontFallback: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  fallback: ["monospace"],
+  adjustFontFallback: true,
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -49,8 +56,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const client = createClient();
-  const settings = await client.getSingle("settings");
+  let settingsData = null;
+  try {
+    const client = createClient();
+    const settings = await client.getSingle("settings");
+    settingsData = settings.data;
+  } catch (error) {
+    console.warn("Failed to fetch Prismic settings during build:", error);
+    // Continue with null settings - DefaultLayout should handle this gracefully
+  }
 
   return (
     <html lang="en">
@@ -59,7 +73,9 @@ export default async function RootLayout({
           <PrivyProviderWrapper appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}>
             <AuthProvider>
               <LenisProvider>
-                <DefaultLayout settings={settings.data}>{children}</DefaultLayout>
+                <DefaultLayout settings={settingsData || ({} as PrismicSettings)}>
+                  {children}
+                </DefaultLayout>
               </LenisProvider>
             </AuthProvider>
           </PrivyProviderWrapper>

@@ -9,6 +9,8 @@ interface UseSingleTrackUploadProps {
   value: string | undefined;
 }
 
+export type AudioUploadValue = string | undefined;
+
 const STORAGE_KEY = "audio-hash-to-filename";
 
 function getFilenameFromStorage(hash: string): string | null {

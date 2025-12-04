@@ -2,15 +2,18 @@ import { SessionService } from "@/services/session-service";
 import { activityTypeSchema, addressSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { sessionId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ sessionId: string }> },
+) {
   try {
-    const sessionID = params.sessionId;
+    const { sessionId } = await params;
 
-    if (!sessionID) {
+    if (!sessionId) {
       return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
     }
 
-    const activity = await SessionService.getSessionActivity(sessionID);
+    const activity = await SessionService.getSessionActivity(sessionId);
 
     return NextResponse.json(activity, { status: 200 });
   } catch (error) {

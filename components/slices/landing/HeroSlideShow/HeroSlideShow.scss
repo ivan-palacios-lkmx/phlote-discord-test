@@ -1,4 +1,4 @@
-@use '../../../../app/assets/scss/vars' as *;
+@use "../../../../app/assets/scss/vars" as *;
 
 .slice-hero-slideshow {
   height: 95vh;
@@ -50,7 +50,9 @@
       align-items: center;
       gap: 5px;
       margin-top: 40px;
-      transition: background 300ms ease, color 300ms ease;
+      transition:
+        background 300ms ease,
+        color 300ms ease;
 
       &.muted {
         background: var(--white);

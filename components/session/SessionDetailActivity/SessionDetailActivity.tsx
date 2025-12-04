@@ -40,7 +40,7 @@ export default function SessionDetailActivity({
               key={item.id}
               created={item.created}
               initiator={(item.initiator as string) || ""}
-              type={(item.type as string) || ""}
+              type={(item.type as "PLAY" | "DOWNLOAD") || ""}
               formattedIndex={versionIdMap[(item.versionID as string) || ""] || ""}
             />
           ))}

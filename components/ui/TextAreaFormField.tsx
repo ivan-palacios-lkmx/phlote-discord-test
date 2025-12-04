@@ -2,7 +2,8 @@ import type { TextareaHTMLAttributes } from "react";
 
 import TextArea from "./TextArea";
 
-interface TextAreaFormFieldProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "variant"> {
+interface TextAreaFormFieldProps
+  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "variant"> {
   label: string;
   labelClassName?: string;
   containerClassName?: string;

@@ -4,10 +4,11 @@ import OnlyAdmins from "@/components/OnlyAdmins/OnlyAdmins";
 import MemberCard from "@/components/admin/MemberCard/MemberCard";
 import { useGetAddresses } from "@/hooks/query/query-hooks/use-get-addresses";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import "./Members.scss";
 
-export default function Members() {
+function MembersContent() {
   const { data: members, isPending: isPendingMembers } = useGetAddresses({ role: "member" });
   return (
     <OnlyAdmins className="admin-members">
@@ -28,5 +29,13 @@ export default function Members() {
         )}
       </div>
     </OnlyAdmins>
+  );
+}
+
+export default function Members() {
+  return (
+    <Suspense fallback={null}>
+      <MembersContent />
+    </Suspense>
   );
 }

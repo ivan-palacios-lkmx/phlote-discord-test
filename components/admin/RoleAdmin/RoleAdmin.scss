@@ -1,4 +1,4 @@
-@use '../../../app/assets/scss/vars' as *;
+@use "../../../app/assets/scss/vars" as *;
 
 .admin-role-admin {
   text-transform: initial;
@@ -28,7 +28,7 @@
       overflow: hidden;
 
       &::after {
-        content: '';
+        content: "";
         display: block;
         padding-bottom: 100%;
       }

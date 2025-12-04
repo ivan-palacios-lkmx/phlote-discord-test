@@ -1,7 +1,7 @@
-@use '../assets/scss/vars' as *;
+@use "../assets/scss/vars" as *;
 
 main.front-page {
-    position: relative;
-    @include noise-background;
-    padding-bottom: 150px;
+  position: relative;
+  @include noise-background;
+  padding-bottom: 150px;
 }

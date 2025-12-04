@@ -1,12 +1,13 @@
 "use client";
 
 import ContactInput from "@/components/OverlayProfile/ContactInput/ContactInput";
-import { type PrismicSettings, usePrismicio } from "@/components/PrismicioProvider";
+import { usePrismicio } from "@/components/PrismicioProvider";
 import DiscordIcon from "@/components/icons/Discord";
 import MailIcon from "@/components/icons/Mail";
 import ProfileIcon from "@/components/icons/Profile";
 import TwitterIcon from "@/components/icons/Twitter";
 import ADiv from "@/components/slices/landing/Directory/ADiv/ADiv";
+import { type PrismicSettings } from "@/types/client";
 import { useEffect, useRef, useState } from "react";
 
 import "./EditContact.scss";

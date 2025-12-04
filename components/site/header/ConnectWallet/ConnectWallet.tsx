@@ -1,20 +1,20 @@
 "use client";
 
-import ProfileIcon from "@/components/icons/Profile";
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
+import ProfileIcon from "@/components/icons/Profile";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 import { useAuth } from "@/hooks/query/mutations/use-auth";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { memo, useEffect, useRef } from "react";
+import { Suspense, memo, useEffect, useRef } from "react";
 
 import "./ConnectWallet.scss";
 
 const NOT_INCLUDE_PRIVATE_INFO = false;
 
-const ConnectWallet = memo(function ConnectWallet() {
+const ConnectWalletContent = memo(function ConnectWalletContent() {
   const { user, ready, authenticated } = usePrivy();
   const walletAddress = user?.wallet?.address;
   const hasAuthenticatedRef = useRef(false);
@@ -98,4 +98,10 @@ const ConnectWallet = memo(function ConnectWallet() {
   );
 });
 
-export default ConnectWallet;
+export default function ConnectWallet() {
+  return (
+    <Suspense fallback={null}>
+      <ConnectWalletContent />
+    </Suspense>
+  );
+}

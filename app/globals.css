@@ -21,8 +21,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-
-
 /* Application Form Styles */
 .slice-application-form form.success .left,
 .slice-application-form form.success .right {

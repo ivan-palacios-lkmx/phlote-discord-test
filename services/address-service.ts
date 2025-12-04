@@ -210,7 +210,7 @@ export class AddressService {
 
   static async getSingleAddress(
     address: string,
-    includePrivate: boolean,
+    includePrivate?: boolean,
   ): Promise<AddressDocWithID | AddressDocWithPrivateData | null> {
     if (includePrivate) {
       const publicAddressDoc = await this.getPublicAddressData(address);
@@ -241,8 +241,8 @@ export class AddressService {
     address: string,
     isAddressMember: boolean,
     addressAvatar: string | null,
-    isCreator: boolean,
-    isAdmin: boolean,
+    isCreator?: boolean,
+    isAdmin?: boolean,
   ): Promise<WriteResult> {
     try {
       const addressDoc = await adminDb.collection(ADDRESSES_COLLECTION).doc(address).set({

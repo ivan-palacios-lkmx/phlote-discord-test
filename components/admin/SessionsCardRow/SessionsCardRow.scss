@@ -1,4 +1,4 @@
-@use '../../../app/assets/scss/vars' as *;
+@use "../../../app/assets/scss/vars" as *;
 
 .session-card-row {
   padding: 10px 0;
@@ -30,7 +30,7 @@
     &::after {
       padding-bottom: 100%;
       display: block;
-      content: '';
+      content: "";
     }
   }
 }

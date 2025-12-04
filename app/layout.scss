@@ -1,7 +1,9 @@
-@use './assets/scss/vars' as *;
+@use "./assets/scss/vars" as *;
 
 .container.default {
-  transition: min-height 150ms linear, opacity 600ms;
+  transition:
+    min-height 150ms linear,
+    opacity 600ms;
   --winHeight: 100vh;
   min-height: var(--winHeight);
   position: relative;
@@ -12,7 +14,7 @@
     opacity: 0;
   }
 
-  &>* {
+  & > * {
     min-width: 0;
   }
 }

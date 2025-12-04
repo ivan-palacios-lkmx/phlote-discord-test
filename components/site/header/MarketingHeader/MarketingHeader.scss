@@ -1,91 +1,91 @@
-@use '../../../../app/assets/scss/vars' as *;
+@use "../../../../app/assets/scss/vars" as *;
 
 .site-marketing-header {
-    position: fixed;
-    right: 0;
-    left: 0;
-    top: 0;
-    padding: 35px var(--margin);
-    grid-template-columns: 1fr auto 1fr;
-    display: grid;
-    gap: 20px;
-    pointer-events: none;
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  padding: 35px var(--margin);
+  grid-template-columns: 1fr auto 1fr;
+  display: grid;
+  gap: 20px;
+  pointer-events: none;
 
-    > * {
-        pointer-events: all;
+  > * {
+    pointer-events: all;
+  }
+
+  .home-link {
+    .svg-logo {
+      width: figmaSize(160px);
+      height: auto;
+      position: absolute;
+      z-index: -1;
+      left: 20px;
+      top: 0;
     }
+
+    .svg-wordmark {
+      color: var(--white);
+      stroke: var(--black);
+      width: figmaSize(150px);
+      height: auto;
+      margin-left: figmaSize(80px);
+    }
+  }
+
+  .home-copy {
+    max-width: 600px;
+    text-align: center;
+    color: var(--white);
+    margin: 0;
+    display: none;
+
+    .container.index & {
+      display: block;
+    }
+  }
+
+  nav {
+    grid-column: 3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: nowrap;
+
+    .a-div {
+      @include standard-button;
+      padding-bottom: 0.4em;
+      white-space: nowrap;
+
+      &.router-link-exact-active {
+        background: var(--white);
+        color: var(--black);
+      }
+    }
+  }
+
+  @include bp(m) {
+    padding: 18px var(--margin);
+    display: flex;
+    justify-content: space-between;
 
     .home-link {
-        .svg-logo {
-            width: figmaSize(160px);
-            height: auto;
-            position: absolute;
-            z-index: -1;
-            left: 20px;
-            top: 0;
-        }
+      .svg-logo {
+        width: 60px;
+      }
 
-        .svg-wordmark {
-            color: var(--white);
-            stroke: var(--black);
-            width: figmaSize(150px);
-            height: auto;
-            margin-left: figmaSize(80px);
-        }
+      .svg-wordmark {
+        width: 60px;
+        margin-left: 35px;
+      }
     }
 
-    .home-copy {
-        max-width: 600px;
-        text-align: center;
-        color: var(--white);
-        margin: 0;
-        display: none;
-
-        .container.index & {
-            display: block;
-        }
+    .mobile-only.nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-
-    nav {
-        grid-column: 3;
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-start;
-        gap: 10px;
-        flex-wrap: nowrap;
-
-        .a-div {
-            @include standard-button;
-            padding-bottom: 0.4em;
-            white-space: nowrap;
-
-            &.router-link-exact-active {
-                background: var(--white);
-                color: var(--black);
-            }
-        }
-    }
-
-    @include bp(m) {
-        padding: 18px var(--margin);
-        display: flex;
-        justify-content: space-between;
-
-        .home-link {
-            .svg-logo {
-                width: 60px;
-            }
-
-            .svg-wordmark {
-                width: 60px;
-                margin-left: 35px;
-            }
-        }
-
-        .mobile-only.nav {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-    }
+  }
 }

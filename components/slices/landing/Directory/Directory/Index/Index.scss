@@ -1,4 +1,4 @@
-@use '../../../../../../app/assets/scss/vars' as *;
+@use "../../../../../../app/assets/scss/vars" as *;
 
 .slice-directory {
   padding: 0 var(--margin) 150px;
@@ -70,7 +70,7 @@
     .filter-sort {
       position: relative;
 
-      >span {
+      > span {
         @include fontSize(11px);
         font-family: var(--font-mono);
       }
@@ -96,7 +96,9 @@
         padding: 10px 14px;
         line-height: 110%;
         font-weight: 500;
-        transition: background 300ms, color 300ms;
+        transition:
+          background 300ms,
+          color 300ms;
       }
 
       &.active,
@@ -120,7 +122,7 @@
     display: grid;
     margin-top: 100px;
 
-    >* {
+    > * {
       min-width: 0;
     }
   }
