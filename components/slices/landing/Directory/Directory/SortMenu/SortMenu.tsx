@@ -2,7 +2,7 @@
 
 import Check from "@/components/icons/Check";
 import Chevron from "@/components/icons/Chevron";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import "./SortMenu.scss";
 
@@ -12,7 +12,7 @@ interface SortMenuProps {
   options: string[];
 }
 
-export default function SortMenu({ value, onChange, options }: SortMenuProps) {
+const SortMenu = memo(function SortMenu({ value, onChange, options }: SortMenuProps) {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -67,4 +67,6 @@ export default function SortMenu({ value, onChange, options }: SortMenuProps) {
       </div>
     </div>
   );
-}
+});
+
+export default SortMenu;
