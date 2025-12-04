@@ -28,7 +28,6 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   const pathname = usePathname();
   const lenis = useLenis();
   const headerRef = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [windowHeight, setWindowHeight] = useState(0);
@@ -79,14 +78,6 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     }
   }, []);
 
-  // Mounted state
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 10);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Window height
   useEffect(() => {
     const updateHeight = () => {
@@ -130,28 +121,21 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     };
 
     scrollToTop();
-  }, [pathname, lenis, mounted]);
+  }, [pathname, lenis]);
 
   const classes = useMemo(() => {
-    return [
-      "default",
-      "container",
-      fontsLoaded ? "fonts-loaded" : "fonts-loading",
-      routeName,
-      mounted ? "mounted" : "",
-    ]
+    return ["default", "container", fontsLoaded ? "fonts-loaded" : "fonts-loading", routeName]
       .filter(Boolean)
       .join(" ");
-  }, [fontsLoaded, routeName, mounted]);
+  }, [fontsLoaded, routeName]);
 
   const styles = useMemo(() => {
-    if (!mounted) return {};
     const winHeight = windowHeight === Infinity ? "100vh" : `${windowHeight}px`;
     return {
       "--winHeight": winHeight,
       "--header-height": `${headerHeight}px`,
     } as React.CSSProperties;
-  }, [mounted, windowHeight, headerHeight]);
+  }, [windowHeight, headerHeight]);
 
   return (
     <PrismicioProvider settings={settings}>
