@@ -55,13 +55,6 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
     let tracksToUse = tracks;
 
-    registerActivity({
-      sessionId: versionData?.sessionID,
-      versionId: versionData?.id,
-      type: "PLAY",
-      initiator: user?.wallet?.address || "",
-    });
-
     // Fetch all tracks if not loaded
     if (!tracksToUse) {
       try {
@@ -113,6 +106,13 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
       if (track) {
         track.play();
         track.seek(playhead);
+        registerActivity({
+          sessionId: versionData?.sessionID,
+          versionId: versionData?.id,
+          type: "PLAY",
+          initiator: user?.wallet?.address || "",
+        });
+
         setPlaying(true);
       }
     } else {
