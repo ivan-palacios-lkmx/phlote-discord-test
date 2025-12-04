@@ -236,6 +236,7 @@ export class AudioService {
         generatedMP3LowQualityAudioPath,
         generatedWaveformJSONPath,
         generatedWaveformSVGPath,
+        waveFile,
       };
 
       await this.saveAudioToDatabaseAndBucket(audioProcessingResults);
@@ -257,6 +258,7 @@ export class AudioService {
     generatedMP3LowQualityAudioPath: string;
     generatedWaveformJSONPath: string;
     generatedWaveformSVGPath: string;
+    waveFile: WaveFile;
   }) {
     try {
       const bucket = this.getBucket();
@@ -277,6 +279,7 @@ export class AudioService {
       });
     } catch (error) {
       console.error("Error saving audio to database and bucket:", error);
+      throw error;
     }
   }
 
@@ -662,14 +665,11 @@ export class AudioService {
       waveFile.fromBuffer(buffer);
 
       const fmt = waveFile.fmt as { sampleRate: number; numChannels: number };
-      const data = waveFile.data as { samples: number[] | number[][] };
+      const data = waveFile.data as { samples: number[] };
 
       const sampleRate = fmt.sampleRate;
-      const samples = Array.isArray(data.samples)
-        ? Array.isArray(data.samples[0])
-          ? data.samples[0]
-          : data.samples
-        : [];
+      const samples = data.samples;
+
       const sampleCount = samples.length / fmt.numChannels;
       const duration = sampleCount / sampleRate;
 
