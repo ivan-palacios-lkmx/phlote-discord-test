@@ -1,5 +1,5 @@
 import { SessionService } from "@/services/session-service";
-import { activityTypeSchema, addressSchema } from "@/utils/zod-schemas";
+import { activityTypeSchema, addressSchema, versionIDSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -29,10 +29,13 @@ export async function POST(
   try {
     const { sessionId } = await params;
     const body = await request.json();
-    const { type, initiator } = body;
+    const { type, initiator, versionId } = body;
 
-    if (!type || !initiator) {
-      return NextResponse.json({ error: "Type and initiator are required" }, { status: 400 });
+    if (!type || !initiator || !versionId) {
+      return NextResponse.json(
+        { error: "Type, initiator and versionId are required" },
+        { status: 400 },
+      );
     }
 
     if (!activityTypeSchema.safeParse(type).success) {
@@ -43,7 +46,16 @@ export async function POST(
       return NextResponse.json({ error: "Invalid initiator" }, { status: 400 });
     }
 
-    const activity = await SessionService.registerSessionActivity(sessionId, type, initiator);
+    if (!versionIDSchema.safeParse(versionId).success) {
+      return NextResponse.json({ error: "Invalid versionId" }, { status: 400 });
+    }
+
+    const activity = await SessionService.registerSessionActivity(
+      sessionId,
+      versionId,
+      type,
+      initiator,
+    );
 
     return NextResponse.json(activity, { status: 200 });
   } catch (error) {
