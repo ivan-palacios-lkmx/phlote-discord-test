@@ -1,11 +1,14 @@
 import Api from "@/hooks/query/api";
 import { useGetVersionAudio } from "@/hooks/query/mutations/use-get-version-audio";
 import { SessionDoc } from "@/types/database";
+import { usePrivy } from "@privy-io/react-auth";
 import FakeProgress from "fake-progress";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import { kebabCase } from "lodash";
 import { useEffect, useRef, useState } from "react";
+
+import { useRegisterSessionActivity } from "./query/mutations/use-register-session-activity";
 
 interface UseDownloadAudioReturn {
   downloadAudio: (versionID: string) => Promise<void>;
@@ -20,7 +23,8 @@ export function useDownloadAudio(): UseDownloadAudioReturn {
   const [isDownloading, setIsDownloading] = useState(false);
   const progTimerRef = useRef<NodeJS.Timeout | null>(null);
   const getVersionAudioMutation = useGetVersionAudio();
-
+  const { user } = usePrivy();
+  const { mutate: registerActivity } = useRegisterSessionActivity();
   const downloadAudio = async (versionID: string) => {
     try {
       setIsDownloading(true);
@@ -116,6 +120,12 @@ export function useDownloadAudio(): UseDownloadAudioReturn {
       p.setProgress(1);
       p.end();
       if (progTimerRef.current) clearInterval(progTimerRef.current);
+      registerActivity({
+        sessionId: versionID,
+        versionId: versionID,
+        type: "DOWNLOAD",
+        initiator: user?.wallet?.address || "",
+      });
       setIsDownloading(false);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Something went wrong";
