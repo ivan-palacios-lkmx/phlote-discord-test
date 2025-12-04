@@ -277,6 +277,41 @@ export class AudioService {
       await bucket.upload(audioProcessingResults.loselessAudioPath, {
         destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio.wav`,
       });
+
+      const waveformSVGFile = bucket.file(
+        `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
+      );
+      const waveformJSONFile = bucket.file(
+        `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
+      );
+
+      const [waveTraceSignedUrl] = await waveformSVGFile.getSignedUrl({
+        action: "read",
+        expires: Date.now() + SIGNED_URL_EXPIRATION_TIME_IN_MS,
+      });
+
+      const [waveDataSignedUrl] = await waveformJSONFile.getSignedUrl({
+        action: "read",
+        expires: Date.now() + SIGNED_URL_EXPIRATION_TIME_IN_MS,
+      });
+
+      const allChannels = audioProcessingResults.waveFile.getSamples();
+      const channelSamples = (allChannels[0] as unknown as number[]) || [];
+
+      const sampleCount = channelSamples.length;
+
+      const audioDoc = {
+        created: FieldValue.serverTimestamp(),
+        source: "upload",
+        waveData: waveDataSignedUrl,
+        waveTrace: waveTraceSignedUrl,
+        sampleCount,
+      };
+
+      await adminDb
+        .collection(AUDIO_COLLECTION)
+        .doc(audioProcessingResults.calculatedAudioIPFSHash)
+        .set(audioDoc, { merge: true });
     } catch (error) {
       console.error("Error saving audio to database and bucket:", error);
       throw error;
@@ -401,10 +436,7 @@ export class AudioService {
 
   static makeWaveData(wav: WaveFile, waveformResolution: number = 1200): string[] {
     const allChannels = wav.getSamples();
-    const channelSamples =
-      Array.isArray(allChannels) && Array.isArray(allChannels[0])
-        ? (allChannels[0] as number[])
-        : [];
+    const channelSamples = (allChannels[0] as unknown as number[]) || [];
 
     const totalSamples = channelSamples.length;
     const samplesPerPixel = Math.floor(totalSamples / waveformResolution);
