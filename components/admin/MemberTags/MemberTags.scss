@@ -14,4 +14,26 @@
   .button-area {
     text-align: center;
   }
+
+  .success-message {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 4px;
+    color: #4caf50;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

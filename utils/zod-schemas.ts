@@ -118,6 +118,16 @@ export const deleteTagSchema = z.object({
   tagCategory,
 });
 
+const tagCategoryObject = z.object({
+  name: z.string(),
+  options: z.array(z.string()),
+});
+
+export const updateTagsSchema = z.object({
+  categories: z.array(tagCategoryObject),
+  category: tagCategory,
+});
+
 const slug = z.string();
 export const slugSchema = slug;
 

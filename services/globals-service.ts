@@ -206,6 +206,22 @@ export class GlobalsService {
     });
   }
 
+  static async updateTags(
+    categories: TagCategory[],
+    categoryType: "member" | "session",
+  ): Promise<void> {
+    try {
+      const fieldName = categoryType === "member" ? "availableMemberTags" : "availableSessionTags";
+
+      await adminDb.collection(GLOBAL_COLLECTION).doc(SETTING_DOC_ID).update({
+        [fieldName]: categories,
+      });
+    } catch (error) {
+      console.error("Error updating tags:", error);
+      throw error;
+    }
+  }
+
   static async patchSettingsData(patch: SettingsPatch): Promise<void> {
     try {
       if (patch.membershipContracts) {

@@ -416,6 +416,22 @@ class Api {
     }
   }
 
+  static async updateTags(
+    categories: TagCategory[],
+    category: "member" | "session",
+  ): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.put(ENDPOINTS.TAGS, {
+        categories,
+        category,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error updating tags:", error);
+      throw error;
+    }
+  }
+
   static async createAdmin(address: string): Promise<{ message?: string; admin?: WriteResult }> {
     try {
       const response = await apiClient.post(ENDPOINTS.ADMINS, { address });

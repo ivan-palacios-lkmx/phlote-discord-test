@@ -4,6 +4,7 @@ import {
   deleteTagSchema,
   tagCategorySchema,
   updateTagSchema,
+  updateTagsSchema,
 } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -89,6 +90,31 @@ export async function DELETE(request: NextRequest) {
     const tag = await GlobalsService.deleteTag(category, tagName);
 
     return NextResponse.json(tag, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { categories, category } = body;
+
+    if (!categories || !category) {
+      return NextResponse.json(
+        { error: "Missing categories or category" },
+        { status: 400 },
+      );
+    }
+
+    if (!updateTagsSchema.safeParse({ categories, category }).success) {
+      return NextResponse.json({ error: "Invalid categories or category" }, { status: 400 });
+    }
+
+    await GlobalsService.updateTags(categories, category as "member" | "session");
+
+    return NextResponse.json({ message: "Tags updated successfully" }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
