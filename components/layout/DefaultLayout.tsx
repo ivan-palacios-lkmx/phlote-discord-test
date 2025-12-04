@@ -1,6 +1,5 @@
 "use client";
 
-import "@/app/layout.scss";
 import MobileMenu from "@/components/MobileMenu/MobileMenu";
 import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
 import PrismicioProvider from "@/components/PrismicioProvider";
@@ -30,7 +29,12 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   const headerRef = useRef<HTMLElement>(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(0);
+  const [windowHeight, setWindowHeight] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerHeight;
+    }
+    return 0;
+  });
   const { user, ready, authenticated } = usePrivy();
   const walletAddress = user?.wallet?.address;
   const { data, isSuccess } = useSyncAddress({
@@ -68,17 +72,20 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
 
   // Fonts loading detection
   useEffect(() => {
-    if (document.fonts) {
-      document.fonts.ready.then(() => {
+    if (typeof document !== "undefined" && document.fonts) {
+      if (document.fonts.check("12px Authentic")) {
         setFontsLoaded(true);
-      });
+      } else {
+        document.fonts.ready.then(() => {
+          setFontsLoaded(true);
+        });
+      }
     } else {
-      // Fallback if document.fonts is not available
-      setTimeout(() => setFontsLoaded(true), 100);
+      setFontsLoaded(true);
     }
   }, []);
 
-  // Window height
+  // Window height - initialize immediately
   useEffect(() => {
     const updateHeight = () => {
       const height = window.innerHeight === Infinity ? window.innerHeight : window.innerHeight;
@@ -109,7 +116,7 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
 
   // Scroll to top on route change
   useEffect(() => {
-    if (!lenis?.current || !mounted) return;
+    if (!lenis?.current) return;
 
     const scrollToTop = () => {
       lenis.current?.scrollTo("top", {
@@ -130,9 +137,10 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   }, [fontsLoaded, routeName]);
 
   const styles = useMemo(() => {
-    const winHeight = windowHeight === Infinity ? "100vh" : `${windowHeight}px`;
+    const winHeight = windowHeight || (typeof window !== "undefined" ? window.innerHeight : 0);
+    const finalWinHeight = winHeight === Infinity || winHeight === 0 ? "100vh" : `${winHeight}px`;
     return {
-      "--winHeight": winHeight,
+      "--winHeight": finalWinHeight,
       "--header-height": `${headerHeight}px`,
     } as React.CSSProperties;
   }, [windowHeight, headerHeight]);
