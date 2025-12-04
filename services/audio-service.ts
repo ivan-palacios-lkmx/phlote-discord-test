@@ -278,33 +278,19 @@ export class AudioService {
         destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio.wav`,
       });
 
-      const waveformSVGFile = bucket.file(
-        `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
-      );
-      const waveformJSONFile = bucket.file(
-        `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
-      );
-
-      const [waveTraceSignedUrl] = await waveformSVGFile.getSignedUrl({
-        action: "read",
-        expires: Date.now() + SIGNED_URL_EXPIRATION_TIME_IN_MS,
-      });
-
-      const [waveDataSignedUrl] = await waveformJSONFile.getSignedUrl({
-        action: "read",
-        expires: Date.now() + SIGNED_URL_EXPIRATION_TIME_IN_MS,
-      });
-
       const allChannels = audioProcessingResults.waveFile.getSamples();
-      const channelSamples = (allChannels[0] as unknown as number[]) || [];
+      const channelSamples =
+        Array.isArray(allChannels) && Array.isArray(allChannels[0])
+          ? (allChannels[0] as number[])
+          : [];
 
       const sampleCount = channelSamples.length;
 
       const audioDoc = {
         created: FieldValue.serverTimestamp(),
         source: "upload",
-        waveData: waveDataSignedUrl,
-        waveTrace: waveTraceSignedUrl,
+        waveData: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
+        waveTrace: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
         sampleCount,
       };
 
