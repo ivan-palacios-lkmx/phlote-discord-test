@@ -80,6 +80,17 @@ export default function NewProjectForm({
       .map((v) => `V_${String(v.versionIndex).padStart(3, "0")}`);
   }, [versions]);
 
+  const versionIndexToIdMap = useMemo(() => {
+    if (!versions || versions.length === 0) return new Map<string, string>();
+    const map = new Map<string, string>();
+    versions.forEach((v) => {
+      if (v.versionIndex !== undefined) {
+        map.set(String(v.versionIndex), v.id);
+      }
+    });
+    return map;
+  }, [versions]);
+
   const [generatedName, setGeneratedName] = useState("");
   const versionName = useMemo(() => {
     return type === "version" && session?.name ? session.name : undefined;
@@ -300,8 +311,19 @@ export default function NewProjectForm({
 
   function handleSubmit(formValues: z.infer<typeof newVersionFormSchema>) {
     if (type === "version") {
+      const sourceVersionIndex = formValues.sourceVersion;
+      const sourceVersionId = sourceVersionIndex
+        ? versionIndexToIdMap.get(sourceVersionIndex) || undefined
+        : undefined;
+
       createVersion(
-        { sessionId: sessionID || "", formValues },
+        {
+          sessionId: sessionID || "",
+          formValues: {
+            ...formValues,
+            sourceVersion: sourceVersionId,
+          },
+        },
         {
           onSuccess: (data) => {
             router.push(`/sessions/${sessionID}?v=${data.versionIndex}`);

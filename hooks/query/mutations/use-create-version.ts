@@ -33,6 +33,7 @@ export function useCreateVersion() {
         notes: formValues.notes,
         tags,
         bpm: formValues.bpm,
+        sourceVersion: formValues.sourceVersion,
       };
 
       return await Api.createVersion(sessionId, versionDetails);

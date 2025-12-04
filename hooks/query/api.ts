@@ -139,6 +139,7 @@ class Api {
       notes?: string;
       tags?: string[];
       bpm: number;
+      sourceVersion?: string;
     },
   ): Promise<VersionDocWithID> {
     try {
