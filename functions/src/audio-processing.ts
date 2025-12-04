@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+// @ts-ignore
 import * as fs from "fs-extra";
 // @ts-ignore
 import * as Hash from "ipfs-only-hash";
@@ -7,7 +8,9 @@ import * as os from "os";
 import * as path from "path";
 import { WaveFile } from "wavefile";
 
+// @ts-ignore
 import ffmpeg = require("fluent-ffmpeg");
+// @ts-ignore
 import ffmpegPath = require("ffmpeg-static");
 
 // Configure ffmpeg with static binary
