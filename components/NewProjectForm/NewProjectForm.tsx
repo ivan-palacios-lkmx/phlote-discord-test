@@ -81,6 +81,9 @@ export default function NewProjectForm({
   }, [versions]);
 
   const [generatedName, setGeneratedName] = useState("");
+  const versionName = useMemo(() => {
+    return type === "version" && session?.name ? session.name : undefined;
+  }, [type, session?.name]);
 
   function generateName() {
     const generatedName = uniqueNamesGenerator({
@@ -186,7 +189,7 @@ export default function NewProjectForm({
                   <label htmlFor="name">
                     {type === "version" ? "Version Name" : "Session Name"}
                   </label>
-                  {!parentName && (
+                  {!parentName && type !== "version" && (
                     <button onClick={generateName} type="button">
                       Name It For Me!
                     </button>
@@ -198,8 +201,8 @@ export default function NewProjectForm({
                   className="name-input"
                   type="text"
                   placeholder="ex. Old Skool"
-                  disabled={!!parentName}
-                  resetValue={generatedName}
+                  disabled={!!parentName || type === "version"}
+                  resetValue={type === "version" ? versionName : generatedName}
                 />
               </div>
 
