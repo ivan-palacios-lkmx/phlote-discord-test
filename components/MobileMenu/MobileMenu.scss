@@ -1,0 +1,58 @@
+@use "../../app/assets/scss/vars" as *;
+
+.site-mobile-menu {
+    @include fill(fixed);
+    background: var(--black);
+    color: var(--white);
+    padding: var(--margin);
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: var(--margin);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+
+        .svg-wordmark {
+            width: 80px;
+            height: auto;
+        }
+    }
+
+    nav {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .a-div {
+            @include standard-button;
+            padding-bottom: 0.4em;
+            margin-bottom: 20px;
+            white-space: nowrap;
+
+            &.router-link-exact-active {
+                background: var(--white);
+                color: var(--black);
+            }
+        }
+    }
+}
+
+.menu-transition {
+    transform: translateY(100%);
+}
+
+.menu-transition.menu-enter-active {
+    transform: translateY(0);
+    transition: transform 600ms ease;
+}
+
+.menu-transition.menu-leave-active {
+    transform: translateY(100%);
+    transition: transform 600ms ease;
+}
