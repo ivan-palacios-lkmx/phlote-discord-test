@@ -172,6 +172,25 @@ class Api {
     }
   }
 
+  static async registerSessionActivity(
+    sessionID: string,
+    versionID: string,
+    type: "PLAY" | "DOWNLOAD",
+    initiator: string,
+  ): Promise<ActivityDocWithID> {
+    try {
+      const response = await apiClient.post(ENDPOINTS.SESSIONS + "/" + sessionID + "/activity", {
+        type,
+        initiator,
+        versionId: versionID,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error registering session activity:", error);
+      throw error;
+    }
+  }
+
   static async getSessionVersions(sessionID: string, index?: number): Promise<VersionDocWithID[]> {
     try {
       const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID + "/versions", {

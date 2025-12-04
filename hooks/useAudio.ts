@@ -1,10 +1,12 @@
 "use client";
 
+import { usePrivy } from "@privy-io/react-auth";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useGetVersionAudio } from "./query/mutations/use-get-version-audio";
+import { useRegisterSessionActivity } from "./query/mutations/use-register-session-activity";
 
 // Global state for tracks and currentPlaying
 // Using module-level state to share across components
@@ -30,10 +32,14 @@ let globalCurrentPlaying: number | null = null;
  * );
  * ```
  */
-export default function useAudio(versionID: string | null | undefined) {
+export default function useAudio(
+  versionID: string | null | undefined,
+  sessionID: string | null | undefined,
+) {
   const { mutateAsync: getVersionAudio } = useGetVersionAudio();
+  const { mutate: registerActivity } = useRegisterSessionActivity();
   const pathname = usePathname();
-
+  const { user } = usePrivy();
   const [src, setSrc] = useState<string | null>(null);
   const [trackID, setTrackID] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -155,6 +161,12 @@ export default function useAudio(versionID: string | null | undefined) {
 
     if (!playing) {
       track.play();
+      registerActivity({
+        sessionId: sessionID || "",
+        versionId: versionID || "",
+        type: "PLAY",
+        initiator: user?.wallet?.address || "",
+      });
       const currentSeek = track.seek();
       if (typeof currentSeek === "number") {
         track.seek(playhead);

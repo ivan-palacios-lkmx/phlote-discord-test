@@ -71,7 +71,7 @@ export default function SessionPreviewBlock({
   );
 
   // Audio hook
-  const { loading, playing, progress, togglePlay, seek } = useAudio(versionID);
+  const { loading, playing, progress, togglePlay, seek } = useAudio(versionID, objectID);
 
   // Fetch waveTrace SVG
   // Get element height
