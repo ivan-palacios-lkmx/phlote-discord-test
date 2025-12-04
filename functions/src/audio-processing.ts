@@ -299,8 +299,8 @@ export class AudioProcessor {
     const slug = Math.random().toString(36).slice(2);
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" version="1.1">
                 <mask id="masker-${slug}"><rect x="0" y="0" width="${width}" height="${height}" fill="white"/><path d="${pathD}" fill="black"/></mask>
-                <rect class="silence" mask="url(#masker-${slug})" x="0" y="${height / 2 - 1}" width="${width}" height="2" fill="currentColor"/>
-                <path class="blobs" d="${pathD}" fill="currentColor"/>
+                <rect class="silence" mask="url(#masker-${slug})" x="0" y="${height / 2 - 1}" width="${width}" height="2" fill="currentColor" />
+                <path class="blobs" d="${pathD}" fill="currentColor" />
               </svg>`;
   }
 
@@ -310,5 +310,38 @@ export class AudioProcessor {
     stream.push(buffer);
     stream.push(null);
     return stream;
+  }
+
+  static async getAudioDurationFromHash(hash: string): Promise<number | null> {
+    try {
+      const bucket = this.getBucket();
+      const wavFile = bucket.file(`audio/${hash}/audio.wav`);
+
+      const [exists] = await wavFile.exists();
+      if (!exists) {
+        return null;
+      }
+
+      const [buffer] = await wavFile.download();
+
+      const waveFile = new WaveFile();
+      waveFile.fromBuffer(buffer);
+
+      // @ts-ignore - Wavefile types are loose
+      const fmt = waveFile.fmt as { sampleRate: number; numChannels: number };
+      // @ts-ignore
+      const data = waveFile.data as { samples: number[] };
+
+      const sampleRate = fmt.sampleRate;
+      const samples = data.samples;
+
+      const sampleCount = samples.length / fmt.numChannels;
+      const duration = sampleCount / sampleRate;
+
+      return duration;
+    } catch (error) {
+      console.error(`Error getting audio duration for hash ${hash}:`, error);
+      return null;
+    }
   }
 }
