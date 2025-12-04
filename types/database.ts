@@ -142,6 +142,7 @@ export interface AlgoliaSession extends withObjectID, SessionDoc {}
 export interface Track {
   name: string;
   id: string;
+  hash?: string;
 }
 /**
  * The Stem interface defines the schema for individual stem audio files.
