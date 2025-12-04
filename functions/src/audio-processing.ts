@@ -13,7 +13,7 @@ import ffmpegPath = require("ffmpeg-static");
 // Configure ffmpeg with static binary
 ffmpeg.setFfmpegPath(ffmpegPath as unknown as string);
 
-const TEMPORARY_AUDIO_COLLECTION = "temporary_audio";
+const TEMPORARY_AUDIO_COLLECTION = "tmp-audio";
 
 interface AudioProcessingResults {
   loselessAudioPath: string;
