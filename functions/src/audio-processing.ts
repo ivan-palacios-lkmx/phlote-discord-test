@@ -14,6 +14,7 @@ import ffmpegPath = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegPath as unknown as string);
 
 const TEMPORARY_AUDIO_COLLECTION = "tmp-audio";
+const AUDIO_COLLECTION = "audio";
 
 interface AudioProcessingResults {
   loselessAudioPath: string;
@@ -22,6 +23,7 @@ interface AudioProcessingResults {
   generatedMP3LowQualityAudioPath: string;
   generatedWaveformJSONPath: string;
   generatedWaveformSVGPath: string;
+  waveFile: WaveFile;
 }
 
 export class AudioProcessor {
@@ -106,9 +108,10 @@ export class AudioProcessor {
         generatedMP3LowQualityAudioPath,
         generatedWaveformJSONPath,
         generatedWaveformSVGPath,
+        waveFile,
       };
 
-      // 6. Upload results
+      // 6. Upload results and save to database
       await this.saveAudioToDatabaseAndBucket(results);
 
       // 7. Update status
@@ -175,21 +178,56 @@ export class AudioProcessor {
     return outputPath;
   }
 
-  private static async saveAudioToDatabaseAndBucket(results: AudioProcessingResults) {
-    const bucket = this.getBucket();
-    const basePath = `audio/${results.calculatedAudioIPFSHash}`;
+  private static async saveAudioToDatabaseAndBucket(audioProcessingResults: {
+    loselessAudioPath: string;
+    calculatedAudioIPFSHash: string;
+    generatedMP3HighQualityAudioPath: string;
+    generatedMP3LowQualityAudioPath: string;
+    generatedWaveformJSONPath: string;
+    generatedWaveformSVGPath: string;
+    waveFile: WaveFile;
+  }) {
+    try {
+      const bucket = this.getBucket();
+      await bucket.upload(audioProcessingResults.generatedMP3HighQualityAudioPath, {
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio.mp3`,
+      });
+      await bucket.upload(audioProcessingResults.generatedMP3LowQualityAudioPath, {
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio-low.mp3`,
+      });
+      await bucket.upload(audioProcessingResults.generatedWaveformSVGPath, {
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
+      });
+      await bucket.upload(audioProcessingResults.generatedWaveformJSONPath, {
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
+      });
+      await bucket.upload(audioProcessingResults.loselessAudioPath, {
+        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio.wav`,
+      });
 
-    const upload = async (localPath: string, destName: string) => {
-      await bucket.upload(localPath, { destination: `${basePath}/${destName}` });
-    };
+      const allChannels = audioProcessingResults.waveFile.getSamples();
+      // @ts-ignore
+      const channelSamples = (allChannels[0] as number[]) || [];
 
-    await Promise.all([
-      upload(results.generatedMP3HighQualityAudioPath, "audio.mp3"),
-      upload(results.generatedMP3LowQualityAudioPath, "audio-low.mp3"),
-      upload(results.generatedWaveformSVGPath, "waveform.svg"),
-      upload(results.generatedWaveformJSONPath, "waveform.json"),
-      upload(results.loselessAudioPath, "audio.wav"),
-    ]);
+      const sampleCount = channelSamples.length;
+
+      const audioDoc = {
+        created: admin.firestore.FieldValue.serverTimestamp(),
+        source: "upload",
+        waveData: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
+        waveTrace: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
+        sampleCount,
+      };
+
+      await admin
+        .firestore()
+        .collection(AUDIO_COLLECTION)
+        .doc(audioProcessingResults.calculatedAudioIPFSHash)
+        .set(audioDoc, { merge: true });
+    } catch (error) {
+      console.error("Error saving audio to database and bucket:", error);
+      throw error;
+    }
   }
 
   private static async updateAudioProcessingStatus(fileName: string, status: string, hash: string) {
