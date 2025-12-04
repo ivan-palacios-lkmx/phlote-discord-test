@@ -284,12 +284,24 @@ export default function NewProjectForm({
 
   function handleSubmit(formValues: z.infer<typeof newVersionFormSchema>) {
     if (type === "version") {
-      createVersion({ sessionId: sessionID || "", formValues });
-      router.push(`/sessions/${sessionID}/versions/${version?.id}`);
+      createVersion(
+        { sessionId: sessionID || "", formValues },
+        {
+          onSuccess: (data) => {
+            router.push(`/sessions/${sessionID}/versions/${data.id}`);
+          },
+        },
+      );
       return;
     }
-    createSession({ creator: user?.wallet?.address || "", formValues });
-    router.push(`/sessions/${session?.id}`);
+    createSession(
+      { creator: user?.wallet?.address || "", formValues },
+      {
+        onSuccess: (data) => {
+          router.push(`/sessions/${data.sessionId}`);
+        },
+      },
+    );
   }
 
   return (
