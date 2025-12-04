@@ -5,7 +5,9 @@ import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import PauseIcon from "@/components/icons/Pause";
 import PlayIcon from "@/components/icons/Play";
 import { useGetVersionAudio } from "@/hooks/query/mutations/use-get-version-audio";
+import { useRegisterSessionActivity } from "@/hooks/query/mutations/use-register-session-activity";
 import { VersionDocWithID } from "@/types/database";
+import { usePrivy } from "@privy-io/react-auth";
 import { Howl } from "howler";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -19,6 +21,7 @@ interface VersionPlayerProps {
 export default function VersionPlayer({ versionData }: VersionPlayerProps) {
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const { mutate: registerActivity } = useRegisterSessionActivity();
   const [currentTrack, setCurrentTrack] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playhead, setPlayhead] = useState(0);
@@ -26,7 +29,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
   const framerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pathname = usePathname();
-
+  const { user } = usePrivy();
   const progress = useMemo(() => {
     if (!duration) return 0;
     return playhead / duration;
@@ -51,6 +54,13 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
     }
 
     let tracksToUse = tracks;
+
+    registerActivity({
+      sessionId: versionData?.sessionID,
+      versionId: versionData?.id,
+      type: "PLAY",
+      initiator: user?.wallet?.address || "",
+    });
 
     // Fetch all tracks if not loaded
     if (!tracksToUse) {
