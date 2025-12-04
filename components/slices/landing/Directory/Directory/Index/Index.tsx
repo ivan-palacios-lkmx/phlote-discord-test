@@ -12,7 +12,7 @@ import useMembers from "@/hooks/useMembers";
 import usePushHeader from "@/hooks/usePushHeader";
 import useTags from "@/hooks/useTags";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import "./Index.scss";
 
@@ -22,6 +22,8 @@ interface DirectoryProps {
     [key: string]: unknown;
   };
 }
+
+const SORT_OPTIONS = ["all", "recent", "active"];
 
 export default function Directory({ slice: _slice }: DirectoryProps) {
   const searchParams = useSearchParams();
@@ -115,15 +117,18 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
   };
 
   // Handle sort change
-  const handleSortChange = (newSort: string) => {
-    const current = new URLSearchParams(searchParams.toString());
-    if (newSort === "all") {
-      current.delete("sort");
-    } else {
-      current.set("sort", newSort);
-    }
-    router.push(`${pathname}?${current.toString()}`);
-  };
+  const handleSortChange = useCallback(
+    (newSort: string) => {
+      const current = new URLSearchParams(searchParams.toString());
+      if (newSort === "all") {
+        current.delete("sort");
+      } else {
+        current.set("sort", newSort);
+      }
+      router.push(`${pathname}?${current.toString()}`);
+    },
+    [searchParams, pathname, router],
+  );
 
   return (
     <section className="slice-directory">
@@ -147,11 +152,7 @@ export default function Directory({ slice: _slice }: DirectoryProps) {
         <div className="filter-sort">
           {/* Sort */}
           <span className="desktop-only">Sort By</span>
-          <SortMenu
-            value={sortValue}
-            onChange={handleSortChange}
-            options={["all", "recent", "active"]}
-          />
+          <SortMenu value={sortValue} onChange={handleSortChange} options={SORT_OPTIONS} />
 
           {/* Filter */}
           <button onClick={() => setFiltersOpen(!filtersOpen)} className="btn">
