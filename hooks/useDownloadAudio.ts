@@ -1,7 +1,8 @@
 import Api from "@/hooks/query/api";
 import { useGetVersionAudio } from "@/hooks/query/mutations/use-get-version-audio";
-import { SessionDoc } from "@/types/database";
+import { SessionDoc, VersionDocWithID } from "@/types/database";
 import { usePrivy } from "@privy-io/react-auth";
+import { useQueryClient } from "@tanstack/react-query";
 import FakeProgress from "fake-progress";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
@@ -24,7 +25,8 @@ export function useDownloadAudio(): UseDownloadAudioReturn {
   const progTimerRef = useRef<NodeJS.Timeout | null>(null);
   const getVersionAudioMutation = useGetVersionAudio();
   const { user } = usePrivy();
-  const { mutate: registerActivity } = useRegisterSessionActivity();
+  const queryClient = useQueryClient();
+  const { mutateAsync: registerActivity } = useRegisterSessionActivity();
   const downloadAudio = async (versionID: string) => {
     try {
       setIsDownloading(true);
@@ -120,12 +122,31 @@ export function useDownloadAudio(): UseDownloadAudioReturn {
       p.setProgress(1);
       p.end();
       if (progTimerRef.current) clearInterval(progTimerRef.current);
-      registerActivity({
-        sessionId: versionID,
+
+      await registerActivity({
+        sessionId: sessionID,
         versionId: versionID,
         type: "DOWNLOAD",
         initiator: user?.wallet?.address || "",
       });
+
+      queryClient.setQueryData<VersionDocWithID | null>(["version", versionID], (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          downloadCount: (oldData.downloadCount || 0) + 1,
+        };
+      });
+
+      queryClient.setQueryData<VersionDocWithID[]>(["versions", sessionID], (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.map((version) =>
+          version.id === versionID
+            ? { ...version, downloadCount: (version.downloadCount || 0) + 1 }
+            : version,
+        );
+      });
+
       setIsDownloading(false);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Something went wrong";
