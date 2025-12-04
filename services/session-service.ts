@@ -85,6 +85,7 @@ export class SessionService {
         collaborators,
         created: FieldValue.serverTimestamp(),
         versionIndex: newVersionIndex,
+        sourceVersion: versionDetails.sourceVersion,
         playCount: 0,
         downloadCount: 0,
       };

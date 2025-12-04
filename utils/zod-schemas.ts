@@ -88,6 +88,9 @@ export const sessionDetailsSchema = z.object({
 export const allowedAudioFileExtensions = z.enum(["audio/wav", "audio/mp3", "audio/mpeg"]);
 export const allowedAudioFileExtensionsSchema = allowedAudioFileExtensions;
 
+const sourceVersion = z.string().optional();
+export const sourceVersionSchema = sourceVersion;
+
 export const versionDetailsSchema = z.object({
   name: name,
   bounce: bounce,
@@ -95,6 +98,7 @@ export const versionDetailsSchema = z.object({
   notes: notes,
   tags: tags,
   bpm: bpm,
+  sourceVersion: sourceVersion,
 });
 
 const tagCategory = z.enum(["member", "session"]).optional();
