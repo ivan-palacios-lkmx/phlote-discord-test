@@ -41,7 +41,6 @@ interface NewProjectFormProps {
 export default function NewProjectForm({
   type = "version",
   sessionID,
-  exampleLink,
   parentName,
   versionID,
 }: NewProjectFormProps) {
@@ -179,8 +178,8 @@ export default function NewProjectForm({
                   <p className="title">Bounce</p>
                   <p>{settings.stems_tooltip || "Tooltip text"}</p>
                 </Tooltip>
-                {exampleLink && (
-                  <a href={exampleLink} download>
+                {type === "version" && settings.example_stems?.url && (
+                  <a href={settings.example_stems.url} download>
                     Download Example Stems
                   </a>
                 )}

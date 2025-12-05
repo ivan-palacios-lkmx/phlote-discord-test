@@ -171,6 +171,7 @@ export interface PrismicSettings {
   bounce_tooltip?: string;
   stems_tooltip?: string;
   versions_tooltip?: string;
+  example_stems?: { url?: string };
 }
 
 interface OGImage {
