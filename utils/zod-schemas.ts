@@ -8,7 +8,7 @@ export const visibilitySchema = visibility;
 
 const name = z.string().nullable().optional();
 export const nameSchema = name;
-const email = z.string().email().optional();
+const email = z.string().email().optional().or(z.literal(""));
 export const emailSchema = email;
 const twitterHandle = z.string().nullable().optional();
 export const twitterHandleSchema = twitterHandle;
@@ -35,6 +35,7 @@ export const memberCardSchema = z.object({
   title,
   twitterHandle,
   email,
+  memberTags: z.array(z.array(z.string())).optional(),
 });
 
 const audioAction = z.enum(["play", "download"]);

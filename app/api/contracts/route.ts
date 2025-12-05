@@ -1,4 +1,5 @@
 import { GlobalsService } from "@/services/globals-service";
+import { addressSchema } from "@/utils/zod-schemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -7,6 +8,10 @@ export async function POST(request: NextRequest) {
   try {
     if (!contractAddress) {
       return NextResponse.json({ error: "Contract address is required" }, { status: 400 });
+    }
+
+    if (!addressSchema.safeParse(contractAddress).success) {
+      return NextResponse.json({ error: "Invalid contract address" }, { status: 400 });
     }
 
     await GlobalsService.addMembershipContract(contractAddress);
