@@ -45,7 +45,7 @@ rules/
 firebase/service-account.json
 firebase/**/node_modules
 
-# functions
+# functions 
 firebase/functions/node_modules
 functions/node_modules
 functions/lib
