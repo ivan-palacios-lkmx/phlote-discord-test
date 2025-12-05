@@ -54,22 +54,10 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
     return () => observer.disconnect();
   }, []);
 
-  // Tags - TODO: Implement useFbGlobals and useTags hooks
-  // const { settingsDoc } = useFbGlobals();
-  // const { decodeTag } = useTags();
   const { decodeTag } = useTags();
   const tags: string[] = address?.tags?.map((tag) => decodeTag(tag).value) || [];
   if (address?.isAdmin) tags.unshift("Admin");
   else if (address?.isCreator) tags.unshift("Creator");
-
-  // Contact info - Firebase commented out
-  // const contactDocRef =
-  //   isPublic && member.objectID ? doc(db, `addresses/${member.objectID}/private/contact`) : null;
-  // const contactDoc = useClientDoc(contactDocRef);
-
-  // Placeholder values until Firebase is enabled
-  // const contactDoc = null;
-  // const twitterHandle = undefined; // contactDoc?.twitterHandle as string | undefined;
 
   const twitterLink = addressPrivateInfo?.twitterHandle
     ? `https://x.com/${addressPrivateInfo.twitterHandle.replace(/^@/, "")}`
@@ -126,9 +114,7 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
 
           {/* Name */}
           <h3 className={`${!address.isPublic ? "opacity-50" : ""}`}>
-            {address.title ? (
-              <span>{address.title}</span>
-            ) : address.isPublic && address.objectID && username ? (
+            {address.isPublic && address.objectID && username ? (
               <Web3Username username={username} />
             ) : (
               <span>Hidden Member</span>
@@ -172,9 +158,7 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
 
           {/* Name */}
           <h3 className={`${!address.isPublic ? "opacity-50" : ""}`}>
-            {address.title ? (
-              <span>{address.title}</span>
-            ) : address.isPublic && address.objectID && username ? (
+            {address.isPublic && address.objectID && username ? (
               <Web3Username username={username} />
             ) : (
               <span>Hidden Member</span>

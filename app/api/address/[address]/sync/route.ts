@@ -13,7 +13,7 @@ export async function POST(
 ) {
   const { address: rawAddress } = await params;
 
-  const address = rawAddress.trim().toLowerCase();
+  const address = rawAddress.trim();
 
   try {
     const cookiesStore = await cookies();
@@ -21,9 +21,7 @@ export async function POST(
     if (!addressSchema.safeParse(address).success) {
       return NextResponse.json({ error: "Invalid address format" }, { status: 400 });
     }
-
     const addressDoc = await AddressService.getSingleAddress(address, true);
-
     if (!addressDoc) {
       return NextResponse.json({ error: "Address not found" }, { status: 404 });
     }
