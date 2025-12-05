@@ -339,16 +339,14 @@ export class SessionService {
   }
 
   static async getSessionPostImage(sessionId: string): Promise<string> {
-    let frontendURL = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
-    if (!frontendURL.startsWith("http")) {
-      frontendURL = `https://${frontendURL}`;
-    }
+    const frontendURL = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
 
     const defaultImage = `${frontendURL}/images/phlote-poster.jpg`;
 
     try {
       // 1. Check if session already has an ogImage
       const sessionDoc = await adminDb.collection(SESSIONS_COLLECTION).doc(sessionId).get();
+
       if (!sessionDoc.exists) return defaultImage;
 
       const sessionData = sessionDoc.data();
