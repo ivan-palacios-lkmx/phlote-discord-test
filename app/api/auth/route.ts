@@ -16,7 +16,13 @@ export async function POST(request: NextRequest) {
 
     const addressAvatar = await AddressService.getAvatarFromExternalSources(address);
 
-    const newAddress = await AddressService.createAddress(address, isAddressMember, addressAvatar);
+    const newAddress = await AddressService.createAddress(
+      address,
+      isAddressMember,
+      addressAvatar,
+      false,
+      false,
+    );
 
     if (!newAddress) {
       return NextResponse.json({ message: "Failed to sign up" }, { status: 500 });
