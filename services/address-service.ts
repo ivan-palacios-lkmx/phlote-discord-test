@@ -409,15 +409,21 @@ export class AddressService {
   static async updateAddressTitle(address: string, title: string): Promise<WriteResult | null> {
     const addressDoc = await this.getRawAddressSnapshot(address);
     if (!addressDoc) return null;
-    addressDoc.data()!.title = title;
-    return addressDoc.ref.set(addressDoc.data()!);
+
+    return addressDoc.ref.update({
+      title,
+      updated: new Date(),
+    });
   }
 
   static async updateAddressTags(address: string, tags: string[]): Promise<WriteResult | null> {
     const addressDoc = await this.getRawAddressSnapshot(address);
     if (!addressDoc) return null;
-    addressDoc.data()!.tags = tags;
-    return addressDoc.ref.set(addressDoc.data()!);
+
+    return addressDoc.ref.update({
+      tags,
+      updated: new Date(),
+    });
   }
 
   static async updateAddressVisibility(
