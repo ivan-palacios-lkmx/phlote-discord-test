@@ -301,10 +301,7 @@ export class SessionService {
       }
 
       // Ensure URL is well-formed
-      let baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co";
-      if (!baseUrl.startsWith("http")) {
-        baseUrl = `https://${baseUrl}`;
-      }
+      const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
       const versionLink = `${baseUrl}/sessions/${sessionId}?v=${versionIndex}`;
       const postImage = await this.getSessionPostImage(sessionId);
