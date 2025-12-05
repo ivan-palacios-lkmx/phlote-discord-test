@@ -2,8 +2,6 @@
 
 import FilterTagRow from "@/components/slices/landing/Directory/Directory/FilterTagRow/FilterTagRow";
 
-import "./FilterTagGroup.scss";
-
 interface FilterTagGroupProps {
   name: string;
   options: string[];

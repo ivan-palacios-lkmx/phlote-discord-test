@@ -14,8 +14,6 @@ import useTags from "@/hooks/useTags";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import "./Index.scss";
-
 interface DirectoryProps {
   slice: {
     slice_type: string;

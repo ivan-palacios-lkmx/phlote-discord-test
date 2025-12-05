@@ -11,8 +11,6 @@ import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 
-import "./MultiTrackUpload.scss";
-
 interface MultiTrackUploadProps {
   name: string;
 }

@@ -11,7 +11,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ address: string }> },
 ) {
-  const { address } = await params;
+  const { address: rawAddress } = await params;
+
+  const address = rawAddress.trim().toLowerCase();
 
   try {
     const cookiesStore = await cookies();

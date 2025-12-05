@@ -13,8 +13,6 @@ import { useEffect, useRef } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 
-import "./ApplicationForm.scss";
-
 interface ApplicationFormContentProps {
   isCreatingCreatorApplication: boolean;
   isCreatorApplicationCreated: boolean;

@@ -9,9 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import "./Sessions.scss";
-
-export function SessionsContent() {
+function SessionsContent() {
   const queryClient = useQueryClient();
   const { data: sessions, isPending: isPendingSessions } = useGetSessions();
   const { mutate: deleteSession } = useDeleteSession();

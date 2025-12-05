@@ -1,3 +1,5 @@
+"use client";
+
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import { usePrivy } from "@privy-io/react-auth";
 import { useLogin } from "@privy-io/react-auth";

@@ -10,8 +10,6 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
-import "./FilterTagRow.scss";
-
 interface FilterTagRowProps {
   category: string;
   value: string;

@@ -219,7 +219,9 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
             <div className="track" onClick={(e) => e.stopPropagation()}>
               <h6>{stem.name || ""}</h6>
-              {stem.hash && <TrackPreview hash={stem.hash} onSeek={(s) => onSeek(s, i + 1)} />}
+              {(stem.id || stem.hash) && (
+                <TrackPreview hash={stem.id || stem.hash} onSeek={(s) => onSeek(s, i + 1)} />
+              )}
             </div>
           </button>
         ))}

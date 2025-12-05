@@ -7,8 +7,6 @@ import type { ReleaseCarouselItem } from "@/types/client";
 import { asText } from "@prismicio/client";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import "./ReleaseBlock.scss";
-
 // AvatarStack Component
 function AvatarStack({ addresses }: { addresses: string[] }) {
   return (
