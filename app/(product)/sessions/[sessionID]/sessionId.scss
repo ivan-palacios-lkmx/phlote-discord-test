@@ -4,12 +4,13 @@
   background-color: var(--black);
   color: var(--white);
   padding-top: figmaSize(110px);
-  padding-bottom: 50px;
+  min-height: 100%;
 
   .contained {
     max-width: initial;
     position: relative;
     z-index: 5;
+
   }
 
   .processing-versions,
