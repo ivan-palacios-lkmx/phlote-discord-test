@@ -50,6 +50,13 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     }
   }, [data, refreshUser, isSuccess]);
 
+  // Check if route is admin
+  // Admin routes: routes in app/(admin) - "/admin", "/admin/members", etc.
+  const routeIsAdmin = useMemo(() => {
+    if (!pathname) return false;
+    return pathname.startsWith("/admin");
+  }, [pathname]);
+
   // Check if route is marketing (not product)
   // Marketing routes: routes in app/(marketing) - "/" and dynamic routes
   // Product routes: routes in app/(product) - "/sessions", "/product", etc.
@@ -58,9 +65,9 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     // Product routes (known routes in app/(product))
     const productRoutes = ["/sessions", "/product"];
     const isProductRoute = productRoutes.some((route) => pathname.startsWith(route));
-    // If it's not a product route, it's a marketing route
-    return !isProductRoute;
-  }, [pathname]);
+    // If it's not a product route and not an admin route, it's a marketing route
+    return !isProductRoute && !routeIsAdmin;
+  }, [pathname, routeIsAdmin]);
 
   // Get route name for class
   const routeName = useMemo(() => {
@@ -99,7 +106,7 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
 
   // Header height
   useEffect(() => {
-    if (!headerRef.current) return;
+    if (!headerRef.current || routeIsAdmin) return;
 
     const updateHeaderHeight = () => {
       if (headerRef.current) {
@@ -112,7 +119,7 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     resizeObserver.observe(headerRef.current);
 
     return () => resizeObserver.disconnect();
-  }, [routeIsMarketing]);
+  }, [routeIsMarketing, routeIsAdmin]);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -151,20 +158,19 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
         <MenuOpenProvider>
           <div className={classes} style={styles}>
             {/* Header */}
-
-            {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
+            {!routeIsAdmin && (routeIsMarketing ? <MarketingHeader /> : <ProductHeader />)}
 
             {/* Page */}
             {children}
 
             {/* Footer */}
-            {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
+            {!routeIsAdmin && (routeIsMarketing ? <MarketingFooter /> : <ProductFooter />)}
 
             {/* Mobile Menu */}
-            <MobileMenu />
+            {!routeIsAdmin && <MobileMenu />}
 
             {/* Overlay User Profile */}
-            <OverlayProfileWrapper />
+            {!routeIsAdmin && <OverlayProfileWrapper />}
           </div>
         </MenuOpenProvider>
       </HeaderTranslateProvider>
