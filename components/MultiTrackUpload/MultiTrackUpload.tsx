@@ -132,7 +132,10 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
           }
           return null;
         })
-        .filter((item): item is { name: string; id: string } | { name: string; hash: string } => item !== null);
+        .filter(
+          (item): item is { name: string; id: string } | { name: string; hash: string } =>
+            item !== null,
+        );
 
       if (processedItems.length > 0) {
         const itemsKey = JSON.stringify(processedItems);
@@ -257,7 +260,8 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
 
                     // Obtener el hash/id del campo para validación
                     const fieldItem = fieldValue?.find(
-                      (item: { name?: string; id?: string; hash?: string }) => item?.name === track.name,
+                      (item: { name?: string; id?: string; hash?: string }) =>
+                        item?.name === track.name,
                     );
                     const itemHash = useIdField ? fieldItem?.id : fieldItem?.hash || fieldItem?.id;
 

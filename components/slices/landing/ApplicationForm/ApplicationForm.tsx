@@ -37,132 +37,131 @@ function ApplicationFormContent({
       formValues.city,
       formValues.ethAddress,
     ];
-    const allFieldsFilled = requiredFields.every((value) => value !== "" && value !== null && value !== undefined);
-    
+    const allFieldsFilled = requiredFields.every(
+      (value) => value !== "" && value !== null && value !== undefined,
+    );
+
     // Verificar que tracks existe, es un array y tiene al menos un elemento válido
     const tracks = formValues.tracks;
-    const hasTracks = Array.isArray(tracks) && tracks.length > 0 && 
-      tracks.every((track: unknown) => 
-        typeof track === "object" && 
-        track !== null && 
-        "name" in track && 
-        "id" in track &&
-        typeof (track as { name: unknown; id: unknown }).name === "string" &&
-        typeof (track as { name: unknown; id: unknown }).id === "string" &&
-        (track as { name: string; id: string }).name.length > 0 &&
-        (track as { name: string; id: string }).id.length > 0
+    const hasTracks =
+      Array.isArray(tracks) &&
+      tracks.length > 0 &&
+      tracks.every(
+        (track: unknown) =>
+          typeof track === "object" &&
+          track !== null &&
+          "name" in track &&
+          "id" in track &&
+          typeof (track as { name: unknown; id: unknown }).name === "string" &&
+          typeof (track as { name: unknown; id: unknown }).id === "string" &&
+          (track as { name: string; id: string }).name.length > 0 &&
+          (track as { name: string; id: string }).id.length > 0,
       );
-    
+
     return allFieldsFilled && hasTracks;
   }
-
 
   return (
     <>
       <div className="left">
-          <label>
-            <span>First Name*</span>
-            <Input
-              name="firstName"
-              placeholder="John"
-              type="text"
-              maxLength={100}
-              required
-              disabled={isCreatorApplicationCreated}
-            />
-          </label>
+        <label>
+          <span>First Name*</span>
+          <Input
+            name="firstName"
+            placeholder="John"
+            type="text"
+            maxLength={100}
+            required
+            disabled={isCreatorApplicationCreated}
+          />
+        </label>
 
-          <label>
-            <span>Last Name*</span>
-            <Input
-              name="lastName"
-              placeholder="Doe"
-              type="text"
-              maxLength={100}
-              required
-              disabled={isCreatorApplicationCreated}
-            />
-          </label>
+        <label>
+          <span>Last Name*</span>
+          <Input
+            name="lastName"
+            placeholder="Doe"
+            type="text"
+            maxLength={100}
+            required
+            disabled={isCreatorApplicationCreated}
+          />
+        </label>
 
-          <label>
-            <span>Email Address*</span>
-            <Input
-              name="email"
-              placeholder="name@example.com"
-              type="email"
-              maxLength={100}
-              required
-              disabled={isCreatorApplicationCreated}
-            />
-          </label>
+        <label>
+          <span>Email Address*</span>
+          <Input
+            name="email"
+            placeholder="name@example.com"
+            type="email"
+            maxLength={100}
+            required
+            disabled={isCreatorApplicationCreated}
+          />
+        </label>
 
-          <label>
-            <span>City*</span>
-            <Input
-              name="city"
-              placeholder="Los Angeles"
-              type="text"
-              maxLength={100}
-              required
-              disabled={isCreatorApplicationCreated}
-            />
-          </label>
+        <label>
+          <span>City*</span>
+          <Input
+            name="city"
+            placeholder="Los Angeles"
+            type="text"
+            maxLength={100}
+            required
+            disabled={isCreatorApplicationCreated}
+          />
+        </label>
 
-          <label className="info">
-            <span>Additional Information</span>
-            <Textarea
-              name="info"
-              id="info"
-              maxLength={500}
-              disabled={isCreatorApplicationCreated}
-            />
-          </label>
+        <label className="info">
+          <span>Additional Information</span>
+          <Textarea name="info" id="info" maxLength={500} disabled={isCreatorApplicationCreated} />
+        </label>
+      </div>
+
+      <div className="right">
+        <label>
+          <span>Link to Your Work</span>
+          <Input
+            name="workLink"
+            placeholder="https://my-portfolio.com"
+            type="url"
+            maxLength={100}
+            disabled={isCreatorApplicationCreated}
+          />
+        </label>
+
+        <label>
+          <span>Wallet Address / ENS*</span>
+          <Input
+            name="ethAddress"
+            placeholder="phlote.eth"
+            type="text"
+            maxLength={100}
+            required
+            disabled={isCreatorApplicationCreated}
+          />
+        </label>
+
+        <div className="upload">
+          <label>Upload Your Music*</label>
+          <MultiTrackUpload name="tracks" />
         </div>
+      </div>
 
-        <div className="right">
-          <label>
-            <span>Link to Your Work</span>
-            <Input
-              name="workLink"
-              placeholder="https://my-portfolio.com"
-              type="url"
-              maxLength={100}
-              disabled={isCreatorApplicationCreated}
-            />
-          </label>
-
-          <label>
-            <span>Wallet Address / ENS*</span>
-            <Input
-              name="ethAddress"
-              placeholder="phlote.eth"
-              type="text"
-              maxLength={100}
-              required
-              disabled={isCreatorApplicationCreated}
-            />
-          </label>
-
-          <div className="upload">
-            <label>Upload Your Music*</label>
-            <MultiTrackUpload name="tracks" />
-          </div>
-        </div>
-
-        <div className="button-row">
-          <button className="btn" type="submit" disabled={!isFormTotallyFilled(formValues)}>
-            {isCreatingCreatorApplication ? (
-              <LoadingSpinnerIcon className="loading-spinner" />
-            ) : isCreatorApplicationCreated ? (
-              <span>Thank You</span>
-            ) : (
-              <span>Submit</span>
-            )}
-          </button>
-          {createCreatorApplicationError && (
-            <p className="error">{createCreatorApplicationError.message}</p>
+      <div className="button-row">
+        <button className="btn" type="submit" disabled={!isFormTotallyFilled(formValues)}>
+          {isCreatingCreatorApplication ? (
+            <LoadingSpinnerIcon className="loading-spinner" />
+          ) : isCreatorApplicationCreated ? (
+            <span>Thank You</span>
+          ) : (
+            <span>Submit</span>
           )}
-        </div>
+        </button>
+        {createCreatorApplicationError && (
+          <p className="error">{createCreatorApplicationError.message}</p>
+        )}
+      </div>
     </>
   );
 }
@@ -196,7 +195,7 @@ export default function ApplicationForm({
         onSuccess: (data) => {
           // Mostrar alert de confirmación
           alert(
-            `Application submitted successfully!\n\nApplication ID: ${data.applicationId}\n\nThank you for your submission.`
+            `Application submitted successfully!\n\nApplication ID: ${data.applicationId}\n\nThank you for your submission.`,
           );
 
           // Resetear el formulario a valores vacíos usando la referencia
