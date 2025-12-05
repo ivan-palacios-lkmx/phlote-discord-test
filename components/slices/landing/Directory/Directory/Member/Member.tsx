@@ -97,7 +97,7 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
                 address.ens?.avatar ||
                 address.openSea?.profileImageURL ||
                 address.zora?.profileImageURL ||
-                ""
+                "/images/phlote-poster.jpg"
               }
             />
           ) : defaultUserImage ? (
@@ -141,7 +141,7 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
                 address.ens?.avatar ||
                 address.openSea?.profileImageURL ||
                 address.zora?.profileImageURL ||
-                ""
+                "/images/phlote-poster.jpg"
               }
             />
           ) : defaultUserImage ? (
