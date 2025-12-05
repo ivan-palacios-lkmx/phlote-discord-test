@@ -5,8 +5,6 @@ import { db } from "@/lib/firebase";
 import { doc } from "firebase/firestore";
 import { useEffect, useMemo, useState } from "react";
 
-import "./HeroTrackPreview.scss";
-
 interface HeroTrackPreviewProps {
   hash?: string | null;
   waveTrace?: string | null;

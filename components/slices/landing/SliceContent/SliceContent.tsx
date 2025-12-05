@@ -7,8 +7,6 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { type JSXMapSerializer, PrismicRichText } from "@prismicio/react";
 import { useRef } from "react";
 
-import "./SliceContent.scss";
-
 export default function SliceContent({ slice }: SliceComponentProps) {
   const containerRef = useRef<HTMLElement | null>(null);
 

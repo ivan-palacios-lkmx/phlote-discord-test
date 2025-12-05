@@ -4,8 +4,6 @@ import CloseIcon from "@/components/icons/Close";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
 import Web3Username from "@/components/web3/Web3Username/Web3Username";
 
-import "./FilterButton.scss";
-
 interface FilterButtonProps {
   address?: string;
   className?: string;

@@ -5,8 +5,6 @@ import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useRef } from "react";
 
-import "./Index.scss";
-
 export default function StemsPlayer() {
   const { data: settings } = useGetSettings();
 

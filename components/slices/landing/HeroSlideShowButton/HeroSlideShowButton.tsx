@@ -5,8 +5,6 @@ import PlayIcon from "@/components/icons/Play";
 import HeroTrackPreview from "@/components/slices/landing/HeroTrackPreview/HeroTrackPreview";
 import { HeroSlideShowSlide } from "@/types/client";
 
-import "./HeroSlideShowButton.scss";
-
 interface HeroSlideShowButtonProps {
   slide: HeroSlideShowSlide;
   active: boolean;

@@ -10,8 +10,6 @@ import { useGetVersion } from "@/hooks/query/query-hooks/use-get-version";
 import { AddressDocWithID } from "@/types/database";
 import { useState } from "react";
 
-import "./Slice.scss";
-
 interface SliceProps {
   versionID: string;
 }

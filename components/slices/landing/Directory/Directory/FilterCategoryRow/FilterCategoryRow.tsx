@@ -8,8 +8,6 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
-import "./FilterCategoryRow.scss";
-
 interface FilterCategoryRowProps {
   slug: string;
   value: string;

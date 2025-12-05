@@ -8,8 +8,6 @@ import { useSubscribeNewsletter } from "@/hooks/query/mutations/use-subscribe-ne
 import { newsletterFormSchema } from "@/utils/zod-schemas";
 import { z } from "zod";
 
-import "./NewsletterForm.scss";
-
 export default function NewsletterForm() {
   const { settings } = usePrismicio();
   const {

@@ -7,8 +7,6 @@ import { type AudioUploadValue, useSingleTrackUpload } from "@/hooks/use-single-
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import "./SingleTrackUpload.scss";
-
 interface SingleTrackUploadProps {
   name: string;
 }

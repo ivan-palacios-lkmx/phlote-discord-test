@@ -2,8 +2,6 @@
 
 import FilterCategoryRow from "@/components/slices/landing/Directory/Directory/FilterCategoryRow/FilterCategoryRow";
 
-import "./FilterCategoryGroup.scss";
-
 interface FilterCategoryGroupProps {
   name: string;
   slug: string;

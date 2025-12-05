@@ -6,8 +6,6 @@ import type { HeroSlice } from "@/types/client";
 import { PrismicRichText, type SliceComponentProps } from "@prismicio/react";
 import { useEffect, useRef, useState } from "react";
 
-import "./Hero.scss";
-
 export default function Hero({ slice }: SliceComponentProps<HeroSlice>) {
   const [intersected, setIntersected] = useState(false);
   const containerRef = useRef<HTMLElement | null>(null);

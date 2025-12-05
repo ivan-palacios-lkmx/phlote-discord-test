@@ -8,8 +8,6 @@ import { PrismicRichText } from "@prismicio/react";
 import type { SliceComponentProps } from "@prismicio/react";
 import { useEffect, useRef } from "react";
 
-import "./HeroSlideShow.scss";
-
 export default function HeroSlideShow(sliceProps: SliceComponentProps) {
   const {
     slides,

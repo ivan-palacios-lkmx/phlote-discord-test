@@ -3,8 +3,6 @@
 import CloseIcon from "@/components/icons/Close";
 import { useEffect, useRef } from "react";
 
-import "./FilterMenu.scss";
-
 interface FilterMenuProps {
   title: string;
   isOpen: boolean;

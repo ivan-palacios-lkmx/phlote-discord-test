@@ -7,8 +7,6 @@ import { PrismicRichText } from "@prismicio/react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
 
-import "./ReleaseCarousel.scss";
-
 export default function ReleaseCarousel({ slice }: SliceComponentProps<ReleaseCarouselSlice>) {
   const copy = slice.primary?.copy;
   const items = slice.items || [];
