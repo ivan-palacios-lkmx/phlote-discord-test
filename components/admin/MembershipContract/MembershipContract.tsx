@@ -15,10 +15,10 @@ export default function MembershipContract() {
 
   const handleAddAddress = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newAddress.trim()) return;
-
+    const trimmedAddress = newAddress.trim();
+    if (!trimmedAddress) return;
     addContract(
-      { contractAddress: newAddress },
+      { contractAddress: trimmedAddress },
       {
         onSuccess: () => {
           setNewAddress("");
