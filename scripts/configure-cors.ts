@@ -26,6 +26,7 @@ async function configureCors() {
           "https://phlote.vercel.app",
           "https://phlote-staging.vercel.app",
           "https://phlote.xyz",
+          "https://phlote-staging-git-fix-discord-og-hugocoronas-projects.vercel.app",
           // Add any other production domains here if needed
         ],
         responseHeader: [
