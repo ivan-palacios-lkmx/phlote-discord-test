@@ -100,47 +100,35 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     }
   }, [fieldValue, tracks.length, useIdField]);
 
-  const prevStemsRef = useRef<string>("");
-
   useEffect(() => {
-    if (audioStatusQueries.length > 0 && tempFileNames.length > 0) {
-      const processedItems = tempFileNames
-        .map((tempFileName, index) => {
-          const statusResponse = audioStatusQueries[index]?.data;
-          const trackName = tempFileNameToTrackNameRef.current.get(tempFileName);
+    if (!hasInitializedFromFieldValue.current && fieldValue?.length > 0 && tracks.length === 0) {
+      return;
+    }
 
-          if (
-            statusResponse &&
-            statusResponse.status === "ready" &&
-            statusResponse.hash &&
-            trackName
-          ) {
-            // Usar 'id' para tracks, 'hash' para stems
-            if (useIdField) {
-              return {
-                name: trackName,
-                id: statusResponse.hash,
-              } as { name: string; id: string };
-            } else {
-              return {
-                name: trackName,
-                hash: statusResponse.hash,
-              } as { name: string; hash: string };
-            }
+    const newFieldValue = tracks.map((track) => {
+      let hashOrId = track.hash;
+
+      if (track.tempFileName) {
+        const index = tempFileNames.indexOf(track.tempFileName);
+        if (index !== -1) {
+          const response = audioStatusQueries[index]?.data;
+          if (response?.status === "ready" && response.hash) {
+            hashOrId = response.hash;
           }
-          return null;
-        })
-        .filter((item): item is { name: string; id: string } | { name: string; hash: string } => item !== null);
-
-      if (processedItems.length > 0) {
-        const itemsKey = JSON.stringify(processedItems);
-        if (prevStemsRef.current !== itemsKey) {
-          prevStemsRef.current = itemsKey;
-          setValue(name, processedItems);
         }
       }
+
+      if (useIdField) {
+        return { name: track.name, id: hashOrId };
+      } else {
+        return { name: track.name, hash: hashOrId };
+      }
+    });
+
+    if (JSON.stringify(fieldValue) !== JSON.stringify(newFieldValue)) {
+      setValue(name, newFieldValue);
     }
-  }, [audioStatusQueries, tempFileNames, setValue, name, useIdField]);
+  }, [tracks, audioStatusQueries, tempFileNames, setValue, name, useIdField, fieldValue]);
 
   async function onDrop(acceptedFiles: File[]) {
     if (acceptedFiles.length === 0) return;
@@ -174,22 +162,22 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     setTempFileNames((prev) => [...prev, ...newTempFileNames]);
   }
 
-  const onRemoveTrack = (name: string) => {
-    lastRemovedTrackRef.current = name;
+  const onRemoveTrack = (trackName: string) => {
+    lastRemovedTrackRef.current = trackName;
 
     setTracks((prevTracks) => {
-      const trackToRemove = prevTracks.find((track) => track.name === name);
+      const trackToRemove = prevTracks.find((track) => track.name === trackName);
       if (trackToRemove?.tempFileName) {
         setTempFileNames((prev) =>
           prev.filter((fileName) => fileName !== trackToRemove.tempFileName),
         );
       }
 
-      const updatedTracks = prevTracks.filter((track) => track.name !== name);
+      const updatedTracks = prevTracks.filter((track) => track.name !== trackName);
 
       if (fieldValue && Array.isArray(fieldValue)) {
         const updatedFieldValue = fieldValue.filter(
-          (item: { name?: string; id?: string; hash?: string }) => item?.name !== name,
+          (item: { name?: string; id?: string; hash?: string }) => item?.name !== trackName,
         );
         setValue(name, updatedFieldValue);
       }
@@ -255,7 +243,8 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
 
                     // Obtener el hash/id del campo para validación
                     const fieldItem = fieldValue?.find(
-                      (item: { name?: string; id?: string; hash?: string }) => item?.name === track.name,
+                      (item: { name?: string; id?: string; hash?: string }) =>
+                        item?.name === track.name,
                     );
                     const itemHash = useIdField ? fieldItem?.id : fieldItem?.hash || fieldItem?.id;
 
