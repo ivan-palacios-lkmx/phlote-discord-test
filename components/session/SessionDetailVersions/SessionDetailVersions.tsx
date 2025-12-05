@@ -2,7 +2,7 @@
 
 import SessionDetailVersionsRow from "@/components/session/SessionDetailVersionsRow/SessionDetailVersionsRow";
 import { VersionDocWithID } from "@/types/database";
-import { last, reverse, uniq } from "lodash";
+import { first, last, reverse, uniq } from "lodash";
 import { useMemo } from "react";
 
 interface SessionDetailVersionsProps {
@@ -28,11 +28,10 @@ export default function SessionDetailVersions({
   // Calculate lineage from genesis to active version
   const lineage = useMemo(() => {
     if (versions.length === 0 || !activeVersionID) return [];
-
-    const genesisVersionID = last(versions)?.id;
+    const genesisVersionID = first(versions)?.id;
     if (!genesisVersionID) return [];
 
-    let out: string[] = [genesisVersionID];
+    let out: string[] = [];
     let pointerID: string | undefined = activeVersionID;
     let iterations = 0;
 
