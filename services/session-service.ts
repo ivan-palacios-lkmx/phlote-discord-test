@@ -180,7 +180,7 @@ export class SessionService {
     const activitySnapshot = await adminDb
       .collection(ACTIVITY_COLLECTION)
       .where("sessionID", "==", sessionID)
-      .orderBy("__name__", "desc")
+      .orderBy("created", "desc")
       .limit(limit)
       .get();
     return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
@@ -224,7 +224,7 @@ export class SessionService {
     const activitySnapshot = await adminDb
       .collection(ACTIVITY_COLLECTION)
       .where("versionID", "==", versionID)
-      .orderBy("__name__", "desc")
+      .orderBy("created", "desc")
       .limit(limit)
       .get();
     return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
