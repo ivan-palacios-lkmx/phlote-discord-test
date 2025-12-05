@@ -1,6 +1,5 @@
 "use client";
 
-import "@/app/layout.scss";
 import MobileMenu from "@/components/MobileMenu/MobileMenu";
 import OverlayProfileWrapper from "@/components/OverlayProfile/OverlayProfileWrapper";
 import PrismicioProvider from "@/components/PrismicioProvider";
@@ -28,10 +27,14 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   const pathname = usePathname();
   const lenis = useLenis();
   const headerRef = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(0);
+  const [windowHeight, setWindowHeight] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerHeight;
+    }
+    return 0;
+  });
   const { user, ready, authenticated } = usePrivy();
   const walletAddress = user?.wallet?.address;
   const { data, isSuccess } = useSyncAddress({
@@ -47,6 +50,13 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     }
   }, [data, refreshUser, isSuccess]);
 
+  // Check if route is admin
+  // Admin routes: routes in app/(admin) - "/admin", "/admin/members", etc.
+  const routeIsAdmin = useMemo(() => {
+    if (!pathname) return false;
+    return pathname.startsWith("/admin");
+  }, [pathname]);
+
   // Check if route is marketing (not product)
   // Marketing routes: routes in app/(marketing) - "/" and dynamic routes
   // Product routes: routes in app/(product) - "/sessions", "/product", etc.
@@ -55,9 +65,9 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     // Product routes (known routes in app/(product))
     const productRoutes = ["/sessions", "/product"];
     const isProductRoute = productRoutes.some((route) => pathname.startsWith(route));
-    // If it's not a product route, it's a marketing route
-    return !isProductRoute;
-  }, [pathname]);
+    // If it's not a product route and not an admin route, it's a marketing route
+    return !isProductRoute && !routeIsAdmin;
+  }, [pathname, routeIsAdmin]);
 
   // Get route name for class
   const routeName = useMemo(() => {
@@ -69,25 +79,20 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
 
   // Fonts loading detection
   useEffect(() => {
-    if (document.fonts) {
-      document.fonts.ready.then(() => {
+    if (typeof document !== "undefined" && document.fonts) {
+      if (document.fonts.check("12px Authentic")) {
         setFontsLoaded(true);
-      });
+      } else {
+        document.fonts.ready.then(() => {
+          setFontsLoaded(true);
+        });
+      }
     } else {
-      // Fallback if document.fonts is not available
-      setTimeout(() => setFontsLoaded(true), 100);
+      setFontsLoaded(true);
     }
   }, []);
 
-  // Mounted state
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-    }, 10);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Window height
+  // Window height - initialize immediately
   useEffect(() => {
     const updateHeight = () => {
       const height = window.innerHeight === Infinity ? window.innerHeight : window.innerHeight;
@@ -101,7 +106,7 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
 
   // Header height
   useEffect(() => {
-    if (!headerRef.current) return;
+    if (!headerRef.current || routeIsAdmin) return;
 
     const updateHeaderHeight = () => {
       if (headerRef.current) {
@@ -114,11 +119,11 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     resizeObserver.observe(headerRef.current);
 
     return () => resizeObserver.disconnect();
-  }, [routeIsMarketing]);
+  }, [routeIsMarketing, routeIsAdmin]);
 
   // Scroll to top on route change
   useEffect(() => {
-    if (!lenis?.current || !mounted) return;
+    if (!lenis?.current) return;
 
     const scrollToTop = () => {
       lenis.current?.scrollTo("top", {
@@ -130,28 +135,22 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     };
 
     scrollToTop();
-  }, [pathname, lenis, mounted]);
+  }, [pathname, lenis]);
 
   const classes = useMemo(() => {
-    return [
-      "default",
-      "container",
-      fontsLoaded ? "fonts-loaded" : "fonts-loading",
-      routeName,
-      mounted ? "mounted" : "",
-    ]
+    return ["default", "container", fontsLoaded ? "fonts-loaded" : "fonts-loading", routeName]
       .filter(Boolean)
       .join(" ");
-  }, [fontsLoaded, routeName, mounted]);
+  }, [fontsLoaded, routeName]);
 
   const styles = useMemo(() => {
-    if (!mounted) return {};
-    const winHeight = windowHeight === Infinity ? "100vh" : `${windowHeight}px`;
+    const winHeight = windowHeight || (typeof window !== "undefined" ? window.innerHeight : 0);
+    const finalWinHeight = winHeight === Infinity || winHeight === 0 ? "100vh" : `${winHeight}px`;
     return {
-      "--winHeight": winHeight,
+      "--winHeight": finalWinHeight,
       "--header-height": `${headerHeight}px`,
     } as React.CSSProperties;
-  }, [mounted, windowHeight, headerHeight]);
+  }, [windowHeight, headerHeight]);
 
   return (
     <PrismicioProvider settings={settings}>
@@ -159,20 +158,19 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
         <MenuOpenProvider>
           <div className={classes} style={styles}>
             {/* Header */}
-
-            {routeIsMarketing ? <MarketingHeader /> : <ProductHeader />}
+            {!routeIsAdmin && (routeIsMarketing ? <MarketingHeader /> : <ProductHeader />)}
 
             {/* Page */}
             {children}
 
             {/* Footer */}
-            {routeIsMarketing ? <MarketingFooter /> : <ProductFooter />}
+            {!routeIsAdmin && (routeIsMarketing ? <MarketingFooter /> : <ProductFooter />)}
 
             {/* Mobile Menu */}
-            <MobileMenu />
+            {!routeIsAdmin && <MobileMenu />}
 
             {/* Overlay User Profile */}
-            <OverlayProfileWrapper />
+            {!routeIsAdmin && <OverlayProfileWrapper />}
           </div>
         </MenuOpenProvider>
       </HeaderTranslateProvider>

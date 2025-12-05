@@ -3,9 +3,8 @@
 import { auth } from "@/lib/firebase";
 import { useLogout } from "@privy-io/react-auth";
 import { signOut as firebaseSignOut } from "firebase/auth";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback } from "react";
 
 import "./SessionsLink.scss";
 
@@ -16,31 +15,32 @@ interface SessionsLinkProps {
 
 function SessionsLinkContent({ profileID, onClose }: SessionsLinkProps) {
   const { logout } = useLogout();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Create sessions link with query params
-  const linkToSessions = useMemo(() => {
+  const onDisconnect = () => {
+    logout();
+    firebaseSignOut(auth);
+    onClose?.();
+  };
+
+  const handleSessionsClick = useCallback(() => {
     const current = new URLSearchParams(searchParams.toString());
+    current.delete("profile");
     if (profileID) {
       current.set("collaborators", profileID);
     }
-    return {
-      pathname: "/sessions",
-      search: current.toString(),
-    };
-  }, [profileID, searchParams]);
-
-  const onDisconnect = () => {
-    logout(); // Disconnect from Privy
-    firebaseSignOut(auth); // Sign out from Firebase
-    onClose?.(); // Close overlay
-  };
+    const newSearch = current.toString();
+    const newUrl = `/sessions${newSearch ? `?${newSearch}` : ""}`;
+    onClose?.();
+    router.push(newUrl);
+  }, [profileID, searchParams, router, onClose]);
 
   return (
     <div className="overlay-profile-sessions-link">
-      <Link href={linkToSessions} className="sessions-link">
+      <button type="button" onClick={handleSessionsClick} className="sessions-link">
         My Sessions
-      </Link>
+      </button>
       <button type="button" onClick={onDisconnect}>
         Disconnect
       </button>

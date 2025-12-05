@@ -17,13 +17,14 @@ import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-inf
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
 import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
 import { useGetVersion } from "@/hooks/query/query-hooks/use-get-version";
+import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
 import { useAudioValidationReady } from "@/hooks/use-audio-validation-ready";
 import { SessionDoc, VersionDoc } from "@/types/database";
 import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { PrismicRichText } from "@prismicio/react";
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
 import { z } from "zod";
@@ -36,8 +37,6 @@ interface NewProjectFormProps {
   versionID?: string;
   exampleLink?: string;
   parentName?: string;
-  possibleStarterIds?: string[];
-  versionLabels?: string[];
   sessionTags?: { name: string; options: string[] }[];
 }
 
@@ -46,8 +45,6 @@ export default function NewProjectForm({
   sessionID,
   exampleLink,
   parentName,
-  possibleStarterIds = [],
-  versionLabels = [],
   versionID,
 }: NewProjectFormProps) {
   const {
@@ -60,6 +57,10 @@ export default function NewProjectForm({
 
   const { data: session } = useGetSession(sessionID || "", !!sessionID);
   const { data: version } = useGetVersion(versionID || "", !!versionID);
+  const { data: versions } = useGetVersions({
+    sessionId: sessionID || "",
+    enabled: type === "version" && !!sessionID,
+  });
   const router = useRouter();
   const { mutate: createVersion, isPending: isPendingCreateVersion } = useCreateVersion();
   const { data: creatorInfo } = useGetAddressInfo(
@@ -67,7 +68,33 @@ export default function NewProjectForm({
     type === "version" && !!sessionID,
   );
 
+  const versionIndexes = useMemo(() => {
+    if (!versions || versions.length === 0) return [];
+    return versions.filter((v) => v.versionIndex !== undefined).map((v) => String(v.versionIndex));
+  }, [versions]);
+
+  const formattedVersionLabels = useMemo(() => {
+    if (!versions || versions.length === 0) return [];
+    return versions
+      .filter((v) => v.versionIndex !== undefined)
+      .map((v) => `V_${String(v.versionIndex).padStart(3, "0")}`);
+  }, [versions]);
+
+  const versionIndexToIdMap = useMemo(() => {
+    if (!versions || versions.length === 0) return new Map<string, string>();
+    const map = new Map<string, string>();
+    versions.forEach((v) => {
+      if (v.versionIndex !== undefined) {
+        map.set(String(v.versionIndex), v.id);
+      }
+    });
+    return map;
+  }, [versions]);
+
   const [generatedName, setGeneratedName] = useState("");
+  const versionName = useMemo(() => {
+    return type === "version" && session?.name ? session.name : undefined;
+  }, [type, session?.name]);
 
   function generateName() {
     const generatedName = uniqueNamesGenerator({
@@ -173,7 +200,7 @@ export default function NewProjectForm({
                   <label htmlFor="name">
                     {type === "version" ? "Version Name" : "Session Name"}
                   </label>
-                  {!parentName && (
+                  {!parentName && type !== "version" && (
                     <button onClick={generateName} type="button">
                       Name It For Me!
                     </button>
@@ -185,8 +212,8 @@ export default function NewProjectForm({
                   className="name-input"
                   type="text"
                   placeholder="ex. Old Skool"
-                  disabled={!!parentName}
-                  resetValue={generatedName}
+                  disabled={!!parentName || type === "version"}
+                  resetValue={type === "version" ? versionName : generatedName}
                 />
               </div>
 
@@ -230,8 +257,8 @@ export default function NewProjectForm({
                     <h6>{parentName} Versions</h6>
                     <TagGroup
                       name="sourceVersion"
-                      values={possibleStarterIds}
-                      labels={versionLabels}
+                      values={versionIndexes}
+                      labels={formattedVersionLabels}
                       inputType="radio"
                     />
                   </div>
@@ -284,12 +311,35 @@ export default function NewProjectForm({
 
   function handleSubmit(formValues: z.infer<typeof newVersionFormSchema>) {
     if (type === "version") {
-      createVersion({ sessionId: sessionID || "", formValues });
-      router.push(`/sessions/${sessionID}/versions/${version?.id}`);
+      const sourceVersionIndex = formValues.sourceVersion;
+      const sourceVersionId = sourceVersionIndex
+        ? versionIndexToIdMap.get(sourceVersionIndex) || undefined
+        : undefined;
+
+      createVersion(
+        {
+          sessionId: sessionID || "",
+          formValues: {
+            ...formValues,
+            sourceVersion: sourceVersionId,
+          },
+        },
+        {
+          onSuccess: (data) => {
+            router.push(`/sessions/${sessionID}?v=${data.versionIndex}`);
+          },
+        },
+      );
       return;
     }
-    createSession({ creator: user?.wallet?.address || "", formValues });
-    router.push(`/sessions/${session?.id}`);
+    createSession(
+      { creator: user?.wallet?.address || "", formValues },
+      {
+        onSuccess: (data) => {
+          router.push(`/sessions/${data.sessionId}`);
+        },
+      },
+    );
   }
 
   return (

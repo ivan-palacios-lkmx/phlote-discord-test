@@ -198,12 +198,23 @@ export class AudioProcessor {
       await bucket.upload(audioProcessingResults.generatedMP3LowQualityAudioPath, {
         destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio-low.mp3`,
       });
-      await bucket.upload(audioProcessingResults.generatedWaveformSVGPath, {
-        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
+
+      // Upload and make public the waveform SVG
+      const waveTraceDestination = `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`;
+      const [waveTraceFile] = await bucket.upload(audioProcessingResults.generatedWaveformSVGPath, {
+        destination: waveTraceDestination,
       });
-      await bucket.upload(audioProcessingResults.generatedWaveformJSONPath, {
-        destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
+      await waveTraceFile.makePublic();
+      const waveTraceUrl = `https://storage.googleapis.com/${bucket.name}/${waveTraceDestination}`;
+
+      // Upload and make public the waveform JSON
+      const waveDataDestination = `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`;
+      const [waveDataFile] = await bucket.upload(audioProcessingResults.generatedWaveformJSONPath, {
+        destination: waveDataDestination,
       });
+      await waveDataFile.makePublic();
+      const waveDataUrl = `https://storage.googleapis.com/${bucket.name}/${waveDataDestination}`;
+
       await bucket.upload(audioProcessingResults.loselessAudioPath, {
         destination: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/audio.wav`,
       });
@@ -217,8 +228,8 @@ export class AudioProcessor {
       const audioDoc = {
         created: admin.firestore.FieldValue.serverTimestamp(),
         source: "upload",
-        waveData: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.json`,
-        waveTrace: `audio/${audioProcessingResults.calculatedAudioIPFSHash}/waveform.svg`,
+        waveData: waveDataUrl,
+        waveTrace: waveTraceUrl,
         sampleCount,
       };
 

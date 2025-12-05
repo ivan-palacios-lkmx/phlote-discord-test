@@ -78,6 +78,39 @@ export class AudioService {
     return "";
   }
 
+  static async getAudioUploadData(
+    fileName: string,
+    fileType: string,
+  ): Promise<{ uploadUrl: string; tmpName: string }> {
+    const seed = this.generateRandomSeed();
+    const milliseconds = getCurrentTimestampInMilliseconds();
+    const safeFileName = this.getSafeFileName(fileName);
+    const audioFilename = `${seed}-${safeFileName}-${milliseconds}`;
+    const audioPath = this.buildAudioPath(audioFilename);
+
+    await adminDb.collection("audio_uploads").doc(audioFilename).set({
+      status: "processing",
+      created: FieldValue.serverTimestamp(),
+    });
+
+    await adminDb.collection(TEMPORARY_AUDIO_COLLECTION).doc(audioFilename).set({
+      status: "processing",
+      hash: "",
+      created: FieldValue.serverTimestamp(),
+    });
+
+    const bucket = this.getBucket();
+    const file = bucket.file(audioPath);
+
+    const [uploadUrl] = await file.getSignedUrl({
+      action: "write",
+      expires: Date.now() + 15 * 60 * 1000,
+      contentType: fileType,
+    });
+
+    return { uploadUrl, tmpName: audioFilename };
+  }
+
   static async uploadAudioToStorageAndStartProcessing(
     audioFile: File,
   ): Promise<{ tmpName: string; status: "processing" | "error" }> {

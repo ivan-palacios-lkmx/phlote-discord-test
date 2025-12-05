@@ -4,27 +4,22 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
-    const audioFile = formData.get("audio") as File;
+    const body = await request.json();
+    const { filename, fileType } = body;
 
-    if (!audioFile) {
-      return NextResponse.json({ error: "Audio file is required" }, { status: 400 });
+    if (!filename || !fileType) {
+      return NextResponse.json({ error: "Filename and fileType are required" }, { status: 400 });
     }
 
-    if (!allowedAudioFileExtensionsSchema.safeParse(audioFile.type).success) {
+    if (!allowedAudioFileExtensionsSchema.safeParse(fileType).success) {
       return NextResponse.json({ error: "Invalid audio file type" }, { status: 400 });
     }
 
-    const { tmpName, status } =
-      await AudioService.uploadAudioToStorageAndStartProcessing(audioFile);
+    const { uploadUrl, tmpName } = await AudioService.getAudioUploadData(filename, fileType);
 
-    if (status === "error") {
-      return NextResponse.json({ error: "Failed to process audio" }, { status: 500 });
-    }
-
-    return NextResponse.json({ tmpName, status }, { status: 200 });
+    return NextResponse.json({ uploadUrl, tmpName, status: "processing" }, { status: 200 });
   } catch (error) {
-    console.error("Error processing audio:", error);
+    console.error("Error initializing audio upload:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

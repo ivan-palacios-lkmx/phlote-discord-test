@@ -196,7 +196,6 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
         <button className="play-pause" onClick={onPlay} disabled={loading}>
           {loading ? <LoadingSpinnerIcon /> : playing ? <PauseIcon /> : <PlayIcon />}
         </button>
-
         {bounceHash && (
           <TrackPreview
             hash={bounceHash}
@@ -220,7 +219,7 @@ export default function VersionPlayer({ versionData }: VersionPlayerProps) {
 
             <div className="track" onClick={(e) => e.stopPropagation()}>
               <h6>{stem.name || ""}</h6>
-              {stem.id && <TrackPreview hash={stem.id} onSeek={(s) => onSeek(s, i + 1)} />}
+              {stem.hash && <TrackPreview hash={stem.hash} onSeek={(s) => onSeek(s, i + 1)} />}
             </div>
           </button>
         ))}
