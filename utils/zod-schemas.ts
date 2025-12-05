@@ -35,6 +35,7 @@ export const memberCardSchema = z.object({
   title,
   twitterHandle,
   email,
+  memberTags: z.array(z.array(z.string())).optional(),
 });
 
 const audioAction = z.enum(["play", "download"]);

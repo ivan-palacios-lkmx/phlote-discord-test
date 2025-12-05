@@ -14,7 +14,7 @@ import { useGetSettings } from "@/hooks/query/query-hooks/use-get-settings";
 import { AddressDocWithID, TagCategory } from "@/types/database";
 import { memberCardSchema } from "@/utils/zod-schemas";
 import kebabCase from "lodash/kebabCase";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -31,8 +31,6 @@ function VisibilityText() {
 }
 
 export default function MemberCard({ member }: MemberCardProps) {
-  const [memberTagsRaw, setMemberTagsRaw] = useState<string[][]>([]);
-
   const { data: settings } = useGetSettings();
   const { data: addressInfo } = useGetAddressInfo(member.id, false, !!member.id);
   const { data: privateInfo } = useGetAddressPrivateInfo(member.id, !!member.id);
@@ -53,35 +51,25 @@ export default function MemberCard({ member }: MemberCardProps) {
     return { name: parts[0], value: parts[1] };
   }
 
-  // this function is used to encode the tags from the frontend format to the backend format
-  const memberTagsInBackendFormat = useMemo(() => {
-    return memberTags.reduce((agg, group, i) => {
-      const categoryName = group.name;
-      (memberTagsRaw[i] || []).forEach((tag) => {
-        agg.push(encodeTag(categoryName, tag));
-      });
-      return agg;
-    }, [] as string[]);
-  }, [memberTags, memberTagsRaw]);
-
-  // this useEffect is used to decode the tags from the backend format to the frontend format
-  useEffect(() => {
-    if (!memberTags.length || !addressInfo?.tags) return;
-
+  const defaultMemberTags = useMemo(() => {
+    if (!memberTags.length) return [];
     const newTagsRaw = memberTags.map(() => [] as string[]);
-    (addressInfo.tags as string[]).forEach((tag) => {
-      const { name: tagName, value: tagValue } = decodeTag(tag);
-      const groupIdx = memberTags.findIndex((group) => kebabCase(group.name) === tagName);
-      if (groupIdx >= 0 && newTagsRaw[groupIdx]) {
-        const originalValue = memberTags[groupIdx].options?.find(
-          (opt) => kebabCase(opt) === tagValue,
-        );
-        if (originalValue) {
-          newTagsRaw[groupIdx].push(originalValue);
+
+    if (addressInfo?.tags) {
+      (addressInfo.tags as string[]).forEach((tag) => {
+        const { name: tagName, value: tagValue } = decodeTag(tag);
+        const groupIdx = memberTags.findIndex((group) => kebabCase(group.name) === tagName);
+        if (groupIdx >= 0 && newTagsRaw[groupIdx]) {
+          const originalValue = memberTags[groupIdx].options?.find(
+            (opt) => kebabCase(opt) === tagValue,
+          );
+          if (originalValue) {
+            newTagsRaw[groupIdx].push(originalValue);
+          }
         }
-      }
-    });
-    setMemberTagsRaw(newTagsRaw);
+      });
+    }
+    return newTagsRaw;
   }, [addressInfo?.tags, memberTags]);
 
   const { mutate: patchAddress } = usePatchAddress();
@@ -89,12 +77,21 @@ export default function MemberCard({ member }: MemberCardProps) {
 
   function handleSave(formValues: z.infer<typeof memberCardSchema>) {
     const address = member.id;
-    // TODO: Fix the tags being passed to the backend
+    const currentTags = formValues.memberTags || [];
+    const tagsToSend = memberTags.reduce((agg, group, i) => {
+      const categoryName = group.name;
+      const tagsInGroup = currentTags[i] || [];
+      tagsInGroup.forEach((tag) => {
+        agg.push(encodeTag(categoryName, tag));
+      });
+      return agg;
+    }, [] as string[]);
+
     patchAddress(
       {
         address,
         title: formValues.title || undefined,
-        tags: memberTagsInBackendFormat.length > 0 ? memberTagsInBackendFormat : undefined,
+        tags: tagsToSend.length > 0 ? tagsToSend : undefined,
         visibility: (formValues.isPublic ? "public" : "private") as "public" | "private",
       },
       {
@@ -120,8 +117,9 @@ export default function MemberCard({ member }: MemberCardProps) {
       title: addressInfo?.title || "",
       twitterHandle: privateInfo?.twitterHandle || "",
       email: privateInfo?.email || "",
+      memberTags: defaultMemberTags,
     };
-  }, [addressInfo, privateInfo]);
+  }, [addressInfo, privateInfo, defaultMemberTags]);
 
   if (!member?.id) {
     return null;
