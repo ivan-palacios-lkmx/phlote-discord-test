@@ -164,8 +164,8 @@ export interface PrismicSettings {
   meta_description?: string;
   og_image?: OGImage;
   default_user_image?: DefaultUserImage;
-  newsletter_placeholder_text?: NewsletterPlaceholderText;
-  newsletter_submit_text?: NewsletterSubmitText;
+  newsletter_placeholder_text?: NewsletterPlaceholderText | string;
+  newsletter_submit_text?: NewsletterSubmitText | string;
   new_session_copy?: RichTextField;
   new_version_copy?: RichTextField;
   bounce_tooltip?: string;

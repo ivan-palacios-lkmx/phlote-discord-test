@@ -16,9 +16,15 @@ export default function NewsletterForm() {
     isSuccess: success,
   } = useSubscribeNewsletter();
 
-  const placeholder = settings.newsletter_placeholder_text?.text || "Email Address";
+  const placeholder =
+    typeof settings.newsletter_placeholder_text === "string"
+      ? settings.newsletter_placeholder_text
+      : settings.newsletter_placeholder_text?.text || "Email Address";
 
-  const submitText = settings.newsletter_submit_text?.text || "Submit";
+  const submitText =
+    typeof settings.newsletter_submit_text === "string"
+      ? settings.newsletter_submit_text
+      : settings.newsletter_submit_text?.text || "Submit";
 
   const handleSubmit = (formValues: z.infer<typeof newsletterFormSchema>) => {
     subscribeNewsletter({ email: formValues.email });
