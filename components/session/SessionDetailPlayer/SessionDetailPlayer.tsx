@@ -3,8 +3,6 @@
 import VersionPlayer from "@/components/VersionPlayer/VersionPlayer";
 import { VersionDocWithID } from "@/types/database";
 
-import "./SessionDetailPlayer.scss";
-
 interface SessionDetailPlayerProps {
   version: VersionDocWithID;
 }

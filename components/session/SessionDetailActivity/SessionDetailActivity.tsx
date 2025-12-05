@@ -5,8 +5,6 @@ import { useGetSessionActivity } from "@/hooks/query/query-hooks/use-get-session
 import { VersionDocWithID } from "@/types/database";
 import { useMemo } from "react";
 
-import "./SessionDetailActivity.scss";
-
 interface SessionDetailActivityProps {
   sessionID?: string;
   versions?: VersionDocWithID[];

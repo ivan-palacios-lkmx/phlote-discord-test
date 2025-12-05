@@ -5,8 +5,6 @@ import _get from "lodash/get";
 import React, { useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import "./TagGroup.scss";
-
 interface TagGroupProps {
   name: string;
   values: string[];

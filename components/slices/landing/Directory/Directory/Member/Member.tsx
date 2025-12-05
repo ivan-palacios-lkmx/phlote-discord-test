@@ -15,8 +15,6 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { memo, useEffect, useRef, useState } from "react";
 
-import "./Member.scss";
-
 interface MemberProps {
   address: AlgoliaAddress;
   activeFilters?: ActiveFilter[];

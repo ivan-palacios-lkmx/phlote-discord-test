@@ -29,8 +29,6 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
 import { z } from "zod";
 
-import "./NewProjectForm.scss";
-
 interface NewProjectFormProps {
   type: "version" | "session";
   sessionID?: string;

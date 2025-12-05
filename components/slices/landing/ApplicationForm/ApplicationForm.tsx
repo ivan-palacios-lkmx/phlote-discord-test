@@ -12,8 +12,6 @@ import type { SliceComponentProps } from "@prismicio/react";
 import { useState } from "react";
 import { z } from "zod";
 
-import "./ApplicationForm.scss";
-
 export default function ApplicationForm({
   slice: _slice, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: SliceComponentProps<ApplicationFormSlice>) {

@@ -6,8 +6,6 @@ import { useGetAddresses } from "@/hooks/query/query-hooks/use-get-addresses";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import "./Members.scss";
-
 function MembersContent() {
   const { data: members, isPending: isPendingMembers } = useGetAddresses({ role: "member" });
   return (

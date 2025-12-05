@@ -5,8 +5,6 @@ import { VersionDocWithID } from "@/types/database";
 import { last, reverse, uniq } from "lodash";
 import { useMemo } from "react";
 
-import "./SessionDetailVersions.scss";
-
 interface SessionDetailVersionsProps {
   versions?: VersionDocWithID[];
   activeVersionID?: string;

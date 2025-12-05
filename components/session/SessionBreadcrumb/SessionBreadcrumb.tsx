@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 
-import "./SessionBreadcrumb.scss";
-
 interface SessionBreadcrumbProps {
   name?: string;
 }

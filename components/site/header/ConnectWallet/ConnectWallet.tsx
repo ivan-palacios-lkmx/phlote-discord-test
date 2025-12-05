@@ -10,8 +10,6 @@ import { useLogin, usePrivy } from "@privy-io/react-auth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, memo, useEffect, useRef } from "react";
 
-import "./ConnectWallet.scss";
-
 const NOT_INCLUDE_PRIVATE_INFO = false;
 
 const ConnectWalletContent = memo(function ConnectWalletContent() {

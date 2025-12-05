@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useMemo } from "react";
 
-import "./SessionDetailNewVersion.scss";
-
 interface SessionDetailNewVersionProps {
   sessionID?: string;
   versionID?: string;

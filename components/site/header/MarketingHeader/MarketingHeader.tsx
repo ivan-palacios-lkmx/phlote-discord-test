@@ -12,8 +12,6 @@ import Link from "next/link";
 import { physics, transform } from "popmotion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import "./MarketingHeader.scss";
-
 const { smooth } = transform;
 
 export default function MarketingHeader() {

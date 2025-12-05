@@ -4,8 +4,6 @@ import Check from "@/components/icons/Check";
 import Chevron from "@/components/icons/Chevron";
 import { memo, useEffect, useRef, useState } from "react";
 
-import "./SortMenu.scss";
-
 interface SortMenuProps {
   value: string;
   onChange: (value: string) => void;

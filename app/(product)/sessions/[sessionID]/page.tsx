@@ -1,6 +1,5 @@
 "use client";
 
-import "@/app/(product)/sessions/[sessionID]/sessionId.scss";
 import OnlyMembers from "@/components/OnlyMembers/OnlyMembers";
 import LoadingSpinnerIcon from "@/components/icons/LoadingSpinner";
 import SessionBreadcrumb from "@/components/session/SessionBreadcrumb/SessionBreadcrumb";

@@ -8,8 +8,6 @@ import { SessionDocWithID, VersionDocWithID } from "@/types/database";
 import { usePrivy } from "@privy-io/react-auth";
 import { useMemo } from "react";
 
-import "./SessionDetailMeta.scss";
-
 interface SessionDetailMetaProps {
   session?: SessionDocWithID;
   version?: VersionDocWithID;
