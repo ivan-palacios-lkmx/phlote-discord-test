@@ -47,7 +47,9 @@ export async function GET(
       return NextResponse.json({ error: "Version bounce not found" }, { status: 404 });
     }
 
-    const stemsHashes = version.stems.map((stem) => stem.id);
+    const stemsHashes = version.stems.map((stem) => {
+      return stem.id || stem.hash || "";
+    });
 
     const [stemsSignedUrls, bounceSignedUrl] = await Promise.all([
       AudioService.getStemsSignedUrls(stemsHashes, action as AudioAction),
