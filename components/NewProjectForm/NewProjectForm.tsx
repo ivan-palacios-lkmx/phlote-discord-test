@@ -115,6 +115,7 @@ export default function NewProjectForm({
       const name = formValues.name;
       const bpm = formValues.bpm;
       const stems = formValues.stems;
+      const sourceVersion = formValues.sourceVersion;
 
       const hasName = name !== "" && name !== null && name !== undefined;
       const hasBpm =
@@ -129,7 +130,11 @@ export default function NewProjectForm({
         ((!allFilesProcessed && !isProcessing) ||
           (allFilesProcessed && isAudioValid && !isValidating));
 
-      return hasName && hasBpm && hasValidAudio;
+      const hasSourceVersion =
+        type !== "version" ||
+        (sourceVersion !== undefined && sourceVersion !== null && sourceVersion !== "");
+
+      return hasName && hasBpm && hasValidAudio && hasSourceVersion;
     }
 
     return (

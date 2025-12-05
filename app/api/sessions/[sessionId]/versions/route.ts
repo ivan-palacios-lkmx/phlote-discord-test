@@ -31,7 +31,7 @@ export async function POST(
     const body = await request.json();
     const { name, bpm, notes, tags, stems, bounce, sourceVersion } = body;
 
-    if (!name || !bpm || !notes || !tags || !stems || !bounce) {
+    if (!name || !bpm || !tags || !stems || !bounce) {
       return NextResponse.json({ error: "Version details are required" }, { status: 400 });
     }
 
