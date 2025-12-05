@@ -115,15 +115,18 @@ export default function NewProjectForm({
     function isFormTotallyFilled() {
       const name = formValues.name;
       const bpm = formValues.bpm;
+      const stems = formValues.stems;
 
       const hasName = name !== "" && name !== null && name !== undefined;
       const hasBpm =
         bpm !== "" && bpm !== null && bpm !== undefined && !isNaN(Number(bpm)) && Number(bpm) > 0;
 
       const hasBounce = !!bounceHash;
+      const hasStems = stems && stems.length > 0;
 
       const hasValidAudio =
         hasBounce &&
+        hasStems &&
         ((!allFilesProcessed && !isProcessing) ||
           (allFilesProcessed && isAudioValid && !isValidating));
 

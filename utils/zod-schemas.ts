@@ -154,7 +154,7 @@ export const newVersionNotesSchema = newVersionNotes;
 const newVersionSourceVersion = z.string().optional();
 export const newVersionSourceVersionSchema = newVersionSourceVersion;
 
-const newVersionTags = z.array(z.array(z.string())).optional();
+const newVersionTags = z.array(z.array(z.string()).optional().nullable()).optional();
 export const newVersionTagsSchema = newVersionTags;
 
 const stemSchema = z.object({
