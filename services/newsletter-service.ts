@@ -17,9 +17,24 @@ export class NewsletterService {
     await this.addSubscriberToDatabase(email, flodeskSegmentData.id);
   }
 
+  private static getHeaders(): HeadersInit {
+    if (!process.env.FLODESK_API_KEY) {
+      throw new Error("FLODESK_API_KEY is not set");
+    }
+
+    const buffer = Buffer.from(`${process.env.FLODESK_API_KEY}:`);
+    const token = buffer.toString("base64");
+
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${token}`,
+    };
+  }
+
   static async createSubscriberInFlodesk(email: string): Promise<Record<string, unknown>> {
     const flodeskUser = await fetch(`${process.env.FLODESK_API_URL}/v1/subscribers`, {
       method: "POST",
+      headers: this.getHeaders(),
       body: JSON.stringify({
         email,
       }),
@@ -36,6 +51,7 @@ export class NewsletterService {
       `${process.env.FLODESK_API_URL}/v1/subscribers/${email}/segments`,
       {
         method: "POST",
+        headers: this.getHeaders(),
         body: JSON.stringify({
           segment_ids: segmentIDs,
         }),
