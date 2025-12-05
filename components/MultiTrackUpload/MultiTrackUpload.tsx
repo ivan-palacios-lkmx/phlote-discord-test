@@ -39,6 +39,10 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
 
   const fieldValue = useWatch({ control, name });
 
+  // Detectar automáticamente qué estructura usar basado en el nombre del campo
+  // "tracks" usa { name, id }, "stems" usa { name, hash }
+  const useIdField = name === "tracks";
+
   useEffect(() => {
     console.log(`[MultiTrackUpload] Field "${name}" value:`, fieldValue);
   }, [fieldValue, name]);
@@ -79,10 +83,10 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     ) {
       hasInitializedFromFieldValue.current = true;
       const reconstructedTracks: Track[] = fieldValue.map(
-        (stem: { name: string; hash: string }) => ({
-          name: stem.name,
-          file: new File([], stem.name),
-          hash: stem.hash,
+        (item: { name: string; id?: string; hash?: string }) => ({
+          name: item.name,
+          file: new File([], item.name),
+          hash: useIdField ? item.id : item.hash || item.id,
           status: "ready",
         }),
       );
@@ -96,13 +100,13 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
     ) {
       lastRemovedTrackRef.current = null;
     }
-  }, [fieldValue, tracks.length]);
+  }, [fieldValue, tracks.length, useIdField]);
 
   const prevStemsRef = useRef<string>("");
 
   useEffect(() => {
     if (audioStatusQueries.length > 0 && tempFileNames.length > 0) {
-      const stems = tempFileNames
+      const processedItems = tempFileNames
         .map((tempFileName, index) => {
           const statusResponse = audioStatusQueries[index]?.data;
           const trackName = tempFileNameToTrackNameRef.current.get(tempFileName);
@@ -113,24 +117,32 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
             statusResponse.hash &&
             trackName
           ) {
-            return {
-              name: trackName,
-              hash: statusResponse.hash,
-            };
+            // Usar 'id' para tracks, 'hash' para stems
+            if (useIdField) {
+              return {
+                name: trackName,
+                id: statusResponse.hash,
+              } as { name: string; id: string };
+            } else {
+              return {
+                name: trackName,
+                hash: statusResponse.hash,
+              } as { name: string; hash: string };
+            }
           }
           return null;
         })
-        .filter((stem): stem is { name: string; hash: string } => stem !== null);
+        .filter((item): item is { name: string; id: string } | { name: string; hash: string } => item !== null);
 
-      if (stems.length > 0) {
-        const stemsKey = JSON.stringify(stems);
-        if (prevStemsRef.current !== stemsKey) {
-          prevStemsRef.current = stemsKey;
-          setValue(name, stems);
+      if (processedItems.length > 0) {
+        const itemsKey = JSON.stringify(processedItems);
+        if (prevStemsRef.current !== itemsKey) {
+          prevStemsRef.current = itemsKey;
+          setValue(name, processedItems);
         }
       }
     }
-  }, [audioStatusQueries, tempFileNames, setValue, name]);
+  }, [audioStatusQueries, tempFileNames, setValue, name, useIdField]);
 
   async function onDrop(acceptedFiles: File[]) {
     if (acceptedFiles.length === 0) return;
@@ -179,7 +191,7 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
 
       if (fieldValue && Array.isArray(fieldValue)) {
         const updatedFieldValue = fieldValue.filter(
-          (stem: { name?: string; hash?: string }) => stem?.name !== name,
+          (item: { name?: string; id?: string; hash?: string }) => item?.name !== name,
         );
         setValue(name, updatedFieldValue);
       }
@@ -243,11 +255,13 @@ export default function MultiTrackUpload({ name }: MultiTrackUploadProps) {
                     const status: AudioProcessingStatus =
                       queryStatus || (track.status as AudioProcessingStatus) || "pending";
 
-                    const stemHash = fieldValue?.find(
-                      (stem: { name?: string; hash?: string }) => stem?.name === track.name,
-                    )?.hash;
+                    // Obtener el hash/id del campo para validación
+                    const fieldItem = fieldValue?.find(
+                      (item: { name?: string; id?: string; hash?: string }) => item?.name === track.name,
+                    );
+                    const itemHash = useIdField ? fieldItem?.id : fieldItem?.hash || fieldItem?.id;
 
-                    const validationError = stemHash ? stemErrors.get(stemHash) : undefined;
+                    const validationError = itemHash ? stemErrors.get(itemHash) : undefined;
 
                     const hasValidationError = !!validationError;
                     const finalStatus: AudioProcessingStatus = hasValidationError

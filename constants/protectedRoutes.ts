@@ -154,14 +154,4 @@ export const PROTECTED_ROUTES = [
     method: "GET",
     roles: ["member", "creator", "admin"],
   },
-  {
-    path: "/api/audio",
-    method: "POST",
-    roles: ["member", "creator", "admin"],
-  },
-  {
-    path: "/api/audio/status/:temporaryAudioFile",
-    method: "GET",
-    roles: ["member", "creator", "admin"],
-  },
 ];

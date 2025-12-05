@@ -9,31 +9,25 @@ import { useCreateCreatorApplication } from "@/hooks/query/mutations/use-create-
 import type { ApplicationFormSlice } from "@/types/client";
 import { applicationFormSchema } from "@/utils/zod-schemas";
 import type { SliceComponentProps } from "@prismicio/react";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import "./ApplicationForm.scss";
 
-export default function ApplicationForm({
-  slice: _slice, // eslint-disable-line @typescript-eslint/no-unused-vars
-}: SliceComponentProps<ApplicationFormSlice>) {
-  const {
-    mutate: createCreatorApplication,
-    error: createCreatorApplicationError,
-    isPending: isCreatingCreatorApplication,
-    isSuccess: isCreatorApplicationCreated,
-  } = useCreateCreatorApplication();
+interface ApplicationFormContentProps {
+  isCreatingCreatorApplication: boolean;
+  isCreatorApplicationCreated: boolean;
+  createCreatorApplicationError: Error | null;
+}
 
-  const [formValues, setFormValues] = useState<Record<string, unknown>>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    city: "",
-    info: "",
-    ethAddress: "",
-    tracks: [],
-    workLink: "",
-  });
+function ApplicationFormContent({
+  isCreatingCreatorApplication,
+  isCreatorApplicationCreated,
+  createCreatorApplicationError,
+}: ApplicationFormContentProps) {
+  const { control, reset } = useFormContext();
+  const formValues = useWatch({ control });
 
   function isFormTotallyFilled(formValues: Record<string, unknown>) {
     const requiredFields = [
@@ -43,33 +37,33 @@ export default function ApplicationForm({
       formValues.city,
       formValues.ethAddress,
     ];
-    return requiredFields.every((value) => value !== "" && value !== null && value !== undefined);
+    const allFieldsFilled = requiredFields.every((value) => value !== "" && value !== null && value !== undefined);
+    
+    // Verificar que tracks existe, es un array y tiene al menos un elemento válido
+    const tracks = formValues.tracks;
+    const hasTracks = Array.isArray(tracks) && tracks.length > 0 && 
+      tracks.every((track: unknown) => 
+        typeof track === "object" && 
+        track !== null && 
+        "name" in track && 
+        "id" in track &&
+        typeof (track as { name: unknown; id: unknown }).name === "string" &&
+        typeof (track as { name: unknown; id: unknown }).id === "string" &&
+        (track as { name: string; id: string }).name.length > 0 &&
+        (track as { name: string; id: string }).id.length > 0
+      );
+    
+    return allFieldsFilled && hasTracks;
   }
 
-  function handleSubmit(formValues: z.infer<typeof applicationFormSchema>) {
-    console.log(formValues);
-    createCreatorApplication({
-      firstName: formValues.firstName,
-      lastName: formValues.lastName,
-      email: formValues.email,
-      city: formValues.city,
-      info: formValues.info,
-      ethAddress: formValues.ethAddress,
-      tracks: formValues.tracks,
-    });
-  }
+
   return (
-    <section className="slice-application-form contained">
-      <Form
-        schema={applicationFormSchema}
-        handleSubmit={handleSubmit}
-        className={isCreatorApplicationCreated ? "success" : ""}>
-        <div className="left">
+    <>
+      <div className="left">
           <label>
             <span>First Name*</span>
             <Input
               name="firstName"
-              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               placeholder="John"
               type="text"
               maxLength={100}
@@ -86,7 +80,6 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
-              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -99,7 +92,6 @@ export default function ApplicationForm({
               type="email"
               maxLength={100}
               required
-              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -111,7 +103,6 @@ export default function ApplicationForm({
               placeholder="Los Angeles"
               type="text"
               maxLength={100}
-              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               required
               disabled={isCreatorApplicationCreated}
             />
@@ -123,7 +114,6 @@ export default function ApplicationForm({
               name="info"
               id="info"
               maxLength={500}
-              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -137,7 +127,6 @@ export default function ApplicationForm({
               placeholder="https://my-portfolio.com"
               type="url"
               maxLength={100}
-              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -150,7 +139,6 @@ export default function ApplicationForm({
               type="text"
               maxLength={100}
               required
-              onWatch={(formValue) => setFormValues((prev) => ({ ...prev, ...formValue }))}
               disabled={isCreatorApplicationCreated}
             />
           </label>
@@ -175,7 +163,104 @@ export default function ApplicationForm({
             <p className="error">{createCreatorApplicationError.message}</p>
           )}
         </div>
+    </>
+  );
+}
+
+export default function ApplicationForm({
+  slice: _slice, // eslint-disable-line @typescript-eslint/no-unused-vars
+}: SliceComponentProps<ApplicationFormSlice>) {
+  const {
+    mutate: createCreatorApplication,
+    isPending: isCreatingCreatorApplication,
+    isSuccess: isCreatorApplicationCreated,
+    error: createCreatorApplicationError,
+    reset: resetMutation,
+  } = useCreateCreatorApplication();
+
+  const resetFormRef = useRef<((values: Record<string, unknown>) => void) | null>(null);
+
+  function handleSubmit(formValues: z.infer<typeof applicationFormSchema>) {
+    console.log(formValues);
+    createCreatorApplication(
+      {
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        email: formValues.email,
+        city: formValues.city,
+        info: formValues.info,
+        ethAddress: formValues.ethAddress,
+        tracks: formValues.tracks,
+      },
+      {
+        onSuccess: (data) => {
+          // Mostrar alert de confirmación
+          alert(
+            `Application submitted successfully!\n\nApplication ID: ${data.applicationId}\n\nThank you for your submission.`
+          );
+
+          // Resetear el formulario a valores vacíos usando la referencia
+          if (resetFormRef.current) {
+            resetFormRef.current({
+              firstName: "",
+              lastName: "",
+              email: "",
+              city: "",
+              info: "",
+              workLink: "",
+              ethAddress: "",
+              tracks: [],
+            });
+          }
+
+          // Resetear la mutación después de un breve delay para permitir que el usuario vea el estado de éxito
+          setTimeout(() => {
+            resetMutation();
+          }, 100);
+        },
+      },
+    );
+  }
+
+  return (
+    <section className="slice-application-form contained">
+      <Form
+        schema={applicationFormSchema}
+        handleSubmit={handleSubmit}
+        className={isCreatorApplicationCreated ? "success" : ""}>
+        <ApplicationFormContentWrapper
+          resetFormRef={resetFormRef}
+          isCreatingCreatorApplication={isCreatingCreatorApplication}
+          isCreatorApplicationCreated={isCreatorApplicationCreated}
+          createCreatorApplicationError={createCreatorApplicationError}
+        />
       </Form>
     </section>
+  );
+}
+
+function ApplicationFormContentWrapper({
+  resetFormRef,
+  isCreatingCreatorApplication,
+  isCreatorApplicationCreated,
+  createCreatorApplicationError,
+}: {
+  resetFormRef: React.MutableRefObject<((values: Record<string, unknown>) => void) | null>;
+  isCreatingCreatorApplication: boolean;
+  isCreatorApplicationCreated: boolean;
+  createCreatorApplicationError: Error | null;
+}) {
+  const { reset } = useFormContext();
+
+  useEffect(() => {
+    resetFormRef.current = reset;
+  }, [reset, resetFormRef]);
+
+  return (
+    <ApplicationFormContent
+      isCreatingCreatorApplication={isCreatingCreatorApplication}
+      isCreatorApplicationCreated={isCreatorApplicationCreated}
+      createCreatorApplicationError={createCreatorApplicationError}
+    />
   );
 }
