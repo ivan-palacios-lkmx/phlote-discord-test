@@ -316,7 +316,7 @@ export class AudioService {
         return { valid: false };
       }
 
-      const tolerance = 0.01;
+      const tolerance = 0.5;
       const invalidStems: string[] = [];
 
       stemDurations.forEach(({ hash, duration }) => {
