@@ -90,7 +90,7 @@ const ConnectWalletContent = memo(function ConnectWalletContent() {
       ) : addressInfo?.username ? (
         <Web3Username username={addressInfo?.username} />
       ) : (
-        <span>Connect</span>
+        <span>Login</span>
       )}
     </button>
   );
