@@ -22,6 +22,18 @@
   padding: 0.2em 1em;
   min-height: 20px;
   font-size: 12px;
+  color: #000 !important;
+  background-color: transparent;
+}
+
+.multiselect__option--is-selected {
+  color: var(--white) !important;
+  background-color: var(--black);
+}
+
+.multiselect__option--is-focused {
+  color: var(--black) !important;
+  background-color: var(--white);
 }
 
 .multiselect__tag-icon::after {
