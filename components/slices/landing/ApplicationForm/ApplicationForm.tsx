@@ -163,43 +163,14 @@ export default function ApplicationForm({
   const resetFormRef = useRef<((values: Record<string, unknown>) => void) | null>(null);
 
   function handleSubmit(formValues: z.infer<typeof applicationFormSchema>) {
-    console.log(formValues);
-    createCreatorApplication(
-      {
-        firstName: formValues.firstName,
-        lastName: formValues.lastName,
-        email: formValues.email,
-        city: formValues.city,
-        info: formValues.info,
-        tracks: formValues.tracks,
-      },
-      {
-        onSuccess: (data) => {
-          // Mostrar alert de confirmación
-          alert(
-            `Application submitted successfully!\n\nApplication ID: ${data.applicationId}\n\nThank you for your submission.`,
-          );
-
-          // Resetear el formulario a valores vacíos usando la referencia
-          if (resetFormRef.current) {
-            resetFormRef.current({
-              firstName: "",
-              lastName: "",
-              email: "",
-              city: "",
-              info: "",
-              workLink: "",
-              tracks: [],
-            });
-          }
-
-          // Resetear la mutación después de un breve delay para permitir que el usuario vea el estado de éxito
-          setTimeout(() => {
-            resetMutation();
-          }, 100);
-        },
-      },
-    );
+    createCreatorApplication({
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      city: formValues.city,
+      info: formValues.info,
+      tracks: formValues.tracks,
+    });
   }
 
   return (
