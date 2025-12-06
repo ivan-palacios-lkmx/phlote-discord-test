@@ -565,7 +565,6 @@ class Api {
     city: string;
     info?: string;
     workLink?: string;
-    ethAddress: string;
     tracks: Array<{ name: string; id: string }>;
   }): Promise<{ applicationId: string }> {
     try {

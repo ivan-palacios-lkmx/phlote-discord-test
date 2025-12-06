@@ -24,7 +24,7 @@ function ApplicationFormContent({
   isCreatorApplicationCreated,
   createCreatorApplicationError,
 }: ApplicationFormContentProps) {
-  const { control, reset } = useFormContext();
+  const { control } = useFormContext();
   const formValues = useWatch({ control });
 
   function isFormTotallyFilled(formValues: Record<string, unknown>) {
@@ -33,7 +33,6 @@ function ApplicationFormContent({
       formValues.lastName,
       formValues.email,
       formValues.city,
-      formValues.ethAddress,
     ];
     const allFieldsFilled = requiredFields.every(
       (value) => value !== "" && value !== null && value !== undefined,
@@ -127,19 +126,6 @@ function ApplicationFormContent({
             disabled={isCreatorApplicationCreated}
           />
         </label>
-
-        <label>
-          <span>Wallet Address / ENS*</span>
-          <Input
-            name="ethAddress"
-            placeholder="phlote.eth"
-            type="text"
-            maxLength={100}
-            required
-            disabled={isCreatorApplicationCreated}
-          />
-        </label>
-
         <div className="upload">
           <label>Upload Your Music*</label>
           <MultiTrackUpload name="tracks" />
@@ -186,7 +172,6 @@ export default function ApplicationForm({
         email: formValues.email,
         city: formValues.city,
         info: formValues.info,
-        ethAddress: formValues.ethAddress,
         tracks: formValues.tracks,
       },
       {
@@ -205,7 +190,6 @@ export default function ApplicationForm({
               city: "",
               info: "",
               workLink: "",
-              ethAddress: "",
               tracks: [],
             });
           }

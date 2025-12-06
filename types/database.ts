@@ -317,7 +317,7 @@ export interface ApplicationDoc {
   /** City of the applicant */
   city: string;
   /** Ethereum address of the applicant */
-  ethAddress: string;
+  ethAddress?: string;
   /** Tracks of the applicant */
   tracks: Array<Track>;
   /** Additional information of the applicant */

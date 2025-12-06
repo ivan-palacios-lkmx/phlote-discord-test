@@ -1720,7 +1720,6 @@ components:
         - lastName
         - email
         - city
-        - ethAddress
         - tracks
       properties:
         firstName:

@@ -49,10 +49,12 @@ export default function ApplicationPreviewBlock({
               <strong>City: </strong>
               <span>{application?.city}</span>
             </div>
-            <div className="wallet-address">
-              <strong>Wallet Address: </strong>
-              <span>{application?.ethAddress}</span>
-            </div>
+            {application?.ethAddress && (
+              <div className="wallet-address">
+                <strong>Wallet Address: </strong>
+                <span>{application.ethAddress}</span>
+              </div>
+            )}
             <div className="work-link">
               <strong>Work Link: </strong>
               <a href={application?.workLink} target="_blank" rel="noopener noreferrer">

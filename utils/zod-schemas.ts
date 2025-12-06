@@ -187,7 +187,7 @@ const lastName = z.string().min(1, "Last name is required");
 const city = z.string().min(1, "City is required");
 const info = z.string().optional();
 const workLink = z.string().optional();
-const ethAddress = addressSchema;
+const ethAddress = addressSchema.optional();
 const tracks = z.array(
   z.object({
     name: z.string().min(1, "Name is required"),

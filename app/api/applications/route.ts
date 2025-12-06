@@ -14,7 +14,7 @@ export async function GET(): Promise<NextResponse> {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { firstName, lastName, email, city, info, workLink, ethAddress, tracks } = body;
+  const { firstName, lastName, email, city, info, workLink, tracks } = body;
 
   if (
     !applicationFormSchema.safeParse({
@@ -24,7 +24,6 @@ export async function POST(request: NextRequest) {
       city,
       info,
       workLink,
-      ethAddress,
       tracks,
     }).success
   ) {

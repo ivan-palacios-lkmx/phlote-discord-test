@@ -8,7 +8,6 @@ interface CreateCreatorApplicationProps {
   city: string;
   info?: string;
   workLink?: string;
-  ethAddress: string;
   tracks: Array<{ name: string; id: string }>;
 }
 
@@ -21,7 +20,6 @@ export function useCreateCreatorApplication() {
       city,
       info,
       workLink,
-      ethAddress,
       tracks,
     }: CreateCreatorApplicationProps) => {
       return await Api.createCreatorApplication({
@@ -31,7 +29,6 @@ export function useCreateCreatorApplication() {
         city,
         info,
         workLink,
-        ethAddress,
         tracks,
       });
     },
