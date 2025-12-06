@@ -183,7 +183,7 @@ const Member = memo(function Member({ address, activeFilters: activeFilters, sty
         {addressPrivateInfo?.discordHandle && (
           <CopyButton copyText={addressPrivateInfo.discordHandle}>Discord</CopyButton>
         )}
-        {twitterLink && <ADiv href={twitterLink}>Twitter</ADiv>}
+        {twitterLink && <ADiv href={twitterLink}>X</ADiv>}
         {addressPrivateInfo?.email && (
           <ADiv href={`mailto:${addressPrivateInfo.email}`}>Email</ADiv>
         )}

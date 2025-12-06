@@ -79,7 +79,7 @@ export default function EditContact({
           )}
         </div>
 
-        <ContactInput value={twitterInput} onChange={setTwitterInput} placeholder="Twitter">
+        <ContactInput value={twitterInput} onChange={setTwitterInput} placeholder="X">
           <TwitterIcon />
         </ContactInput>
 

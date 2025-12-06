@@ -157,7 +157,7 @@ export default function MemberCard({ member }: MemberCardProps) {
         <label className="label">Title</label>
         <Input name="title" placeholder="Songwriter" className="text-inpt" type="text" />
 
-        <label className="label">Twitter</label>
+        <label className="label">X</label>
         <Input
           name="twitterHandle"
           placeholder="@handle"
