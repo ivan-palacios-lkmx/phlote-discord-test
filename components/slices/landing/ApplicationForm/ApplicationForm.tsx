@@ -85,24 +85,12 @@ function ApplicationFormContent({
           />
         </label>
 
-        <label>
+        <label className="email-address">
           <span>Email Address*</span>
           <Input
             name="email"
             placeholder="name@example.com"
             type="email"
-            maxLength={100}
-            required
-            disabled={isCreatorApplicationCreated}
-          />
-        </label>
-
-        <label>
-          <span>City*</span>
-          <Input
-            name="city"
-            placeholder="Los Angeles"
-            type="text"
             maxLength={100}
             required
             disabled={isCreatorApplicationCreated}
@@ -123,6 +111,17 @@ function ApplicationFormContent({
             placeholder="https://my-portfolio.com"
             type="url"
             maxLength={100}
+            disabled={isCreatorApplicationCreated}
+          />
+        </label>
+        <label>
+          <span>City*</span>
+          <Input
+            name="city"
+            placeholder="Los Angeles"
+            type="text"
+            maxLength={100}
+            required
             disabled={isCreatorApplicationCreated}
           />
         </label>
