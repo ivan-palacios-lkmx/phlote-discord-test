@@ -80,65 +80,63 @@ export default function SessionsPageClient({ prismicPage }: SessionsPageClientPr
 
   return (
     <main className="sessions">
-      <div className="sessions">
-        {prismicPage?.data?.header_copy && (
-          <div className="header-copy design-grid">
-            <div className="entry">
-              <PrismicRichText field={prismicPage.data.header_copy as never} />
-            </div>
+      {prismicPage?.data?.header_copy && (
+        <div className="header-copy design-grid">
+          <div className="entry">
+            <PrismicRichText field={prismicPage.data.header_copy as never} />
+          </div>
+        </div>
+      )}
+
+      <div className="contained">
+        {/* Results Header */}
+        <div className="sessions-results-header">
+          <SessionsResultsFilters resultCount={totalResults} />
+          <SessionsResultsSorting />
+        </div>
+
+        {/* Loading */}
+        {loadingSessions && (
+          <div className="loading-sessions">
+            <LoadingSpinnerIcon />
           </div>
         )}
 
-        <div className="contained">
-          {/* Results Header */}
-          <div className="sessions-results-header">
-            <SessionsResultsFilters resultCount={totalResults} />
-            <SessionsResultsSorting />
+        {/* Sessions Results */}
+        {!loadingSessions && sessions.length > 0 && (
+          <div className="sessions-results">
+            {sessions.map((session) => (
+              <SessionPreviewBlock
+                key={session.objectID}
+                name={(session.name as string) || ""}
+                objectID={session.objectID}
+                tags={(session.tags as string[]) || []}
+                creator={(session.creator as string) || ""}
+                collaborators={(session.collaborators as string[]) || []}
+                versionCount={(session.versionCount as number) || 0}
+                downloadCount={(session.downloadCount as number) || 0}
+              />
+            ))}
           </div>
+        )}
 
-          {/* Loading */}
-          {loadingSessions && (
-            <div className="loading-sessions">
-              <LoadingSpinnerIcon />
-            </div>
-          )}
+        {/* No Sessions */}
+        {!loadingSessions && sessions.length === 0 && (
+          <h5 className="no-sessions">There are no sessions with these filters.</h5>
+        )}
 
-          {/* Sessions Results */}
-          {!loadingSessions && sessions.length > 0 && (
-            <div className="sessions-results">
-              {sessions.map((session) => (
-                <SessionPreviewBlock
-                  key={session.objectID}
-                  name={(session.name as string) || ""}
-                  objectID={session.objectID}
-                  tags={(session.tags as string[]) || []}
-                  creator={(session.creator as string) || ""}
-                  collaborators={(session.collaborators as string[]) || []}
-                  versionCount={(session.versionCount as number) || 0}
-                  downloadCount={(session.downloadCount as number) || 0}
-                />
-              ))}
-            </div>
-          )}
+        {/* New Session Button */}
+        {isCreator && (
+          <Link href="/sessions/new" className="new-session inverse desktop-only">
+            <span>Start New Session</span>
+            <span>+</span>
+          </Link>
+        )}
 
-          {/* No Sessions */}
-          {!loadingSessions && sessions.length === 0 && (
-            <h5 className="no-sessions">There are no sessions with these filters.</h5>
-          )}
-
-          {/* New Session Button */}
-          {isCreator && (
-            <Link href="/sessions/new" className="new-session inverse desktop-only">
-              <span>Start New Session</span>
-              <span>+</span>
-            </Link>
-          )}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Paginate pageCount={totalPages} clickHandler={onPageClick} currentPage={currentPage} />
-          )}
-        </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Paginate pageCount={totalPages} clickHandler={onPageClick} currentPage={currentPage} />
+        )}
       </div>
     </main>
   );
