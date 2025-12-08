@@ -24,6 +24,7 @@ import { SessionDoc, VersionDoc } from "@/types/database";
 import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { PrismicRichText } from "@prismicio/react";
 import { usePrivy } from "@privy-io/react-auth";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -65,6 +66,7 @@ export default function NewProjectForm({
     session?.creator || "",
     type === "version" && !!sessionID,
   );
+  const queryClient = useQueryClient();
 
   const versionIndexes = useMemo(() => {
     if (!versions || versions.length === 0) return [];
@@ -366,7 +368,8 @@ export default function NewProjectForm({
           },
         },
         {
-          onSuccess: (data) => {
+          onSuccess: async (data) => {
+            await queryClient.invalidateQueries({ queryKey: ["versions", sessionID] });
             router.push(`/sessions/${sessionID}?v=${data.versionIndex}`);
           },
         },

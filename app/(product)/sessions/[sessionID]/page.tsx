@@ -121,7 +121,7 @@ export default function SessionDetailPage({}: SessionDetailPageProps) {
 
               <SessionDetailActivity sessionID={session.id} versions={versions} />
 
-              <SessionDetailMeta session={session} version={activeVersion || undefined} />
+              {activeVersion && <SessionDetailMeta session={session} version={activeVersion} />}
 
               {activeVersion && (
                 <SessionDetailNewVersion sessionID={session.id} versionID={activeVersion.id} />
