@@ -89,7 +89,7 @@ export const sessionDetailsSchema = z.object({
 export const allowedAudioFileExtensions = z.enum(["audio/wav", "audio/mp3", "audio/mpeg"]);
 export const allowedAudioFileExtensionsSchema = allowedAudioFileExtensions;
 
-const sourceVersion = z.string().optional();
+const sourceVersion = z.string();
 export const sourceVersionSchema = sourceVersion;
 
 export const versionDetailsSchema = z.object({
