@@ -9,10 +9,14 @@ import { useHeaderTranslate } from "@/hooks/useHeaderTranslate";
 import { useLenis } from "@/hooks/useLenis";
 import { useMenuOpen } from "@/hooks/useMenuOpen";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { physics, transform } from "popmotion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const { smooth } = transform;
+
+const MAX_VELOCITY = 25;
+const VELOCITY_MULTIPLIER = 6;
 
 export default function MarketingHeader() {
   const { settings } = usePrismicio();
@@ -20,6 +24,7 @@ export default function MarketingHeader() {
   const lenisRef = useLenis();
   const lenis = lenisRef?.current;
   const { menuOpen, setMenuOpen } = useMenuOpen();
+  const pathname = usePathname();
 
   const [wordmarkTranslate, setWordmarkTranslate] = useState(0);
   const [logoTranslate, setLogoTranslate] = useState(0);
@@ -34,8 +39,6 @@ export default function MarketingHeader() {
     if (!lenis) return;
 
     const smoothTransform = smooth(100);
-    const MAX_VELOCITY = 25;
-    const VELOCITY_MULTIPLIER = 6;
 
     logoPhysicsRef.current = physics({
       from: -0.00001,
@@ -94,7 +97,10 @@ export default function MarketingHeader() {
 
       <nav className="desktop-only">
         {mainMenu.map((item, index) => (
-          <a key={index} href={item.link as string} className="a-div mono">
+          <a
+            key={index}
+            href={item.link as string}
+            className={`a-div mono ${pathname === item.link ? "router-link-exact-active" : ""}`}>
             {item.name || "Link"}
           </a>
         ))}
