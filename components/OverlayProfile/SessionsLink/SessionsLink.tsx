@@ -42,7 +42,7 @@ function SessionsLinkContent({ profileID, onClose }: SessionsLinkProps) {
         My Sessions
       </button>
       <button type="button" onClick={onDisconnect}>
-        Logout
+        Log out
       </button>
     </div>
   );
