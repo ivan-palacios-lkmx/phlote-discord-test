@@ -23,6 +23,8 @@ export default function SessionCard({ session, onDeleteSession }: SessionCardPro
   const { mutate: deleteVersion } = useDeleteVersion();
 
   const handleDeleteVersion = (versionId: string) => {
+    const wasLastVersion = versions?.length === 1;
+
     deleteVersion(
       { versionId },
       {
@@ -35,6 +37,10 @@ export default function SessionCard({ session, onDeleteSession }: SessionCardPro
                 return oldData.filter((v) => v.id !== versionId);
               },
             );
+
+            if (wasLastVersion) {
+              onDeleteSession(session.id);
+            }
           }
           queryClient.invalidateQueries({ queryKey: ["version", versionId] });
         },

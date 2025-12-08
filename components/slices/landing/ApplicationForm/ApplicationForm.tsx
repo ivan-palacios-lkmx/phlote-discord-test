@@ -169,6 +169,7 @@ export default function ApplicationForm({
       email: formValues.email,
       city: formValues.city,
       info: formValues.info,
+      workLink: formValues.workLink,
       tracks: formValues.tracks,
     });
   }
