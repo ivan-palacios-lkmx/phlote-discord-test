@@ -2,6 +2,8 @@
 
 import SessionsCardRow from "@/components/admin/SessionsCardRow/SessionsCardRow";
 import { useDeleteVersion } from "@/hooks/query/mutations/use-delete-version";
+import { useUpdateStemsCarousel } from "@/hooks/query/mutations/use-update-stems-carousel";
+import { useGetStemsCarousel } from "@/hooks/query/query-hooks/use-get-stems-carousel";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
 import { SessionDocWithID, VersionDocWithID } from "@/types/database";
 import { useQueryClient } from "@tanstack/react-query";
@@ -21,6 +23,8 @@ export default function SessionCard({ session, onDeleteSession }: SessionCardPro
     isError: isErrorVersions,
   } = useGetVersions({ sessionId: session?.id || "" });
   const { mutate: deleteVersion } = useDeleteVersion();
+  const { data: stemsCarousel } = useGetStemsCarousel();
+  const { mutate: updateStemsCarousel } = useUpdateStemsCarousel();
 
   const handleDeleteVersion = (versionId: string) => {
     const wasLastVersion = versions?.length === 1;
@@ -43,6 +47,18 @@ export default function SessionCard({ session, onDeleteSession }: SessionCardPro
             }
           }
           queryClient.invalidateQueries({ queryKey: ["version", versionId] });
+
+          if (stemsCarousel?.includes(versionId)) {
+            const updatedCarousel = stemsCarousel.filter((id) => id !== versionId);
+            updateStemsCarousel(
+              { stemsCarousel: updatedCarousel },
+              {
+                onSuccess: () => {
+                  queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+                },
+              },
+            );
+          }
         },
       },
     );
