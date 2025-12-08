@@ -34,7 +34,7 @@ export default function NewsletterForm() {
     <Form
       schema={newsletterFormSchema}
       handleSubmit={handleSubmit}
-      className="newsletter-form"
+      className="newsletter-form desktop-only"
       defaultValues={{ email: "" }}>
       <div className="border">
         {success ? (
