@@ -15,7 +15,7 @@ import { type PrismicSettings } from "@/types/client";
 import { usePrivy, useUser } from "@privy-io/react-auth";
 import kebabCase from "lodash/kebabCase";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -26,15 +26,7 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
   const { refreshUser } = useUser();
   const pathname = usePathname();
   const lenis = useLenis();
-  const headerRef = useRef<HTMLElement>(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.innerHeight;
-    }
-    return 0;
-  });
   const { user, ready, authenticated } = usePrivy();
   const walletAddress = user?.wallet?.address;
   const { data, isSuccess } = useSyncAddress({
@@ -92,35 +84,6 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
     }
   }, []);
 
-  // Window height - initialize immediately
-  useEffect(() => {
-    const updateHeight = () => {
-      const height = window.innerHeight === Infinity ? window.innerHeight : window.innerHeight;
-      setWindowHeight(height);
-    };
-
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, []);
-
-  // Header height
-  useEffect(() => {
-    if (!headerRef.current || routeIsAdmin) return;
-
-    const updateHeaderHeight = () => {
-      if (headerRef.current) {
-        setHeaderHeight(headerRef.current.offsetHeight);
-      }
-    };
-
-    updateHeaderHeight();
-    const resizeObserver = new ResizeObserver(updateHeaderHeight);
-    resizeObserver.observe(headerRef.current);
-
-    return () => resizeObserver.disconnect();
-  }, [routeIsMarketing, routeIsAdmin]);
-
   // Scroll to top on route change
   useEffect(() => {
     if (!lenis?.current) return;
@@ -143,20 +106,11 @@ export default function DefaultLayout({ children, settings }: DefaultLayoutProps
       .join(" ");
   }, [fontsLoaded, routeName]);
 
-  const styles = useMemo(() => {
-    const winHeight = windowHeight || (typeof window !== "undefined" ? window.innerHeight : 0);
-    const finalWinHeight = winHeight === Infinity || winHeight === 0 ? "100vh" : `${winHeight}px`;
-    return {
-      "--winHeight": finalWinHeight,
-      "--header-height": `${headerHeight}px`,
-    } as React.CSSProperties;
-  }, [windowHeight, headerHeight]);
-
   return (
     <PrismicioProvider settings={settings}>
       <HeaderTranslateProvider>
         <MenuOpenProvider>
-          <div className={classes} style={styles}>
+          <div className={classes}>
             {/* Header */}
             {!routeIsAdmin && (routeIsMarketing ? <MarketingHeader /> : <ProductHeader />)}
 

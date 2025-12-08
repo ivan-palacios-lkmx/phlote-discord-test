@@ -36,6 +36,7 @@
     grid-template-columns: 1fr 1fr;
     grid-gap: figmaSize(16px);
     display: grid;
+    overflow: hidden;
 
     > * {
       min-width: 0;
