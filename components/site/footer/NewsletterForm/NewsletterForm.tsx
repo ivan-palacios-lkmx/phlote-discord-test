@@ -8,7 +8,11 @@ import { useSubscribeNewsletter } from "@/hooks/query/mutations/use-subscribe-ne
 import { newsletterFormSchema } from "@/utils/zod-schemas";
 import { z } from "zod";
 
-export default function NewsletterForm() {
+interface NewsletterFormProps {
+  className?: string;
+}
+
+export default function NewsletterForm({ className }: NewsletterFormProps) {
   const { settings } = usePrismicio();
   const {
     mutate: subscribeNewsletter,
@@ -34,7 +38,7 @@ export default function NewsletterForm() {
     <Form
       schema={newsletterFormSchema}
       handleSubmit={handleSubmit}
-      className="newsletter-form desktop-only"
+      className={`newsletter-form ${className}`}
       defaultValues={{ email: "" }}>
       <div className="border">
         {success ? (

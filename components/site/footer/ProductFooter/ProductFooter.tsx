@@ -17,7 +17,7 @@ export default function ProductFooter() {
     <footer className="site-product-footer design-grid">
       <Woodmark />
 
-      <NewsletterForm />
+      <NewsletterForm className="desktop-only" />
 
       <ul className="social-menu ul-reset desktop-only">
         {socialMenu.map((item, index) => (
