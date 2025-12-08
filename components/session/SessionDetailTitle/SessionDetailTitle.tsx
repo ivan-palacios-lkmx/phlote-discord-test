@@ -28,22 +28,10 @@ export default function SessionDetailTitle({ session, version }: SessionDetailTi
       {creatorInfo && (
         <div key={creatorInfo.id} className="version-creator fade-enter-active">
           <Web3Avatar
-            avatar={
-              creatorInfo.ens?.avatar ||
-              creatorInfo.openSea?.profileImageURL ||
-              creatorInfo.zora?.profileImageURL ||
-              "/images/phlote-poster.jpg"
-            }
+            avatar={creatorInfo.avatar || "/images/phlote-poster.jpg"}
             className="creator-avatar"
           />
-          <Web3Username
-            username={
-              creatorInfo.ens?.name ||
-              creatorInfo.openSea?.osUsername ||
-              creatorInfo.zora?.zoraUsername ||
-              ""
-            }
-          />
+          <Web3Username username={creatorInfo.username || ""} />
         </div>
       )}
 
