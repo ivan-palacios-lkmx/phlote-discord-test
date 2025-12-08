@@ -33,7 +33,7 @@ function ProductPageContent() {
       </p>
 
       <Button variant="primary" onClick={handleLogout}>
-        Logout
+        Log out
       </Button>
     </div>
   );
