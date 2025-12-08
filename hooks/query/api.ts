@@ -164,9 +164,18 @@ class Api {
     }
   }
 
-  static async getSessionActivity(sessionID: string): Promise<ActivityDocWithID[]> {
+  static async getSessionActivity(
+    sessionID: string,
+    initiator?: string,
+    type?: "PLAY" | "DOWNLOAD",
+  ): Promise<ActivityDocWithID[]> {
     try {
-      const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID + "/activity");
+      const response = await apiClient.get(ENDPOINTS.SESSIONS + "/" + sessionID + "/activity", {
+        params: {
+          initiator,
+          type,
+        },
+      });
       return response.data;
     } catch (error) {
       console.error("Error fetching session activity:", error);

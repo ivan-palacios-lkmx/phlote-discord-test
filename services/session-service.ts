@@ -176,13 +176,24 @@ export class SessionService {
   static async getSessionActivity(
     sessionID: string,
     limit: number = 60,
+    initiator?: string,
+    type?: "PLAY" | "DOWNLOAD",
   ): Promise<ActivityDocWithID[]> {
-    const activitySnapshot = await adminDb
+    let query = adminDb
       .collection(ACTIVITY_COLLECTION)
       .where("sessionID", "==", sessionID)
       .orderBy("created", "desc")
-      .limit(limit)
-      .get();
+      .limit(limit);
+
+    if (initiator) {
+      query = query.where("initiator", "==", initiator);
+    }
+
+    if (type) {
+      query = query.where("type", "==", type);
+    }
+
+    const activitySnapshot = await query.get();
     return getDocumentDataFromQuerySnapshot<ActivityDocWithID>(activitySnapshot);
   }
 

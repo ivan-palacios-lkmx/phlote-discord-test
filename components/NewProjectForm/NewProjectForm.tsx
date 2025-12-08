@@ -15,6 +15,7 @@ import { useCreateSession } from "@/hooks/query/mutations/use-create-session";
 import { useCreateVersion } from "@/hooks/query/mutations/use-create-version";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetSession } from "@/hooks/query/query-hooks/use-get-session";
+import { useGetSessionActivity } from "@/hooks/query/query-hooks/use-get-session-activity";
 import { useGetTags } from "@/hooks/query/query-hooks/use-get-tags";
 import { useGetVersion } from "@/hooks/query/query-hooks/use-get-version";
 import { useGetVersions } from "@/hooks/query/query-hooks/use-get-versions";
@@ -24,7 +25,7 @@ import { newVersionFormSchema } from "@/utils/zod-schemas";
 import { PrismicRichText } from "@prismicio/react";
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { adjectives, animals, uniqueNamesGenerator } from "unique-names-generator";
 import { z } from "zod";
@@ -248,7 +249,7 @@ export default function NewProjectForm({
             {/* Tag Selection */}
             <div className="tag-selection">
               {/* Versions */}
-              {type === "version" && (
+              {type === "version" && mustSelectStarterVersion && (
                 <div className="tag-wrap">
                   <h6>
                     <span>Version Used</span>
@@ -309,10 +310,45 @@ export default function NewProjectForm({
   const { mutate: createSession, isPending } = useCreateSession();
 
   const { settings } = usePrismicio();
-
   function encodeTag(categoryName: string, option: string) {
     return `${categoryName}:${option}`;
   }
+
+  const { data: downloadedVersions } = useGetSessionActivity(
+    sessionID || "",
+    !!sessionID,
+    user?.wallet?.address || "",
+    "DOWNLOAD",
+  );
+
+  const ownedVersions = useMemo(() => {
+    return versions
+      ?.map((version) => {
+        if (version.creator === user?.wallet?.address) {
+          return version.id;
+        }
+        return null;
+      })
+      .filter((version) => version !== null);
+  }, [versions, user?.wallet?.address]);
+
+  const downloadedStarterVersions = useMemo(() => {
+    return downloadedVersions
+      ?.map((download) => {
+        if (download.versionID) {
+          return download.versionID;
+        }
+        return null;
+      })
+      .filter((version) => version !== null);
+  }, [downloadedVersions]);
+
+  const mustSelectStarterVersion = useMemo(() => {
+    return (
+      (ownedVersions && ownedVersions.length > 0) ||
+      (downloadedStarterVersions && downloadedStarterVersions.length > 0)
+    );
+  }, [ownedVersions, downloadedStarterVersions]);
 
   function handleSubmit(formValues: z.infer<typeof newVersionFormSchema>) {
     if (type === "version") {
