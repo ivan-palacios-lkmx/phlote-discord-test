@@ -8,12 +8,37 @@ export async function GET(
 ) {
   try {
     const { sessionId } = await params;
+    const { searchParams } = new URL(request.url);
+    const initiator = searchParams.get("initiator");
+    const type = searchParams.get("type");
 
     if (!sessionId) {
       return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
     }
 
-    const activity = await SessionService.getSessionActivity(sessionId);
+    let validatedInitiator: string | undefined;
+    let validatedType: "PLAY" | "DOWNLOAD" | undefined;
+
+    if (initiator) {
+      const parsedInitiator = addressSchema.safeParse(initiator);
+      if (parsedInitiator.success) {
+        validatedInitiator = parsedInitiator.data;
+      }
+    }
+
+    if (type) {
+      const parsedType = activityTypeSchema.safeParse(type);
+      if (parsedType.success) {
+        validatedType = parsedType.data;
+      }
+    }
+
+    const activity = await SessionService.getSessionActivity(
+      sessionId,
+      60,
+      validatedInitiator,
+      validatedType,
+    );
 
     return NextResponse.json(activity, { status: 200 });
   } catch (error) {
