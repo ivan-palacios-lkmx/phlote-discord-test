@@ -10,7 +10,7 @@ interface PrivyProviderWrapperProps {
 const privyConfiguration: PrivyClientConfig = {
   appearance: {
     logo: "/images/Phlotelogo.png",
-    landingHeader: "CONNECT YOUR WALLET",
+    landingHeader: "LOGIN TO PHLOTE",
   },
 };
 
