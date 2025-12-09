@@ -37,6 +37,110 @@ export async function POST(request: Request) {
     const name = data?.name;
     const user = interaction.user || interaction.member?.user;
 
+    if (name === "og-test") {
+      const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      // Add a random param to avoid caching issues during test
+      console.log("baseUrl", baseUrl);
+      const ogUrl = `${baseUrl}/api/og?ts=${Date.now()}`;
+
+      // Use DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE (Type 5) to acknowledge the interaction immediately
+      // This prevents the "Application did not respond" error on slow networks or cold starts
+      // Then we update the message asynchronously
+
+      // We need to return the response immediately
+      const response = NextResponse.json({
+        type: 5, // DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+      });
+
+      // Process the follow-up asynchronously
+      (async () => {
+        try {
+          // Wait a bit to simulate work or just ensure the deferred response is processed by Discord
+          // In a real scenario, this is where you'd do the heavy lifting
+
+          const appId = process.env.DISCORD_APP_ID;
+          const token = interaction.token;
+
+          if (!appId) {
+            console.error("Missing DISCORD_APP_ID for deferred response");
+            return;
+          }
+
+          const localOgUrl = ogUrl;
+          let imageBlob: Blob | null = null;
+
+          try {
+            console.log("fetching ogUrl", localOgUrl);
+            const imgRes = await fetch(localOgUrl);
+            if (imgRes.ok) {
+              const arrayBuffer = await imgRes.arrayBuffer();
+              imageBlob = new Blob([arrayBuffer], { type: "image/png" });
+            } else {
+              console.error("Failed to fetch local OG image:", imgRes.status);
+            }
+          } catch (e) {
+            console.error("Error fetching local OG image:", e);
+          }
+
+          const webhookUrl = `https://discord.com/api/v10/webhooks/${appId}/${token}/messages/@original`;
+
+          if (imageBlob) {
+            // Send as multipart/form-data with attachment
+            const formData = new FormData();
+            formData.append(
+              "payload_json",
+              JSON.stringify({
+                content: null,
+                embeds: [
+                  {
+                    title: "OG Image Test",
+                    description: "Testing dynamic OG Image generation (via attachment)",
+                    color: 0xff0000,
+                    image: {
+                      url: "attachment://og-test.png",
+                    },
+                  },
+                ],
+              }),
+            );
+            formData.append("files[0]", imageBlob, "og-test.png");
+
+            await fetch(webhookUrl, {
+              method: "PATCH",
+              body: formData,
+            });
+          } else {
+            console.error("Failed to fetch local OG image");
+            // Fallback to URL if local fetch fails (e.g. if port is different)
+            await fetch(webhookUrl, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                content: null,
+                embeds: [
+                  {
+                    title: "OG Image Test (Fallback)",
+                    description:
+                      "Could not fetch image locally, using URL (might be blocked by ngrok warning)",
+                    color: 0xff0000,
+                    image: {
+                      url: ogUrl,
+                    },
+                  },
+                ],
+              }),
+            });
+          }
+        } catch (err) {
+          console.error("Error sending deferred response update:", err);
+        }
+      })();
+
+      return response;
+    }
+
     if (name === "connect") {
       const token = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN;
 
