@@ -68,7 +68,7 @@ export async function POST(request: Request) {
           }
 
           // Use the public URL so Discord can access it
-          const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+          const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
           const ogUrl = `${baseUrl}/api/og?ts=${Date.now()}`;
 
           console.log("Sending OG URL to Discord:", ogUrl);
