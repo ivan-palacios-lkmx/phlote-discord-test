@@ -1,27 +1,22 @@
-import { adminDb } from "@/lib/firebase-admin";
 import { ImageResponse } from "@vercel/og";
 import fs from "fs";
 import { NextRequest } from "next/server";
 import path from "path";
 
-export const runtime = "nodejs"; // Use Node.js runtime to support firebase-admin and fs
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 
-    console.log("im here");
-
     const artist = searchParams.get("artist") || "";
     const song = searchParams.get("song") || "";
     const bgImage = searchParams.get("bgImage") || "";
-    const hash = searchParams.get("hash") || "";
     const avatars = searchParams.getAll("avatars");
     const countParam = searchParams.get("count");
     const collaboratorCount = countParam ? parseInt(countParam, 10) : avatars.length;
 
     // Load Fonts
-    // We use readFileSync because we are in Node.js runtime
     const authenticSansData = fs.readFileSync(
       path.join(process.cwd(), "fonts/authentic-sans-130.woff"),
     );
@@ -29,39 +24,9 @@ export async function GET(req: NextRequest) {
       path.join(process.cwd(), "fonts/authentic-sans-condensed-130.woff"),
     );
 
-    // Fetch SVG if hash is provided
-    let svgContent = "";
-    if (hash) {
-      try {
-        const bounceDoc = await adminDb.collection("audio").doc(hash).get();
-        if (bounceDoc.exists) {
-          // Assuming waveTrace is an SVG string or path
-          svgContent = bounceDoc.data()?.waveTrace || "";
-        }
-      } catch (e) {
-        console.error("Error fetching audio hash for OG:", e);
-      }
-    }
+    // SVG Content disabled for testing/debugging without Firebase
+    const svgContent = "";
 
-    // Process SVG Content to ensure it renders in Satori
-    // Satori has limited SVG support. It handles standard shapes and paths well.
-    // If svgContent is a full <svg> string, we might need to extract the inner content or wrap it correctly.
-    // If the database stores the full <svg ...>...</svg> string, we can use it directly or sanitize it.
-    // Based on previous files, it seems to be HTML content injected via dangerouslySetInnerHTML.
-
-    // If svgContent doesn't start with <svg, wrap it?
-    // Let's assume for now we can render it as a div with dangerouslySetInnerHTML-like behavior
-    // But ImageResponse doesn't support dangerouslySetInnerHTML prop like React DOM.
-    // We need to parse it or if it's just a string of text, that's wrong.
-    // Satori supports <svg> elements.
-
-    // If `svgContent` is the inner HTML of an SVG (paths), we need to wrap it in <svg>.
-    // If it's the full SVG, we need to make sure it doesn't have unsupported attributes.
-    // A safer bet for "waveTrace" usually implies path data or simple SVG.
-    // Let's try to render it as an image src if it's base64? No, it's likely raw markup.
-    // For now, let's try to just render it. If it fails, we might need to refine.
-
-    // Basic Satori Layout matching the SCSS
     return new ImageResponse(
       (
         <div
@@ -85,6 +50,7 @@ export async function GET(req: NextRequest) {
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
+                zIndex: 0,
               }}
             />
           )}
@@ -99,19 +65,19 @@ export async function GET(req: NextRequest) {
               bottom: 0,
               backgroundImage:
                 "linear-gradient(180deg, rgba(85, 85, 85, 0.25) 0%, rgba(0, 0, 0, 0.55) 100%)",
+              zIndex: 1,
             }}
           />
 
           {/* Logo */}
-          {/* We need the absolute URL for the logo image or read it from fs and base64 it */}
-          {/* Assuming we can use the public URL if available, or we serve it from the app */}
           <img
             src={`${process.env.NEXT_PUBLIC_FRONTEND_URL || "https://phlote.co"}/images/Phlotelogo.png`}
             style={{
               position: "absolute",
-              width: "240px", // 20vw of 1200
-              left: "66px", // 5.5vw of 1200
+              width: "240px",
+              left: "66px",
               top: "66px",
+              zIndex: 2,
             }}
           />
 
@@ -122,9 +88,10 @@ export async function GET(req: NextRequest) {
               bottom: 0,
               left: 0,
               right: 0,
-              padding: "66px", // 5.5vw
+              padding: "66px",
               display: "flex",
               flexDirection: "column",
+              zIndex: 2,
             }}>
             {/* Avatar Area */}
             {avatars && avatars.length > 0 && (
@@ -133,7 +100,7 @@ export async function GET(req: NextRequest) {
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
-                  marginBottom: "24px", // 2vw
+                  marginBottom: "24px",
                   gap: "24px",
                 }}>
                 {/* Avatar Stack */}
@@ -143,11 +110,11 @@ export async function GET(req: NextRequest) {
                       key={i}
                       src={url}
                       style={{
-                        width: "48px", // 4vw
+                        width: "48px",
                         height: "48px",
                         borderRadius: "50%",
                         border: "2px solid white",
-                        marginLeft: i === 0 ? 0 : "-12px", // -1vw
+                        marginLeft: i === 0 ? 0 : "-12px",
                         objectFit: "cover",
                         backgroundColor: "#333",
                       }}
@@ -166,7 +133,7 @@ export async function GET(req: NextRequest) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "18px", // 1.5vw
+                        fontSize: "18px",
                       }}>
                       +{collaboratorCount - 3}
                     </div>
@@ -189,7 +156,7 @@ export async function GET(req: NextRequest) {
               {artist && (
                 <h1
                   style={{
-                    fontSize: "108px", // 9vw
+                    fontSize: "108px",
                     lineHeight: "90%",
                     fontFamily: '"Authentic Condensed"',
                     fontWeight: 600,
@@ -202,7 +169,7 @@ export async function GET(req: NextRequest) {
               {song && (
                 <h1
                   style={{
-                    fontSize: "108px", // 9vw
+                    fontSize: "108px",
                     lineHeight: "90%",
                     fontFamily: '"Authentic Condensed"',
                     fontWeight: 600,
@@ -218,17 +185,11 @@ export async function GET(req: NextRequest) {
             {svgContent && (
               <div
                 style={{
-                  marginTop: "24px", // 2vw
-                  height: "120px", // 10vw
+                  marginTop: "24px",
+                  height: "120px",
                   width: "100%",
                   display: "flex",
                 }}>
-                {/* Assuming svgContent is full <svg> string, we might need to parse/clean it.
-                        For simplicity in this example, if it's complex, we might simply not render it
-                        or try to inject it.
-                        Note: ImageResponse doesn't support string injection of SVG easily without parsing.
-                        But we can try to render it as a data URI image if we have the string.
-                    */}
                 <img
                   src={`data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`}
                   style={{ width: "100%", height: "100%" }}
