@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
+    console.log("request", request);
     const signature = request.headers.get("X-Signature-Ed25519");
     const timestamp = request.headers.get("X-Signature-Timestamp");
     const publicKey = process.env.DISCORD_PUBLIC_KEY;
@@ -66,53 +67,16 @@ export async function POST(request: Request) {
             return;
           }
 
-          const localOgUrl = ogUrl;
-          let imageBlob: Blob | null = null;
+          // Use the public URL so Discord can access it
+          const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+          const ogUrl = `${baseUrl}/api/og?ts=${Date.now()}`;
 
-          try {
-            console.log("fetching ogUrl", localOgUrl);
-            const imgRes = await fetch(localOgUrl);
-            if (imgRes.ok) {
-              const arrayBuffer = await imgRes.arrayBuffer();
-              imageBlob = new Blob([arrayBuffer], { type: "image/png" });
-            } else {
-              console.error("Failed to fetch local OG image:", imgRes.status);
-            }
-          } catch (e) {
-            console.error("Error fetching local OG image:", e);
-          }
+          console.log("Sending OG URL to Discord:", ogUrl);
 
           const webhookUrl = `https://discord.com/api/v10/webhooks/${appId}/${token}/messages/@original`;
 
-          if (imageBlob) {
-            // Send as multipart/form-data with attachment
-            const formData = new FormData();
-            formData.append(
-              "payload_json",
-              JSON.stringify({
-                content: null,
-                embeds: [
-                  {
-                    title: "OG Image Test",
-                    description: "Testing dynamic OG Image generation (via attachment)",
-                    color: 0xff0000,
-                    image: {
-                      url: "attachment://og-test.png",
-                    },
-                  },
-                ],
-              }),
-            );
-            formData.append("files[0]", imageBlob, "og-test.png");
-
-            await fetch(webhookUrl, {
-              method: "PATCH",
-              body: formData,
-            });
-          } else {
-            console.error("Failed to fetch local OG image");
-            // Fallback to URL if local fetch fails (e.g. if port is different)
-            await fetch(webhookUrl, {
+          try {
+            const discordRes = await fetch(webhookUrl, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
@@ -121,17 +85,26 @@ export async function POST(request: Request) {
                 content: null,
                 embeds: [
                   {
-                    title: "OG Image Test (Fallback)",
-                    description:
-                      "Could not fetch image locally, using URL (might be blocked by ngrok warning)",
-                    color: 0xff0000,
+                    title: "OG Image Test",
+                    description: "Testing dynamic OG Image generation (Direct URL)",
+                    color: 0x00ff00,
                     image: {
                       url: ogUrl,
+                    },
+                    footer: {
+                      text: `URL: ${ogUrl}`,
                     },
                   },
                 ],
               }),
             });
+
+            if (!discordRes.ok) {
+              const errorText = await discordRes.text();
+              console.error("Discord Webhook Error:", errorText);
+            }
+          } catch (error) {
+            console.error("Error sending response to Discord:", error);
           }
         } catch (err) {
           console.error("Error sending deferred response update:", err);
