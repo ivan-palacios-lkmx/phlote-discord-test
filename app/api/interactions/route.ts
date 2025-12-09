@@ -68,8 +68,22 @@ export async function POST(request: Request) {
           }
 
           // Use the public URL so Discord can access it
-          const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
-          const ogUrl = `${baseUrl}/api/og?ts=${Date.now()}`;
+          const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+
+          const params = new URLSearchParams();
+          params.append("artist", "Test Artist");
+          params.append("song", "Test Song Title");
+          params.append(
+            "bgImage",
+            "https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1200&auto=format&fit=crop",
+          );
+          params.append("avatars", "https://github.com/shadcn.png");
+          params.append("avatars", "https://github.com/vercel.png");
+          params.append("avatars", "https://github.com/nextjs.png");
+          params.append("count", "5");
+          params.append("ts", Date.now().toString());
+
+          const ogUrl = `${baseUrl}/api/og?${params.toString()}`;
 
           console.log("Sending OG URL to Discord:", ogUrl);
 
