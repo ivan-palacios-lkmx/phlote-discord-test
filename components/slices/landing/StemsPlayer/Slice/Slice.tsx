@@ -64,7 +64,7 @@ export default function Slice({ versionID }: SliceProps) {
       onMouseUp={() => setIsPointerDown(false)}
       onMouseLeave={() => setIsPointerDown(false)}>
       {version?.creator && <Web3Avatar avatar={avatar} className="background-image" />}
-      <div className="padder">
+      <div className="padder" style={{ overflow: "hidden" }}>
         <>
           <div className="session-info">
             <Web3Avatar avatar={avatar} className="artwork desktop-only" />
