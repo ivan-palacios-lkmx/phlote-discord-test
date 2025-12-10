@@ -39,55 +39,41 @@ export async function POST(request: Request) {
     const user = interaction.user || interaction.member?.user;
 
     if (name === "og-test") {
+      const appId = process.env.DISCORD_APP_ID;
+      const token = interaction.token;
+
+      if (!appId) {
+        console.error("Missing DISCORD_APP_ID for deferred response");
+        return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+      }
+
       const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
-      // Add a random param to avoid caching issues during test
-      console.log("baseUrl", baseUrl);
-      const ogUrl = `${baseUrl}/api/og?ts=${Date.now()}`;
 
-      // Use DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE (Type 5) to acknowledge the interaction immediately
-      // This prevents the "Application did not respond" error on slow networks or cold starts
-      // Then we update the message asynchronously
+      const params = new URLSearchParams();
+      params.append("artist", "Test Artist");
+      params.append("song", "Test Song Title");
+      params.append(
+        "bgImage",
+        "https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1200&auto=format&fit=crop",
+      );
+      params.append("avatars", "https://github.com/shadcn.png");
+      params.append("avatars", "https://github.com/vercel.png");
+      params.append("avatars", "https://github.com/nextjs.png");
+      params.append("count", "5");
+      params.append("ts", Date.now().toString());
 
-      // We need to return the response immediately
+      const ogUrl = `${baseUrl}/api/og?${params.toString()}`;
+
       const response = NextResponse.json({
-        type: 5, // DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+        type: 5,
       });
 
-      // Process the follow-up asynchronously
-      (async () => {
+      const updatePromise = (async () => {
         try {
-          // Wait a bit to simulate work or just ensure the deferred response is processed by Discord
-          // In a real scenario, this is where you'd do the heavy lifting
-
-          const appId = process.env.DISCORD_APP_ID;
-          const token = interaction.token;
-
-          if (!appId) {
-            console.error("Missing DISCORD_APP_ID for deferred response");
-            return;
-          }
-
-          // Use the public URL so Discord can access it
-          const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
-
-          const params = new URLSearchParams();
-          params.append("artist", "Test Artist");
-          params.append("song", "Test Song Title");
-          params.append(
-            "bgImage",
-            "https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1200&auto=format&fit=crop",
-          );
-          params.append("avatars", "https://github.com/shadcn.png");
-          params.append("avatars", "https://github.com/vercel.png");
-          params.append("avatars", "https://github.com/nextjs.png");
-          params.append("count", "5");
-          params.append("ts", Date.now().toString());
-
-          const ogUrl = `${baseUrl}/api/og?${params.toString()}`;
-
-          console.log("Sending OG URL to Discord:", ogUrl);
-
           const webhookUrl = `https://discord.com/api/v10/webhooks/${appId}/${token}/messages/@original`;
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
 
           try {
             const discordRes = await fetch(webhookUrl, {
@@ -111,19 +97,33 @@ export async function POST(request: Request) {
                   },
                 ],
               }),
+              signal: controller.signal,
             });
+
+            clearTimeout(timeoutId);
 
             if (!discordRes.ok) {
               const errorText = await discordRes.text();
               console.error("Discord Webhook Error:", errorText);
+            } else {
+              console.log("Successfully updated Discord message with OG image");
             }
           } catch (error) {
-            console.error("Error sending response to Discord:", error);
+            clearTimeout(timeoutId);
+            if (error instanceof Error && error.name === "AbortError") {
+              console.error("Discord webhook request timed out after 10 seconds");
+            } else {
+              console.error("Error sending response to Discord:", error);
+            }
           }
         } catch (err) {
           console.error("Error sending deferred response update:", err);
         }
       })();
+
+      if ("waitUntil" in request && typeof (request as any).waitUntil === "function") {
+        (request as any).waitUntil(updatePromise);
+      }
 
       return response;
     }
@@ -143,7 +143,6 @@ export async function POST(request: Request) {
 
       DiscordService.initialize(token);
 
-      // Respond immediately to avoid "application did not respond" error
       const response = NextResponse.json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -151,14 +150,17 @@ export async function POST(request: Request) {
         },
       });
 
-      // Send DM asynchronously after responding
-      (async () => {
+      const dmPromise = (async () => {
         try {
           await DiscordService.connectCommand(user);
         } catch (error) {
           console.error("Error sending DM:", error);
         }
       })();
+
+      if ("waitUntil" in request && typeof (request as any).waitUntil === "function") {
+        (request as any).waitUntil(dmPromise);
+      }
 
       return response;
     }
