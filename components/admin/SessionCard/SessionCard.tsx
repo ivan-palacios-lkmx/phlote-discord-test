@@ -55,6 +55,7 @@ export default function SessionCard({ session, onDeleteSession }: SessionCardPro
               {
                 onSuccess: () => {
                   queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+                  queryClient.invalidateQueries({ queryKey: ["settings"] });
                 },
               },
             );
@@ -64,14 +65,37 @@ export default function SessionCard({ session, onDeleteSession }: SessionCardPro
     );
   };
 
+  const handleDeleteSession = () => {
+    if (!session?.id || !versions || !stemsCarousel) {
+      onDeleteSession(session?.id || "");
+      return;
+    }
+
+    const versionIDs = versions.map((version) => version.id);
+    const versionsInCarousel = versionIDs.filter((id) => stemsCarousel.includes(id));
+
+    if (versionsInCarousel.length > 0) {
+      const updatedCarousel = stemsCarousel.filter((id) => !versionIDs.includes(id));
+      updateStemsCarousel(
+        { stemsCarousel: updatedCarousel },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+            queryClient.invalidateQueries({ queryKey: ["settings"] });
+            onDeleteSession(session.id);
+          },
+        },
+      );
+    } else {
+      onDeleteSession(session.id);
+    }
+  };
+
   return (
     <div className="session-card">
       <div className="card-header">
         <h6 className="card-header-title">{session?.name || ""}</h6>
-        <button
-          onClick={() => onDeleteSession(session?.id || "")}
-          className="btn delete-session"
-          type="button">
+        <button onClick={handleDeleteSession} className="btn delete-session" type="button">
           Delete Session
         </button>
       </div>

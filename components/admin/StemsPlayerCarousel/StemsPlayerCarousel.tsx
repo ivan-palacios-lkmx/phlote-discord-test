@@ -2,6 +2,7 @@
 
 import StemsPlayerCarouselRow from "@/components/admin/StemsPlayerCarouselRow/StemsPlayerCarouselRow";
 import Web3Avatar from "@/components/web3/Web3Avatar/Web3Avatar";
+import Api from "@/hooks/query/api";
 import { useUpdateStemsCarousel } from "@/hooks/query/mutations/use-update-stems-carousel";
 import { useGetAddressInfo } from "@/hooks/query/query-hooks/use-get-address-info";
 import { useGetStemsCarousel } from "@/hooks/query/query-hooks/use-get-stems-carousel";
@@ -13,7 +14,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "fecha";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import "./StemsPlayerCarousel.scss";
 
@@ -55,6 +56,7 @@ export default function StemsPlayerCarousel() {
   const { mutate: updateStemsCarousel } = useUpdateStemsCarousel();
   const [searchText, setSearchText] = useState("");
   const [selectedSession, setSelectedSession] = useState<AlgoliaSession | null>(null);
+  const isValidatingRef = useRef(false);
 
   // this is working with Algolia, so we dont need to use a query from query client
   const { sessions: searchResults, loadingSessions } = useSessions({
@@ -120,6 +122,7 @@ export default function StemsPlayerCarousel() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+          queryClient.invalidateQueries({ queryKey: ["settings"] });
         },
       },
     );
@@ -135,6 +138,7 @@ export default function StemsPlayerCarousel() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+          queryClient.invalidateQueries({ queryKey: ["settings"] });
         },
       },
     );
@@ -160,11 +164,100 @@ export default function StemsPlayerCarousel() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+          queryClient.invalidateQueries({ queryKey: ["settings"] });
           setSelectedSession(null);
         },
       },
     );
   };
+
+  useEffect(() => {
+    if (!stemsCarousel || stemsCarousel.length === 0 || isValidatingRef.current) {
+      return;
+    }
+
+    isValidatingRef.current = true;
+
+    const validateVersions = async () => {
+      try {
+        const versionValidationResults = await Promise.allSettled(
+          stemsCarousel.map((versionID) => Api.getVersion(versionID)),
+        );
+
+        const validVersions: Array<{ versionID: string; sessionID: string }> = [];
+
+        versionValidationResults.forEach((result, index) => {
+          if (result.status === "fulfilled" && result.value !== null) {
+            const version = result.value;
+            if (version.sessionID) {
+              validVersions.push({
+                versionID: stemsCarousel[index],
+                sessionID: version.sessionID,
+              });
+            }
+          }
+        });
+
+        if (validVersions.length === 0) {
+          updateStemsCarousel(
+            { stemsCarousel: [] },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+                queryClient.invalidateQueries({ queryKey: ["settings"] });
+                isValidatingRef.current = false;
+              },
+              onError: () => {
+                isValidatingRef.current = false;
+              },
+            },
+          );
+          return;
+        }
+
+        const uniqueSessionIDs = Array.from(new Set(validVersions.map((v) => v.sessionID)));
+
+        const sessionValidationResults = await Promise.allSettled(
+          uniqueSessionIDs.map((sessionID) => Api.getSession(sessionID)),
+        );
+
+        const existingSessionIDs = new Set<string>();
+
+        sessionValidationResults.forEach((result, index) => {
+          if (result.status === "fulfilled" && result.value !== null) {
+            existingSessionIDs.add(uniqueSessionIDs[index]);
+          }
+        });
+
+        const validVersionIDs = validVersions
+          .filter((v) => existingSessionIDs.has(v.sessionID))
+          .map((v) => v.versionID);
+
+        if (validVersionIDs.length !== stemsCarousel.length) {
+          updateStemsCarousel(
+            { stemsCarousel: validVersionIDs },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ["stems-carousel"] });
+                queryClient.invalidateQueries({ queryKey: ["settings"] });
+                isValidatingRef.current = false;
+              },
+              onError: () => {
+                isValidatingRef.current = false;
+              },
+            },
+          );
+        } else {
+          isValidatingRef.current = false;
+        }
+      } catch (error) {
+        console.error("Error validating carousel versions:", error);
+        isValidatingRef.current = false;
+      }
+    };
+
+    validateVersions();
+  }, [stemsCarousel, updateStemsCarousel, queryClient]);
 
   return (
     <div className="admin-stems-player-carousel">
