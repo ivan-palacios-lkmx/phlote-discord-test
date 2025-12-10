@@ -2,6 +2,10 @@ import { DiscordService } from "@/services/discord-service";
 import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
 import { NextResponse } from "next/server";
 
+interface RequestWithWaitUntil extends Request {
+  waitUntil?: (promise: Promise<unknown>) => void;
+}
+
 export async function POST(request: Request) {
   try {
     console.log("request", request);
@@ -121,8 +125,9 @@ export async function POST(request: Request) {
         }
       })();
 
-      if ("waitUntil" in request && typeof (request as any).waitUntil === "function") {
-        (request as any).waitUntil(updatePromise);
+      const requestWithWaitUntil = request as RequestWithWaitUntil;
+      if (requestWithWaitUntil.waitUntil) {
+        requestWithWaitUntil.waitUntil(updatePromise);
       }
 
       return response;
@@ -158,8 +163,9 @@ export async function POST(request: Request) {
         }
       })();
 
-      if ("waitUntil" in request && typeof (request as any).waitUntil === "function") {
-        (request as any).waitUntil(dmPromise);
+      const requestWithWaitUntil = request as RequestWithWaitUntil;
+      if (requestWithWaitUntil.waitUntil) {
+        requestWithWaitUntil.waitUntil(dmPromise);
       }
 
       return response;
