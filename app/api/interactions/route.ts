@@ -74,11 +74,13 @@ export async function POST(request: Request) {
 
       const updatePromise = (async () => {
         try {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
           const webhookUrl = `https://discord.com/api/v10/webhooks/${appId}/${token}/messages/@original`;
           console.log("Starting Discord webhook update, URL:", webhookUrl.replace(token, "***"));
 
           const controller = new AbortController();
-          const timeoutMs = 30000;
+          const timeoutMs = 25000;
           const timeoutId = setTimeout(() => {
             console.log("Timeout triggered, aborting request");
             controller.abort();
@@ -112,7 +114,9 @@ export async function POST(request: Request) {
 
             clearTimeout(timeoutId);
             const duration = Date.now() - startTime;
-            console.log(`Discord webhook request completed in ${duration}ms, status: ${discordRes.status}`);
+            console.log(
+              `Discord webhook request completed in ${duration}ms, status: ${discordRes.status}`,
+            );
 
             if (!discordRes.ok) {
               const errorText = await discordRes.text();
@@ -124,7 +128,9 @@ export async function POST(request: Request) {
             clearTimeout(timeoutId);
             const duration = Date.now() - startTime;
             if (error instanceof Error && error.name === "AbortError") {
-              console.error(`Discord webhook request timed out after ${duration}ms (limit: ${timeoutMs}ms)`);
+              console.error(
+                `Discord webhook request timed out after ${duration}ms (limit: ${timeoutMs}ms)`,
+              );
             } else {
               console.error("Error sending response to Discord:", error);
             }
@@ -137,6 +143,10 @@ export async function POST(request: Request) {
       const requestWithWaitUntil = request as RequestWithWaitUntil;
       if (requestWithWaitUntil.waitUntil) {
         requestWithWaitUntil.waitUntil(updatePromise);
+      } else {
+        updatePromise.catch((err) => {
+          console.error("Background task error (waitUntil not available):", err);
+        });
       }
 
       return response;
@@ -175,6 +185,10 @@ export async function POST(request: Request) {
       const requestWithWaitUntil = request as RequestWithWaitUntil;
       if (requestWithWaitUntil.waitUntil) {
         requestWithWaitUntil.waitUntil(dmPromise);
+      } else {
+        dmPromise.catch((err) => {
+          console.error("Background task error (waitUntil not available):", err);
+        });
       }
 
       return response;
