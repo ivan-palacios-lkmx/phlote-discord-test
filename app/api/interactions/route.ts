@@ -75,10 +75,16 @@ export async function POST(request: Request) {
       const updatePromise = (async () => {
         try {
           const webhookUrl = `https://discord.com/api/v10/webhooks/${appId}/${token}/messages/@original`;
+          console.log("Starting Discord webhook update, URL:", webhookUrl.replace(token, "***"));
 
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 10000);
+          const timeoutMs = 30000;
+          const timeoutId = setTimeout(() => {
+            console.log("Timeout triggered, aborting request");
+            controller.abort();
+          }, timeoutMs);
 
+          const startTime = Date.now();
           try {
             const discordRes = await fetch(webhookUrl, {
               method: "PATCH",
@@ -105,17 +111,20 @@ export async function POST(request: Request) {
             });
 
             clearTimeout(timeoutId);
+            const duration = Date.now() - startTime;
+            console.log(`Discord webhook request completed in ${duration}ms, status: ${discordRes.status}`);
 
             if (!discordRes.ok) {
               const errorText = await discordRes.text();
-              console.error("Discord Webhook Error:", errorText);
+              console.error("Discord Webhook Error:", discordRes.status, errorText);
             } else {
               console.log("Successfully updated Discord message with OG image");
             }
           } catch (error) {
             clearTimeout(timeoutId);
+            const duration = Date.now() - startTime;
             if (error instanceof Error && error.name === "AbortError") {
-              console.error("Discord webhook request timed out after 10 seconds");
+              console.error(`Discord webhook request timed out after ${duration}ms (limit: ${timeoutMs}ms)`);
             } else {
               console.error("Error sending response to Discord:", error);
             }
